@@ -1,0 +1,124 @@
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  SUPER_ADMIN
+  DISTRIBUTOR
+  CANDIDATE_ADMIN
+  KARYAKARTA
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+  PENDING_APPROVAL
+}
+
+enum OrganizationStatus {
+  PENDING
+  ACTIVE
+  SUSPENDED
+  EXPIRED
+}
+
+enum PlanType {
+  TRIAL_5D
+  OFFICE_6M
+  OFFICE_12M
+  ELECTION_MODULE
+}
+
+enum DistributorStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+}
+
+model Organization {
+  id               String             @id @default(uuid()) @db.VarChar(36)
+  name             String             @db.VarChar(150)
+  slug             String             @unique @db.VarChar(100)
+  status           OrganizationStatus @default(ACTIVE)
+  planType         PlanType           @default(TRIAL_5D)
+  hasAiMode        Boolean            @default(false)
+  aiSeatsLimit     Int                @default(0)
+  state            String             @db.VarChar(50)
+  district         String             @db.VarChar(100)
+  constituencyName String             @db.VarChar(150)
+  electionType     String             @db.VarChar(50)
+  pollingDate      DateTime?          @db.Date
+  distributorId    String?            @db.VarChar(36)
+  distributor      Distributor?       @relation(fields: [distributorId], references: [id], onDelete: SetNull)
+  users            User[]
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+
+  @@index([status])
+  @@index([distributorId])
+  @@map("organizations")
+}
+
+model Distributor {
+  id                String            @id @default(uuid()) @db.VarChar(36)
+  companyName       String            @db.VarChar(150)
+  contactName       String            @db.VarChar(100)
+  email             String            @unique @db.VarChar(120)
+  phone             String            @unique @db.VarChar(20)
+  userId            String?           @unique @db.VarChar(36)
+  user              User?             @relation("DistributorUser", fields: [userId], references: [id], onDelete: SetNull)
+  organizations     Organization[]
+  status            DistributorStatus @default(ACTIVE)
+  commissionRatePct Decimal           @default(10.00) @db.Decimal(5, 2)
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+
+  @@index([status])
+  @@map("distributors")
+}
+
+model User {
+  id                 String         @id @default(uuid()) @db.VarChar(36)
+  email              String?        @unique @db.VarChar(120)
+  phone              String         @unique @db.VarChar(20)
+  name               String         @db.VarChar(150)
+  passwordHash       String?        @db.VarChar(255)
+  role               Role           @default(KARYAKARTA)
+  status             UserStatus     @default(ACTIVE)
+  organizationId     String?        @db.VarChar(36)
+  organization       Organization?  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  distributorProfile Distributor?   @relation("DistributorUser")
+  hasAiSeat          Boolean        @default(false)
+  activationKey      String?        @unique @db.VarChar(6)
+  reactivationKey    String?        @db.VarChar(12)
+  deviceUuid         String?        @db.VarChar(128)
+  lastLoginAt        DateTime?
+  refreshTokens      RefreshToken[]
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
+
+  @@index([organizationId, role])
+  @@index([phone])
+  @@map("users")
+}
+
+model RefreshToken {
+  id         String   @id @default(uuid()) @db.VarChar(36)
+  tokenHash  String   @unique @db.VarChar(64)
+  userId     String   @db.VarChar(36)
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  deviceInfo String?  @db.VarChar(255)
+  ipAddress  String?  @db.VarChar(45)
+  isRevoked  Boolean  @default(false)
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+
+  @@index([userId, isRevoked])
+  @@map("refresh_tokens")
+}

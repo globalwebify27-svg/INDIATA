@@ -1,0 +1,1033 @@
+Index 
+
+Sr. No.
+
+Documentation Section
+
+Page No.
+
+1
+
+Dashboard
+
+1–2
+
+2
+
+Voter Board
+
+3–4
+
+3
+
+Members Board
+
+6–8
+
+4
+
+Booth Officer Board
+
+11–12
+
+5
+
+Booth Board
+
+13–14
+
+6
+
+Forms Board
+
+16–17
+
+7
+
+AI Calling Board
+
+19
+
+8
+
+Profile & Organization
+
+20–21
+
+9
+
+Organization Board
+
+22–23
+
+10
+
+Operations Board
+
+26–27
+
+11
+
+Individual Voter Profile
+
+28–30
+
+12
+
+Account Creation / Login
+
+31
+
+ 
+
+VoterX Client Panel – Dashboard Documentation
+
+1. Dashboard
+
+The Dashboard is the main screen of the VoterX Client Panel. It displays the available voter, member, booth, BLO, organization, gender, caste, and booth-level information for the selected election.
+
+2. Dashboard Header
+
+Dashboard title with the selected Vidhan Sabha AC.
+
+Displays the logged-in user.
+
+Election/Constituency selector available at the top-right.
+
+Filters button available for filtering the dashboard data.
+
+3. Summary Information
+
+The dashboard displays four summary cards:
+
+Total Voters – Displays the total number of voters.
+
+Total Members – Displays the total number of members.
+
+Total Booths – Displays the total number of booths.
+
+BLO Officers – Displays the total number of BLO officers.
+
+4. Organisation Score
+
+The Organisation Score section displays:
+
+Organisation score percentage.
+
+Booth Coverage percentage.
+
+Number of booths without voter data.
+
+Add Voters option.
+
+5. Gender Distribution
+
+The Gender Distribution section displays a chart showing:
+
+Total voter count.
+
+Male voter count and percentage.
+
+Female voter count and percentage.
+
+6. Member Summary
+
+The Member Summary section displays the available member information. When member data is not available, the screen displays “No member data available.”
+
+7. Caste Information
+
+The dashboard contains two caste-related sections:
+
+Caste Categories – Displays voter counts across the available caste categories.
+
+Caste Distribution – Displays the distribution of individual caste entries.
+
+8. Top Booths by Voter Count
+
+The Top Booths by Voter Count section displays booths according to voter count, including:
+
+Booth ranking
+
+Booth/polling location name
+
+Voter count
+
+Booth identifier
+
+Location/area information
+
+Dashboard Flow
+
+Login → Dashboard → Select Election/Constituency → Apply Filters → View Summary Cards → View Organisation Score & Booth Coverage → View Gender Distribution → View Member Summary → View Caste Information → View Top Booths by Voter Count
+
+VoterX Client Panel – Voter Board
+
+1. Voter Board
+
+The Voter Board displays all available voter records for the selected election scope. It provides tools to search, filter, view, add, and upload voter data.
+
+2. Search & View
+
+Search voters using Name or EPIC Number.
+
+View records in Table View or Cards View.
+
+Use Hide Filters to hide the filter section.
+
+The Actions menu provides Upload CSV and Add Voter options.
+
+3. Voter Filters
+
+Voters can be filtered using:
+
+State
+
+Lok Sabha
+
+Vidhan Sabha
+
+Booth
+
+Gender
+
+Age Range
+
+Caste
+
+These filters help narrow the displayed voter records according to the selected criteria.
+
+4. Voter Information
+
+Table View displays:
+
+Serial Number
+
+Name
+
+EPIC Number
+
+Gender
+
+Age
+
+Caste
+
+House Number
+
+Booth
+
+Village / Section
+
+Revision
+
+Status
+
+Cards View provides a compact voter profile showing:
+
+Name and EPIC Number
+
+Gender and Age
+
+Caste
+
+Booth information
+
+House Number
+
+View Details option
+
+5. Add New Voter
+
+The Add Voter option opens a four-step registration form:
+
+Identity → Profile → Occupation → Political Interest
+
+The Identity section includes fields such as EPIC Number, Booth Number, Name, Gender, Marital Status, Date of Birth, Relation details, Caste, and Caste Category.
+
+Create & Next is used to proceed through the registration steps.
+
+6. Upload Voter Data
+
+The Upload CSV option allows voter records to be added through a CSV file from the Actions menu.
+
+Voter Board Flow
+
+Voter → Search / Apply Filters → View Voter Records → Table / Cards View → View Details
+
+Add Voter:Voter → Actions → Add Voter → Identity → Profile → Occupation → Political Interest → Create
+
+Upload Voter Data:Voter → Actions → Upload CSV → Upload Data
+
+VoterX Client Panel – Members Board
+
+1. Members Board
+
+The Members Board displays the available organization/member records. It provides options to search, filter, view, register, add, and upload members.
+
+2. Search & View
+
+Search members using Name or Mobile Number.
+
+View members in Table View or Cards View.
+
+Filters can be used to narrow the member records.
+
+The Actions menu provides:
+
+Registrations
+
+Create Link
+
+Add Member
+
+Upload CSV
+
+3. Member Information
+
+The Members table displays:
+
+Serial Number
+
+Name
+
+Mobile
+
+Email
+
+Member Type
+
+Constituency
+
+Join Date
+
+4. Member Registration
+
+The Registrations option opens the registration management page, which displays:
+
+Total registrations
+
+Pending registrations
+
+Approved registrations
+
+Rejected registrations
+
+It also provides:
+
+Search by Name or Mobile
+
+Registration status filter
+
+Registration records with Name, Mobile, Member Type, Submitted date, Status, and Actions
+
+5. Add New Member
+
+The Add Member option opens a multi-step member registration form:
+
+Identity → Address → Profile → Occupation → Political
+
+The Identity section includes:
+
+First Name
+
+Last Name
+
+Mobile Number
+
+Member Type
+
+Gender
+
+Date of Birth
+
+Marital Status
+
+Caste
+
+Caste Category
+
+Relation Type
+
+Relation Name
+
+The Next button is used to continue through the registration steps.
+
+6. Upload Members CSV
+
+The Upload CSV option allows members to be imported using a CSV file.
+
+The upload window specifies:
+
+Required columns: first_name, mobile_number
+
+Other member fields are optional.
+
+Key issues can use pipe-separated values.
+
+Mobile number must be unique and 10 digits.
+
+A Template can be downloaded for the required CSV format.
+
+7. Create Member Registration Link
+
+The Create Link option generates a registration form link that can be shared with members.
+
+The registration-link window provides:
+
+Active registration link
+
+Link expiry date
+
+Copy option
+
+QR Code
+
+Download QR Code
+
+Deactivate option
+
+The generated link can therefore be shared directly or through the QR code for member registration.
+
+Members Board Flow
+
+Members → Search / Filters → View Members → Table / Cards View
+
+Add Member:Members → Actions → Add Member → Identity → Address → Profile → Occupation → Political → Submit
+
+Registration:Members → Actions → Registrations → Search / Filter → View Registration Status
+
+Create Link:Members → Actions → Create Link → Generate Registration Link → Copy / QR Code → Share
+
+Upload Members:Members → Actions → Upload CSV → Select CSV → Upload Members
+
+VoterX Client Panel – Booth Officer Board
+
+1. Booth Officer Board
+
+The Booth Level Officers (BLO) section is used to view and manage available Booth Officer records. It provides a searchable list with Table and Cards views, along with an option to add a new BLO.
+
+2. Search & View
+
+Search: Find officers using Name or Designation.
+
+Table View: Displays BLO information in a structured table.
+
+Cards View: Provides an alternative card-based view of the records.
+
+Add BLO: Opens the form to create a new Booth Officer record.
+
+3. BLO Information
+
+The table displays the following details for each officer:
+
+Name
+
+Designation
+
+Booth
+
+Vidhan Sabha (AC)
+
+Lok Sabha (LC)
+
+State
+
+Source
+
+Action
+
+When there are no records, the board displays “No BLOs found.”
+
+4. Add Booth Officer
+
+The Add Booth Officer form is divided into two steps:
+
+Officer Details → Location
+
+The Officer Details step captures:
+
+Full Name
+
+Designation
+
+Phone Number
+
+The Next button moves the user to the Location step, where the officer's location details are entered.
+
+Booth Officer Flow
+
+Booth Officer → Search / View Records → Table / Cards View
+
+Add New BLO:Booth Officer → Add BLO → Officer Details → Next → Location → Submit
+
+VoterX Client Panel – Booth Board
+
+1. Booth Board
+
+The Booth section displays the available booths for the selected election scope. It provides a searchable list of booths and allows the user to switch between Table and Cards views.
+
+2. Search & View
+
+Search Booths: Search for a specific booth from the available booth list.
+
+Table View: Displays booth information in a structured table.
+
+Cards View: Provides an alternative card-based view.
+
+The board shows the number of booths currently displayed and the total booth count.
+
+3. Booth Information
+
+The booth list displays:
+
+Booth No.
+
+Building
+
+Village
+
+Block
+
+District
+
+Vidhan Sabha / Lok Sabha
+
+Total Voters
+
+Action option for each booth.
+
+4. Booth Actions
+
+The Actions menu provides:
+
+Add Booth – Create a new booth record.
+
+Import CSV – Import booth data through a CSV file.
+
+Each booth also has an individual Action option for accessing its available operations/details.
+
+5. Booth Details
+
+Selecting a booth opens its detailed view. The booth detail page contains three sections:
+
+Insight – Displays booth-level analytics.
+
+Voters – Provides voter information for the selected booth.
+
+Documents – Provides documents associated with the booth.
+
+The Insight section displays:
+
+Voter distribution by gender.
+
+Caste distribution.
+
+Caste category distribution.
+
+Officer information.
+
+Booth information, including building, location, village, panchayat, block, and district.
+
+A map/location view of the booth.
+
+Compare voters with e-roll PDF option.
+
+Booth information accuracy warning with View Details and Resolve Issue options when checks require review.
+
+Booth Flow
+
+Booth → Search / Select Booth → View Booth List → Select Booth → Booth Details
+
+Booth Details:Insight → Voters → Documents
+
+Booth Management:Booth → Actions → Add Booth / Import CSV
+
+VoterX Client Panel – Forms Board
+
+1. Forms Board
+
+The Forms section is used to manage existing forms, create new forms, and view form analytics. The board provides a search bar and displays each form with its Title, Audience, Status, Responses, Created Date, and Actions.
+
+2. Form List
+
+Each form record shows:
+
+Title – Name of the form.
+
+Audience – Who can participate.
+
+Status – Draft or Active.
+
+Responses – Number of submitted responses.
+
+Created – Form creation date.
+
+Action – Options for managing the form.
+
+3. Create New Form
+
+The New Form option opens a two-step process:
+
+Basic Details → Form Section
+
+Basic Details includes:
+
+Form Title
+
+Description
+
+Participant Type: All, Public, Voters, or Members.
+
+Status: Draft, Active, or Closed.
+
+Save & Next moves the form to the next section for adding form questions/sections.
+
+4. Form Analytics
+
+Selecting an existing form opens its analytics page with:
+
+Total Responses – Total number of respondents.
+
+Responses Over Time – Shows the daily submission trend.
+
+By Respondent Type – Shows responses based on respondent type.
+
+Questions – Displays the questions included in the form and the response count for each question.
+
+The displayed form contains 26 questions, including respondent information such as name, father's name, village/tole and booth number, mobile number, age, and gender, followed by questions covering social groups, major booth/area problems, development conditions, political discussions, local influential people, election issues, voter preferences, political parties, leaders, women’s opinions, and other active leaders.
+
+5. Form Management
+
+The existing form page also provides:
+
+Analytics – View response statistics and question-wise responses.
+
+Responses – Access submitted responses.
+
+Edit Fields – Modify form fields.
+
+Access – Manage form access.
+
+Share – Share the form with respondents.
+
+Form Flow
+
+Forms → Search / Select Form → View Form Details
+
+Create Form:Forms → New Form → Basic Details → Form Section → Save
+
+Existing Form:Forms → Select Form → Analytics / Responses → View Question-wise Responses
+
+Form Management:Edit Fields / Access / Share
+
+VoterX Client Panel – AI Calling Board
+
+1. AI Calling
+
+The AI Calling section is designed to manage AI calling workspaces and campaigns. The current screen provides navigation options for Analytics, Campaigns, Assistants, Call History, Number, and Workspace.
+
+2. Workspace
+
+The currently displayed Workspace section allows the organization to connect RinggAI for AI calling.
+
+The workspace setup includes:
+
+Workspace Name – Name of the calling workspace. 
+
+RinggAI API Key – API key required to connect RinggAI. 
+
+Description – Optional notes for the workspace. 
+
+Create Workspace – Creates the workspace after entering the required details. 
+
+The screen also states that the API key is saved securely and used to fetch workspace credits.
+
+AI Calling Flow
+
+AI Calling → Workspace → Enter Workspace Details → RinggAI API Key → Create Workspace
+
+Note:The Analytics, Campaigns, Assistants, Call History, Number, and Workspace navigation buttons are visible on the screen. However, their individual functionality is not demonstrated in the provided screen, so no additional functionality is documented here.
+
+VoterX Client Panel – Profile & Organization
+
+1. Profile
+
+The Profile option is available from the top-right account menu. It displays the user's account details and organization memberships.
+
+2. Account Details
+
+The profile page displays:
+
+Profile Name
+
+Email Address and verification status
+
+Join Date
+
+User ID
+
+Number of Organizations associated with the account
+
+3. Organizations
+
+The Organizations section lists the organizations associated with the account, along with:
+
+Organization Name
+
+Joined Date
+
+User Role, such as Owner
+
+A Manage option is available for organization management.
+
+4. Organization Switcher
+
+The top-right account menu also provides an organization switcher, showing the organizations available to the user.
+
+The menu includes:
+
+Current organization
+
+Other available organizations
+
+Organization role
+
+New Organization option
+
+Selecting an organization allows the user to switch between available organizations.
+
+Profile Flow
+
+Top-Right Account Menu → Profile → View Account Details / Organizations
+
+Organization Switch:Top-Right Account Menu → Select Organization → Switch Organization
+
+New Organization:Top-Right Account Menu → New Organization
+
+VoterX Client Panel – Organization Board
+
+1. Organization Board
+
+The Organizations section manages the organizations associated with the account. The board displays the organization name, status, role, and creation/join date, with options to view details, edit, and create a new organization.
+
+2. Organization List
+
+Each organization card displays:
+
+Organization Name
+
+Status such as Active
+
+Party
+
+Role such as Owner or Admin
+
+Date
+
+Details – View organization information
+
+Edit – Edit organization details where available
+
+The board also shows the number of organizations currently used out of the available organization limit.
+
+3. Organization Details
+
+Selecting an organization opens its management page with three sections:
+
+Members → My Access → Permissions
+
+Members displays the organization's members, their roles, joining dates, and an Invite option. Pending invitations are also displayed.
+
+My Access shows the current user's:
+
+Role
+
+Joined date
+
+Invited by
+
+Scope
+
+Page access
+
+Feature access
+
+Permissions displays what each role can do within the organization, including:
+
+View organization
+
+Invite members
+
+Edit organization
+
+Manage roles
+
+Delete organization
+
+Edit data
+
+Export data
+
+Permissions are shown for Owner, Admin, Editor, and Viewer roles.
+
+4. Create New Organization
+
+The New Organization button opens a two-step setup:
+
+Org Details → Scope
+
+The first step captures:
+
+Organization Name
+
+Street
+
+City
+
+District
+
+State
+
+Country
+
+Pincode
+
+Party (optional)
+
+Next proceeds to the Scope step.
+
+Organization Flow
+
+Organizations → View Organization / Edit Organization / New Organization
+
+View:Organizations → Select Organization → Members / My Access / Permissions
+
+Create:New Organization → Org Details → Next → Scope → Create Organization
+
+VoterX Client Panel -Operations Board 
+
+1. Operations
+
+The Operations option is available from the top-right organization/account menu. It provides access to internal VoterX operational tools and workflows.
+
+2.Operations Board
+
+The board contains the following modules:
+
+Module
+
+Purpose
+
+Current Status
+
+Jobs
+
+Manage OCR imports and voter-PDF processing jobs.
+
+❌ Not Working
+
+OCR
+
+Upload voter PDFs and review extracted booth and voter data.
+
+✅ Working
+
+Vidhan Sabha Management
+
+Browse, search, and edit assembly constituencies.
+
+❌ Not Working
+
+User Management
+
+Support users and review internal access requests.
+
+❌ Not Working / Coming Soon
+
+System Activity
+
+Monitor platform activity and operational events.
+
+❌ Not Working / Coming Soon
+
+Quality Checks
+
+Track reviews and outstanding operational tasks.
+
+❌ Not Working / Coming Soon
+
+3. OCR Workspace
+
+The OCR module is currently functional and provides a PDF extraction workflow with:
+
+Voter List Language selection
+
+State selection
+
+Lok Sabha (PC) selection
+
+Vidhan Sabha (AC) selection
+
+Booth / Village selection
+
+PDF upload / drag-and-drop
+
+Next option to proceed with processing
+
+Operations Flow
+
+Top-Right Account/Organization Menu → Operations → Select Required Module
+
+OCR Flow:Operations → OCR → Open Workspace → Select Voter List Details → Upload PDF → Next
+
+Other Modules:Operations → Jobs / Vidhan Sabha Management / User Management / System Activity / Quality Checks
+
+VoterX Client Panel – Individual Voter Profile
+
+1. Voter Details
+
+Clicking on an individual voter from the voter list opens the voter’s detailed profile page.
+
+The profile header displays:
+
+Voter Name
+
+Gender
+
+Voter Status – Alive
+
+Current Age
+
+Revision Year
+
+Edit option
+
+Delete option
+
+Close (X) option
+
+2. Identity
+
+The Identity section displays the voter's basic identification details:
+
+Full Name
+
+EPIC No.
+
+Gender
+
+Marital Status
+
+Current Age
+
+Father's Name
+
+Caste
+
+3. Profile
+
+The Profile section contains contact and identification information:
+
+Mobile
+
+Alternate Mobile
+
+WhatsApp
+
+Email
+
+Aadhaar
+
+PAN
+
+Issues
+
+4. Occupation
+
+The Occupation section contains:
+
+Industry
+
+Employment
+
+Education
+
+Income Range
+
+Communication Preference
+
+5. Political Interest
+
+The Political Interest section contains:
+
+Interest Level
+
+Affiliation
+
+Support
+
+Influence
+
+Personality
+
+6. Address
+
+The Address section displays the voter's residential/location details, including:
+
+House No.
+
+Village / Section
+
+Additional address information where available.
+
+7. Actions
+
+The voter profile provides the following actions:
+
+Edit – Update the voter's available information.
+
+Delete – Remove the voter record.
+
+Close (X) – Exit the individual voter profile.
+
+Voter Profile Flow
+
+Voter → Select Individual Voter → Voter Profile → View Identity / Profile / Occupation / Political Interest / Address
+
+Edit Flow:Individual Voter → Edit → Update Details
+
+Delete Flow:Individual Voter → Delete → Confirm Deletion
+
+VoterX Client Panel – Account Creation / Login
+
+1. Create Account
+
+The Create Account page allows a new user to register for VoterX and access the platform.
+
+2. Registration Details
+
+The user is required to provide:
+
+Email Address – Enter a valid email address.
+
+Mobile Number – Enter a +91 10-digit mobile number.
+
+Password – Create an account password.
+
+Confirm Password – Re-enter the password for verification.
+
+3. Create Account
+
+After entering all required details, the user can click Create Account to submit the registration.
+
+4. Sign In
+
+Users who already have an account can select Sign In from the registration page to access the existing account.
+
+Account Creation Flow
+
+Create Account → Enter Email → Enter Mobile Number → Create Password → Confirm Password → Create Account
+
+Existing User Flow
+
+Create Account Page → Sign In → Enter Login Credentials → Access VoterX

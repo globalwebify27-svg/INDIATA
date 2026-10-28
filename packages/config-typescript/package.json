@@ -1,0 +1,11 @@
+{
+  "name": "@rajtantra/config-typescript",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Shared strict TypeScript configurations for Rajtantra monorepo",
+  "files": [
+    "base.json",
+    "nest.json",
+    "nextjs.json"
+  ]
+}

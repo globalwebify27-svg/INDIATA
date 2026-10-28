@@ -1,0 +1,10 @@
+{
+  "description": "Enterprise SaaS platform enabling election administrators to monitor voter data, manage operations, and analyze election metrics through a professional dashboard.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}

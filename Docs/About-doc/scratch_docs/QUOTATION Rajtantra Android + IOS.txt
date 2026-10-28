@@ -1,0 +1,679 @@
+QUOTATION
+
+RajTantra – Political Campaign & Voter Management Platform
+
+Android + iOS Mobile Application + Next.js Web Admin Panel
+
+Prepared By: Global WebifyProject Name: RajTantraVersion: 2.0Platform: Android, iOS & Web Admin PanelTechnology: Flutter + Next.js + Node.js + MySQL
+
+Project Overview
+
+Global Webify proposes to design, develop, and deploy RajTantra, a modern Political Campaign & Voter Management Platform specially designed for Political Parties, Election Candidates, MLAs, MPs, Corporators, Ward Councillors (Ward Parshads), Campaign Managers, and Election Workers.
+
+The platform will streamline election management by providing a centralized system for voter database management, campaign execution, worker management, advertisement distribution, and real-time voter updates.
+
+The solution consists of:
+
+Flutter Mobile Application (Android & iOS) – Only for End Users (Ward Parshads / Workers / Contesting Members)
+
+Next.js Web Admin Panel – Role-Based Access
+
+Node.js Backend APIs
+
+MySQL Database
+
+The platform is designed to be secure, scalable, and capable of handling large voter databases across multiple districts and constituencies.
+
+Project Scope
+
+The proposed solution includes:
+
+Android Application
+
+iOS Application
+
+Next.js Web Admin Panel
+
+Super Admin Portal
+
+Distributor Dashboard
+
+Manager Dashboard
+
+Role-Based User Management
+
+Voter Database Management
+
+Advertisement Management
+
+WhatsApp Sharing
+
+Excel Import & Export
+
+Reports & Analytics
+
+Push Notifications
+
+Technology Stack
+
+Layer
+
+Technology
+
+Admin Panel
+
+Next.js 15
+
+Mobile Application
+
+Flutter (Android & iOS)
+
+Backend
+
+Node.js (NestJS / ExpressJS)
+
+Database
+
+MySQL
+
+Authentication
+
+JWT
+
+ORM
+
+Prisma ORM
+
+Cloud Storage
+
+Firebase / AWS
+
+Push Notifications
+
+Firebase Cloud Messaging
+
+Excel Import
+
+ExcelJS
+
+Hosting
+
+Client VPS / AWS / Hostinger
+
+User Roles
+
+1. Super Admin
+
+The Super Admin has complete control over the entire system.
+
+Features
+
+Dashboard
+
+Distributor Management
+
+Manager Management
+
+User Management
+
+Role Management
+
+District Management
+
+Constituency Management
+
+Ward Management
+
+Booth Management
+
+Voter Database Management
+
+Advertisement Management
+
+Reports & Analytics
+
+Activity Logs
+
+Notifications
+
+Excel Import & Export
+
+Database Management
+
+Settings
+
+2. Distributor Dashboard
+
+Each Distributor manages multiple constituencies and ward representatives.
+
+Features
+
+Dashboard
+
+Add Contesting Members
+
+Edit Profile Details
+
+Upload Photo
+
+Upload Digital Signature
+
+Assign Constituency
+
+Assign Booth
+
+Assign Wards
+
+Generate Login Credentials
+
+Generate Mobile App Access
+
+Track Member Activities
+
+Reports
+
+3. Manager Dashboard
+
+Managers are responsible for voter database management.
+
+Features
+
+Dashboard
+
+Excel Upload
+
+Bulk Import Voter Data
+
+Bulk Update Records
+
+Duplicate Detection
+
+Booth-wise Data Allocation
+
+Assign Data to Users
+
+Export Data
+
+Data Verification
+
+Activity Tracking
+
+Mobile Application (Android & iOS)
+
+Each registered user receives secure login credentials.
+
+Features
+
+Secure Login
+
+Dashboard
+
+View Assigned Voter List
+
+Search Voters
+
+Advanced Filters
+
+View Complete Voter Details
+
+Update Mobile Number
+
+Update Address
+
+Update Family Details
+
+Add Personal Remarks
+
+Mark Favourite Voters
+
+Mark Visited
+
+Advertisement Section
+
+WhatsApp Sharing
+
+Push Notifications
+
+Profile Management
+
+Dashboard
+
+Interactive Dashboard including
+
+Total Voters
+
+Total Districts
+
+Total Constituencies
+
+Total Wards
+
+Total Booths
+
+Total Users
+
+Total Managers
+
+Total Distributors
+
+Daily Updates
+
+User Activities
+
+Analytics Charts
+
+Voter Database Management
+
+Complete voter database with advanced search and filtering.
+
+Search Options
+
+Name
+
+Mobile Number
+
+Voter ID
+
+EPIC Number
+
+Booth Number
+
+Ward Number
+
+House Number
+
+Family
+
+Gender
+
+Age
+
+Occupation
+
+Government Scheme
+
+Address
+
+Advanced Filter Management
+
+Admin can create unlimited filters such as:
+
+Caste
+
+Religion
+
+Occupation
+
+Qualification
+
+Government Schemes
+
+Gender
+
+Age
+
+Ward
+
+Booth
+
+Area
+
+Village
+
+City
+
+Worker & User Management
+
+Admin can:
+
+Create Users
+
+Edit Users
+
+Delete Users
+
+Activate/Deactivate Accounts
+
+Assign District
+
+Assign Constituency
+
+Assign Booth
+
+Assign Ward
+
+View User Performance
+
+View Activity Logs
+
+Ward Registration Process
+
+Distributor fills:
+
+Name
+
+Mobile Number
+
+Email
+
+Address
+
+District
+
+Constituency
+
+Ward
+
+Booth
+
+Profile Photo
+
+Digital Signature
+
+After approval:
+
+User Account Created
+
+Login Credentials Generated
+
+Mobile App Access Activated
+
+Advertisement Management
+
+Admin can upload:
+
+Posters
+
+Images
+
+Videos
+
+PDF Files
+
+Campaign News
+
+Press Releases
+
+Party Announcements
+
+Event Details
+
+Users can instantly share these through WhatsApp.
+
+WhatsApp Sharing
+
+Users can directly share:
+
+Posters
+
+Videos
+
+Images
+
+Campaign Messages
+
+Meeting Invitations
+
+Event Details
+
+PDF Files
+
+through WhatsApp.
+
+Notification Module
+
+Campaign Notifications
+
+Meeting Alerts
+
+Election Announcements
+
+Event Reminders
+
+Advertisement Notifications
+
+Excel Management
+
+Features include:
+
+Bulk Excel Upload
+
+Bulk Data Update
+
+Duplicate Detection
+
+Download Templates
+
+Excel Export
+
+Ward-wise Export
+
+Booth-wise Export
+
+Constituency-wise Export
+
+Update Request System
+
+Users can submit:
+
+Mobile Number Updates
+
+Address Corrections
+
+Family Detail Updates
+
+Duplicate Record Requests
+
+Voter Detail Corrections
+
+Admin can:
+
+Approve Requests
+
+Reject Requests
+
+View Request History
+
+Track Status
+
+Activity Logs
+
+The system maintains complete logs for:
+
+Login History
+
+User Activities
+
+Data Changes
+
+Advertisement History
+
+Excel Upload History
+
+Report Downloads
+
+Reports & Analytics
+
+Generate reports including:
+
+District Reports
+
+Constituency Reports
+
+Ward Reports
+
+Booth Reports
+
+User Reports
+
+Manager Reports
+
+Distributor Reports
+
+Voter Reports
+
+Advertisement Reports
+
+Activity Reports
+
+Export Formats:
+
+Excel
+
+CSV
+
+PDF
+
+Security Features
+
+JWT Authentication
+
+Password Encryption
+
+Role-Based Access Control
+
+Secure REST APIs
+
+Database Backup
+
+Audit Logs
+
+Input Validation
+
+SQL Injection Protection
+
+Data Isolation by Role
+
+Deliverables
+
+Android Application
+
+iOS Application
+
+Next.js Super Admin Panel
+
+Distributor Dashboard
+
+Manager Dashboard
+
+Role-Based Admin Panel
+
+Backend APIs
+
+MySQL Database
+
+Authentication System
+
+Advertisement Module
+
+Notification Module
+
+Reports Module
+
+Excel Import & Export
+
+Deployment Support
+
+Complete Source Code
+
+Third-Party APIs & Services (Client Scope)
+
+The following services will be arranged and paid for by the client:
+
+Domain Name
+
+VPS / Cloud Hosting
+
+SSL Certificate
+
+Google Play Developer Account
+
+Apple Developer Account
+
+Firebase Account
+
+Firebase Cloud Messaging
+
+Firebase Storage
+
+WhatsApp Business API (if Official API is required)
+
+SMS Gateway
+
+Google Maps API (if required)
+
+Email Service Provider
+
+Any Government APIs
+
+Any Third-Party API Subscription
+
+Any Future License or Renewal Charges
+
+Global Webify will integrate the APIs and services provided by the client. Subscription charges, renewal fees, server costs, and third-party licensing costs are not included in this quotation.
+
+Project Timeline
+
+Estimated Development Time: 45–60 Working Days
+
+The timeline will commence after:
+
+Advance Payment
+
+Requirement Finalization
+
+UI Approval
+
+Receipt of all required content and credentials
+
+Warranty & Support
+
+90 Days Free Technical Support
+
+Bug Fixes Included
+
+Deployment Support Included
+
+Minor Technical Assistance Included
+
+Any additional features, enhancements, or modifications requested after project completion will be quoted separately.
+
+Commercial Proposal
+
+Description
+
+Amount
+
+RajTantra – Flutter Android & iOS Mobile Application + Next.js Role-Based Admin Panel + Backend Development + MySQL Database
+
+₹1,70,000/-
+
+Total Project Cost
+
+₹1,70,000/-
+
+Payment Terms
+
+50% Advance – Project Confirmation
+
+50% Before Final Deployment & Source Code Handover
+
+Terms & Conditions
+
+This quotation covers only the features and modules mentioned in this document.
+
+Any additional features or scope changes requested after approval will be charged separately.
+
+Domain name, hosting, VPS/cloud server, SSL certificate, Firebase services, Apple Developer Account, Google Play Developer Account, WhatsApp Business API, SMS gateway, email services, and any third-party API subscriptions or licenses will be arranged and paid for by the client.
+
+The project timeline depends on timely approvals, content submission, and required credentials from the client.
+
+The mobile application will be developed only for end users.
+
+All administrative operations, including Super Admin, Distributor, Manager, and role-based access management, will be handled exclusively through the Next.js Web Admin Panel.
+
+Source code will be handed over only after receipt of 100% payment.
+
+Free support is limited to bug fixes and technical issues within the agreed scope for 90 days after deployment.
+
+Any new modules, integrations, or enhancements requested after project delivery will require a separate quotation.

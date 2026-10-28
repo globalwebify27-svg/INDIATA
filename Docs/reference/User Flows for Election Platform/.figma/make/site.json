@@ -1,0 +1,10 @@
+{
+  "description": "Streamline election management with user-friendly flow diagrams for voter and user management, AI integration, and campaign creation, enhancing efficiency for election officials.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}

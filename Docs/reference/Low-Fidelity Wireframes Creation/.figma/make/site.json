@@ -1,0 +1,10 @@
+{
+  "description": "This web application provides low-fidelity wireframes for an Election Management Platform, enabling efficient layout planning and user flow validation for electoral processes.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}

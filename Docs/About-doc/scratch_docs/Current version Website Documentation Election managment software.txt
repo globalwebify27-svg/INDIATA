@@ -1,0 +1,851 @@
+Index
+
+Part I – Client Website
+
+Client Website – Dashboard 
+
+Client Website – Users 
+
+Client Website – Filters 
+
+Client Website – Update Requests 
+
+Client Website – Users Activities 
+
+Client Website – Total Voters 
+
+Client Website – Export Voter Data 
+
+Client Website – Phone Book 
+
+Part II – Admin Panel
+
+Admin Panel – Dashboard 
+
+Admin Panel – User Management 
+
+Admin Panel – Add New User 
+
+Client Website – Dashboard
+
+1. Overview
+
+The Dashboard is the main landing page after client login. It provides a quick overview of voter-related data and shortcuts to frequently used operations.
+
+Main sections: Sidebar Navigation • Summary Cards • Common Tasks & Operations
+
+2. Sidebar Navigation
+
+Menu
+
+Function
+
+Dashboard
+
+Opens the main dashboard
+
+Users
+
+Opens user/worker management
+
+Filters
+
+Opens filter management
+
+Update Requests
+
+Opens update requests
+
+Users Activities
+
+Displays user activities
+
+Total Voters
+
+Opens voter data and voter filters
+
+Export Voter Data
+
+Opens voter data export
+
+Phone Book
+
+Opens phone book
+
+User Profile
+
+Shows logged-in user information
+
+Logout
+
+Logs out the current user
+
+Active State: Dashboard remains highlighted when the user is on this page.
+
+3. Dashboard Header
+
+Welcome Message: Displays the name/account of the currently logged-in user, e.g. Welcome back, RamMali@123!
+
+Purpose: Identifies the active user and confirms the current session.
+
+4. Summary Cards
+
+Card
+
+Description
+
+Status
+
+Workers
+
+Displays the total number of workers/users associated with the client account and indicates that the information is updated in real time.
+
+✅ Working
+
+Total Votes
+
+Displays the total number of voter records available in the system and indicates that the data represents live election information.
+
+✅ Working
+
+5. Common Tasks & Operations
+
+This section provides quick shortcuts to frequently used pages.
+
+Option
+
+Functionality
+
+Navigation
+
+Status
+
+View User
+
+Opens the user/worker management section.
+
+Dashboard → Users
+
+✅ Working
+
+Manage Voters
+
+Opens the voter data management section.
+
+Dashboard → Total Voters
+
+✅ Working
+
+Generate Reports
+
+Intended to provide access to election-related reports. Currently no working functionality.
+
+Dashboard → Reports
+
+❌ Not Working
+
+Add Filters
+
+Opens the filter management section used for voter filtering.
+
+Dashboard → Filters
+
+✅ Working
+
+6. Dashboard Flow
+
+Dashboard
+
+│
+
+├── Summary
+
+│   ├── Workers
+
+│   └── Total Votes
+
+│
+
+├── Common Tasks
+
+│   ├── View User → Users
+
+│   ├── Manage Voters → Total Voters
+
+│   ├── Generate Reports → ❌ Not Working
+
+│   └── Add Filters → Filters
+
+│
+
+└── Sidebar
+
+    ├── Users
+
+    ├── Filters
+
+    ├── Update Requests
+
+    ├── Users Activities
+
+    ├── Total Voters
+
+    ├── Export Voter Data
+
+    └── Phone Book
+
+7. Current Issue
+
+Generate Reports: The button is visible under Common Tasks & Operations but is currently not functional. The report-generation/access functionality needs to be fixed or implemented.
+
+8. New Team Member – Quick Understanding
+
+The Dashboard acts as the central overview and navigation page. It displays the worker and voter counts and provides shortcuts to Users, Total Voters, Filters, and Reports. The Generate Reports option is currently the only identified non-functional Dashboard action.
+
+Scope: This documentation covers only the Dashboard page. Individual sections will be documented separately.
+
+Client Website – Users Page
+
+1. Overview
+
+The Users page is used to view and manage users/workers registered under the client account. It provides user search, status filtering, user creation, editing, access-key management, and status/permission controls.
+
+2. Page Components
+
+Component
+
+Function
+
+Search Players
+
+Search for a specific user by name/details.
+
+All Status
+
+Filter users based on their current status.
+
+Keys
+
+Opens the user's access-key information.
+
+Add Users
+
+Opens the form to create a new user.
+
+User Table
+
+Displays registered user and assignment details.
+
+3. User Table
+
+Column
+
+Description
+
+Sr.No
+
+User serial number.
+
+Name
+
+Registered user name.
+
+Contact
+
+User contact number.
+
+phoneBook
+
+Phone book status/information.
+
+Prabhaag
+
+Assigned Prabhaag.
+
+Booth
+
+Assigned booth.
+
+SrNo Range
+
+Assigned voter serial-number range.
+
+Status
+
+User's current access status.
+
+Data Import
+
+PDF/Excel import access status.
+
+Created
+
+User creation date and time.
+
+Actions
+
+Edit and Status actions for the user.
+
+4. User Actions
+
+Add Users
+
+Opens the Add User form to create a new user. The form collects User Name, Contact Number, Prabhaag, Booth, and optional SrNo Range.
+
+Flow: Add Users → Enter Details → Add
+
+Edit
+
+Opens the selected user's details for updating their Prabhaag, Booth, and optional SrNo Range. User Name and Contact Number are read-only.
+
+Flow: Edit → Update Assignment → Update
+
+Status
+
+Opens Quick Status Update, where the following can be controlled:
+
+Active Status – Controls whether the user can access the system.
+
+PDF/Excel Import – Controls whether data import is enabled.
+
+Flow: Status → Change Toggles → Update Status
+
+Keys
+
+Opens the user's access-key information:
+
+Unique Key
+
+Reactivation Key
+
+Each key can be copied using the Copy button.
+
+5. Important Dependency
+
+Prabhaag → Booth
+
+A Prabhaag must be selected before a Booth can be selected. The system displays a prompt if the user attempts to select a Booth first.
+
+6. Quick Reference
+
+Action
+
+Purpose
+
+Search
+
+Find users quickly
+
+Status Filter
+
+Filter users by status
+
+Add Users
+
+Create a new user
+
+Edit
+
+Update user assignments
+
+Status
+
+Manage access/import permissions
+
+Keys
+
+View and copy user keys
+
+Client Website – Filters Page
+
+1. Purpose
+
+The Filters page is used to create and manage values that can be used for filtering voter data.
+
+Filter Categories: Cast Name • Occupation • Scheme • Qualification
+
+2. Main Features
+
+Feature
+
+Function
+
+Search Filters
+
+Quickly find an existing filter value.
+
+Add Filter
+
+Add a new value to a selected category.
+
+Category Tabs
+
+Switch between Cast, Occupation, Scheme, and Qualification.
+
+Edit
+
+Modify an existing filter value.
+
+Delete
+
+Remove an existing filter value.
+
+3. Add Filter
+
+Click + Add Filter to open the Add Filter popup.
+
+Field
+
+Purpose
+
+Filter Type
+
+Select where the value should be added.
+
+Value
+
+Enter the new filter value.
+
+Actions:
+
+Add → Saves the new value.
+
+Cancel → Closes without saving.
+
+Flow: Add Filter → Select Type → Enter Value → Add
+
+4. Filter List
+
+The selected category displays its saved values with:
+
+ID – Unique filter identifier.
+
+Value – Saved filter value.
+
+Edit – Update the value.
+
+Delete – Remove the value.
+
+Example: Under Cast Name: OBC / ओबीसी, SC / अनुसूचित जाती, ST / अनुसूचित जमाती.
+
+5. Quick Summary
+
+Search → Find value | Add Filter → Create value | Edit → Update value | Delete → Remove value
+
+Client Website – Update Requests
+
+Purpose
+
+The Update Requests page allows the client to view and manage voter information update requests submitted by workers.
+
+Main Features
+
+Feature
+
+Function
+
+Select Worker
+
+Select a worker to view their requests.
+
+Search Requests
+
+Search/filter requests by status.
+
+All Requests
+
+Shows the total number of requests.
+
+Pending
+
+Shows requests waiting for approval.
+
+Approved
+
+Shows approved requests.
+
+Rejected
+
+Shows rejected requests.
+
+Show My Analysis
+
+Opens the user's analysis, if available.
+
+Request Status
+
+Pending → Waiting for review.
+
+Approved → Request accepted.
+
+Rejected → Request declined.
+
+Current Screen
+
+All Requests: 0 | Pending: 0 | Approved: 0 | Rejected: 0
+
+No requests are currently available.
+
+Note: If analysis is unavailable, the system displays “No analysis found for this user.”
+
+Flow
+
+Select Worker → View/Search Requests → Review Status → Approve/Reject
+
+Client Website – Users Activities
+
+1. Purpose
+
+The Users Activities page records recent user actions performed on the website. It helps the client track who performed an action, what action was performed, and when it happened.
+
+2. Main Features
+
+Feature
+
+Function
+
+Search Activity
+
+Search activity records using relevant information.
+
+Activity Logs
+
+Displays the list of recorded user activities.
+
+View
+
+Opens details of the selected activity.
+
+3. Activity Log
+
+Column
+
+Description
+
+Sr.No
+
+Activity record number.
+
+Name
+
+User who performed the action.
+
+Number
+
+User's registered contact number.
+
+Action
+
+Activity performed by the user.
+
+Details
+
+View additional information about the activity.
+
+Timestamp
+
+Date and time when the activity occurred.
+
+4. View
+
+Click View to see additional details for the selected activity record.
+
+Example activities: User logged in, Registered new user
+
+5. Flow
+
+Users Activities → Search Activity → Select Record → View Details
+
+Client Website – Total Voters
+
+Purpose
+
+The Total Voters page is used to view, search, and filter voter records. It provides quick filters for common voter information and advanced filtering for more specific searches.
+
+1. Quick Filters
+
+Each card displays the voter count and Click to Filter option.
+
+Filters: Male • Female • Name Alphabet • Prabhaag • Gan • Electoral Part • Karyakarta • Booth No • Mobile • DOB/Month • Surname • Voted • Non Voted • Visited • Favorites • Helped • Address • Outside • Printed • Deceased • House No • Schemes
+
+Action: Click to Filter → Apply Filter → Voter List Updates
+
+2. Search Voters
+
+Search voters... allows users to quickly search for a specific voter from the available records.
+
+3. Advanced Filters
+
+The Advanced Filters → More Filters option provides additional conditions for detailed voter searches.
+
+Users can combine multiple conditions to narrow the voter list and get more specific results.
+
+Typical filtering areas include:
+
+Personal Details: Name, Surname, Gender, Age/DOB
+
+Location: Prabhaag, Gan, Part, Booth, House No, Address
+
+Contact: Mobile availability
+
+Work/Category: Karyakarta, Occupation, Caste, Qualification
+
+Voting: Voted, Non Voted, Visited
+
+Status: Printed, Outside, Deceased, Favourite, Helped
+
+Schemes: Government scheme
+
+Flow: More Filters → Select Conditions → Apply → Filtered Voters
+
+4. Voter Results
+
+Filtered voters are displayed with:
+
+ID • Voter Name • Age • Gender • EPIC • Mobile • Booth No • Karyakarta • Actions
+
+Actions:
+
+Refresh → Reload voter data
+
+Send SMS → Send SMS to applicable voters
+
+Export → Export voter data
+
+View → Open complete voter details
+
+5. Voter Details
+
+View → Voter Details opens the selected voter's complete information, including personal, address, booth, voting, and other available details.
+
+6. Filter Flow
+
+Quick Filter / Search / Advanced Filter → Apply → View Results → View Voter Details
+
+Client Website – Export Voter Data
+
+Purpose
+
+The Export Voter Data page allows the user to select a worker, view the voters handled by that worker, and export their voter data.
+
+1. Select Worker
+
+Select a worker from the dropdown to load the voters associated with that worker.
+
+Displayed: Worker Name • Contact Number • Voter Count
+
+2. Search Voters
+
+Search by Name, EPIC, or Mobile allows the user to quickly find a specific voter from the selected worker's records.
+
+Refresh reloads the voter list.
+
+3. Voters List
+
+After selecting a worker, the page displays the Voters List containing all voters worked on by that worker.
+
+If no records are available, the page displays: “This worker has not worked on any voters yet.”
+
+4. Export
+
+The page is designed to allow the selected worker's voter records to be exported to Excel.
+
+The exported file contains the available voter information.
+
+5. Instructions
+
+Select a worker.
+
+View the worker's voter records.
+
+Search if required.
+
+Export the voter data to Excel.
+
+Flow
+
+Select Worker → View/Search Voters → Export to Excel
+
+Client Website – Phone Book
+
+Purpose
+
+The Phone Book page shows voters who are assigned to a selected worker and have phone-book information available.
+
+1. Select Worker
+
+Use Select Worker to choose a worker and view their assigned phone-book voters.
+
+Displayed: Worker Name • Contact Number • Voter Count
+
+2. Search
+
+Search by Name, Voter ID, or Mobile helps quickly find a specific voter.
+
+Refresh reloads the phone-book data.
+
+3. Export Excel
+
+Export Excel downloads the available phone-book voter data in Excel format.
+
+4. PhoneBook Voters
+
+Displays the total number of phone-book voters assigned to the selected worker.
+
+If no records are available, the page shows:
+
+“No phonebook voters assigned to this worker.”
+
+Flow
+
+Select Worker → View PhoneBook Voters → Search → Export Excel
+
+Admin Panel – Dashboard
+
+Purpose
+
+The Admin Dashboard provides a quick overview of the accounts managed by the admin and gives direct access to User Management.
+
+Summary Cards
+
+Card
+
+Function
+
+Users
+
+Shows the total number of users. Clicking the card opens User Management.
+
+Demo Accounts
+
+Shows the number of demo/trial accounts. Clicking the card opens User Management.
+
+Sale Accounts
+
+Shows the number of permanent/sale accounts. Clicking the card opens User Management.
+
+Account Types:
+
+Demo Accounts → 5-day trial accounts
+
+Sale Accounts → Permanent accounts
+
+User Management Navigation
+
+All three dashboard cards redirect to the User Management page, where users can be searched, filtered, added, and managed.
+
+Flow:Dashboard → Users / Demo Accounts / Sale Accounts → User Management
+
+Sidebar
+
+Menu
+
+Function
+
+Dashboard
+
+Returns to the Admin Dashboard
+
+User Management
+
+Manage system users and account types
+
+Profile
+
+Opens the logged-in admin account
+
+Logout
+
+Logs out the admin
+
+Current Dashboard: Users: 0 • Demo Accounts: 0 • Sale Accounts: 0
+
+Admin Panel – Add New User
+
+Purpose
+
+The Add User button opens the Add New User form. It is used to create a new client/user account and configure its election and application details.
+
+1. Account Details
+
+Admin Username* – Username for the new account.
+
+Contact Number* – 10-digit contact number.
+
+Password* – Account login password.
+
+2. Election & Application Details
+
+Election Type* – Select the election.
+
+Sub-Part – Select the sub-part based on the selected election.
+
+Name/Area – Select the applicable area.
+
+Name (English/Marathi)* – Enter the area/name in both languages.
+
+Election Name (English/Marathi)* – Enter the election name.
+
+Application Name* – Name of the application.
+
+Party Name (English/Marathi)* – Enter the party name.
+
+Voting Symbol* – Enter the voting symbol in English and Marathi.
+
+Dependency: Election → Sub-Part → Name/Area
+
+3. Additional Details
+
+WhatsApp Number – Account WhatsApp contact.
+
+Facebook Link – Facebook page/profile link.
+
+Instagram Link – Instagram link.
+
+Slip URL – Optional slip/document URL.
+
+Theme* – Select application theme.
+
+Support Number – Support contact number.
+
+Account Type* – Select Demo (Trial) or Sale (Permanent) account.
+
+Election Project* – Select the project used for the application/APK.
+
+4. Upload Images
+
+The form supports application branding assets:
+
+Upload
+
+Purpose
+
+Splash Screen
+
+App opening screen
+
+App Icon
+
+Application icon
+
+WhatsApp Splash
+
+WhatsApp-related splash screen
+
+Printer Splash (B&W)
+
+Black & white printer splash
+
+Additional options:PDF/Excel Import • Allow Image • Build APK
+
+5. Actions
+
+Create User → Creates the new account with the entered configuration.
+
+Cancel → Closes the form without creating the account.
+
+X → Closes the Add New User window.
+
+Flow
+
+Add User → Account Details → Election Setup → Application Details → Upload/Settings → Create User

@@ -1,0 +1,817 @@
+INDEX
+
+No.
+
+Feature
+
+Category
+
+1
+
+AI Mode – Agentic AI
+
+AI
+
+2
+
+AI Query Search
+
+AI
+
+3
+
+AI Report Generation
+
+AI
+
+4
+
+AI WhatsApp Chat & Campaign
+
+AI
+
+5
+
+AI Voice Calling
+
+AI
+
+6
+
+AI Feedback & Demand Analysis
+
+AI
+
+7
+
+Human-in-the-Loop AI
+
+AI
+
+8
+
+Native-Language AI
+
+AI
+
+9
+
+Geo-Tagged Survey
+
+Non-AI
+
+10
+
+Interactive Dashboard Graphs & Analytics
+
+Non-AI
+
+11
+
+BLO Officer Information Dashboard
+
+Non-AI
+
+12
+
+Campaign Management, Tracking & Script Management
+
+Non-AI
+
+13
+
+Previous Election Analysis & Strategy
+
+Non-AI + RAG
+
+14
+
+Profile & Party Settings
+
+Non-AI
+
+—
+
+Subscription-Based AI Access – AI Mode Access Control
+
+Access Management
+
+Proposed App Enhancements – Complete Feature List
+
+A. AI Features
+
+1.AI Mode – Agentic AI
+
+AI Mode will provide a ChatGPT-like interface within the application. 
+
+The AI Agent will act as a digital party karyakarta/assistant, with a party-specific name and identity configured by the client. 
+
+The bot's name, role, and introduction can be customized to match the respective party/organization. 
+
+The AI Agent will understand natural-language and voice commands and perform supported application functions. 
+
+Users can interact with the AI using their preferred/native language. 
+
+AI Mode access will be controlled through the Client Panel based on the purchased AI subscription and permitted number of users.
+
+2. AI Query Search
+
+Users can search voter and application data using natural-language or voice queries instead of manually applying multiple filters.
+
+AI will understand the query and automatically apply the required filter conditions.
+
+Users can continue with follow-up queries within the same conversation.
+
+AI can generate graphs based on the requested query/data.
+
+3. AI Report Generation
+
+Users can request reports directly through AI Mode using natural-language queries.
+
+AI will apply the requested conditions and generate the required filtered report.
+
+Reports can be generated in PDF, Excel, and CSV formats.
+
+4. AI WhatsApp & SMS One-Way Campaign
+
+AI can generate one-way WhatsApp and SMS campaign messages based on the campaign objective. 
+
+Messages can be created in the selected/native language and tailored to the target audience. 
+
+AI can generate messages for awareness, announcements, public outreach, campaign updates, and information sharing. 
+
+Campaign managers can review and approve AI-generated messages before sending. 
+
+Approved messages can be distributed to the selected audience through WhatsApp/SMS. 
+
+The system can track messages sent, delivered, failed, campaign cost, and remaining credits. 
+
+AI can analyze campaign performance and provide recommendations to improve future campaigns. 
+
+5. AI Voice Calling – One-Way Campaign
+
+AI can generate voice-call scripts and custom one-way campaign messages. 
+
+The voice agent will communicate with users in the selected/native language. 
+
+The system will deliver the pre-approved voice message to the targeted users as a one-way campaign. 
+
+Users can receive the message but do not interact with the AI through the call. 
+
+The system will track campaign results such as successful calls, rejected calls, failed calls, and unanswered calls. 
+
+Calls can be recorded, where applicable, and campaign activity can be stored for tracking and reporting. 
+
+The generated voice-call script requires human approval before the campaign is deployed. 
+
+6. AI Campaign Status, Cost & Strategy Analysis
+
+AI will provide a real-time overview of the overall campaign status from a single dashboard. 
+
+The system will show how active and operational the campaign is, including ongoing, scheduled, completed, and inactive campaigns. 
+
+AI will monitor campaign usage and performance across different communication channels. 
+
+The dashboard will track SMS campaign usage, voice campaign usage, WhatsApp activity, and other outreach channels. 
+
+The system will display campaign charges/costs incurred and provide a breakdown of spending by campaign and communication channel. 
+
+AI will show the remaining SMS credits, voice campaign balance, WhatsApp usage/credits, and other available campaign resources. 
+
+The system will identify low-balance or high-spending campaigns and alert the campaign team. 
+
+AI will analyze campaign activity and recommend strategies to improve campaign performance and resource utilization. 
+
+The system will highlight underperforming campaigns, inactive campaigns, high-performing campaigns, and areas requiring immediate attention. 
+
+AI-generated recommendations will help campaign managers decide where to increase activity, reduce spending, or allocate additional resources.
+
+7. Human-in-the-Loop AI
+
+Read operations such as AI search, filtering, graph generation, data analysis, summaries, and report generation can run without manual approval.
+
+Write/action operations such as WhatsApp scripts, chatbot actions, voice-call scripts, and AI actions that modify or communicate data require human approval before execution.
+
+8. Native-Language AI
+
+AI will accept queries and provide responses in the selected/native language.
+
+Native-language support will apply to AI Mode, search, WhatsApp chatbot, voice calling, surveys, feedback processing, and summaries.
+
+B. Non-AI Features
+
+9. Geo-Tagged Survey
+
+The system will capture the survey member's live location while collecting survey data.
+
+Latitude and longitude coordinates will be stored with the survey record.
+
+Location information will be maintained for doorstep survey activities.
+
+10. Interactive Dashboard Graphs & Analytics
+
+The Client Mobile App will display key statistics using horizontal bar graphs.
+
+The Client Website will display statistics using pie charts.
+
+Dashboards will show loaded/completed data percentage, gender-wise count, caste-wise count, most populated booths, and most-reported public demands.
+
+11. BLO Officer Information - window/Panel
+
+A separate page will contain Booth Level Officer (BLO) information.
+
+BLO details will be organized booth-wise.
+
+The page will contain the BLO's name and contact details.
+
+Users will be able to search/access BLO information according to the booth.
+
+(Next Page)
+
+12. Campaign Management, Tracking & Script Management - window/Panel
+
+Tracking: A dedicated section will display the overall status and activity of WhatsApp, Campaign SMS, and Voice campaigns, including active, completed, paused, and ongoing campaigns. 
+
+Campaign Usage: Track the number of WhatsApp messages sent, SMS sent, and voice calls made, along with successful, rejected, and failed calls. 
+
+Campaign Balance: Display the remaining campaign balance separately for WhatsApp messages, SMS, and voice calls, including the available number of messages/calls remaining. 
+
+Recharge Management: Provide recharge options for all three campaign types, with the available recharge plans and their corresponding message/call limits and remaining balance. 
+
+Script Management: Provide a separate section to view and manage WhatsApp scripts, SMS scripts, and Voice Call scripts. 
+
+Script Editing: Allow authorized users to view, edit, and update campaign scripts before they are used in campaigns. 
+
+Campaign Overview: Provide a consolidated view of campaign status, message/call usage, successful and rejected calls, remaining campaign balance, recharge options, and available campaign scripts.
+
+13. Previous Election Analysis & Strategy Window/Panel
+
+Historical Election Data: A dedicated section will provide access to previous election data, including party-wise and candidate-wise results, voting patterns, and available historical election information. 
+
+Locality & Booth Analysis: Users will be able to view previous election results for a specific constituency, locality, booth, or area, including the number of votes received by each party/candidate. 
+
+Candidate-Specific Analysis: The candidate's information collected during profile creation/login will be used to present relevant historical results and analysis for their selected constituency/locality. 
+
+Previous Election Strategies: The section will display available information about strategies, campaign approaches, and election performance of different parties/candidates from previous elections. 
+
+Booth-Wise Results: Users can view previous election results booth-wise, including which party/candidate received how many votes and the respective voting distribution. 
+
+Comparative Analysis: Historical results can be viewed to understand party-wise and candidate-wise performance across different booths/localities. 
+
+RAG-Based AI Bot: A dedicated RAG (Retrieval-Augmented Generation) chatbot will be available within this section. It will answer questions using the stored historical election data and documents. 
+
+14. Profile & Party Settings- window/Panel
+
+Profile Window: A dedicated profile window will open when the user clicks the Profile icon in the application. 
+
+Account Details: Display the user's account information and relevant profile details. 
+
+Party Details: Display the associated party/organization information, including party name and other configured details. 
+
+Party Branding: Provide options to manage party-related logos, images, banners, and other branding elements. 
+
+Page Theme: Allow the client to configure the application's theme and visual appearance according to the party/organization branding. 
+
+Profile & Configuration: Provide a centralized place to view and manage the account, party information, images, and page-level branding settings. 
+
+Note: Subscription-Based AI Access – AI Mode Access Control
+
+AI Mode will be available as an option within the application for all users; however, actual access will be restricted to authorized users. The Client Panel that purchases the AI subscription will have an AI Mode Access Management option within the User Panel, allowing the client to select specific members who are permitted to use AI Mode. The number of users who can be authorized will depend on the purchased subscription plan. The client can grant, revoke, or change AI Mode access for selected members at any time, provided the number of authorized users remains within the subscription limit.
+
+(Next Page)
+
+Points With Example Below 
+
+Proposed App Enhancements – Complete Feature List- With examples
+
+A. AI Features
+
+1. AI Mode – Agentic AI -- window
+
+AI Mode will provide a ChatGPT-like interface within the application.
+
+The AI Agent will act as a digital party karyakarta/assistant, with a party-specific name and identity configured by the client.
+
+The bot's name, role, and introduction can be customized to match the respective party/organization.
+
+The AI Agent will understand natural-language and voice commands and perform supported application functions.
+
+Users can interact with the AI using their preferred/native language.
+
+AI Mode access will be controlled through the Client Panel based on the purchased AI subscription and permitted number of users.
+
+Example:
+
+Bot Name: Party Karyakarta – SahayakRole: Digital Party Assistant
+
+User: “Show me unvisited voters in Booth 12.”
+
+Party Karyakarta – Sahayak: “There are 324 unvisited voters in Booth 12. Would you like me to show the list?”
+
+This makes the AI feel like a dedicated digital assistant for the party's team, rather than a generic chatbot.
+
+2. AI Query Search
+
+Users can search voter and application data using natural-language or voice queries, without manually applying multiple filters.
+
+AI will understand the user's request and automatically convert it into the required filter conditions.
+
+Users can ask follow-up queries within the same conversation without repeating the previous search.
+
+AI can generate graphs directly from the requested query/data.
+
+Queries can be provided in the user's preferred/native language.
+
+Example:
+
+“Show unvisited voters in Booth 10.”
+
+→ AI displays the matching voters.
+
+“Show the gender distribution.”
+
+→ AI generates the corresponding graph.
+
+Technical Flow:Text/Voice → AI/LLM → Query & Filter Understanding → Application API/Database → Results → Graph
+
+3. AI Report Generation
+
+Users can request reports directly through AI Mode using natural-language queries.
+
+AI will understand the requested conditions and generate the required filtered dataset.
+
+Reports can be generated in PDF, Excel, and CSV formats.
+
+Reports can be generated from the results of AI-based searches and filters.
+
+Example:
+
+“Generate an Excel report of voters above 50 who have not been visited in Booths 10 to 15.”
+
+→ AI applies the filters → retrieves the data → generates the Excel report.
+
+“Generate the same report as PDF.”
+
+→ AI generates the PDF version.
+
+Technical Flow:AI Query → Filter/Query Generation → Database → Dataset → Report Generator → PDF/Excel/CSV
+
+4. AI WhatsApp & SMS One-Way Campaign
+
+AI can generate one-way WhatsApp and SMS campaign messages based on the campaign objective. 
+
+Messages can be created in the selected/native language and tailored to the target audience. 
+
+AI can generate messages for awareness, announcements, public outreach, campaign updates, and information sharing. 
+
+Campaign managers can review and approve AI-generated messages before sending. 
+
+Approved messages can be distributed to the selected audience through WhatsApp/SMS. 
+
+The system can track messages sent, delivered, failed, campaign cost, and remaining credits. 
+
+AI can analyze campaign performance and provide recommendations to improve future campaigns.
+
+Example: One-Way AI Campaign Message
+
+Input:“Create a Marathi WhatsApp campaign message about water supply.”
+
+→ AI generates the message:
+
+WhatsApp Message:“आपल्या परिसरातील पाणीपुरवठ्याबाबत महत्त्वाची माहिती. पाणीपुरवठ्याशी संबंधित समस्या असल्यास कृपया संबंधित अधिकाऱ्यांशी संपर्क साधा.”
+
+→ Campaign Manager: Reviews & approves the message.
+
+→ System: Sends the approved message to the selected audience.
+
+Technical Flow:AI → Message Generation → Human Approval → WhatsApp API → Target Audience → Delivery → Campaign Analytics
+
+5. AI Voice Calling – One-Way Campaign
+
+AI can generate voice-call scripts and custom one-way campaign messages. 
+
+The voice agent will communicate with users in the selected/native language. 
+
+The system will deliver the pre-approved voice message to the targeted users as a one-way campaign. 
+
+Users can receive the message but do not interact with the AI through the call. 
+
+The system will track campaign results such as successful calls, rejected calls, failed calls, and unanswered calls. 
+
+Calls can be recorded, where applicable, and campaign activity can be stored for tracking and reporting. 
+
+The generated voice-call script requires human approval before the campaign is deployed.
+
+Example:
+
+Campaign: Road Development Update
+
+“नमस्कार, आपल्या परिसरातील रस्त्यांच्या विकासाबाबत माहिती देण्यासाठी हा संदेश आहे. आपल्या परिसरातील रस्त्यांच्या दुरुस्तीचे काम लवकरच सुरू करण्यात येणार आहे. धन्यवाद.”
+
+→ The approved message is automatically delivered to the selected users through the voice campaign.
+
+Technical Flow:
+
+AI → Script Generation → Human Approval → Campaign Setup → Voice API → Target Users → Call Status → Campaign Database
+
+6. AI Campaign Status, Cost & Strategy Analysis
+
+AI will provide a real-time overview of the overall campaign status from a single dashboard. 
+
+The system will show how active and operational the campaign is, including ongoing, scheduled, completed, and inactive campaigns. 
+
+AI will monitor campaign usage and performance across different communication channels. 
+
+The dashboard will track SMS campaign usage, voice campaign usage, WhatsApp activity, and other outreach channels. 
+
+The system will display campaign charges/costs incurred and provide a breakdown of spending by campaign and communication channel. 
+
+AI will show the remaining SMS credits, voice campaign balance, WhatsApp usage/credits, and other available campaign resources. 
+
+The system will identify low-balance or high-spending campaigns and alert the campaign team. 
+
+AI will analyze campaign activity and recommend strategies to improve campaign performance and resource utilization. 
+
+The system will highlight underperforming campaigns, inactive campaigns, high-performing campaigns, and areas requiring immediate attention. 
+
+AI-generated recommendations will help campaign managers decide where to increase activity, reduce spending, or allocate additional resources.
+
+Example
+
+Campaign Status: Active
+
+Live Campaigns: 3
+
+Active Campaigns: 8
+
+SMS Used: 75,000 | Remaining: 25,000
+
+Voice Calls Used: 40,000 | Remaining: 10,000
+
+Campaign Cost: ₹1.8 Lakh
+
+Budget Remaining: ₹70,000
+
+AI Analysis:
+
+Campaign activity is 82% active. Voice credits are running low, while SMS usage is high.
+
+AI Recommendation:
+
+Reduce low-performing campaigns and allocate more resources to high-performing campaigns.
+
+7. Human-in-the-Loop AI
+
+AI operations will be divided into read operations and write/action operations.
+
+Read Operations – No Manual Approval
+
+AI search.
+
+Data filtering.
+
+Graph generation.
+
+Data analysis.
+
+Summaries.
+
+Report generation.
+
+Example:
+
+“Show the top five demands in Booth 12.”
+
+→ AI directly analyzes the available data and displays the result.
+
+Write/Action Operations – Human Approval Required
+
+WhatsApp scripts.
+
+WhatsApp chatbot actions.
+
+Voice-call scripts.
+
+Other AI-generated actions that modify data or communicate with users.
+
+Example:
+
+“Chage this whatsapp script to new script”
+
+→ AI prepares the campaign → user reviews it → user approves → modification operation performed.
+
+(Next Page)
+
+8. Native-Language AI
+
+AI will accept queries and provide responses in the selected/native language.
+
+Native-language support will be available across:
+
+AI Mode
+
+AI Search
+
+WhatsApp chatbot
+
+Voice calling
+
+Surveys
+
+Feedback processing
+
+Summaries
+
+Both text and voice-based interactions can support the selected language.
+
+Example:
+
+User:
+
+“बूथ १५ मधील भेट न दिलेले मतदार दाखवा.”
+
+AI:
+
+“बूथ १५ मधील ३२४ मतदारांना अद्याप भेट दिलेली नाही.”
+
+Technical Flow:Native Language → Speech/Text Processing → AI/LLM → Intent Understanding → Application Data → Native Language Response
+
+(Next Page)
+
+B. Non-AI Features
+
+9. Geo-Tagged Survey
+
+The system will capture the survey member's live location while collecting data.
+
+Latitude and longitude coordinates will be stored with the survey record.
+
+Location information will be maintained for doorstep survey activities.
+
+Survey data can therefore be associated with the location where it was collected.
+
+Example:
+
+A survey member completes a doorstep survey:
+
+Voter: Rajesh Patil
+
+Survey: Completed
+
+Latitude: 18.4621
+
+Longitude: 73.8567
+
+Date/Time: 19-Aug-2026
+
+Technical Flow:Mobile GPS → Latitude/Longitude → Survey Record → Database
+
+10. Interactive Dashboard Graphs & Analytics 
+
+The Client Mobile App will display key statistics using horizontal bar graphs for quick viewing.
+
+The Client Website will display statistics using pie charts.
+
+Dashboards will display:
+
+Loaded/completed data percentage.
+
+Total gender-wise count.
+
+Caste-wise count.
+
+Most populated booths.
+
+Most-reported public demands.
+
+(Next Page)
+
+Mobile App Example:
+
+Survey Completion
+
+Booth 1  ███████████████ 90%
+
+Booth 2  ███████████      70%
+
+Booth 3  █████████         55%
+
+Website Example:
+
+Gender Distribution
+
+Male    → 55%
+
+Female  → 45%
+
+The dashboard can also show:
+
+Total Voters: 25,000Data Loaded: 82%Most Populated Booth: Booth 14
+
+11. BLO Officer Information Dashboard - window
+
+A separate page will contain Booth Level Officer (BLO) information.
+
+BLO details will be organized booth-wise.
+
+The page will display the BLO officer's name and contact details.
+
+Users will be able to search/access BLO information according to the booth.
+
+Example:
+
+Booth: 125
+
+BLO Name: Amit Sharma
+
+Contact: XXXXXXXX
+
+Assigned Area: Shivaji Nagar
+
+(Next Page)
+
+12. Campaign Management, Tracking & Script Management- window
+
+Campaign Tracking: A dedicated section will display the overall status and activity of WhatsApp, SMS, and Voice campaigns, including active, completed, paused, and ongoing campaigns.
+
+Campaign Usage: Track the number of WhatsApp messages sent, SMS sent, and voice calls made, along with successful, rejected, and failed calls.
+
+Campaign Balance: Display the remaining campaign balance separately for WhatsApp messages, SMS, and voice calls, including the available number of messages/calls remaining.
+
+Recharge Management: Provide recharge options for all three campaign types, with the available recharge plans and their corresponding message/call limits and remaining balance.
+
+Script Management: Provide a separate section to view and manage WhatsApp scripts, SMS scripts, and Voice Call scripts.
+
+Script Editing: Allow authorized users to view, edit, and update campaign scripts before they are used in campaigns.
+
+Campaign Overview: Provide a consolidated view of campaign status, message/call usage, successful and rejected calls, remaining campaign balance, recharge options, and available campaign scripts.
+
+Example:
+
+CAMPAIGN TRACKING
+
+WhatsApp Messages
+
+Sent: 18,500
+
+Remaining: 6,500
+
+SMS
+
+Sent: 12,000
+
+Remaining: 8,000
+
+Voice Calls
+
+Successful: 7,250
+
+Rejected: 750
+
+Remaining Calls: 2,000
+
+RECHARGE
+
+WhatsApp: 6,500 messages remaining
+
+SMS: 8,000 messages remaining
+
+Voice: 2,000 calls remaining
+
+[ Recharge Campaign Balance ]
+
+CAMPAIGN SCRIPTS
+
+WhatsApp Script
+
+[ View ] [ Edit ]
+
+SMS Script
+
+[ View ] [ Edit ]
+
+Voice Call Script
+
+[ View ] [ Edit ]
+
+(Next Page)
+
+13. Previous Election Analysis & Strategy- window
+
+Historical Election Data: A dedicated section will provide access to previous election data, including party-wise and candidate-wise results, voting patterns, and available historical election information.
+
+Locality & Booth Analysis: Users will be able to view previous election results for a specific constituency, locality, booth, or area, including the number of votes received by each party/candidate.
+
+Candidate-Specific Analysis: The candidate's information collected during profile creation/login will be used to present relevant historical results and analysis for their selected constituency/locality.
+
+Previous Election Strategies: The section will display available information about strategies, campaign approaches, and election performance of different parties/candidates from previous elections.
+
+Booth-Wise Results: Users can view previous election results booth-wise, including which party/candidate received how many votes and the respective voting distribution.
+
+Comparative Analysis: Historical results can be viewed to understand party-wise and candidate-wise performance across different booths/localities.
+
+RAG-Based AI Bot: A dedicated RAG (Retrieval-Augmented Generation) chatbot will be available within this section. It will answer questions using the stored historical election data and documents.
+
+Example:
+
+User: “Show the previous election result for Booth 125.”
+
+→ Displays:
+
+Booth 125 – Previous Election
+
+Party A       520 votes
+
+Party B       410 votes
+
+Party C       185 votes
+
+Others         75 votes
+
+User: “How did Party A perform in this locality?”
+
+→ RAG Bot retrieves the relevant historical data and provides a summary based on the available records.
+
+User: “Which booths had the highest votes for my party in the previous election?”
+
+→ The system retrieves and displays the relevant booth-wise historical results.
+
+ (Next Page)
+
+14. Profile & Party Settings- window
+
+Profile Window: A dedicated profile window will open when the user clicks the Profile icon in the application. 
+
+Account Details: Display the user's account information and relevant profile details. 
+
+Party Details: Display the associated party/organization information, including party name and other configured details. 
+
+Party Branding: Provide options to manage party-related logos, images, banners, and other branding elements. 
+
+Page Theme: Allow the client to configure the application's theme and visual appearance according to the party/organization branding. 
+
+Profile & Configuration: Provide a centralized place to view and manage the account, party information, images, and page-level branding settings. 
+
+Profile Icon  -- > Profile & Party Settings
+
+Account Details
+
+• Name
+
+• Email
+
+• Contact
+
+• Account Information
+
+Party Details
+
+• Party Name
+
+• Candidate Information
+
+• Constituency
+
+• Party Logo
+
+Branding
+
+• Logo
+
+• Images
+
+• Banner
+
+• Page Theme
+
+Note: Subscription-Based AI Access – AI Mode Access Control
+
+AI Mode will be available as an option within the application for all users; however, actual access will be restricted to authorized users. The Client Panel that purchases the AI subscription will have an AI Mode Access Management option within its User Panel, allowing the client to select specific members who are permitted to use AI Mode. The number of users who can be authorized will depend on the purchased subscription plan. The client can grant, revoke, or change AI Mode access for selected members at any time, provided the number of authorized users remains within the subscription limit.
+
+Example:
+
+If the client purchases a plan allowing 3 AI users:
+
+Client Panel
+
+     ↓
+
+User Management
+
+     ↓
+
+AI Mode Access
+
+     ↓
+
+☑ Member A
+
+☑ Member B
+
+☑ Member C
+
+☐ Member D
+
+☐ Member E
+
+Only Member A, B, and C will be able to use AI Mode. If the client later wants Member D to use AI Mode, access can be revoked from one existing member and assigned to Member D, while remaining within the 3-user subscription limit.
