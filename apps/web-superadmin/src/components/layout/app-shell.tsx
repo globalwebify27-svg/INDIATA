@@ -22,7 +22,7 @@ export function AppShell({
   onTogglePricingVisibility,
   children,
 }: AppShellProps) {
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
@@ -38,11 +38,13 @@ export function AppShell({
       />
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0 min-h-screen overflow-x-hidden">
+      <div className="flex-1 flex flex-col min-w-0 min-h-screen overflow-x-hidden transition-all duration-200">
         {/* Sticky Top Header Ribbon */}
         <Header
           activeNav={activeNav}
           onOpenMobile={() => setMobileOpen(true)}
+          collapsed={collapsed}
+          onToggleCollapse={() => setCollapsed(!collapsed)}
           notifications={notifications}
           pricingVisible={pricingVisible}
           onTogglePricingVisibility={onTogglePricingVisibility}

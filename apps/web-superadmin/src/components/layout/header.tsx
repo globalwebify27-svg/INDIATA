@@ -23,6 +23,8 @@ import { NotificationDrawer } from "./notification-drawer";
 export interface HeaderProps {
   activeNav: NavKey;
   onOpenMobile: () => void;
+  collapsed?: boolean;
+  onToggleCollapse?: () => void;
   notifications: NotificationItem[];
   pricingVisible: boolean;
   onTogglePricingVisibility: (visible: boolean) => void;
@@ -32,6 +34,8 @@ export interface HeaderProps {
 export function Header({
   activeNav,
   onOpenMobile,
+  collapsed = true,
+  onToggleCollapse,
   notifications,
   pricingVisible,
   onTogglePricingVisibility,
@@ -79,8 +83,9 @@ export function Header({
 
   return (
     <header className="sticky top-0 z-30 h-16 bg-white dark:bg-[#201A15] border-b border-[#EAE5DC] dark:border-[#352B22] px-4 sm:px-6 lg:px-8 flex items-center justify-between transition-colors shadow-2xs">
-      {/* Left: Mobile hamburger & Context breadcrumb */}
-      <div className="flex items-center gap-4 flex-1 max-w-2xl">
+      {/* Left: Mobile hamburger, desktop hamburger toggle & Context breadcrumb */}
+      <div className="flex items-center gap-3 sm:gap-4 flex-1 max-w-2xl">
+        {/* Mobile Hamburger Button */}
         <button
           type="button"
           onClick={onOpenMobile}
@@ -89,6 +94,20 @@ export function Header({
         >
           <Menu className="w-5 h-5" />
         </button>
+
+        {/* Desktop Hamburger Toggle Button */}
+        {onToggleCollapse && (
+          <button
+            type="button"
+            onClick={onToggleCollapse}
+            className="hidden md:flex p-1.5 rounded-lg text-[#554336] dark:text-[#DBC2B0] hover:text-[#8D4B00] dark:hover:text-[#FFB77D] hover:bg-[#F4EDE6] dark:hover:bg-[#2B241E] transition-colors cursor-pointer"
+            aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+            aria-expanded={!collapsed}
+            title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+          >
+            <Menu className="w-4 h-4" />
+          </button>
+        )}
 
         {/* Stitch Breadcrumb Ribbon */}
         <nav className="flex items-center gap-1.5 text-xs text-[#554336] dark:text-[#DBC2B0] flex-shrink-0">
