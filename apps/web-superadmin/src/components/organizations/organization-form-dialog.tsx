@@ -418,7 +418,7 @@ export function OrganizationFormDialog({
           <div className="p-3.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
             <div>
               <div className="text-xs font-semibold text-slate-800 dark:text-slate-200">
-                Rajtantra AI Intelligence Mode
+                INDIATA AI Intelligence Mode
               </div>
               <p className="text-[11px] text-slate-500 dark:text-slate-400">
                 Enables LLM-assisted booth sentiment synthesis, speech drafting, and voter query triage.

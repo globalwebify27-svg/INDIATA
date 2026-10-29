@@ -281,7 +281,7 @@ export function CandidateOnboardingWizard({
             : "Direct Portal Provision",
         pendingEnquiries: 0,
         appName: formData.appName.trim() || `${formData.nameEnglish} Connect`,
-        slipUrl: formData.slipUrl.trim() || `https://slips.rajtantra.in/${generatedId.toLowerCase()}`,
+        slipUrl: formData.slipUrl.trim() || `https://slips.indiata.gov.in/${generatedId.toLowerCase()}`,
         pdfAccess: formData.pdfAccess,
         excelAccess: formData.excelAccess,
         imageAccess: formData.imageAccess,
@@ -769,7 +769,7 @@ export function CandidateOnboardingWizard({
                   label="Voter Slip Public Endpoint"
                   value={formData.slipUrl}
                   onChange={(e) => updateField("slipUrl", e.target.value)}
-                  placeholder="https://slips.rajtantra.in/ac210"
+                  placeholder="https://slips.indiata.gov.in/ac210"
                 />
               </div>
             </div>
@@ -836,7 +836,7 @@ export function CandidateOnboardingWizard({
                   <div>
                     <div className="text-xs font-semibold text-indigo-900 dark:text-indigo-200 flex items-center gap-1.5">
                       <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
-                      Rajtantra AI Intelligence Engine Access
+                      INDIATA AI Intelligence Engine Access
                     </div>
                     <div className="text-[11px] text-indigo-700/80 dark:text-indigo-300/80">
                       Enables natural language booth sentiment synthesis and voice speech drafts.

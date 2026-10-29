@@ -18,7 +18,7 @@ export function Breadcrumbs({ items, onItemClick }: BreadcrumbsProps) {
       <div className="flex items-center gap-1.5 flex-wrap">
         <span className="flex items-center gap-1 text-slate-400 dark:text-slate-500">
           <Home className="w-3.5 h-3.5" />
-          <span>Rajtantra</span>
+          <span>INDIATA</span>
         </span>
 
         {items.map((item, index) => {

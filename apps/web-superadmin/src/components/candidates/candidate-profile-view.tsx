@@ -381,7 +381,7 @@ export function CandidateProfileView({
             <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30 flex items-center justify-between">
               <div>
                 <div className="font-semibold text-slate-900 dark:text-slate-100">
-                  Rajtantra AI Intelligence Mode
+                  INDIATA AI Intelligence Mode
                 </div>
                 <div className="text-[11px] text-slate-500">
                   {candidate.aiAccess ? `${candidate.aiSeats || 5} AI seats authorized` : "Disabled"}

@@ -121,7 +121,7 @@ export function CredentialDeliveryModal({
           <ShieldCheck className="w-4 h-4 mt-0.5 flex-shrink-0 text-sky-600 dark:text-sky-400" />
           <div className="text-[11px] leading-relaxed">
             <strong className="block font-semibold">Security Guard Protocol:</strong>
-            Rajtantra never dispatches plaintext passwords over telecommunication channels. The recipient will receive a one-time encrypted activation link to configure their own administrative password.
+            INDIATA never dispatches plaintext passwords over telecommunication channels. The recipient will receive a one-time encrypted activation link to configure their own administrative password.
           </div>
         </div>
       </div>

@@ -26,8 +26,8 @@ export function AppShell({
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <div className="min-h-screen flex bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors">
-      {/* Sidebar Component */}
+    <div className="min-h-screen flex bg-[#FFF8F2] dark:bg-[#191410] text-[#1E1B17] dark:text-[#F7EFE9] transition-colors">
+      {/* Sidebar Navigation */}
       <Sidebar
         activeNav={activeNav}
         onNavigate={onNavigate}
@@ -39,7 +39,7 @@ export function AppShell({
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0 min-h-screen overflow-x-hidden">
-        {/* Sticky Top Header */}
+        {/* Sticky Top Header Ribbon */}
         <Header
           activeNav={activeNav}
           onOpenMobile={() => setMobileOpen(true)}
@@ -49,14 +49,25 @@ export function AppShell({
           onNavigate={onNavigate}
         />
 
-        {/* Content Body */}
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto">
+        {/* Content Canvas */}
+        <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto space-y-6">
           {children}
         </main>
 
-        {/* Footer */}
-        <footer className="py-4 px-6 border-t border-slate-200 dark:border-slate-800 text-center text-xs text-slate-400 dark:text-slate-500 bg-white dark:bg-slate-900">
-          Rajtantra Election Engine &bull; Multi-Tenant Platform Console v1.0.0 &bull; All Rights Reserved
+        {/* Enterprise Platform Footer */}
+        <footer className="py-4 px-6 border-t border-[#EAE5DC] dark:border-[#352B22] text-xs text-[#554336] dark:text-[#DBC2B0] bg-white/80 dark:bg-[#201A15]/80 backdrop-blur-xs flex flex-col sm:flex-row items-center justify-between gap-2 shadow-2xs">
+          <div className="flex items-center gap-2">
+            <span className="font-bold text-[#8D4B00] dark:text-[#FFB77D]">
+              INDIATA Election-Operations Platform
+            </span>
+            <span className="text-[#887364] dark:text-[#A8988C]">&bull;</span>
+            <span className="text-[11px] font-mono text-[#006D30] dark:text-[#92F5A4] font-semibold">
+              Secure Super Admin Console
+            </span>
+          </div>
+          <div className="text-[11px] text-[#887364] dark:text-[#A8988C]">
+            Encrypted Administrative Session &bull; ISO/IEC 27001 Certified &bull; High-Assurance Democratic Operations
+          </div>
         </footer>
       </div>
     </div>

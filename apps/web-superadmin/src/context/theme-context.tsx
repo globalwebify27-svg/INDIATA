@@ -16,7 +16,8 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setThemeState] = useState<Theme>("light");
 
   useEffect(() => {
-    const stored = localStorage.getItem("rajtantra_admin_theme") as Theme | null;
+    const stored = (localStorage.getItem("indiata_admin_theme") ||
+      localStorage.getItem("rajtantra_admin_theme")) as Theme | null;
     if (stored === "dark" || stored === "light") {
       setThemeState(stored);
       document.documentElement.classList.toggle("dark", stored === "dark");
@@ -28,7 +29,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   const setTheme = (newTheme: Theme) => {
     setThemeState(newTheme);
-    localStorage.setItem("rajtantra_admin_theme", newTheme);
+    localStorage.setItem("indiata_admin_theme", newTheme);
     document.documentElement.classList.toggle("dark", newTheme === "dark");
   };
 

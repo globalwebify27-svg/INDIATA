@@ -350,7 +350,7 @@ export function OrganizationDirectory({
           <div className="p-12 text-center space-y-3">
             <RefreshCw className="w-7 h-7 text-primary-500 animate-spin mx-auto" />
             <p className="text-xs text-slate-500 font-medium">
-              Synchronizing organization directory with Rajtantra master registry...
+              Synchronizing organization directory with INDIATA master registry...
             </p>
           </div>
         ) : filteredOrganizations.length === 0 ? (

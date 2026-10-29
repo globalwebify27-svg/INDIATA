@@ -16,7 +16,7 @@ import { useToast } from "../../context/toast-context";
 
 export function DesignSystemShowcase() {
   const { toast } = useToast();
-  const [testSearch, setTestSearch] = useState("Rajtantra");
+  const [testSearch, setTestSearch] = useState("INDIATA");
   const [testSelect, setTestSelect] = useState("vidhan-sabha");
   const [testSwitch, setTestSwitch] = useState(true);
   const [isTestModalOpen, setIsTestModalOpen] = useState(false);
@@ -36,7 +36,7 @@ export function DesignSystemShowcase() {
       <div className="p-5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs">
         <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100 flex items-center gap-2">
           <Sparkles className="w-4 h-4 text-sky-600 dark:text-sky-400" />
-          Rajtantra Enterprise Design System Specification
+          INDIATA Enterprise Design System Specification
         </h3>
         <p className="mt-1 text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
           Living design tokens, reusable components, and states built specifically for high-concurrency multi-tenant administration.

@@ -1,24 +1,11 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import {
   LayoutDashboard,
-  Building2,
-  Users,
-  UserPlus,
-  Inbox,
-  FileQuestion,
-  Briefcase,
-  Megaphone,
-  Bot,
-  CreditCard,
-  ShieldAlert,
-  Settings,
-  ChevronDown,
   ChevronRight,
   ChevronLeft,
   X,
-  Layers,
   ShieldCheck,
 } from "lucide-react";
 import { NavKey } from "../../types/superadmin.types";
@@ -32,14 +19,6 @@ export interface SidebarProps {
   onCloseMobile: () => void;
 }
 
-interface NavItemConfig {
-  key: NavKey;
-  label: string;
-  icon: React.ReactNode;
-  badge?: string;
-  subItems?: { key: NavKey; label: string; badge?: string; icon?: React.ReactNode }[];
-}
-
 export function Sidebar({
   activeNav,
   onNavigate,
@@ -48,135 +27,58 @@ export function Sidebar({
   mobileOpen,
   onCloseMobile,
 }: SidebarProps) {
-  const [candidatesExpanded, setCandidatesExpanded] = useState(true);
-  const [distributorsExpanded, setDistributorsExpanded] = useState(true);
-
-  const navItems: NavItemConfig[] = [
-    {
-      key: "dashboard",
-      label: "Dashboard",
-      icon: <LayoutDashboard className="w-4 h-4 flex-shrink-0" />,
-    },
-    {
-      key: "organizations",
-      label: "Organizations",
-      icon: <Building2 className="w-4 h-4 flex-shrink-0" />,
-    },
-    {
-      key: "all-candidates",
-      label: "Candidates",
-      icon: <Users className="w-4 h-4 flex-shrink-0" />,
-      subItems: [
-        {
-          key: "all-candidates",
-          label: "All Candidates",
-          icon: <Users className="w-3.5 h-3.5" />,
-        },
-        {
-          key: "add-candidate",
-          label: "Add Candidate",
-          icon: <UserPlus className="w-3.5 h-3.5" />,
-        },
-        {
-          key: "candidate-requests",
-          label: "Candidate Requests",
-          badge: "3",
-          icon: <Inbox className="w-3.5 h-3.5" />,
-        },
-        {
-          key: "enquiries",
-          label: "Generated Enquiries",
-          badge: "5",
-          icon: <FileQuestion className="w-3.5 h-3.5" />,
-        },
-      ],
-    },
-    {
-      key: "all-distributors",
-      label: "Distributors",
-      icon: <Briefcase className="w-4 h-4 flex-shrink-0" />,
-      subItems: [
-        {
-          key: "all-distributors",
-          label: "All Distributors",
-          icon: <Briefcase className="w-3.5 h-3.5" />,
-        },
-        {
-          key: "distributor-requests",
-          label: "Distributor Requests",
-          badge: "2",
-          icon: <Inbox className="w-3.5 h-3.5" />,
-        },
-      ],
-    },
-    {
-      key: "campaigns",
-      label: "Campaigns",
-      icon: <Megaphone className="w-4 h-4 flex-shrink-0" />,
-    },
-    {
-      key: "ai-dashboard",
-      label: "AI Governance",
-      icon: <Bot className="w-4 h-4 flex-shrink-0" />,
-    },
-    {
-      key: "subscriptions",
-      label: "Subscriptions",
-      icon: <CreditCard className="w-4 h-4 flex-shrink-0" />,
-    },
-    {
-      key: "audit",
-      label: "Platform Audit",
-      icon: <ShieldAlert className="w-4 h-4 flex-shrink-0" />,
-    },
-    {
-      key: "settings",
-      label: "Platform Settings",
-      icon: <Settings className="w-4 h-4 flex-shrink-0" />,
-    },
-    {
-      key: "components",
-      label: "UI System",
-      icon: <Layers className="w-4 h-4 flex-shrink-0" />,
-    },
-  ];
-
   return (
     <>
       {/* Mobile Drawer Backdrop */}
       {mobileOpen && (
         <div
-          className="fixed inset-0 z-40 bg-slate-950/60 backdrop-blur-xs md:hidden"
+          className="fixed inset-0 z-40 bg-slate-950/70 backdrop-blur-xs md:hidden"
           onClick={onCloseMobile}
         />
       )}
 
       {/* Main Sidebar Element */}
       <aside
-        className={`fixed md:sticky top-0 inset-y-0 left-0 z-40 flex flex-col h-screen bg-slate-900 border-r border-slate-800 text-slate-300 transition-all duration-200 select-none ${
+        className={`fixed md:sticky top-0 inset-y-0 left-0 z-40 flex flex-col h-screen bg-[#FAF2EB] dark:bg-[#1C1611] border-r border-[#EAE5DC] dark:border-[#352B22] text-[#554336] dark:text-[#DBC2B0] transition-all duration-200 select-none shadow-sm ${
           collapsed ? "w-16" : "w-64"
         } ${mobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}`}
       >
-        {/* Brand Header */}
-        <div className="h-16 px-4 flex items-center justify-between border-b border-slate-800/80">
+        {/* Brand Header with Institutional Shield & INDIATA Mark */}
+        <div className="h-16 px-3.5 flex items-center justify-between border-b border-[#EAE5DC] dark:border-[#352B22] bg-[#FAF2EB] dark:bg-[#1C1611]">
           <div
-            className="flex items-center gap-3 overflow-hidden cursor-pointer"
+            className="flex items-center gap-2.5 overflow-hidden cursor-pointer"
             onClick={() => {
               onNavigate("dashboard");
               onCloseMobile();
             }}
           >
-            <div className="w-9 h-9 rounded-lg bg-sky-600 flex items-center justify-center font-bold text-white text-base shadow-xs flex-shrink-0">
-              RT
-            </div>
-            {!collapsed && (
-              <div className="leading-tight overflow-hidden">
-                <div className="font-bold text-sm tracking-tight text-white flex items-center gap-1.5">
-                  RAJTANTRA
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+            {collapsed ? (
+              /* Compact Icon Mark for Collapsed Dock */
+              <div className="w-9 h-9 rounded-xl bg-[#8D4B00] text-white flex items-center justify-center flex-shrink-0 shadow-xs ring-2 ring-[#8D4B00]/20">
+                <ShieldCheck className="w-5 h-5" />
+              </div>
+            ) : (
+              /* Full Official Wordmark for Expanded Sidebar */
+              <div className="flex items-center gap-3">
+                <div
+                  aria-label="INDIATA Institutional Shield Emblem"
+                  className="w-10 h-10 rounded-xl bg-[#8D4B00] flex items-center justify-center text-white shadow-xs ring-2 ring-[#8D4B00]/20 flex-shrink-0"
+                >
+                  <ShieldCheck className="w-5 h-5 text-white" />
                 </div>
-                <div className="text-[10px] font-semibold uppercase tracking-wider text-sky-400">
-                  Super Admin Console
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2">
+                    <span className="text-lg font-bold text-[#8D4B00] dark:text-[#FFB77D] tracking-tight">
+                      INDIATA
+                    </span>
+                    <span className="relative flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#006D30] opacity-75" />
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-[#006D30]" />
+                    </span>
+                  </div>
+                  <p className="text-[11px] font-medium text-[#554336] dark:text-[#DBC2B0] truncate">
+                    Super Admin Console
+                  </p>
                 </div>
               </div>
             )}
@@ -185,7 +87,7 @@ export function Sidebar({
           <button
             type="button"
             onClick={onToggleCollapse}
-            className="hidden md:flex p-1.5 rounded-md text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+            className="hidden md:flex p-1.5 rounded-lg text-[#887364] hover:text-[#1E1B17] dark:hover:text-[#F7EFE9] hover:bg-[#F4EDE6] dark:hover:bg-[#2B241E] transition-colors cursor-pointer"
             title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
           >
             {collapsed ? (
@@ -198,124 +100,84 @@ export function Sidebar({
           <button
             type="button"
             onClick={onCloseMobile}
-            className="md:hidden p-1.5 text-slate-400 hover:text-white"
+            className="md:hidden p-1.5 text-[#887364] hover:text-[#1E1B17] cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        {/* Navigation Item Tree */}
-        <nav className="flex-1 overflow-y-auto p-3 space-y-1 scrollbar-thin">
-          {navItems.map((item) => {
-            if (item.subItems) {
-              const isGroupActive = item.subItems.some((s) => s.key === activeNav);
-              const isExpanded =
-                item.key === "all-candidates"
-                  ? candidatesExpanded
-                  : distributorsExpanded;
-              const toggleGroup = () => {
-                if (item.key === "all-candidates")
-                  setCandidatesExpanded(!candidatesExpanded);
-                if (item.key === "all-distributors")
-                  setDistributorsExpanded(!distributorsExpanded);
-              };
+        {/* Navigation Item — Exclusively Dashboard */}
+        <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-1.5 custom-scroll">
+          <button
+            type="button"
+            onClick={() => {
+              onNavigate("dashboard");
+              onCloseMobile();
+            }}
+            className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-medium transition-colors duration-150 group cursor-pointer ${
+              activeNav === "dashboard"
+                ? "bg-[#E8E1DB]/70 dark:bg-[#352B22] text-[#8D4B00] dark:text-[#FFB77D] font-semibold shadow-xs"
+                : "text-[#554336] dark:text-[#DBC2B0] hover:bg-[#F4EDE6]/60 dark:hover:bg-[#2B241E] hover:text-[#1E1B17]"
+            }`}
+            title={collapsed ? "Overview Dashboard" : undefined}
+          >
+            <div className="flex items-center gap-3">
+              <LayoutDashboard className="w-4 h-4 flex-shrink-0 text-[#8D4B00] dark:text-[#FFB77D]" />
+              {!collapsed && <span>Overview Dashboard</span>}
+            </div>
 
-              return (
-                <div key={item.key} className="space-y-1">
-                  <button
-                    type="button"
-                    onClick={toggleGroup}
-                    className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium transition-colors ${
-                      isGroupActive
-                        ? "text-sky-400 bg-slate-800/70 font-semibold"
-                        : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/50"
-                    }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      {item.icon}
-                      {!collapsed && <span>{item.label}</span>}
-                    </div>
-                    {!collapsed && (
-                      <span className="text-slate-500">
-                        {isExpanded ? (
-                          <ChevronDown className="w-3.5 h-3.5" />
-                        ) : (
-                          <ChevronRight className="w-3.5 h-3.5" />
-                        )}
-                      </span>
-                    )}
-                  </button>
-
-                  {isExpanded && !collapsed && (
-                    <div className="pl-7 space-y-0.5">
-                      {item.subItems.map((sub) => {
-                        const isSubActive = activeNav === sub.key;
-                        return (
-                          <button
-                            key={sub.key}
-                            type="button"
-                            onClick={() => {
-                              onNavigate(sub.key);
-                              onCloseMobile();
-                            }}
-                            className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-md text-xs transition-colors ${
-                              isSubActive
-                                ? "bg-sky-600/20 text-sky-400 font-semibold"
-                                : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/40"
-                            }`}
-                          >
-                            <span className="truncate">{sub.label}</span>
-                            {sub.badge && (
-                              <span className="px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-sky-500 text-white">
-                                {sub.badge}
-                              </span>
-                            )}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  )}
-                </div>
-              );
-            }
-
-            const isActive = activeNav === item.key;
-            return (
-              <button
-                key={item.key}
-                type="button"
-                onClick={() => {
-                  onNavigate(item.key);
-                  onCloseMobile();
-                }}
-                className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition-colors ${
-                  isActive
-                    ? "bg-sky-600 text-white font-semibold shadow-xs"
-                    : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/50"
-                }`}
-                title={collapsed ? item.label : undefined}
-              >
-                {item.icon}
-                {!collapsed && <span>{item.label}</span>}
-              </button>
-            );
-          })}
+            {!collapsed && (
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#FFDCC3] dark:bg-[#6E3900] text-[#6E3900] dark:text-[#FFDCC3] border border-[#B15F00]/20">
+                Active
+              </span>
+            )}
+          </button>
         </nav>
 
-        {/* Footer Identity Card */}
-        <div className="p-3 border-t border-slate-800/80 bg-slate-900/80">
-          <div className="flex items-center gap-2.5 p-2 rounded-lg bg-slate-800/60">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-sky-600 to-indigo-600 flex items-center justify-center font-bold text-xs text-white flex-shrink-0">
-              <ShieldCheck className="w-4 h-4" />
+        {/* Bottom Nav Section with Operational Utilities and Admin Profile */}
+        <div className="p-3 border-t border-[#EAE5DC] dark:border-[#352B22] space-y-2.5 bg-[#FAF2EB] dark:bg-[#1C1611]">
+          {!collapsed && (
+            <div className="space-y-1">
+              {/* Security Audit Status */}
+              <div className="flex items-center justify-between px-2.5 py-1.5 rounded-lg bg-[#F4EDE6]/60 dark:bg-[#251E18] text-[#554336] dark:text-[#DBC2B0] text-xs">
+                <div className="flex items-center gap-2">
+                  <ShieldCheck className="w-3.5 h-3.5 text-[#006D30] dark:text-[#92F5A4]" />
+                  <span>Security Audit</span>
+                </div>
+                <span className="text-[11px] text-[#006D30] dark:text-[#92F5A4] font-semibold">
+                  Active
+                </span>
+              </div>
+
+              {/* System Health Status */}
+              <div className="flex items-center justify-between px-2.5 py-1.5 rounded-lg bg-[#F4EDE6]/60 dark:bg-[#251E18] text-[#554336] dark:text-[#DBC2B0] text-xs">
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-[#006D30] dark:bg-[#92F5A4] animate-pulse" />
+                  <span>System Health</span>
+                </div>
+                <span className="text-[11px] text-[#006D30] dark:text-[#92F5A4] font-semibold font-mono">
+                  99.98%
+                </span>
+              </div>
+            </div>
+          )}
+
+          {/* Administrator Profile Badge */}
+          <div className="p-2.5 rounded-xl bg-white dark:bg-[#251E18] border border-[#EAE5DC] dark:border-[#352B22] flex items-center gap-2.5 shadow-xs">
+            <div className="w-8 h-8 rounded-lg bg-[#FFDCC3] text-[#8D4B00] font-bold text-xs flex items-center justify-center flex-shrink-0">
+              SA
             </div>
             {!collapsed && (
-              <div className="flex-1 min-w-0 leading-tight">
-                <div className="text-xs font-semibold text-white truncate">
-                  Root Super Admin
+              <div className="min-w-0 flex-1 leading-tight">
+                <div className="flex items-center gap-1.5">
+                  <span className="text-xs font-semibold text-[#1E1B17] dark:text-[#F7EFE9] truncate">
+                    Root Super Admin
+                  </span>
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#006D30]" />
                 </div>
-                <div className="text-[10px] text-slate-400 truncate">
-                  admin@rajtantra.gov.in
-                </div>
+                <p className="text-[10px] text-[#887364] dark:text-[#A8988C] truncate font-mono mt-0.5">
+                  admin@indiata.gov.in
+                </p>
               </div>
             )}
           </div>

@@ -68,7 +68,7 @@ export function AddCandidateDialog({
         name: fullName || "Aniket Patil",
         marathiName: marathiName || "अननिकेत पाटील",
         username: fullName.toLowerCase().replace(/\s+/g, "_") || "aniket_patil",
-        email: email || "candidate@rajtantra.in",
+        email: email || "candidate@indiata.gov.in",
         phone: phone || "+91 98200 00000",
         party: party,
         partyMarathi: party === "Bharatiya Janata Party" ? "भारतीय जनता पक्ष" : "राष्ट्रवादी काँग्रेस",
@@ -91,7 +91,7 @@ export function AddCandidateDialog({
         acquisitionDistributor: "Direct Platform Portal",
         pendingEnquiries: 0,
         appName: appName || `${fullName || "Candidate"} Connect`,
-        slipUrl: `https://slips.rajtantra.in/${fullName.toLowerCase().replace(/\s+/g, "") || "portal"}`,
+        slipUrl: `https://slips.indiata.gov.in/${fullName.toLowerCase().replace(/\s+/g, "") || "portal"}`,
         pdfAccess: true,
         excelAccess: true,
         imageAccess: true,
@@ -275,7 +275,7 @@ export function AddCandidateDialog({
               <Input
                 label="Public Voter Slip Subdomain Slug"
                 placeholder="e.g. pune214"
-                helperText="Will map to slips.rajtantra.in/<slug>"
+                helperText="Will map to slips.indiata.gov.in/<slug>"
               />
             </div>
           </div>

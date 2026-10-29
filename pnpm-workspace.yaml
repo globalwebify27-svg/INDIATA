@@ -1,5 +1,6 @@
 packages:
-  - 'apps/*'
+  - 'apps/web-superadmin'
+  - 'apps/api-core'
   - 'packages/*'
 allowBuilds:
   '@prisma/client': true
