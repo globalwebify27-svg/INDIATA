@@ -18,8 +18,6 @@ import {
   ShieldCheck,
   ChevronDown,
   ChevronRight,
-  ChevronLeft,
-  Menu,
   X,
   Activity,
 } from "lucide-react";
@@ -29,7 +27,7 @@ export interface SidebarProps {
   activeNav: NavKey;
   onNavigate: (key: NavKey) => void;
   collapsed: boolean;
-  onToggleCollapse: () => void;
+  onToggleCollapse?: () => void;
   mobileOpen: boolean;
   onCloseMobile: () => void;
 }
@@ -53,7 +51,6 @@ export function Sidebar({
   activeNav,
   onNavigate,
   collapsed,
-  onToggleCollapse,
   mobileOpen,
   onCloseMobile,
 }: SidebarProps) {
@@ -194,18 +191,18 @@ export function Sidebar({
           collapsed ? "w-[68px]" : "w-[270px]"
         } ${mobileOpen ? "translate-x-0 !w-[270px]" : "-translate-x-full md:translate-x-0"}`}
       >
-        {/* Brand Header with Institutional Shield, Wordmark, and Hamburger Toggle */}
+        {/* Brand Header with Institutional Shield and Wordmark */}
         {collapsed && !mobileOpen ? (
-          /* COLLAPSED HEADER (68px Rail): Shield Logo + Hamburger Toggle */
-          <div className="h-20 py-2.5 px-2 flex flex-col items-center justify-between border-b border-[#EAE5DC] dark:border-[#352B22] flex-shrink-0">
-            {/* Brand Shield Logo with Tooltip */}
+          /* COLLAPSED HEADER (68px Rail): Centered Institutional Shield Emblem */
+          <div className="h-16 px-2 flex items-center justify-center border-b border-[#EAE5DC] dark:border-[#352B22] flex-shrink-0">
+            {/* Brand Shield Logo with Accessible Tooltip */}
             <button
               type="button"
               onClick={() => {
                 onNavigate("dashboard");
                 onCloseMobile();
               }}
-              className="w-9 h-9 rounded-xl bg-[#8D4B00] text-white flex items-center justify-center flex-shrink-0 shadow-xs ring-2 ring-[#8D4B00]/20 transition-transform hover:scale-105 cursor-pointer relative group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8D4B00]"
+              className="w-10 h-10 rounded-xl bg-[#8D4B00] text-white flex items-center justify-center flex-shrink-0 shadow-xs ring-2 ring-[#8D4B00]/20 transition-transform hover:scale-105 cursor-pointer relative group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8D4B00]"
               aria-label="INDIATA Super Admin Overview"
             >
               <ShieldCheck className="w-5 h-5 text-white" />
@@ -218,28 +215,9 @@ export function Sidebar({
                 <div className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-[#1E1B17] dark:border-r-[#FAF2EB]" />
               </div>
             </button>
-
-            {/* Hamburger Toggle Button */}
-            <button
-              type="button"
-              onClick={onToggleCollapse}
-              className="w-8 h-8 rounded-lg flex items-center justify-center text-[#554336] dark:text-[#DBC2B0] hover:text-[#8D4B00] dark:hover:text-[#FFB77D] hover:bg-[#E8E1DB]/70 dark:hover:bg-[#2B241E] transition-colors cursor-pointer relative group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8D4B00]"
-              aria-label="Expand sidebar"
-              aria-expanded={false}
-            >
-              <Menu className="w-4 h-4 text-[#8D4B00] dark:text-[#FFB77D]" />
-              {/* Tooltip */}
-              <div
-                role="tooltip"
-                className="pointer-events-none absolute left-full top-1/2 -translate-y-1/2 ml-3 z-50 whitespace-nowrap rounded-lg bg-[#1E1B17] dark:bg-[#FAF2EB] text-white dark:text-[#1E1B17] px-3 py-1.5 text-xs font-semibold shadow-xl opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-visible:opacity-100"
-              >
-                <span>Expand sidebar</span>
-                <div className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-[#1E1B17] dark:border-r-[#FAF2EB]" />
-              </div>
-            </button>
           </div>
         ) : (
-          /* EXPANDED HEADER (270px Width): Full Wordmark, Indicators, and Collapse Button */
+          /* EXPANDED HEADER (270px Width): Full Wordmark, Status Pulse, and Mobile Close */
           <div className="h-16 px-4 flex items-center justify-between border-b border-[#EAE5DC] dark:border-[#352B22] flex-shrink-0 bg-[#FAF2EB] dark:bg-[#1C1611]">
             <div
               className="flex items-center gap-3 overflow-hidden cursor-pointer"
@@ -270,19 +248,7 @@ export function Sidebar({
               </div>
             </div>
 
-            {/* Desktop Collapse Button */}
-            <button
-              type="button"
-              onClick={onToggleCollapse}
-              className="hidden md:flex p-1.5 rounded-lg text-[#887364] hover:text-[#8D4B00] dark:hover:text-[#FFB77D] hover:bg-[#E8E1DB]/70 dark:hover:bg-[#2B241E] transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8D4B00]"
-              aria-label="Collapse sidebar"
-              aria-expanded={true}
-              title="Collapse sidebar"
-            >
-              <ChevronLeft className="w-4 h-4 text-[#8D4B00] dark:text-[#FFB77D]" />
-            </button>
-
-            {/* Mobile Close Button */}
+            {/* Mobile Close Button (for drawer dismissal on small screens) */}
             <button
               type="button"
               onClick={onCloseMobile}

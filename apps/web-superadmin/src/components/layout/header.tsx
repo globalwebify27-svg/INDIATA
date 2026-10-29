@@ -46,9 +46,22 @@ export function Header({
   const [notificationDrawerOpen, setNotificationDrawerOpen] = useState(false);
   const [accountMenuOpen, setAccountMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const searchInputRef = useRef<HTMLInputElement>(null);
   const accountMenuRef = useRef<HTMLDivElement>(null);
 
   const unreadAlertsCount = notifications.filter((n) => !n.read).length;
+
+  // Keyboard shortcut listener for ⌘K / Ctrl+K
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        searchInputRef.current?.focus();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   // Close dropdown on click outside
   useEffect(() => {
@@ -81,80 +94,90 @@ export function Header({
     toast(`Searching platform for: "${searchQuery}"`, "info");
   };
 
+  const handleToggleSidebar = () => {
+    if (typeof window !== "undefined" && window.innerWidth < 768) {
+      onOpenMobile();
+    } else if (onToggleCollapse) {
+      onToggleCollapse();
+    }
+  };
+
   return (
-    <header className="sticky top-0 z-30 h-16 bg-white dark:bg-[#201A15] border-b border-[#EAE5DC] dark:border-[#352B22] px-4 sm:px-6 lg:px-8 flex items-center justify-between transition-colors shadow-2xs">
-      {/* Left: Mobile hamburger, desktop hamburger toggle & Context breadcrumb */}
-      <div className="flex items-center gap-3 sm:gap-4 flex-1 max-w-2xl">
-        {/* Mobile Hamburger Button */}
+    <header className="sticky top-0 z-30 h-16 bg-white dark:bg-[#201A15] border-b border-[#EAE5DC] dark:border-[#352B22] px-3 sm:px-4 lg:px-6 flex items-center justify-between gap-2 sm:gap-4 transition-colors shadow-2xs">
+      {/* Zone 1: Left Section - Single Designated Hamburger Toggle & Breadcrumbs */}
+      <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0 min-w-0">
+        {/* Single Designated Hamburger Toggle Button */}
         <button
           type="button"
-          onClick={onOpenMobile}
-          className="md:hidden p-1.5 rounded-lg text-[#554336] dark:text-[#DBC2B0] hover:bg-[#F4EDE6] dark:hover:bg-[#2B241E] cursor-pointer"
-          aria-label="Open mobile menu"
+          onClick={handleToggleSidebar}
+          className="p-1.5 sm:p-2 rounded-lg text-[#554336] dark:text-[#DBC2B0] hover:text-[#8D4B00] dark:hover:text-[#FFB77D] hover:bg-[#F4EDE6] dark:hover:bg-[#2B241E] transition-colors cursor-pointer flex-shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8D4B00]"
+          aria-label={collapsed ? "Expand sidebar navigation" : "Collapse sidebar navigation"}
+          aria-expanded={!collapsed}
+          title={collapsed ? "Expand sidebar navigation" : "Collapse sidebar navigation"}
         >
-          <Menu className="w-5 h-5" />
+          <Menu className="w-5 h-5 text-[#8D4B00] dark:text-[#FFB77D]" />
         </button>
 
-        {/* Desktop Hamburger Toggle Button */}
-        {onToggleCollapse && (
-          <button
-            type="button"
-            onClick={onToggleCollapse}
-            className="hidden md:flex p-1.5 rounded-lg text-[#554336] dark:text-[#DBC2B0] hover:text-[#8D4B00] dark:hover:text-[#FFB77D] hover:bg-[#F4EDE6] dark:hover:bg-[#2B241E] transition-colors cursor-pointer"
-            aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-            aria-expanded={!collapsed}
-            title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-          >
-            <Menu className="w-4 h-4" />
-          </button>
-        )}
-
-        {/* Stitch Breadcrumb Ribbon */}
-        <nav className="flex items-center gap-1.5 text-xs text-[#554336] dark:text-[#DBC2B0] flex-shrink-0">
-          <span className="text-[#8D4B00] dark:text-[#FFB77D] font-bold">INDIATA</span>
-          <span className="text-[#887364] dark:text-[#A8988C] text-sm">&rsaquo;</span>
-          <span>Super Admin</span>
-          <span className="text-[#887364] dark:text-[#A8988C] text-sm">&rsaquo;</span>
-          <span className="font-bold text-[#1E1B17] dark:text-[#F7EFE9] capitalize">
+        {/* Contextual Breadcrumb Ribbon */}
+        <nav
+          aria-label="Breadcrumb navigation"
+          className="flex items-center gap-1 sm:gap-1.5 text-xs text-[#554336] dark:text-[#DBC2B0] min-w-0"
+        >
+          <span className="text-[#8D4B00] dark:text-[#FFB77D] font-bold flex-shrink-0">
+            INDIATA
+          </span>
+          <span className="text-[#887364] dark:text-[#A8988C] text-xs flex-shrink-0">
+            &rsaquo;
+          </span>
+          <span className="hidden sm:inline flex-shrink-0 text-[#554336] dark:text-[#DBC2B0]">
+            Super Admin
+          </span>
+          <span className="hidden sm:inline text-[#887364] dark:text-[#A8988C] text-xs flex-shrink-0">
+            &rsaquo;
+          </span>
+          <span className="font-bold text-[#1E1B17] dark:text-[#F7EFE9] capitalize truncate max-w-[120px] sm:max-w-[180px] md:max-w-none">
             {activeNav === "dashboard" ? "Overview" : activeNav.replace(/-/g, " ")}
           </span>
         </nav>
+      </div>
 
-        {/* Center: Global Search Bar with ⌘K shortcut badge */}
-        <form
-          onSubmit={handleSearchSubmit}
-          className="relative hidden md:block w-full max-w-md ml-2"
-        >
+      {/* Zone 2: Center Section - Search Bar with Controlled Width & Shortcut */}
+      <div className="flex-1 max-w-xs md:max-w-sm lg:max-w-md mx-2 min-w-0 hidden md:block">
+        <form onSubmit={handleSearchSubmit} className="relative w-full">
           <Search className="w-3.5 h-3.5 absolute left-3 top-2.5 text-[#887364] dark:text-[#A8988C] pointer-events-none" />
           <input
+            ref={searchInputRef}
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search organizations, subscriptions, audits... (Press ⌘K)"
-            className="w-full pl-9 pr-12 py-1.5 text-xs rounded-lg border border-[#EAE5DC] dark:border-[#3F372F] bg-[#FAF2EB] dark:bg-[#2B241E] text-[#1E1B17] dark:text-[#F7EFE9] placeholder:text-[#887364] dark:placeholder:text-[#A8988C] focus:outline-none focus:border-[#8D4B00] focus:ring-2 focus:ring-[#8D4B00]/10 transition-colors"
+            placeholder="Search organizations, audits... (⌘K)"
+            className="w-full pl-9 pr-12 py-1.5 text-xs rounded-lg border border-[#EAE5DC] dark:border-[#3F372F] bg-[#FAF2EB] dark:bg-[#2B241E] text-[#1E1B17] dark:text-[#F7EFE9] placeholder:text-[#887364] dark:placeholder:text-[#A8988C] focus:outline-none focus:border-[#8D4B00] focus:ring-2 focus:ring-[#8D4B00]/10 transition-colors truncate"
           />
-          <div className="absolute right-2.5 top-2 flex items-center gap-0.5 pointer-events-none text-[10px] text-[#554336] dark:text-[#DBC2B0] font-mono bg-[#F4EDE6] dark:bg-[#352B22] px-1.5 py-0.5 rounded border border-[#EAE5DC] dark:border-[#3F372F]">
+          <div className="absolute right-2 top-2 flex items-center gap-0.5 pointer-events-none text-[10px] text-[#554336] dark:text-[#DBC2B0] font-mono bg-[#F4EDE6] dark:bg-[#352B22] px-1.5 py-0.5 rounded border border-[#EAE5DC] dark:border-[#3F372F] flex-shrink-0">
             <Command className="w-2.5 h-2.5" />
             <span>K</span>
           </div>
         </form>
       </div>
 
-      {/* Right: Operational SLA, Pricing, Theme, Notifications, Profile */}
-      <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+      {/* Zone 3: Right Section - SLA Badge, Pricing, Theme, Notifications, Profile */}
+      <div className="flex items-center gap-1.5 sm:gap-2.5 flex-shrink-0">
         {/* Operational SLA Pill */}
-        <div className="hidden xl:flex items-center gap-2 px-3 py-1 rounded-full bg-[#DCFCE7]/70 dark:bg-[#005323]/30 border border-[#92F5A4] dark:border-[#005323] text-[#006D30] dark:text-[#92F5A4] text-xs font-semibold">
-          <span className="w-2 h-2 rounded-full bg-[#006D30] dark:bg-[#92F5A4] animate-pulse" />
-          <span>Election Cycle 2024-25 • Operational (99.98% SLA)</span>
+        <div className="hidden xl:flex items-center gap-2 px-2.5 py-1 rounded-full bg-[#DCFCE7]/70 dark:bg-[#005323]/30 border border-[#92F5A4] dark:border-[#005323] text-[#006D30] dark:text-[#92F5A4] text-xs font-semibold flex-shrink-0">
+          <span className="w-2 h-2 rounded-full bg-[#006D30] dark:bg-[#92F5A4] animate-pulse flex-shrink-0" />
+          <span className="hidden 2xl:inline whitespace-nowrap">
+            Election Cycle 2024-25 &bull;
+          </span>
+          <span className="whitespace-nowrap">Operational (99.98% SLA)</span>
         </div>
 
-        <div className="h-5 w-px bg-[#EAE5DC] dark:bg-[#352B22] mx-0.5 hidden sm:block" />
+        <div className="h-5 w-px bg-[#EAE5DC] dark:bg-[#352B22] mx-0.5 hidden xl:block flex-shrink-0" />
 
         {/* Global Pricing Visibility Switch (Module Rule) */}
         <button
           type="button"
           onClick={handlePricingSwitch}
-          className={`hidden lg:inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold border transition-colors cursor-pointer ${
+          className={`hidden lg:inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold border transition-colors cursor-pointer flex-shrink-0 ${
             pricingVisible
               ? "bg-[#FFDCC3]/60 dark:bg-[#6E3900]/40 text-[#8D4B00] dark:text-[#FFB77D] border-[#FFDCC3] dark:border-[#6E3900]"
               : "bg-[#FAF2EB] dark:bg-[#2B241E] text-[#554336] dark:text-[#DBC2B0] border-[#EAE5DC] dark:border-[#3F372F]"
@@ -173,7 +196,7 @@ export function Header({
         <button
           type="button"
           onClick={toggleTheme}
-          className="p-2 rounded-lg border border-[#EAE5DC] dark:border-[#352B22] text-[#554336] dark:text-[#DBC2B0] hover:bg-[#F4EDE6] dark:hover:bg-[#2B241E] transition-colors cursor-pointer"
+          className="p-2 rounded-lg border border-[#EAE5DC] dark:border-[#352B22] text-[#554336] dark:text-[#DBC2B0] hover:bg-[#F4EDE6] dark:hover:bg-[#2B241E] transition-colors cursor-pointer flex-shrink-0"
           title={`Switch to ${theme === "light" ? "Dark" : "Light"} mode`}
         >
           {theme === "light" ? (
@@ -184,7 +207,7 @@ export function Header({
         </button>
 
         {/* Notifications Button with Drawer */}
-        <div className="relative">
+        <div className="relative flex-shrink-0">
           <button
             type="button"
             onClick={() => setNotificationDrawerOpen(!notificationDrawerOpen)}
@@ -209,7 +232,7 @@ export function Header({
         </div>
 
         {/* Super Admin Account Dropdown Menu */}
-        <div className="relative" ref={accountMenuRef}>
+        <div className="relative flex-shrink-0" ref={accountMenuRef}>
           <button
             type="button"
             onClick={() => setAccountMenuOpen(!accountMenuOpen)}
