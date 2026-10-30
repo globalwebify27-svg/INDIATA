@@ -25,33 +25,42 @@ export function AppShell({
   const [collapsed, setCollapsed] = useState(true);
   const [mobileOpen, setMobileOpen] = useState(false);
 
+  const sidebarWidth = collapsed ? "68px" : "270px";
+
   return (
-    <div className="min-h-screen flex bg-[#FFF8F2] dark:bg-[#191410] text-[#1E1B17] dark:text-[#F7EFE9] transition-colors">
-      {/* Sidebar Navigation */}
+    <div
+      style={
+        {
+          "--sidebar-width": sidebarWidth,
+          "--header-height": "64px",
+        } as React.CSSProperties
+      }
+      className="min-h-screen bg-[#FFF8F2] dark:bg-[#191410] text-[#1E1B17] dark:text-[#F7EFE9] transition-colors"
+    >
+      {/* 1. Permanently Fixed Left Sidebar (100vh) */}
       <Sidebar
         activeNav={activeNav}
         onNavigate={onNavigate}
         collapsed={collapsed}
-        onToggleCollapse={() => setCollapsed(!collapsed)}
         mobileOpen={mobileOpen}
         onCloseMobile={() => setMobileOpen(false)}
       />
 
-      {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0 min-h-screen overflow-x-hidden transition-all duration-200">
-        {/* Sticky Top Header Ribbon */}
-        <Header
-          activeNav={activeNav}
-          onOpenMobile={() => setMobileOpen(true)}
-          collapsed={collapsed}
-          onToggleCollapse={() => setCollapsed(!collapsed)}
-          notifications={notifications}
-          pricingVisible={pricingVisible}
-          onTogglePricingVisibility={onTogglePricingVisibility}
-          onNavigate={onNavigate}
-        />
+      {/* 2. Permanently Fixed Top Navbar */}
+      <Header
+        activeNav={activeNav}
+        onOpenMobile={() => setMobileOpen(true)}
+        collapsed={collapsed}
+        onToggleCollapse={() => setCollapsed(!collapsed)}
+        notifications={notifications}
+        pricingVisible={pricingVisible}
+        onTogglePricingVisibility={onTogglePricingVisibility}
+        onNavigate={onNavigate}
+      />
 
-        {/* Content Canvas */}
+      {/* 3. Main Application Area (offset left by sidebar width, top by header height) */}
+      <div className="min-h-screen flex flex-col md:ml-[var(--sidebar-width)] pt-[var(--header-height)] min-w-0 transition-all duration-200 ease-in-out">
+        {/* Scrollable Content Canvas */}
         <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto space-y-6">
           {children}
         </main>

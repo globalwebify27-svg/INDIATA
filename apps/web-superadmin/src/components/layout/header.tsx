@@ -103,7 +103,10 @@ export function Header({
   };
 
   return (
-    <header className="sticky top-0 z-30 h-16 bg-white dark:bg-[#201A15] border-b border-[#EAE5DC] dark:border-[#352B22] px-3 sm:px-4 lg:px-6 flex items-center justify-between gap-2 sm:gap-4 transition-colors shadow-2xs">
+    <header
+      id="superadmin-header"
+      className="fixed top-0 right-0 left-0 md:left-[var(--sidebar-width)] z-30 h-16 bg-white dark:bg-[#201A15] border-b border-[#EAE5DC] dark:border-[#352B22] px-3 sm:px-4 lg:px-6 flex items-center justify-between gap-2 sm:gap-4 transition-all duration-200 ease-in-out shadow-2xs"
+    >
       {/* Zone 1: Left Section - Single Designated Hamburger Toggle & Breadcrumbs */}
       <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0 min-w-0">
         {/* Single Designated Hamburger Toggle Button */}

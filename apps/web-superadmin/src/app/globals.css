@@ -3,6 +3,12 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
+  /* Dashboard Fixed Layout Tokens */
+  --header-height: 64px;
+  --sidebar-width-collapsed: 68px;
+  --sidebar-width-expanded: 270px;
+  --sidebar-width: var(--sidebar-width-collapsed);
+
   /* Stitch Design Tokens - Election-Friendly Warm Civic Canvas */
   --background: #FFF8F2;
   --foreground: #1E1B17;

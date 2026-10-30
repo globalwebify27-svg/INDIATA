@@ -183,11 +183,11 @@ export function Sidebar({
         />
       )}
 
-      {/* Main Sidebar Element */}
+      {/* Main Sidebar Element (Permanently Fixed to Viewport Left) */}
       <aside
         id="superadmin-sidebar"
         aria-label="Super Admin Primary Navigation"
-        className={`fixed md:sticky top-0 inset-y-0 left-0 z-40 flex flex-col h-screen bg-[#FAF2EB] dark:bg-[#1C1611] border-r border-[#EAE5DC] dark:border-[#352B22] text-[#554336] dark:text-[#DBC2B0] transition-all duration-200 ease-in-out motion-reduce:transition-none select-none shadow-sm ${
+        className={`fixed top-0 inset-y-0 left-0 z-50 md:z-40 flex flex-col h-screen h-[100dvh] bg-[#FAF2EB] dark:bg-[#1C1611] border-r border-[#EAE5DC] dark:border-[#352B22] text-[#554336] dark:text-[#DBC2B0] transition-all duration-200 ease-in-out motion-reduce:transition-none select-none shadow-sm ${
           collapsed ? "w-[68px]" : "w-[270px]"
         } ${mobileOpen ? "translate-x-0 !w-[270px]" : "-translate-x-full md:translate-x-0"}`}
       >
