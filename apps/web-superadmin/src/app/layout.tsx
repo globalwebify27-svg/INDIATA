@@ -38,6 +38,22 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap"
           rel="stylesheet"
         />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              try {
+                var storedTheme = localStorage.getItem('indiata_admin_theme') || localStorage.getItem('rajtantra_admin_theme');
+                if (storedTheme === 'dark') {
+                  document.documentElement.classList.add('dark');
+                } else {
+                  document.documentElement.classList.remove('dark');
+                }
+              } catch (e) {
+                document.documentElement.classList.remove('dark');
+              }
+            `,
+          }}
+        />
       </head>
       <body className="antialiased min-h-screen flex flex-col bg-[#FFF8F2] dark:bg-[#191410] text-[#1E1B17] dark:text-[#F7EFE9] font-sans selection:bg-[#FFDCC3] selection:text-[#2F1500]">
         <ThemeProvider>
