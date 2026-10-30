@@ -13,11 +13,20 @@ out/
 # Turborepo cache
 .turbo/
 
-# Environment files
-.env
-.env.local
-.env.*.local
+# Environment files and credentials
+.env*
 !.env.example
+*.pem
+*.key
+*.cert
+credentials*
+secrets*
+
+# Internal documentation
+Docs/
+docs2/
+doc/
+docs/
 
 # Logs
 *.log
