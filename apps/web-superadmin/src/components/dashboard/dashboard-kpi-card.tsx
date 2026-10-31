@@ -31,34 +31,34 @@ export function DashboardKpiCard({
 
   const themeConfig = {
     saffron: {
-      borderHover: "hover:border-[#2087FE]/50",
-      iconBg: "bg-[#E0EDFE] dark:bg-[#2B241E] text-[#2087FE] dark:text-[#FFB77D]",
-      badge: "bg-[#E0EDFE] dark:bg-[#2B241E] text-[#2087FE] dark:text-[#FFB77D] border-[#ACB9D1] dark:border-[#3F372F]",
+      borderHover: "hover:border-[#2087FE]/50 dark:hover:border-[#0D79FD]/50",
+      iconBg: "bg-[#E0EDFE] dark:bg-[#0D79FD]/15 text-[#2087FE] dark:text-[#0D79FD]",
+      badge: "bg-[#E0EDFE] dark:bg-[#0D79FD]/15 text-[#2087FE] dark:text-[#0D79FD] border-[#ACB9D1] dark:border-[#0e3554]",
     },
     green: {
-      borderHover: "hover:border-[#12CF94]/50",
-      iconBg: "bg-[#B3EDD7]/60 dark:bg-[#005323]/40 text-[#12CF94] dark:text-[#92F5A4]",
-      badge: "bg-[#B3EDD7] dark:bg-[#005323]/40 text-[#010627] dark:text-[#92F5A4] border-[#12CF94]/40 dark:border-[#005323]",
+      borderHover: "hover:border-[#12CF94]/50 dark:hover:border-[#01C588]/50",
+      iconBg: "bg-[#B3EDD7]/60 dark:bg-[#01C588]/15 text-[#12CF94] dark:text-[#01C588]",
+      badge: "bg-[#B3EDD7] dark:bg-[#01C588]/15 text-[#010627] dark:text-[#01C588] border-[#12CF94]/40 dark:border-[#01C588]/30",
     },
     amber: {
-      borderHover: "hover:border-[#FC7C36]/50",
-      iconBg: "bg-[#FC7C36]/15 dark:bg-[#6E3900] text-[#FC7C36] dark:text-[#FFB77D]",
-      badge: "bg-[#FC7C36]/15 dark:bg-[#6E3900] text-[#FC7C36] dark:text-[#FFDCC3] border-[#FC7C36]/30",
+      borderHover: "hover:border-[#FC7C36]/50 dark:hover:border-[#F48637]/50",
+      iconBg: "bg-[#FC7C36]/15 dark:bg-[#F48637]/15 text-[#FC7C36] dark:text-[#F48637]",
+      badge: "bg-[#FC7C36]/15 dark:bg-[#F48637]/15 text-[#FC7C36] dark:text-[#F48637] border-[#FC7C36]/30 dark:border-[#F48637]/30",
     },
     violet: {
-      borderHover: "hover:border-[#2087FE]/50",
-      iconBg: "bg-[#E0EDFE] dark:bg-[#3D0089] text-[#2087FE] dark:text-[#D2BBFF]",
-      badge: "bg-[#E0EDFE] dark:bg-[#3D0089] text-[#2087FE] dark:text-[#D2BBFF] border-[#ACB9D1]",
+      borderHover: "hover:border-[#2087FE]/50 dark:hover:border-[#6C43FC]/50",
+      iconBg: "bg-[#E0EDFE] dark:bg-[#6C43FC]/15 text-[#2087FE] dark:text-[#6C43FC]",
+      badge: "bg-[#E0EDFE] dark:bg-[#6C43FC]/15 text-[#2087FE] dark:text-[#6C43FC] border-[#ACB9D1] dark:border-[#0e3554]",
     },
     navy: {
-      borderHover: "hover:border-[#2087FE]/50",
-      iconBg: "bg-[#E0EDFE] dark:bg-[#2B241E] text-[#2087FE] dark:text-[#FFB77D]",
-      badge: "bg-[#E0EDFE] dark:bg-[#2B241E] text-[#2087FE] dark:text-[#FFB77D] border-[#ACB9D1]",
+      borderHover: "hover:border-[#2087FE]/50 dark:hover:border-[#0D79FD]/50",
+      iconBg: "bg-[#E0EDFE] dark:bg-[#0D79FD]/15 text-[#2087FE] dark:text-[#0D79FD]",
+      badge: "bg-[#E0EDFE] dark:bg-[#0D79FD]/15 text-[#2087FE] dark:text-[#0D79FD] border-[#ACB9D1] dark:border-[#0e3554]",
     },
   }[themeColor] || {
-    borderHover: "hover:border-[#2087FE]/50",
-    iconBg: "bg-[#E0EDFE] text-[#2087FE]",
-    badge: "bg-[#E0EDFE] text-[#2087FE] border-[#ACB9D1]",
+    borderHover: "hover:border-[#2087FE]/50 dark:hover:border-[#0D79FD]/50",
+    iconBg: "bg-[#E0EDFE] dark:bg-[#0D79FD]/15 text-[#2087FE] dark:text-[#0D79FD]",
+    badge: "bg-[#E0EDFE] dark:bg-[#0D79FD]/15 text-[#2087FE] dark:text-[#0D79FD] border-[#ACB9D1] dark:border-[#0e3554]",
   };
 
   return (
@@ -72,16 +72,16 @@ export function DashboardKpiCard({
           onClick();
         }
       }}
-      className={`group relative p-5 rounded-xl bg-[#FDFEFE] dark:bg-[#201A15] border border-[#ACB9D1] dark:border-[#352B22] shadow-2xs ${themeConfig.borderHover} transition-all duration-150 cursor-pointer overflow-hidden flex flex-col justify-between`}
+      className={`group relative p-5 rounded-xl bg-[#FDFEFE] dark:bg-[#062237] border border-[#ACB9D1] dark:border-[#0e3554] shadow-2xs ${themeConfig.borderHover} transition-all duration-150 cursor-pointer overflow-hidden flex flex-col justify-between`}
     >
       <div>
         {/* Card Header: Title + Icon */}
         <div className="flex items-start justify-between gap-3">
           <div>
-            <p className="text-xs font-semibold text-[#717785] dark:text-[#DBC2B0]">
+            <p className="text-xs font-semibold text-[#717785] dark:text-[#94A3B8]">
               {title}
             </p>
-            <h3 className="text-3xl sm:text-4xl font-extrabold text-[#010627] dark:text-[#F7EFE9] mt-1 tracking-tight tabular-nums">
+            <h3 className="text-3xl sm:text-4xl font-extrabold text-[#010627] dark:text-[#F5F6F6] mt-1 tracking-tight tabular-nums">
               {displayValue}
             </h3>
           </div>
@@ -95,7 +95,7 @@ export function DashboardKpiCard({
       </div>
 
       {/* Footer Subtext and Badge */}
-      <div className="mt-4 pt-3 border-t border-[#ACB9D1] dark:border-[#352B22] flex items-center justify-between text-xs text-[#717785] dark:text-[#DBC2B0]">
+      <div className="mt-4 pt-3 border-t border-[#ACB9D1] dark:border-[#0e3554] flex items-center justify-between text-xs text-[#717785] dark:text-[#94A3B8]">
         <span className="truncate pr-2">{primarySubtext}</span>
         {badgeText && (
           <span

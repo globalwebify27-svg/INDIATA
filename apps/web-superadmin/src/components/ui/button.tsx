@@ -24,17 +24,17 @@ export interface ButtonProps
 
 const variantStyles: Record<ButtonVariant, string> = {
   primary:
-    "bg-[#2087FE] hover:bg-[#2087FE]/90 text-white shadow-xs border border-transparent focus-visible:ring-2 focus-visible:ring-[#2087FE]",
+    "bg-[#2087FE] hover:bg-[#2087FE]/90 dark:bg-[#0D79FD] dark:hover:bg-[#0D79FD]/90 text-white shadow-xs border border-transparent focus-visible:ring-2 focus-visible:ring-[#2087FE] dark:focus-visible:ring-[#0D79FD]",
   secondary:
-    "bg-[#010627] hover:bg-[#010627]/90 text-white shadow-xs border border-transparent focus-visible:ring-2 focus-visible:ring-[#010627] dark:bg-slate-700 dark:hover:bg-slate-600",
+    "bg-[#010627] hover:bg-[#010627]/90 text-white shadow-xs border border-transparent focus-visible:ring-2 focus-visible:ring-[#010627] dark:bg-[#072439] dark:hover:bg-[#072439]/80 dark:text-[#F5F6F6] dark:border-[#0e3554]",
   outline:
-    "bg-[#FDFEFE] dark:bg-slate-900 hover:bg-[#E0EDFE] dark:hover:bg-slate-800 text-[#010627] dark:text-slate-200 border border-[#ACB9D1] dark:border-slate-700 shadow-xs focus-visible:ring-2 focus-visible:ring-[#2087FE]",
+    "bg-[#FDFEFE] dark:bg-[#062237] hover:bg-[#E0EDFE] dark:hover:bg-[#072439] text-[#010627] dark:text-[#F5F6F6] border border-[#ACB9D1] dark:border-[#0e3554] shadow-xs focus-visible:ring-2 focus-visible:ring-[#2087FE] dark:focus-visible:ring-[#0D79FD]",
   ghost:
-    "bg-transparent hover:bg-[#E0EDFE] dark:hover:bg-slate-800 text-[#010627] dark:text-slate-300 focus-visible:ring-2 focus-visible:ring-[#2087FE]",
+    "bg-transparent hover:bg-[#E0EDFE] dark:hover:bg-[#072439] text-[#010627] dark:text-[#F5F6F6] focus-visible:ring-2 focus-visible:ring-[#2087FE] dark:focus-visible:ring-[#0D79FD]",
   danger:
-    "bg-[#FC7C36] hover:bg-[#FC7C36]/90 text-white shadow-xs border border-transparent focus-visible:ring-2 focus-visible:ring-[#FC7C36]",
+    "bg-[#FC7C36] hover:bg-[#FC7C36]/90 dark:bg-[#F48637] dark:hover:bg-[#F48637]/90 text-white shadow-xs border border-transparent focus-visible:ring-2 focus-visible:ring-[#FC7C36] dark:focus-visible:ring-[#F48637]",
   success:
-    "bg-[#12CF94] hover:bg-[#12CF94]/90 text-[#010627] font-bold shadow-xs border border-transparent focus-visible:ring-2 focus-visible:ring-[#12CF94]",
+    "bg-[#12CF94] hover:bg-[#12CF94]/90 dark:bg-[#01C588] dark:hover:bg-[#01C588]/90 text-[#010627] dark:text-[#011A2D] font-bold shadow-xs border border-transparent focus-visible:ring-2 focus-visible:ring-[#12CF94] dark:focus-visible:ring-[#01C588]",
 };
 
 const sizeStyles: Record<ButtonSize, string> = {

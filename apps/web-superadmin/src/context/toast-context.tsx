@@ -46,24 +46,24 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
             key={item.id}
             className={`pointer-events-auto flex items-start gap-3 p-3.5 rounded-lg border shadow-lg text-xs font-medium transition-all animate-in slide-in-from-bottom-2 ${
               item.type === "success"
-                ? "bg-emerald-50 dark:bg-emerald-950/80 border-emerald-200 dark:border-emerald-800 text-emerald-900 dark:text-emerald-200"
+                ? "bg-[#B3EDD7]/20 dark:bg-[#062237] border-[#12CF94]/30 dark:border-[#01C588]/40 text-[#010627] dark:text-[#01C588]"
                 : item.type === "error"
-                ? "bg-rose-50 dark:bg-rose-950/80 border-rose-200 dark:border-rose-800 text-rose-900 dark:text-rose-200"
+                ? "bg-[#FC7C36]/10 dark:bg-[#062237] border-[#FC7C36]/30 dark:border-[#F48637]/40 text-[#010627] dark:text-[#F48637]"
                 : item.type === "warning"
-                ? "bg-amber-50 dark:bg-amber-950/80 border-amber-200 dark:border-amber-800 text-amber-900 dark:text-amber-200"
-                : "bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-200"
+                ? "bg-[#FC7C36]/10 dark:bg-[#062237] border-[#FC7C36]/30 dark:border-[#F48637]/40 text-[#010627] dark:text-[#F48637]"
+                : "bg-[#FDFEFE] dark:bg-[#062237] border-[#ACB9D1] dark:border-[#0e3554] text-[#010627] dark:text-[#F5F6F6]"
             }`}
           >
             <div className="flex-shrink-0 mt-0.5">
-              {item.type === "success" && <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />}
-              {item.type === "error" && <AlertCircle className="w-4 h-4 text-rose-600 dark:text-rose-400" />}
-              {item.type === "warning" && <AlertTriangle className="w-4 h-4 text-amber-600 dark:text-amber-400" />}
-              {item.type === "info" && <Info className="w-4 h-4 text-sky-600 dark:text-sky-400" />}
+              {item.type === "success" && <CheckCircle2 className="w-4 h-4 text-[#12CF94] dark:text-[#01C588]" />}
+              {item.type === "error" && <AlertCircle className="w-4 h-4 text-[#FC7C36] dark:text-[#F48637]" />}
+              {item.type === "warning" && <AlertTriangle className="w-4 h-4 text-[#FC7C36] dark:text-[#F48637]" />}
+              {item.type === "info" && <Info className="w-4 h-4 text-[#2087FE] dark:text-[#0D79FD]" />}
             </div>
             <div className="flex-1 leading-relaxed">{item.message}</div>
             <button
               onClick={() => removeToast(item.id)}
-              className="flex-shrink-0 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+              className="flex-shrink-0 text-[#717785] hover:text-[#010627] dark:text-[#94A3B8] dark:hover:text-[#F5F6F6]"
             >
               <X className="w-3.5 h-3.5" />
             </button>

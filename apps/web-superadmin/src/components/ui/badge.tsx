@@ -16,33 +16,33 @@ export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
 const variantClasses: Record<BadgeVariant, { container: string; dot: string }> = {
   success: {
     container:
-      "bg-[#B3EDD7] dark:bg-emerald-950/60 text-[#010627] dark:text-emerald-300 border-[#12CF94]/40 dark:border-emerald-800",
-    dot: "bg-[#12CF94]",
+      "bg-[#B3EDD7] dark:bg-[#01C588]/15 text-[#010627] dark:text-[#01C588] border-[#12CF94]/40 dark:border-[#01C588]/30",
+    dot: "bg-[#12CF94] dark:bg-[#01C588]",
   },
   warning: {
     container:
-      "bg-[#FC7C36]/15 dark:bg-amber-950/60 text-[#FC7C36] dark:text-amber-300 border-[#FC7C36]/30 dark:border-amber-800",
-    dot: "bg-[#FC7C36]",
+      "bg-[#FC7C36]/15 dark:bg-[#F48637]/15 text-[#FC7C36] dark:text-[#F48637] border-[#FC7C36]/30 dark:border-[#F48637]/30",
+    dot: "bg-[#FC7C36] dark:bg-[#F48637]",
   },
   danger: {
     container:
-      "bg-[#FC7C36]/15 dark:bg-rose-950/60 text-[#FC7C36] dark:text-rose-300 border-[#FC7C36]/30 dark:border-rose-800",
-    dot: "bg-[#FC7C36]",
+      "bg-[#FC7C36]/15 dark:bg-[#F48637]/15 text-[#FC7C36] dark:text-[#F48637] border-[#FC7C36]/30 dark:border-[#F48637]/30",
+    dot: "bg-[#FC7C36] dark:bg-[#F48637]",
   },
   info: {
     container:
-      "bg-[#E0EDFE] dark:bg-sky-950/60 text-[#2087FE] dark:text-sky-300 border-[#ACB9D1] dark:border-sky-800",
-    dot: "bg-[#2087FE]",
+      "bg-[#E0EDFE] dark:bg-[#0D79FD]/15 text-[#2087FE] dark:text-[#0D79FD] border-[#ACB9D1] dark:border-[#0D79FD]/30",
+    dot: "bg-[#2087FE] dark:bg-[#0D79FD]",
   },
   purple: {
     container:
-      "bg-[#E0EDFE] dark:bg-indigo-950/60 text-[#2087FE] dark:text-indigo-300 border-[#ACB9D1] dark:border-indigo-800",
-    dot: "bg-[#2087FE]",
+      "bg-[#E0EDFE] dark:bg-[#6C43FC]/15 text-[#2087FE] dark:text-[#6C43FC] border-[#ACB9D1] dark:border-[#6C43FC]/30",
+    dot: "bg-[#2087FE] dark:bg-[#6C43FC]",
   },
   neutral: {
     container:
-      "bg-[#F3F8FD] dark:bg-slate-800 text-[#717785] dark:text-slate-300 border-[#ACB9D1] dark:border-slate-700",
-    dot: "bg-[#717785]",
+      "bg-[#F3F8FD] dark:bg-[#072439] text-[#717785] dark:text-[#94A3B8] border-[#ACB9D1] dark:border-[#0e3554]",
+    dot: "bg-[#717785] dark:bg-[#94A3B8]",
   },
 };
 

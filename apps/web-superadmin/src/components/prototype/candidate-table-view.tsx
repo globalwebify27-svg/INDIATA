@@ -91,49 +91,49 @@ export function CandidateTableView({
     <div className="space-y-4">
       {/* Metrics Row */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
-        <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs">
-          <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+        <div className="p-4 rounded-xl border border-slate-200 dark:border-[#0e3554] bg-white dark:bg-[#062237] shadow-xs">
+          <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-[#94A3B8]">
             Total Candidates
           </div>
-          <div className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-slate-100 mt-1">
+          <div className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-[#F5F6F6] mt-1">
             {candidates.length}
           </div>
-          <div className="text-[11px] text-slate-400 mt-0.5">Across 4 election tiers</div>
+          <div className="text-[11px] text-slate-400 dark:text-[#94A3B8] mt-0.5">Across 4 election tiers</div>
         </div>
 
-        <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs">
-          <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+        <div className="p-4 rounded-xl border border-slate-200 dark:border-[#0e3554] bg-white dark:bg-[#062237] shadow-xs">
+          <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-[#94A3B8]">
             Active War Rooms
           </div>
-          <div className="text-xl sm:text-2xl font-bold text-emerald-600 dark:text-emerald-400 mt-1">
+          <div className="text-xl sm:text-2xl font-bold text-emerald-600 dark:text-[#01C588] mt-1">
             {candidates.filter((c) => c.status === "Active").length}
           </div>
-          <div className="text-[11px] text-slate-400 mt-0.5">Live operational tenants</div>
+          <div className="text-[11px] text-slate-400 dark:text-[#94A3B8] mt-0.5">Live operational tenants</div>
         </div>
 
-        <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs">
-          <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+        <div className="p-4 rounded-xl border border-slate-200 dark:border-[#0e3554] bg-white dark:bg-[#062237] shadow-xs">
+          <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-[#94A3B8]">
             Field Cadre Deployed
           </div>
-          <div className="text-xl sm:text-2xl font-bold text-sky-600 dark:text-sky-400 mt-1">
+          <div className="text-xl sm:text-2xl font-bold text-sky-600 dark:text-[#0D79FD] mt-1">
             {candidates.reduce((acc, c) => acc + c.usersUsed, 0)}
           </div>
-          <div className="text-[11px] text-slate-400 mt-0.5">Karyakartas on ground</div>
+          <div className="text-[11px] text-slate-400 dark:text-[#94A3B8] mt-0.5">Karyakartas on ground</div>
         </div>
 
-        <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs">
-          <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+        <div className="p-4 rounded-xl border border-slate-200 dark:border-[#0e3554] bg-white dark:bg-[#062237] shadow-xs">
+          <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-[#94A3B8]">
             Service Enquiries
           </div>
-          <div className="text-xl sm:text-2xl font-bold text-amber-600 dark:text-amber-400 mt-1">
+          <div className="text-xl sm:text-2xl font-bold text-amber-600 dark:text-[#F48637] mt-1">
             {candidates.reduce((acc, c) => acc + c.pendingEnquiries, 0)}
           </div>
-          <div className="text-[11px] text-slate-400 mt-0.5">Recharges & hardware</div>
+          <div className="text-[11px] text-slate-400 dark:text-[#94A3B8] mt-0.5">Recharges & hardware</div>
         </div>
       </div>
 
       {/* Action / Filter Bar */}
-      <div className="p-3 sm:p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs flex flex-col md:flex-row items-center justify-between gap-3">
+      <div className="p-3 sm:p-4 rounded-xl border border-slate-200 dark:border-[#0e3554] bg-white dark:bg-[#062237] shadow-xs flex flex-col md:flex-row items-center justify-between gap-3">
         {/* Search & dropdown filters */}
         <div className="flex flex-col sm:flex-row items-center gap-2.5 w-full md:w-auto flex-1">
           <SearchInput
@@ -233,17 +233,17 @@ export function CandidateTableView({
                   {/* Candidate Identity */}
                   <TableCell>
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-lg bg-sky-100 dark:bg-sky-950/60 text-sky-700 dark:text-sky-300 font-bold text-xs flex items-center justify-center flex-shrink-0 border border-sky-200 dark:border-sky-800">
+                      <div className="w-8 h-8 rounded-lg bg-sky-100 dark:bg-[#0D79FD]/15 text-sky-700 dark:text-[#0D79FD] font-bold text-xs flex items-center justify-center flex-shrink-0 border border-sky-200 dark:border-[#0D79FD]/30">
                         {cand.name.charAt(0)}
                       </div>
                       <div>
-                        <div className="font-semibold text-slate-900 dark:text-slate-100 flex items-center gap-1.5">
+                        <div className="font-semibold text-slate-900 dark:text-[#F5F6F6] flex items-center gap-1.5">
                           {cand.name}
-                          <span className="text-[10px] font-mono text-slate-400">
+                          <span className="text-[10px] font-mono text-slate-400 dark:text-[#94A3B8]">
                             {cand.id}
                           </span>
                         </div>
-                        <div className="text-xs text-slate-500">
+                        <div className="text-xs text-slate-500 dark:text-[#94A3B8]">
                           {cand.marathiName} &bull; {cand.phone}
                         </div>
                       </div>
@@ -252,26 +252,26 @@ export function CandidateTableView({
 
                   {/* Scope & Party */}
                   <TableCell>
-                    <div className="font-medium text-slate-800 dark:text-slate-200 text-xs">
+                    <div className="font-medium text-slate-800 dark:text-[#F5F6F6] text-xs">
                       {cand.geography}
                     </div>
-                    <div className="text-[11px] text-slate-500 flex items-center gap-1">
+                    <div className="text-[11px] text-slate-500 dark:text-[#94A3B8] flex items-center gap-1">
                       <span>{cand.party}</span>
                       <span>&bull;</span>
-                      <span className="text-slate-400">{cand.electionType}</span>
+                      <span className="text-slate-400 dark:text-[#94A3B8]">{cand.electionType}</span>
                     </div>
                   </TableCell>
 
                   {/* Field Quota & AI */}
                   <TableCell>
-                    <div className="flex items-center justify-between text-xs text-slate-700 dark:text-slate-300 mb-1 max-w-[140px]">
+                    <div className="flex items-center justify-between text-xs text-slate-700 dark:text-[#F5F6F6] mb-1 max-w-[140px]">
                       <span>
                         {cand.usersUsed} / {cand.usersAllowed} workers
                       </span>
                     </div>
-                    <div className="w-32 bg-slate-100 dark:bg-slate-800 rounded-full h-1.5 overflow-hidden">
+                    <div className="w-32 bg-slate-100 dark:bg-[#072439] rounded-full h-1.5 overflow-hidden">
                       <div
-                        className="bg-sky-600 h-1.5 rounded-full"
+                        className="bg-sky-600 dark:bg-[#0D79FD] h-1.5 rounded-full"
                         style={{
                           width: `${Math.min(
                             100,
@@ -281,7 +281,7 @@ export function CandidateTableView({
                       />
                     </div>
                     {cand.aiAccess && (
-                      <span className="inline-flex items-center gap-1 text-[10px] text-emerald-600 dark:text-emerald-400 font-medium mt-1">
+                      <span className="inline-flex items-center gap-1 text-[10px] text-emerald-600 dark:text-[#01C588] font-medium mt-1">
                         <Sparkles className="w-2.5 h-2.5" /> AI Mode ({cand.aiSeats} seats)
                       </span>
                     )}

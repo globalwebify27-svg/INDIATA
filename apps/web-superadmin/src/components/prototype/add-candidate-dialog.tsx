@@ -165,17 +165,17 @@ export function AddCandidateDialog({
     >
       <div className="space-y-5">
         {/* Step Indicator Bar */}
-        <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+        <div className="flex items-center justify-between border-b border-slate-200 dark:border-[#0e3554] pb-3">
           {steps.map((s, idx) => (
             <React.Fragment key={s.num}>
               <div className="flex items-center gap-2">
                 <div
                   className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold transition-colors ${
                     currentStep === s.num
-                      ? "bg-sky-600 text-white"
+                      ? "bg-[#0D79FD] text-white"
                       : currentStep > s.num
-                      ? "bg-emerald-600 text-white"
-                      : "bg-slate-100 dark:bg-slate-800 text-slate-500"
+                      ? "bg-[#01C588] text-white"
+                      : "bg-slate-100 dark:bg-[#072439] dark:border dark:border-[#0e3554] text-slate-500 dark:text-[#94A3B8]"
                   }`}
                 >
                   {currentStep > s.num ? <Check className="w-3.5 h-3.5" /> : s.num}
@@ -183,15 +183,15 @@ export function AddCandidateDialog({
                 <span
                   className={`text-xs hidden sm:inline font-medium ${
                     currentStep === s.num
-                      ? "text-slate-900 dark:text-slate-100 font-semibold"
-                      : "text-slate-400"
+                      ? "text-slate-900 dark:text-[#F5F6F6] font-semibold"
+                      : "text-slate-400 dark:text-[#94A3B8]"
                   }`}
                 >
                   {s.label}
                 </span>
               </div>
               {idx < steps.length - 1 && (
-                <div className="flex-1 h-0.5 mx-2 bg-slate-200 dark:bg-slate-800" />
+                <div className="flex-1 h-0.5 mx-2 bg-slate-200 dark:bg-[#0e3554]" />
               )}
             </React.Fragment>
           ))}
@@ -302,7 +302,7 @@ export function AddCandidateDialog({
               />
             </div>
 
-            <div className="p-3.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 space-y-3">
+            <div className="p-3.5 rounded-lg border border-slate-200 dark:border-[#0e3554] bg-slate-50 dark:bg-[#072439]/60 space-y-3">
               <Switch
                 checked={aiAccess}
                 onChange={setAiAccess}
@@ -310,7 +310,7 @@ export function AddCandidateDialog({
                 description="Allows natural-language query filters, instant report generation, and strategy assistant."
               />
               {aiAccess && (
-                <div className="pt-2 border-t border-slate-200 dark:border-slate-700">
+                <div className="pt-2 border-t border-slate-200 dark:border-[#0e3554]">
                   <Input
                     label="Allocated AI Seats Quota"
                     type="number"
@@ -334,18 +334,18 @@ export function AddCandidateDialog({
               onChange={(e) => setAppName(e.target.value)}
               helperText="The branded title displayed on workers' Android & iOS home screens."
             />
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40">
-              <div className="text-xs text-slate-700 dark:text-slate-300">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3.5 rounded-lg border border-slate-200 dark:border-[#0e3554] bg-slate-50 dark:bg-[#072439]/60">
+              <div className="text-xs text-slate-700 dark:text-[#F5F6F6]">
                 <span className="font-semibold block mb-1">Deployment Flags:</span>
-                <ul className="space-y-1 text-slate-500 list-disc list-inside">
+                <ul className="space-y-1 text-slate-500 dark:text-[#94A3B8] list-disc list-inside">
                   <li>Automatic Welcome SMS with initial passwords</li>
                   <li>Prisma tenant isolation initialization</li>
                   <li>Default 22 caste/scheme filter schemas</li>
                 </ul>
               </div>
-              <div className="text-xs text-slate-700 dark:text-slate-300">
+              <div className="text-xs text-slate-700 dark:text-[#F5F6F6]">
                 <span className="font-semibold block mb-1">Immediate Provisioning:</span>
-                <p className="text-slate-500">
+                <p className="text-slate-500 dark:text-[#94A3B8]">
                   Clicking Complete Provisioning writes the client organization, triggers database schemas, and adds the tenant to the global catalog.
                 </p>
               </div>

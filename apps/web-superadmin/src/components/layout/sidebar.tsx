@@ -187,14 +187,14 @@ export function Sidebar({
       <aside
         id="superadmin-sidebar"
         aria-label="Super Admin Primary Navigation"
-        className={`fixed top-0 inset-y-0 left-0 z-50 md:z-40 flex flex-col h-screen h-[100dvh] bg-[#FDFEFE] dark:bg-[#1C1611] border-r border-[#ACB9D1] dark:border-[#352B22] text-[#010627] dark:text-[#DBC2B0] transition-all duration-200 ease-in-out motion-reduce:transition-none select-none shadow-sm ${
+        className={`fixed top-0 inset-y-0 left-0 z-50 md:z-40 flex flex-col h-screen h-[100dvh] bg-[#FDFEFE] dark:bg-[#062237] border-r border-[#ACB9D1] dark:border-[#0e3554] text-[#010627] dark:text-[#94A3B8] transition-all duration-200 ease-in-out motion-reduce:transition-none select-none shadow-sm ${
           collapsed ? "w-[68px]" : "w-[270px]"
         } ${mobileOpen ? "translate-x-0 !w-[270px]" : "-translate-x-full md:translate-x-0"}`}
       >
         {/* Brand Header with Institutional Shield and Wordmark */}
         {collapsed && !mobileOpen ? (
           /* COLLAPSED HEADER (68px Rail): Centered Institutional Shield Emblem */
-          <div className="h-16 px-2 flex items-center justify-center border-b border-[#ACB9D1] dark:border-[#352B22] flex-shrink-0">
+          <div className="h-16 px-2 flex items-center justify-center border-b border-[#ACB9D1] dark:border-[#0e3554] flex-shrink-0">
             {/* Brand Shield Logo with Accessible Tooltip */}
             <button
               type="button"
@@ -209,16 +209,16 @@ export function Sidebar({
               {/* Tooltip */}
               <div
                 role="tooltip"
-                className="pointer-events-none absolute left-full top-1/2 -translate-y-1/2 ml-3 z-50 whitespace-nowrap rounded-lg bg-[#010627] dark:bg-[#FAF2EB] text-white dark:text-[#010627] px-3 py-1.5 text-xs font-semibold shadow-xl opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-visible:opacity-100"
+                className="pointer-events-none absolute left-full top-1/2 -translate-y-1/2 ml-3 z-50 whitespace-nowrap rounded-lg bg-[#010627] dark:bg-[#072439] text-white dark:text-[#F5F6F6] px-3 py-1.5 text-xs font-semibold shadow-xl opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-visible:opacity-100"
               >
                 <span>INDIATA Super Admin</span>
-                <div className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-[#010627] dark:border-r-[#FAF2EB]" />
+                <div className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-[#010627] dark:border-r-[#072439]" />
               </div>
             </button>
           </div>
         ) : (
           /* EXPANDED HEADER (270px Width): Full Wordmark, Status Pulse, and Mobile Close */
-          <div className="h-16 px-4 flex items-center justify-between border-b border-[#ACB9D1] dark:border-[#352B22] flex-shrink-0 bg-[#FDFEFE] dark:bg-[#1C1611]">
+          <div className="h-16 px-4 flex items-center justify-between border-b border-[#ACB9D1] dark:border-[#0e3554] flex-shrink-0 bg-[#FDFEFE] dark:bg-[#062237]">
             <div
               className="flex items-center gap-3 overflow-hidden cursor-pointer"
               onClick={() => {
@@ -234,7 +234,7 @@ export function Sidebar({
               </div>
               <div className="min-w-0">
                 <div className="flex items-center gap-2">
-                  <span className="text-lg font-bold text-[#2087FE] dark:text-[#FFB77D] tracking-tight">
+                  <span className="text-lg font-bold text-[#2087FE] dark:text-[#0D79FD] tracking-tight">
                     INDIATA
                   </span>
                   <span className="relative flex h-2 w-2">
@@ -242,7 +242,7 @@ export function Sidebar({
                     <span className="relative inline-flex rounded-full h-2 w-2 bg-[#12CF94]" />
                   </span>
                 </div>
-                <p className="text-[11px] font-medium text-[#717785] dark:text-[#DBC2B0] truncate">
+                <p className="text-[11px] font-medium text-[#717785] dark:text-[#94A3B8] truncate">
                   Super Admin Console
                 </p>
               </div>
@@ -252,7 +252,7 @@ export function Sidebar({
             <button
               type="button"
               onClick={onCloseMobile}
-              className="md:hidden p-1.5 rounded-lg text-[#717785] hover:text-[#010627] dark:hover:text-[#F7EFE9] hover:bg-[#E0EDFE]/70 cursor-pointer"
+              className="md:hidden p-1.5 rounded-lg text-[#717785] hover:text-[#010627] dark:hover:text-[#F5F6F6] hover:bg-[#E0EDFE]/70 dark:hover:bg-[#072439] cursor-pointer"
               aria-label="Close mobile navigation"
             >
               <X className="w-5 h-5" />
@@ -298,8 +298,8 @@ export function Sidebar({
                     }}
                     className={`w-11 h-11 rounded-xl flex items-center justify-center transition-all duration-150 relative group cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2087FE] ${
                       isGroupActive
-                        ? "bg-[#2087FE] dark:bg-[#352B22] text-white dark:text-[#FFB77D] font-bold shadow-xs ring-1 ring-[#2087FE]/30"
-                        : "text-[#010627] dark:text-[#DBC2B0] hover:bg-[#E0EDFE] dark:hover:bg-[#251E18] hover:text-[#2087FE] dark:hover:text-[#FFB77D]"
+                        ? "bg-[#2087FE] dark:bg-[#0D79FD] text-white dark:text-white font-bold shadow-xs ring-1 ring-[#2087FE]/30"
+                        : "text-[#010627] dark:text-[#94A3B8] hover:bg-[#E0EDFE] dark:hover:bg-[#072439] hover:text-[#2087FE] dark:hover:text-[#0D79FD]"
                     }`}
                     aria-label={item.label}
                   >
@@ -307,7 +307,7 @@ export function Sidebar({
 
                     {/* Active Route Left Pip */}
                     {isGroupActive && (
-                      <span className="absolute left-0.5 top-2.5 bottom-2.5 w-1 rounded-full bg-white dark:bg-[#FFB77D]" />
+                      <span className="absolute left-0.5 top-2.5 bottom-2.5 w-1 rounded-full bg-white dark:bg-white" />
                     )}
 
                     {/* Notification/Pending Micro Badge Dot */}
@@ -318,18 +318,18 @@ export function Sidebar({
                     {/* Accessible Floating Tooltip (Hover and Focus-Visible) */}
                     <div
                       role="tooltip"
-                      className="pointer-events-none absolute left-full top-1/2 -translate-y-1/2 ml-3 z-50 whitespace-nowrap rounded-lg bg-[#010627] dark:bg-[#FAF2EB] text-white dark:text-[#010627] px-3 py-1.5 text-xs font-semibold shadow-xl opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-visible:opacity-100"
+                      className="pointer-events-none absolute left-full top-1/2 -translate-y-1/2 ml-3 z-50 whitespace-nowrap rounded-lg bg-[#010627] dark:bg-[#072439] text-white dark:text-[#F5F6F6] px-3 py-1.5 text-xs font-semibold shadow-xl opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-visible:opacity-100"
                     >
                       <div className="flex items-center gap-2">
                         <span>{item.label}</span>
                         {item.badge && (
-                          <span className="px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-[#E0EDFE] dark:bg-[#6E3900] text-[#2087FE] dark:text-[#FFDCC3]">
+                          <span className="px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-[#E0EDFE] dark:bg-[#0D79FD]/15 text-[#2087FE] dark:text-[#0D79FD]">
                             {item.badge}
                           </span>
                         )}
                       </div>
                       {/* Tooltip Arrow */}
-                      <div className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-[#010627] dark:border-r-[#FAF2EB]" />
+                      <div className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-[#010627] dark:border-r-[#072439]" />
                     </div>
                   </button>
                 </div>
@@ -351,8 +351,8 @@ export function Sidebar({
                   }}
                   className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-medium transition-colors duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2087FE] ${
                     isGroupActive && (!hasSub || !isSubExpanded)
-                      ? "bg-[#2087FE] dark:bg-[#352B22] text-white dark:text-[#FFB77D] font-bold shadow-xs border border-[#2087FE]"
-                      : "text-[#010627] dark:text-[#DBC2B0] hover:bg-[#E0EDFE] dark:hover:bg-[#251E18] hover:text-[#2087FE] dark:hover:text-[#F7EFE9]"
+                      ? "bg-[#2087FE] dark:bg-[#0D79FD] text-white dark:text-white font-bold shadow-xs border border-[#2087FE] dark:border-[#0D79FD]"
+                      : "text-[#010627] dark:text-[#94A3B8] hover:bg-[#E0EDFE] dark:hover:bg-[#072439] hover:text-[#2087FE] dark:hover:text-[#F5F6F6]"
                   }`}
                   aria-expanded={hasSub ? isSubExpanded : undefined}
                 >
@@ -360,10 +360,10 @@ export function Sidebar({
                     <span
                       className={
                         isGroupActive && (!hasSub || !isSubExpanded)
-                          ? "text-white dark:text-[#FFB77D]"
+                          ? "text-white dark:text-white"
                           : isGroupActive
-                          ? "text-[#2087FE] dark:text-[#FFB77D]"
-                          : "text-[#717785] dark:text-[#DBC2B0]"
+                          ? "text-[#2087FE] dark:text-[#0D79FD]"
+                          : "text-[#717785] dark:text-[#94A3B8]"
                       }
                     >
                       {item.icon}
@@ -376,13 +376,13 @@ export function Sidebar({
                       <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-bold ${
                         isGroupActive && (!hasSub || !isSubExpanded)
                           ? "bg-white text-[#2087FE]"
-                          : "bg-[#E0EDFE] dark:bg-[#6E3900] text-[#2087FE] dark:text-[#FFDCC3]"
+                          : "bg-[#E0EDFE] dark:bg-[#0D79FD]/15 text-[#2087FE] dark:text-[#0D79FD]"
                       }`}>
                         {item.badge}
                       </span>
                     )}
                     {hasSub && (
-                      <span className={isGroupActive && (!hasSub || !isSubExpanded) ? "text-white" : "text-[#717785]"}>
+                      <span className={isGroupActive && (!hasSub || !isSubExpanded) ? "text-white" : "text-[#717785] dark:text-[#94A3B8]"}>
                         {isSubExpanded ? (
                           <ChevronDown className="w-3.5 h-3.5" />
                         ) : (
@@ -408,16 +408,16 @@ export function Sidebar({
                           }}
                           className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs transition-colors duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2087FE] ${
                             isSubActive
-                              ? "bg-[#E0EDFE] dark:bg-[#352B22] text-[#2087FE] dark:text-[#FFB77D] font-bold shadow-xs border-l-2 border-[#2087FE]"
-                              : "text-[#010627] dark:text-[#DBC2B0] hover:bg-[#E0EDFE]/60 dark:hover:bg-[#251E18] hover:text-[#2087FE]"
+                              ? "bg-[#E0EDFE] dark:bg-[#072439] text-[#2087FE] dark:text-[#0D79FD] font-bold shadow-xs border-l-2 border-[#2087FE] dark:border-[#0D79FD]"
+                              : "text-[#010627] dark:text-[#94A3B8] hover:bg-[#E0EDFE]/60 dark:hover:bg-[#072439] hover:text-[#2087FE] dark:hover:text-[#0D79FD]"
                           }`}
                         >
                           <div className="flex items-center gap-2.5 truncate">
-                            <span className={isSubActive ? "text-[#2087FE]" : "text-[#717785]"}>{sub.icon}</span>
+                            <span className={isSubActive ? "text-[#2087FE] dark:text-[#0D79FD]" : "text-[#717785] dark:text-[#94A3B8]"}>{sub.icon}</span>
                             <span className="truncate">{sub.label}</span>
                           </div>
                           {sub.badge && (
-                            <span className="px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-[#E0EDFE] dark:bg-[#6E3900] text-[#2087FE] dark:text-[#FFDCC3]">
+                            <span className="px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-[#E0EDFE] dark:bg-[#0D79FD]/15 text-[#2087FE] dark:text-[#0D79FD]">
                               {sub.badge}
                             </span>
                           )}
@@ -432,7 +432,7 @@ export function Sidebar({
         </nav>
 
         {/* Footer Operational Utilities and Admin Profile */}
-        <div className="border-t border-[#ACB9D1] dark:border-[#352B22] bg-[#FDFEFE] dark:bg-[#1C1611] flex-shrink-0">
+        <div className="border-t border-[#ACB9D1] dark:border-[#0e3554] bg-[#FDFEFE] dark:bg-[#062237] flex-shrink-0">
           {collapsed && !mobileOpen ? (
             /* COLLAPSED FOOTER (68px Rail): Centered Tooltip Buttons */
             <div className="py-3 px-2 flex flex-col items-center gap-2">
@@ -440,34 +440,34 @@ export function Sidebar({
               <button
                 type="button"
                 onClick={() => onNavigate("audit")}
-                className="w-10 h-10 rounded-xl bg-[#B3EDD7]/60 dark:bg-[#005323]/40 border border-[#12CF94]/40 flex items-center justify-center text-[#12CF94] dark:text-[#92F5A4] transition-colors relative group cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2087FE]"
+                className="w-10 h-10 rounded-xl bg-[#B3EDD7]/60 dark:bg-[#01C588]/20 border border-[#12CF94]/40 dark:border-[#01C588]/40 flex items-center justify-center text-[#12CF94] dark:text-[#01C588] transition-colors relative group cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2087FE]"
                 aria-label="Security Audit: Active"
               >
                 <ShieldCheck className="w-4 h-4" />
                 {/* Tooltip */}
                 <div
                   role="tooltip"
-                  className="pointer-events-none absolute left-full top-1/2 -translate-y-1/2 ml-3 z-50 whitespace-nowrap rounded-lg bg-[#010627] dark:bg-[#FAF2EB] text-white dark:text-[#010627] px-3 py-1.5 text-xs font-semibold shadow-xl opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-visible:opacity-100"
+                  className="pointer-events-none absolute left-full top-1/2 -translate-y-1/2 ml-3 z-50 whitespace-nowrap rounded-lg bg-[#010627] dark:bg-[#072439] text-white dark:text-[#F5F6F6] px-3 py-1.5 text-xs font-semibold shadow-xl opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-visible:opacity-100"
                 >
                   <span>Security Audit: Active (L0)</span>
-                  <div className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-[#010627] dark:border-r-[#FAF2EB]" />
+                  <div className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-[#010627] dark:border-r-[#072439]" />
                 </div>
               </button>
 
               {/* System Health Pulse Icon */}
               <button
                 type="button"
-                className="w-10 h-10 rounded-xl bg-[#FDFEFE] dark:bg-[#201A15] border border-[#ACB9D1] dark:border-[#352B22] flex items-center justify-center text-[#12CF94] dark:text-[#92F5A4] transition-colors relative group cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2087FE]"
+                className="w-10 h-10 rounded-xl bg-[#FDFEFE] dark:bg-[#062237] border border-[#ACB9D1] dark:border-[#0e3554] flex items-center justify-center text-[#12CF94] dark:text-[#01C588] transition-colors relative group cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2087FE]"
                 aria-label="System Health: 99.98% Operational"
               >
-                <Activity className="w-4 h-4 animate-pulse text-[#12CF94] dark:text-[#92F5A4]" />
+                <Activity className="w-4 h-4 animate-pulse text-[#12CF94] dark:text-[#01C588]" />
                 {/* Tooltip */}
                 <div
                   role="tooltip"
-                  className="pointer-events-none absolute left-full top-1/2 -translate-y-1/2 ml-3 z-50 whitespace-nowrap rounded-lg bg-[#010627] dark:bg-[#FAF2EB] text-white dark:text-[#010627] px-3 py-1.5 text-xs font-semibold shadow-xl opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-visible:opacity-100"
+                  className="pointer-events-none absolute left-full top-1/2 -translate-y-1/2 ml-3 z-50 whitespace-nowrap rounded-lg bg-[#010627] dark:bg-[#072439] text-white dark:text-[#F5F6F6] px-3 py-1.5 text-xs font-semibold shadow-xl opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-visible:opacity-100"
                 >
                   <span>System Health: 99.98% SLA</span>
-                  <div className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-[#010627] dark:border-r-[#FAF2EB]" />
+                  <div className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-[#010627] dark:border-r-[#072439]" />
                 </div>
               </button>
 
@@ -475,21 +475,21 @@ export function Sidebar({
               <button
                 type="button"
                 onClick={() => onNavigate("profile")}
-                className="w-10 h-10 rounded-xl bg-[#2087FE] dark:bg-[#6E3900] text-white dark:text-[#FFB77D] font-bold text-xs flex items-center justify-center border border-[#2087FE]/20 shadow-xs relative group cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2087FE]"
+                className="w-10 h-10 rounded-xl bg-[#2087FE] dark:bg-[#0D79FD] text-white dark:text-white font-bold text-xs flex items-center justify-center border border-[#2087FE]/20 shadow-xs relative group cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2087FE]"
                 aria-label="Root Super Admin (admin@indiata.gov.in)"
               >
                 SA
-                <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-[#12CF94] border-2 border-[#FDFEFE] dark:border-[#1C1611]" />
+                <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-[#12CF94] dark:bg-[#01C588] border-2 border-[#FDFEFE] dark:border-[#062237]" />
                 {/* Tooltip */}
                 <div
                   role="tooltip"
-                  className="pointer-events-none absolute left-full top-1/2 -translate-y-1/2 ml-3 z-50 whitespace-nowrap rounded-lg bg-[#010627] dark:bg-[#FAF2EB] text-white dark:text-[#010627] px-3 py-1.5 text-xs font-semibold shadow-xl opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-visible:opacity-100"
+                  className="pointer-events-none absolute left-full top-1/2 -translate-y-1/2 ml-3 z-50 whitespace-nowrap rounded-lg bg-[#010627] dark:bg-[#072439] text-white dark:text-[#F5F6F6] px-3 py-1.5 text-xs font-semibold shadow-xl opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-visible:opacity-100"
                 >
                   <div>
                     <div className="font-bold">Root Super Admin</div>
                     <div className="text-[10px] opacity-80 font-mono">admin@indiata.gov.in (L0)</div>
                   </div>
-                  <div className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-[#010627] dark:border-r-[#FAF2EB]" />
+                  <div className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-[#010627] dark:border-r-[#072439]" />
                 </div>
               </button>
             </div>
@@ -498,41 +498,41 @@ export function Sidebar({
             <div className="p-3.5 space-y-2.5">
               <div className="space-y-1.5">
                 {/* Security Audit Row */}
-                <div className="flex items-center justify-between px-3 py-2 rounded-lg bg-[#E0EDFE]/60 dark:bg-[#251E18] text-[#010627] dark:text-[#DBC2B0] text-xs">
+                <div className="flex items-center justify-between px-3 py-2 rounded-lg bg-[#E0EDFE]/60 dark:bg-[#072439] text-[#010627] dark:text-[#94A3B8] text-xs">
                   <div className="flex items-center gap-2">
-                    <ShieldCheck className="w-4 h-4 text-[#12CF94] dark:text-[#92F5A4]" />
+                    <ShieldCheck className="w-4 h-4 text-[#12CF94] dark:text-[#01C588]" />
                     <span>Security Audit</span>
                   </div>
-                  <span className="text-[11px] text-[#12CF94] dark:text-[#92F5A4] font-bold">
+                  <span className="text-[11px] text-[#12CF94] dark:text-[#01C588] font-bold">
                     Active
                   </span>
                 </div>
 
                 {/* System Health Row */}
-                <div className="flex items-center justify-between px-3 py-2 rounded-lg bg-[#E0EDFE]/60 dark:bg-[#251E18] text-[#010627] dark:text-[#DBC2B0] text-xs">
+                <div className="flex items-center justify-between px-3 py-2 rounded-lg bg-[#E0EDFE]/60 dark:bg-[#072439] text-[#010627] dark:text-[#94A3B8] text-xs">
                   <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-[#12CF94] dark:bg-[#92F5A4] animate-pulse" />
+                    <span className="w-2 h-2 rounded-full bg-[#12CF94] dark:bg-[#01C588] animate-pulse" />
                     <span>System Health</span>
                   </div>
-                  <span className="text-[11px] text-[#12CF94] dark:text-[#92F5A4] font-bold font-mono">
+                  <span className="text-[11px] text-[#12CF94] dark:text-[#01C588] font-bold font-mono">
                     99.98%
                   </span>
                 </div>
               </div>
 
               {/* Full Admin Profile Badge Card */}
-              <div className="p-2.5 rounded-xl bg-[#FDFEFE] dark:bg-[#201A15] border border-[#ACB9D1] dark:border-[#352B22] flex items-center gap-2.5 shadow-xs">
-                <div className="w-9 h-9 rounded-lg bg-[#2087FE] dark:bg-[#6E3900] text-white dark:text-[#FFB77D] font-bold text-xs flex items-center justify-center flex-shrink-0">
+              <div className="p-2.5 rounded-xl bg-[#FDFEFE] dark:bg-[#072439] border border-[#ACB9D1] dark:border-[#0e3554] flex items-center gap-2.5 shadow-xs">
+                <div className="w-9 h-9 rounded-lg bg-[#2087FE] dark:bg-[#0D79FD] text-white dark:text-white font-bold text-xs flex items-center justify-center flex-shrink-0">
                   SA
                 </div>
                 <div className="min-w-0 flex-1 leading-tight">
                   <div className="flex items-center gap-1.5">
-                    <span className="text-xs font-bold text-[#010627] dark:text-[#F7EFE9] truncate">
+                    <span className="text-xs font-bold text-[#010627] dark:text-[#F5F6F6] truncate">
                       Root Super Admin
                     </span>
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#12CF94]" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#12CF94] dark:bg-[#01C588]" />
                   </div>
-                  <p className="text-[10px] text-[#717785] dark:text-[#A8988C] truncate font-mono mt-0.5">
+                  <p className="text-[10px] text-[#717785] dark:text-[#94A3B8] truncate font-mono mt-0.5">
                     admin@indiata.gov.in
                   </p>
                 </div>

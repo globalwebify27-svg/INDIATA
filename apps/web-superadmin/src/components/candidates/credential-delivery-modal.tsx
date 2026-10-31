@@ -69,29 +69,29 @@ export function CredentialDeliveryModal({
     >
       <div className="space-y-4">
         {/* Candidate Identity Card */}
-        <div className="p-3.5 rounded-lg bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 text-xs space-y-1.5">
+        <div className="p-3.5 rounded-lg bg-[#F3F8FD]/50 dark:bg-[#072439] border border-[#ACB9D1] dark:border-[#0e3554] text-xs space-y-1.5">
           <div className="flex items-center justify-between">
-            <span className="font-semibold text-slate-900 dark:text-slate-100 text-sm">
+            <span className="font-semibold text-[#010627] dark:text-[#F5F6F6] text-sm">
               {candidate.name}
             </span>
-            <span className="font-mono text-[11px] text-slate-500 bg-white dark:bg-slate-900 px-2 py-0.5 rounded border border-slate-200 dark:border-slate-700">
+            <span className="font-mono text-[11px] text-[#717785] dark:text-[#94A3B8] bg-[#FDFEFE] dark:bg-[#062237] px-2 py-0.5 rounded border border-[#ACB9D1] dark:border-[#0e3554]">
               {candidate.id}
             </span>
           </div>
-          <div className="text-slate-600 dark:text-slate-400">
-            Registered Username: <strong className="font-mono text-slate-800 dark:text-slate-200">{candidate.username}</strong>
+          <div className="text-[#717785] dark:text-[#94A3B8]">
+            Registered Username: <strong className="font-mono text-[#010627] dark:text-[#F5F6F6]">{candidate.username}</strong>
           </div>
-          <div className="text-slate-600 dark:text-slate-400">
-            Phone: <strong className="text-slate-800 dark:text-slate-200">{candidate.phone}</strong>
+          <div className="text-[#717785] dark:text-[#94A3B8]">
+            Phone: <strong className="text-[#010627] dark:text-[#F5F6F6]">{candidate.phone}</strong>
           </div>
-          <div className="text-slate-600 dark:text-slate-400">
-            Email: <strong className="text-slate-800 dark:text-slate-200">{candidate.email}</strong>
+          <div className="text-[#717785] dark:text-[#94A3B8]">
+            Email: <strong className="text-[#010627] dark:text-[#F5F6F6]">{candidate.email}</strong>
           </div>
         </div>
 
         {/* Channel Selection */}
         <div className="space-y-1.5">
-          <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300">
+          <label className="block text-xs font-semibold text-[#010627] dark:text-[#F5F6F6]">
             Select Delivery Channel
           </label>
           <div className="grid grid-cols-3 gap-2">
@@ -104,10 +104,10 @@ export function CredentialDeliveryModal({
                 key={ch.id}
                 type="button"
                 onClick={() => setDeliveryChannel(ch.id as "whatsapp" | "email" | "both")}
-                className={`py-2 px-3 rounded-lg text-xs font-medium border text-center transition-colors ${
+                className={`py-2 px-3 rounded-lg text-xs font-medium border text-center transition-colors cursor-pointer ${
                   deliveryChannel === ch.id
-                    ? "border-primary-500 bg-primary-50 dark:bg-primary-950/30 text-primary-700 dark:text-primary-300 font-semibold"
-                    : "border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300"
+                    ? "border-[#2087FE] dark:border-[#0D79FD] bg-[#E0EDFE] dark:bg-[#0D79FD]/15 text-[#2087FE] dark:text-[#0D79FD] font-semibold"
+                    : "border-[#ACB9D1] dark:border-[#0e3554] hover:border-[#2087FE] dark:hover:border-[#0D79FD] bg-[#FDFEFE] dark:bg-[#072439] text-[#717785] dark:text-[#94A3B8]"
                 }`}
               >
                 {ch.label}
@@ -117,8 +117,8 @@ export function CredentialDeliveryModal({
         </div>
 
         {/* Security Guard Advisory */}
-        <div className="p-3 rounded-lg bg-sky-50 dark:bg-sky-950/40 border border-sky-200 dark:border-sky-900/60 flex items-start gap-2 text-sky-800 dark:text-sky-300 text-xs">
-          <ShieldCheck className="w-4 h-4 mt-0.5 flex-shrink-0 text-sky-600 dark:text-sky-400" />
+        <div className="p-3 rounded-lg bg-[#E0EDFE]/50 dark:bg-[#072439] border border-[#2087FE]/20 dark:border-[#0e3554] flex items-start gap-2 text-[#010627] dark:text-[#F5F6F6] text-xs">
+          <ShieldCheck className="w-4 h-4 mt-0.5 flex-shrink-0 text-[#2087FE] dark:text-[#0D79FD]" />
           <div className="text-[11px] leading-relaxed">
             <strong className="block font-semibold">Security Guard Protocol:</strong>
             INDIATA never dispatches plaintext passwords over telecommunication channels. The recipient will receive a one-time encrypted activation link to configure their own administrative password.

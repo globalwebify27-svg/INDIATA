@@ -23,13 +23,13 @@ export function PageHeader({
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pt-1">
         <div>
           <div className="flex items-center gap-3">
-            <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
+            <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-[#010627] dark:text-[#F5F6F6]">
               {title}
             </h1>
             {badge}
           </div>
           {description && (
-            <p className="mt-1 text-xs sm:text-sm text-slate-500 dark:text-slate-400">
+            <p className="mt-1 text-xs sm:text-sm text-[#717785] dark:text-[#94A3B8]">
               {description}
             </p>
           )}

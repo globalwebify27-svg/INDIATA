@@ -307,12 +307,12 @@ export function CandidateOnboardingWizard({
   return (
     <div className="space-y-6 max-w-4xl mx-auto">
       {/* Top Header & Cancel Button */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200 dark:border-slate-800">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#ACB9D1] dark:border-[#0e3554]">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-[#010627] dark:text-[#F5F6F6]">
             Candidate Onboarding Wizard
           </h1>
-          <p className="text-xs text-slate-500 mt-0.5">
+          <p className="text-xs text-[#717785] dark:text-[#94A3B8] mt-0.5">
             Provision campaign accounts, configure jurisdiction hierarchies, and dispatch secure credentials.
           </p>
         </div>
@@ -327,23 +327,23 @@ export function CandidateOnboardingWizard({
       </div>
 
       {/* Wizard Progress Stepper (Horizontal) */}
-      <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs space-y-3">
+      <div className="p-4 rounded-xl border border-[#ACB9D1] dark:border-[#0e3554] bg-[#FDFEFE] dark:bg-[#062237] shadow-xs space-y-3">
         <div className="flex items-center justify-between text-xs">
-          <span className="font-semibold text-slate-700 dark:text-slate-300">
+          <span className="font-semibold text-[#010627] dark:text-[#F5F6F6]">
             Step {currentStep} of {totalSteps}:{" "}
-            <span className="text-primary-600 dark:text-primary-400">
+            <span className="text-[#2087FE] dark:text-[#0D79FD]">
               {WIZARD_STEPS[currentStep - 1]?.title}
             </span>
           </span>
-          <span className="text-slate-400 font-mono text-[11px]">
+          <span className="text-[#717785] dark:text-[#94A3B8] font-mono text-[11px]">
             {progressPercentage}% Complete
           </span>
         </div>
 
         {/* Visual Progress Bar */}
-        <div className="w-full bg-slate-100 dark:bg-slate-800 h-2 rounded-full overflow-hidden">
+        <div className="w-full bg-[#E0EDFE] dark:bg-[#011A2D] h-2 rounded-full overflow-hidden">
           <div
-            className="h-full bg-primary-600 rounded-full transition-all duration-300"
+            className="h-full bg-[#2087FE] dark:bg-[#0D79FD] rounded-full transition-all duration-300"
             style={{ width: `${progressPercentage}%` }}
           />
         </div>
@@ -359,16 +359,16 @@ export function CandidateOnboardingWizard({
                 key={s.id}
                 type="button"
                 onClick={() => handleJumpToStep(s.id)}
-                className={`px-2.5 py-1 rounded-md text-[11px] font-medium whitespace-nowrap transition-colors flex items-center gap-1 ${
+                className={`px-2.5 py-1 rounded-md text-[11px] font-medium whitespace-nowrap transition-colors flex items-center gap-1 cursor-pointer ${
                   isCurrent
-                    ? "bg-primary-600 text-white font-semibold shadow-xs"
+                    ? "bg-[#2087FE] dark:bg-[#0D79FD] text-white font-semibold shadow-xs"
                     : isCompleted
-                    ? "bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800"
-                    : "bg-slate-50 dark:bg-slate-800 text-slate-400 hover:text-slate-600"
+                    ? "bg-[#B3EDD7]/30 dark:bg-[#01C588]/15 text-[#12CF94] dark:text-[#01C588] border border-[#12CF94]/30 dark:border-[#01C588]/30"
+                    : "bg-[#F3F8FD] dark:bg-[#072439] text-[#717785] dark:text-[#94A3B8] hover:text-[#010627] dark:hover:text-[#F5F6F6]"
                 }`}
               >
                 {isCompleted ? (
-                  <CheckCircle2 className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
+                  <CheckCircle2 className="w-3 h-3 text-[#12CF94] dark:text-[#01C588]" />
                 ) : (
                   <span>{s.id}.</span>
                 )}
@@ -380,43 +380,43 @@ export function CandidateOnboardingWizard({
       </div>
 
       {/* Main Step Body Form Container */}
-      <div className="p-5 sm:p-6 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs min-h-[420px] flex flex-col justify-between">
+      <div className="p-5 sm:p-6 rounded-xl border border-[#ACB9D1] dark:border-[#0e3554] bg-[#FDFEFE] dark:bg-[#062237] shadow-xs min-h-[420px] flex flex-col justify-between">
         <div className="space-y-5">
           {/* STEP 1: Account Classification & Credentials */}
           {currentStep === 1 && (
             <div className="space-y-4 max-w-xl">
               <div>
-                <h2 className="text-base font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-                  <User className="w-4 h-4 text-primary-500" />
+                <h2 className="text-base font-bold text-[#010627] dark:text-[#F5F6F6] flex items-center gap-2">
+                  <User className="w-4 h-4 text-[#2087FE] dark:text-[#0D79FD]" />
                   Step 1: Account Classification & Administrative Credentials
                 </h2>
-                <p className="text-xs text-slate-500 mt-1">
+                <p className="text-xs text-[#717785] dark:text-[#94A3B8] mt-1">
                   Configure primary communication credentials and specify whether this is a paid commercial deployment or a temporary pilot demo.
                 </p>
               </div>
 
               {/* Demo vs Permanent Selection */}
-              <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/40 space-y-3">
-                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300">
+              <div className="p-4 rounded-xl border border-[#ACB9D1] dark:border-[#0e3554] bg-[#F3F8FD]/50 dark:bg-[#072439] space-y-3">
+                <label className="block text-xs font-semibold text-[#010627] dark:text-[#F5F6F6]">
                   Account Classification Type
                 </label>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <button
                     type="button"
                     onClick={() => updateField("accountType", "Sale")}
-                    className={`p-3 rounded-lg border text-left transition-colors flex flex-col justify-between ${
+                    className={`p-3 rounded-lg border text-left transition-colors flex flex-col justify-between cursor-pointer ${
                       formData.accountType === "Sale"
-                        ? "border-primary-500 bg-primary-50/60 dark:bg-primary-950/30 text-primary-900 dark:text-primary-100"
-                        : "border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900"
+                        ? "border-[#2087FE] dark:border-[#0D79FD] bg-[#E0EDFE] dark:bg-[#0D79FD]/15 text-[#010627] dark:text-[#F5F6F6]"
+                        : "border-[#ACB9D1] dark:border-[#0e3554] bg-[#FDFEFE] dark:bg-[#062237] text-[#717785] dark:text-[#94A3B8]"
                     }`}
                   >
                     <div className="flex items-center justify-between mb-1">
                       <span className="text-xs font-bold">Sale (Commercial Deployment)</span>
                       {formData.accountType === "Sale" && (
-                        <CheckCircle2 className="w-4 h-4 text-primary-600" />
+                        <CheckCircle2 className="w-4 h-4 text-[#2087FE] dark:text-[#0D79FD]" />
                       )}
                     </div>
-                    <span className="text-[11px] text-slate-500 dark:text-slate-400">
+                    <span className="text-[11px] text-[#717785] dark:text-[#94A3B8]">
                       Standard annual/6M validity, 50+ workers capacity, unwatermarked voter exports, and full AI access.
                     </span>
                   </button>
@@ -424,19 +424,19 @@ export function CandidateOnboardingWizard({
                   <button
                     type="button"
                     onClick={() => updateField("accountType", "Demo")}
-                    className={`p-3 rounded-lg border text-left transition-colors flex flex-col justify-between ${
+                    className={`p-3 rounded-lg border text-left transition-colors flex flex-col justify-between cursor-pointer ${
                       formData.accountType === "Demo"
-                        ? "border-amber-500 bg-amber-50/60 dark:bg-amber-950/30 text-amber-900 dark:text-amber-100"
-                        : "border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900"
+                        ? "border-[#FC7C36] dark:border-[#F48637] bg-[#FC7C36]/10 dark:bg-[#F48637]/15 text-[#010627] dark:text-[#F5F6F6]"
+                        : "border-[#ACB9D1] dark:border-[#0e3554] bg-[#FDFEFE] dark:bg-[#062237] text-[#717785] dark:text-[#94A3B8]"
                     }`}
                   >
                     <div className="flex items-center justify-between mb-1">
                       <span className="text-xs font-bold">Demo (14-Day Pilot)</span>
                       {formData.accountType === "Demo" && (
-                        <CheckCircle2 className="w-4 h-4 text-amber-600" />
+                        <CheckCircle2 className="w-4 h-4 text-[#FC7C36] dark:text-[#F48637]" />
                       )}
                     </div>
-                    <span className="text-[11px] text-slate-500 dark:text-slate-400">
+                    <span className="text-[11px] text-[#717785] dark:text-[#94A3B8]">
                       Strict 14-day validity, capped at 10 team workers, demo watermark on slips, no paid AI quotas.
                     </span>
                   </button>
@@ -474,10 +474,10 @@ export function CandidateOnboardingWizard({
               />
 
               {/* Password Option Advisory */}
-              <div className="p-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50/40 dark:bg-slate-800/30 text-xs text-slate-600 dark:text-slate-400 flex items-start gap-2">
-                <Shield className="w-4 h-4 text-primary-500 flex-shrink-0 mt-0.5" />
+              <div className="p-3 rounded-lg border border-[#ACB9D1] dark:border-[#0e3554] bg-[#F3F8FD]/50 dark:bg-[#072439] text-xs text-[#717785] dark:text-[#94A3B8] flex items-start gap-2">
+                <Shield className="w-4 h-4 text-[#2087FE] dark:text-[#0D79FD] flex-shrink-0 mt-0.5" />
                 <div>
-                  <strong className="text-slate-800 dark:text-slate-200 block font-semibold">
+                  <strong className="text-[#010627] dark:text-[#F5F6F6] block font-semibold">
                     Encrypted Activation Flow Enforced
                   </strong>
                   To uphold enterprise cybersecurity, plaintext passwords are never set manually. The candidate will receive a time-limited one-time link upon creation.
@@ -490,11 +490,11 @@ export function CandidateOnboardingWizard({
           {currentStep === 2 && (
             <div className="space-y-4 max-w-xl">
               <div>
-                <h2 className="text-base font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-                  <User className="w-4 h-4 text-primary-500" />
+                <h2 className="text-base font-bold text-[#010627] dark:text-[#F5F6F6] flex items-center gap-2">
+                  <User className="w-4 h-4 text-[#2087FE] dark:text-[#0D79FD]" />
                   Step 2: Candidate Legal & Electoral Identity
                 </h2>
-                <p className="text-xs text-slate-500 mt-1">
+                <p className="text-xs text-[#717785] dark:text-[#94A3B8] mt-1">
                   Specify both English and official Marathi (देवनागरी) naming for voter slips and ballot generation.
                 </p>
               </div>
@@ -535,11 +535,11 @@ export function CandidateOnboardingWizard({
           {currentStep === 3 && (
             <div className="space-y-4 max-w-xl">
               <div>
-                <h2 className="text-base font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-                  <Building className="w-4 h-4 text-primary-500" />
+                <h2 className="text-base font-bold text-[#010627] dark:text-[#F5F6F6] flex items-center gap-2">
+                  <Building className="w-4 h-4 text-[#2087FE] dark:text-[#0D79FD]" />
                   Step 3: Political Party & Voting Symbol Assets
                 </h2>
-                <p className="text-xs text-slate-500 mt-1">
+                <p className="text-xs text-[#717785] dark:text-[#94A3B8] mt-1">
                   Configure political affiliation and voting symbol rendered on mobile voter slips.
                 </p>
               </div>
@@ -571,11 +571,11 @@ export function CandidateOnboardingWizard({
                   error={errors.votingSymbol}
                 />
                 <div className="space-y-1">
-                  <span className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                  <span className="block text-xs font-semibold text-[#010627] dark:text-[#F5F6F6] uppercase tracking-wider">
                     Symbol Asset Status
                   </span>
-                  <div className="p-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 flex items-center justify-between text-xs">
-                    <span className="font-medium text-slate-700 dark:text-slate-300">
+                  <div className="p-2.5 rounded-lg border border-[#ACB9D1] dark:border-[#0e3554] bg-[#F3F8FD] dark:bg-[#072439] flex items-center justify-between text-xs">
+                    <span className="font-medium text-[#010627] dark:text-[#F5F6F6]">
                       Standard_Symbol_SVG.svg
                     </span>
                     <Badge variant="success">Verified</Badge>
@@ -589,11 +589,11 @@ export function CandidateOnboardingWizard({
           {currentStep === 4 && (
             <div className="space-y-4 max-w-xl">
               <div>
-                <h2 className="text-base font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-                  <Layers className="w-4 h-4 text-primary-500" />
+                <h2 className="text-base font-bold text-[#010627] dark:text-[#F5F6F6] flex items-center gap-2">
+                  <Layers className="w-4 h-4 text-[#2087FE] dark:text-[#0D79FD]" />
                   Step 4: Election Project Metadata
                 </h2>
-                <p className="text-xs text-slate-500 mt-1">
+                <p className="text-xs text-[#717785] dark:text-[#94A3B8] mt-1">
                   Define the broad electoral tier and campaign project designation.
                 </p>
               </div>
@@ -629,12 +629,12 @@ export function CandidateOnboardingWizard({
             <div className="space-y-4 max-w-xl">
               <div className="flex items-center justify-between">
                 <div>
-                  <h2 className="text-base font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-                    <MapPin className="w-4 h-4 text-primary-500" />
+                  <h2 className="text-base font-bold text-[#010627] dark:text-[#F5F6F6] flex items-center gap-2">
+                    <MapPin className="w-4 h-4 text-[#2087FE] dark:text-[#0D79FD]" />
                     Step 5: Dynamic Geographic Jurisdiction
                   </h2>
-                  <p className="text-xs text-slate-500 mt-1">
-                    Tailored jurisdiction fields for <strong className="text-slate-800 dark:text-slate-200">{formData.electionType}</strong>:
+                  <p className="text-xs text-[#717785] dark:text-[#94A3B8] mt-1">
+                    Tailored jurisdiction fields for <strong className="text-[#010627] dark:text-[#F5F6F6]">{formData.electionType}</strong>:
                   </p>
                 </div>
                 <Badge variant="purple">{formData.electionType}</Badge>
@@ -642,7 +642,7 @@ export function CandidateOnboardingWizard({
 
               {/* Dynamic form fields based on Election Category */}
               {formData.electionType === "Lok Sabha" && (
-                <div className="space-y-3 p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/40 dark:bg-slate-800/30">
+                <div className="space-y-3 p-4 rounded-xl border border-[#ACB9D1] dark:border-[#0e3554] bg-[#F3F8FD]/50 dark:bg-[#072439]">
                   <Input
                     label="Parliamentary Constituency (PC)"
                     required
@@ -660,7 +660,7 @@ export function CandidateOnboardingWizard({
               )}
 
               {formData.electionType === "Vidhan Sabha" && (
-                <div className="space-y-3 p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/40 dark:bg-slate-800/30">
+                <div className="space-y-3 p-4 rounded-xl border border-[#ACB9D1] dark:border-[#0e3554] bg-[#F3F8FD]/50 dark:bg-[#072439]">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <Select
                       label="District"
@@ -689,7 +689,7 @@ export function CandidateOnboardingWizard({
               )}
 
               {formData.electionType === "Municipal Corporation" && (
-                <div className="space-y-3 p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/40 dark:bg-slate-800/30">
+                <div className="space-y-3 p-4 rounded-xl border border-[#ACB9D1] dark:border-[#0e3554] bg-[#F3F8FD]/50 dark:bg-[#072439]">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <Select
                       label="Municipal Corporation City"
@@ -717,7 +717,7 @@ export function CandidateOnboardingWizard({
               {(formData.electionType === "Zilla Parishad" ||
                 formData.electionType === "Nagar Parishad" ||
                 formData.electionType === "Gram Panchayat") && (
-                <div className="space-y-3 p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/40 dark:bg-slate-800/30">
+                <div className="space-y-3 p-4 rounded-xl border border-[#ACB9D1] dark:border-[#0e3554] bg-[#F3F8FD]/50 dark:bg-[#072439]">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <Select
                       label="District"
@@ -740,11 +740,11 @@ export function CandidateOnboardingWizard({
           {currentStep === 6 && (
             <div className="space-y-4 max-w-xl">
               <div>
-                <h2 className="text-base font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-                  <Smartphone className="w-4 h-4 text-primary-500" />
+                <h2 className="text-base font-bold text-[#010627] dark:text-[#F5F6F6] flex items-center gap-2">
+                  <Smartphone className="w-4 h-4 text-[#2087FE] dark:text-[#0D79FD]" />
                   Step 6: White-label Application Setup
                 </h2>
-                <p className="text-xs text-slate-500 mt-1">
+                <p className="text-xs text-[#717785] dark:text-[#94A3B8] mt-1">
                   Configure candidate branding and citizen-facing voter search endpoints.
                 </p>
               </div>
@@ -779,11 +779,11 @@ export function CandidateOnboardingWizard({
           {currentStep === 7 && (
             <div className="space-y-4 max-w-xl">
               <div>
-                <h2 className="text-base font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-                  <Shield className="w-4 h-4 text-primary-500" />
+                <h2 className="text-base font-bold text-[#010627] dark:text-[#F5F6F6] flex items-center gap-2">
+                  <Shield className="w-4 h-4 text-[#2087FE] dark:text-[#0D79FD]" />
                   Step 7: Administrative Feature Access Permissions
                 </h2>
-                <p className="text-xs text-slate-500 mt-1">
+                <p className="text-xs text-[#717785] dark:text-[#94A3B8] mt-1">
                   Authorize specific export tools and AI capabilities for this candidate:
                 </p>
               </div>
@@ -813,32 +813,32 @@ export function CandidateOnboardingWizard({
                 ].map((perm) => (
                   <div
                     key={perm.key}
-                    className="p-3 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 flex items-center justify-between"
+                    className="p-3 rounded-lg border border-[#ACB9D1] dark:border-[#0e3554] bg-[#F3F8FD]/50 dark:bg-[#072439] flex items-center justify-between"
                   >
                     <div>
-                      <div className="text-xs font-semibold text-slate-900 dark:text-slate-100">
+                      <div className="text-xs font-semibold text-[#010627] dark:text-[#F5F6F6]">
                         {perm.label}
                       </div>
-                      <div className="text-[11px] text-slate-500">{perm.desc}</div>
+                      <div className="text-[11px] text-[#717785] dark:text-[#94A3B8]">{perm.desc}</div>
                     </div>
                     <input
                       type="checkbox"
                       checked={Boolean(formData[perm.key as keyof typeof formData])}
                       onChange={(e) => updateField(perm.key, e.target.checked)}
-                      className="w-4 h-4 rounded text-primary-600 focus:ring-primary-500 cursor-pointer"
+                      className="w-4 h-4 rounded text-[#2087FE] dark:text-[#0D79FD] focus:ring-[#2087FE] dark:focus:ring-[#0D79FD] cursor-pointer"
                     />
                   </div>
                 ))}
               </div>
 
               {formData.accountType === "Sale" && (
-                <div className="p-3.5 rounded-lg border border-indigo-200 dark:border-indigo-900/60 bg-indigo-50/50 dark:bg-indigo-950/30 flex items-center justify-between">
+                <div className="p-3.5 rounded-lg border border-[#6C43FC]/30 dark:border-[#6C43FC]/40 bg-[#6C43FC]/10 dark:bg-[#072439] flex items-center justify-between">
                   <div>
-                    <div className="text-xs font-semibold text-indigo-900 dark:text-indigo-200 flex items-center gap-1.5">
-                      <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
+                    <div className="text-xs font-semibold text-[#6C43FC] dark:text-[#6C43FC] flex items-center gap-1.5">
+                      <Sparkles className="w-3.5 h-3.5 text-[#6C43FC]" />
                       INDIATA AI Intelligence Engine Access
                     </div>
-                    <div className="text-[11px] text-indigo-700/80 dark:text-indigo-300/80">
+                    <div className="text-[11px] text-[#717785] dark:text-[#94A3B8]">
                       Enables natural language booth sentiment synthesis and voice speech drafts.
                     </div>
                   </div>
@@ -846,7 +846,7 @@ export function CandidateOnboardingWizard({
                     type="checkbox"
                     checked={formData.aiAccess}
                     onChange={(e) => updateField("aiAccess", e.target.checked)}
-                    className="w-4 h-4 rounded text-primary-600 cursor-pointer"
+                    className="w-4 h-4 rounded text-[#2087FE] dark:text-[#0D79FD] cursor-pointer"
                   />
                 </div>
               )}
@@ -857,47 +857,47 @@ export function CandidateOnboardingWizard({
           {currentStep === 8 && (
             <div className="space-y-4 max-w-xl">
               <div>
-                <h2 className="text-base font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-                  <Layers className="w-4 h-4 text-primary-500" />
+                <h2 className="text-base font-bold text-[#010627] dark:text-[#F5F6F6] flex items-center gap-2">
+                  <Layers className="w-4 h-4 text-[#2087FE] dark:text-[#0D79FD]" />
                   Step 8: Acquisition Channel Attribution
                 </h2>
-                <p className="text-xs text-slate-500 mt-1">
+                <p className="text-xs text-[#717785] dark:text-[#94A3B8] mt-1">
                   Attribute this candidate onboarding to a regional franchise distributor partner or direct headquarters.
                 </p>
               </div>
 
               <div className="space-y-3">
-                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300">
+                <label className="block text-xs font-semibold text-[#010627] dark:text-[#F5F6F6]">
                   Channel Attribution Origin
                 </label>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <button
                     type="button"
                     onClick={() => updateField("acquisitionSource", "Distributor")}
-                    className={`p-3 rounded-lg border text-left transition-colors flex items-center justify-between ${
+                    className={`p-3 rounded-lg border text-left transition-colors flex items-center justify-between cursor-pointer ${
                       formData.acquisitionSource === "Distributor"
-                        ? "border-primary-500 bg-primary-50/50 dark:bg-primary-950/20 text-primary-900 dark:text-primary-100 font-semibold"
-                        : "border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300"
+                        ? "border-[#2087FE] dark:border-[#0D79FD] bg-[#E0EDFE] dark:bg-[#0D79FD]/15 text-[#010627] dark:text-[#F5F6F6] font-semibold"
+                        : "border-[#ACB9D1] dark:border-[#0e3554] bg-[#FDFEFE] dark:bg-[#072439] text-[#717785] dark:text-[#94A3B8]"
                     }`}
                   >
                     <span className="text-xs">Distributor Partner Franchise</span>
                     {formData.acquisitionSource === "Distributor" && (
-                      <CheckCircle2 className="w-4 h-4 text-primary-600" />
+                      <CheckCircle2 className="w-4 h-4 text-[#2087FE] dark:text-[#0D79FD]" />
                     )}
                   </button>
 
                   <button
                     type="button"
                     onClick={() => updateField("acquisitionSource", "Direct")}
-                    className={`p-3 rounded-lg border text-left transition-colors flex items-center justify-between ${
+                    className={`p-3 rounded-lg border text-left transition-colors flex items-center justify-between cursor-pointer ${
                       formData.acquisitionSource === "Direct"
-                        ? "border-primary-500 bg-primary-50/50 dark:bg-primary-950/20 text-primary-900 dark:text-primary-100 font-semibold"
-                        : "border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300"
+                        ? "border-[#2087FE] dark:border-[#0D79FD] bg-[#E0EDFE] dark:bg-[#0D79FD]/15 text-[#010627] dark:text-[#F5F6F6] font-semibold"
+                        : "border-[#ACB9D1] dark:border-[#0e3554] bg-[#FDFEFE] dark:bg-[#072439] text-[#717785] dark:text-[#94A3B8]"
                     }`}
                   >
                     <span className="text-xs">Direct Site / Super Admin</span>
                     {formData.acquisitionSource === "Direct" && (
-                      <CheckCircle2 className="w-4 h-4 text-primary-600" />
+                      <CheckCircle2 className="w-4 h-4 text-[#2087FE] dark:text-[#0D79FD]" />
                     )}
                   </button>
                 </div>
@@ -923,36 +923,36 @@ export function CandidateOnboardingWizard({
           {currentStep === 9 && (
             <div className="space-y-4 max-w-xl">
               <div>
-                <h2 className="text-base font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-                  <FileCheck className="w-4 h-4 text-primary-500" />
+                <h2 className="text-base font-bold text-[#010627] dark:text-[#F5F6F6] flex items-center gap-2">
+                  <FileCheck className="w-4 h-4 text-[#2087FE] dark:text-[#0D79FD]" />
                   Step 9: Review Before Account Creation
                 </h2>
-                <p className="text-xs text-slate-500 mt-1">
+                <p className="text-xs text-[#717785] dark:text-[#94A3B8] mt-1">
                   Confirm candidate parameters before allocating database partitions and generating credentials.
                 </p>
               </div>
 
-              <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 text-xs space-y-3">
-                <div className="flex justify-between items-center pb-2 border-b border-slate-200 dark:border-slate-700">
-                  <span className="text-slate-500">Candidate Name</span>
+              <div className="p-4 rounded-xl border border-[#ACB9D1] dark:border-[#0e3554] bg-[#F3F8FD]/50 dark:bg-[#072439] text-xs space-y-3">
+                <div className="flex justify-between items-center pb-2 border-b border-[#ACB9D1]/30 dark:border-[#0e3554]/50">
+                  <span className="text-[#717785] dark:text-[#94A3B8]">Candidate Name</span>
                   <div className="text-right">
-                    <span className="font-bold text-slate-900 dark:text-slate-100 block">
+                    <span className="font-bold text-[#010627] dark:text-[#F5F6F6] block">
                       {formData.nameEnglish || "N/A"}
                     </span>
-                    <span className="text-slate-500">{formData.nameMarathi}</span>
+                    <span className="text-[#717785] dark:text-[#94A3B8]">{formData.nameMarathi}</span>
                   </div>
                 </div>
 
-                <div className="flex justify-between items-center pb-2 border-b border-slate-200 dark:border-slate-700">
-                  <span className="text-slate-500">Account Classification</span>
+                <div className="flex justify-between items-center pb-2 border-b border-[#ACB9D1]/30 dark:border-[#0e3554]/50">
+                  <span className="text-[#717785] dark:text-[#94A3B8]">Account Classification</span>
                   <Badge variant={formData.accountType === "Sale" ? "success" : "warning"}>
                     {formData.accountType === "Sale" ? "Commercial Deployment" : "14-Day Pilot Demo"}
                   </Badge>
                 </div>
 
-                <div className="flex justify-between items-center pb-2 border-b border-slate-200 dark:border-slate-700">
-                  <span className="text-slate-500">Election & Jurisdiction</span>
-                  <span className="font-medium text-slate-900 dark:text-slate-100">
+                <div className="flex justify-between items-center pb-2 border-b border-[#ACB9D1]/30 dark:border-[#0e3554]/50">
+                  <span className="text-[#717785] dark:text-[#94A3B8]">Election & Jurisdiction</span>
+                  <span className="font-medium text-[#010627] dark:text-[#F5F6F6]">
                     {formData.electionType} •{" "}
                     {formData.electionType === "Lok Sabha"
                       ? formData.parliamentaryConstituency
@@ -960,23 +960,23 @@ export function CandidateOnboardingWizard({
                   </span>
                 </div>
 
-                <div className="flex justify-between items-center pb-2 border-b border-slate-200 dark:border-slate-700">
-                  <span className="text-slate-500">Party & Symbol</span>
-                  <span className="font-medium text-slate-900 dark:text-slate-100">
+                <div className="flex justify-between items-center pb-2 border-b border-[#ACB9D1]/30 dark:border-[#0e3554]/50">
+                  <span className="text-[#717785] dark:text-[#94A3B8]">Party & Symbol</span>
+                  <span className="font-medium text-[#010627] dark:text-[#F5F6F6]">
                     {formData.partyEnglish} ({formData.votingSymbol})
                   </span>
                 </div>
 
-                <div className="flex justify-between items-center pb-2 border-b border-slate-200 dark:border-slate-700">
-                  <span className="text-slate-500">Contact Information</span>
-                  <span className="font-mono text-slate-700 dark:text-slate-300">
+                <div className="flex justify-between items-center pb-2 border-b border-[#ACB9D1]/30 dark:border-[#0e3554]/50">
+                  <span className="text-[#717785] dark:text-[#94A3B8]">Contact Information</span>
+                  <span className="font-mono text-[#010627] dark:text-[#F5F6F6]">
                     {formData.phone} • {formData.email}
                   </span>
                 </div>
 
                 <div className="flex justify-between items-center">
-                  <span className="text-slate-500">Attributed Channel</span>
-                  <span className="font-medium text-slate-900 dark:text-slate-100">
+                  <span className="text-[#717785] dark:text-[#94A3B8]">Attributed Channel</span>
+                  <span className="font-medium text-[#010627] dark:text-[#F5F6F6]">
                     {formData.acquisitionSource === "Distributor"
                       ? `Distributor (${formData.distributorId})`
                       : "Direct HQ"}
@@ -989,24 +989,24 @@ export function CandidateOnboardingWizard({
           {/* STEP 10: Activation & Launch Confirmation Screen */}
           {currentStep === 10 && (
             <div className="space-y-4 max-w-xl text-center py-4 mx-auto">
-              <div className="w-14 h-14 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mx-auto mb-2">
+              <div className="w-14 h-14 rounded-full bg-[#B3EDD7] dark:bg-[#01C588]/20 text-[#12CF94] dark:text-[#01C588] flex items-center justify-center mx-auto mb-2">
                 <CheckCircle2 className="w-8 h-8" />
               </div>
-              <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100">
+              <h2 className="text-lg font-bold text-[#010627] dark:text-[#F5F6F6]">
                 Ready to Provision Candidate Account
               </h2>
-              <p className="text-xs text-slate-500 max-w-md mx-auto leading-relaxed">
+              <p className="text-xs text-[#717785] dark:text-[#94A3B8] max-w-md mx-auto leading-relaxed">
                 Clicking confirm will establish voter partitions, assign quotas, and dispatch the encrypted administrative activation link to:
               </p>
 
-              <div className="p-3.5 rounded-lg bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 text-xs font-mono text-slate-800 dark:text-slate-200 max-w-sm mx-auto">
+              <div className="p-3.5 rounded-lg bg-[#F3F8FD] dark:bg-[#072439] border border-[#ACB9D1] dark:border-[#0e3554] text-xs font-mono text-[#010627] dark:text-[#F5F6F6] max-w-sm mx-auto">
                 <div>{formData.nameEnglish}</div>
-                <div className="text-slate-500 mt-1">{formData.phone} • {formData.email}</div>
+                <div className="text-[#717785] dark:text-[#94A3B8] mt-1">{formData.phone} • {formData.email}</div>
               </div>
 
               {/* Delivery Channel Selector */}
               <div className="text-left space-y-1.5 max-w-sm mx-auto pt-2">
-                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300">
+                <label className="block text-xs font-semibold text-[#010627] dark:text-[#F5F6F6]">
                   Select Dispatch Channel:
                 </label>
                 <div className="grid grid-cols-3 gap-2">
@@ -1019,10 +1019,10 @@ export function CandidateOnboardingWizard({
                       key={ch.id}
                       type="button"
                       onClick={() => updateField("deliveryChannel", ch.id)}
-                      className={`py-2 px-2.5 rounded-lg text-xs font-medium border text-center transition-colors ${
+                      className={`py-2 px-2.5 rounded-lg text-xs font-medium border text-center transition-colors cursor-pointer ${
                         formData.deliveryChannel === ch.id
-                          ? "border-primary-500 bg-primary-50 dark:bg-primary-950/30 text-primary-700 dark:text-primary-300 font-semibold"
-                          : "border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300"
+                          ? "border-[#2087FE] dark:border-[#0D79FD] bg-[#E0EDFE] dark:bg-[#0D79FD]/15 text-[#2087FE] dark:text-[#0D79FD] font-semibold"
+                          : "border-[#ACB9D1] dark:border-[#0e3554] bg-[#FDFEFE] dark:bg-[#072439] text-[#717785] dark:text-[#94A3B8]"
                       }`}
                     >
                       {ch.label}
@@ -1048,7 +1048,7 @@ export function CandidateOnboardingWizard({
 
         {/* Wizard Control Navigation Footer */}
         {currentStep < 10 && (
-          <div className="mt-8 pt-4 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">
+          <div className="mt-8 pt-4 border-t border-[#ACB9D1] dark:border-[#0e3554] flex items-center justify-between">
             <Button
               variant="outline"
               size="sm"

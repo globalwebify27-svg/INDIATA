@@ -263,8 +263,8 @@ export function OrganizationFormDialog({
     >
       <form onSubmit={handleSubmit} className="space-y-4 max-h-[68vh] overflow-y-auto pr-1">
         {/* Section 1: Entity Identity */}
-        <div className="space-y-3 pb-3 border-b border-slate-200 dark:border-slate-800">
-          <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+        <div className="space-y-3 pb-3 border-b border-slate-200 dark:border-[#0e3554]">
+          <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-[#94A3B8]">
             1. Identity & Classification
           </h4>
 
@@ -312,8 +312,8 @@ export function OrganizationFormDialog({
         </div>
 
         {/* Section 2: Contact Information */}
-        <div className="space-y-3 pb-3 border-b border-slate-200 dark:border-slate-800">
-          <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+        <div className="space-y-3 pb-3 border-b border-slate-200 dark:border-[#0e3554]">
+          <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-[#94A3B8]">
             2. Client Contact Details
           </h4>
 
@@ -347,8 +347,8 @@ export function OrganizationFormDialog({
         </div>
 
         {/* Section 3: Electoral Jurisdiction */}
-        <div className="space-y-3 pb-3 border-b border-slate-200 dark:border-slate-800">
-          <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+        <div className="space-y-3 pb-3 border-b border-slate-200 dark:border-[#0e3554]">
+          <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-[#94A3B8]">
             3. Electoral Jurisdiction
           </h4>
 
@@ -393,7 +393,7 @@ export function OrganizationFormDialog({
 
         {/* Section 4: Commercial Plan & Quotas */}
         <div className="space-y-3">
-          <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+          <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-[#94A3B8]">
             4. Subscription & System Quotas
           </h4>
 
@@ -415,12 +415,12 @@ export function OrganizationFormDialog({
             />
           </div>
 
-          <div className="p-3.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <div className="p-3.5 rounded-lg border border-slate-200 dark:border-[#0e3554] bg-slate-50/50 dark:bg-[#072439]/60 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
             <div>
-              <div className="text-xs font-semibold text-slate-800 dark:text-slate-200">
+              <div className="text-xs font-semibold text-slate-800 dark:text-[#F5F6F6]">
                 INDIATA AI Intelligence Mode
               </div>
-              <p className="text-[11px] text-slate-500 dark:text-slate-400">
+              <p className="text-[11px] text-slate-500 dark:text-[#94A3B8]">
                 Enables LLM-assisted booth sentiment synthesis, speech drafting, and voter query triage.
               </p>
             </div>

@@ -184,61 +184,61 @@ export function OrganizationDirectory({
     <div className="space-y-5">
       {/* 1. KPI Summary Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-        <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs">
-          <div className="flex items-center justify-between text-xs text-slate-500 mb-1">
+        <div className="p-4 rounded-xl border border-[#ACB9D1] dark:border-[#0e3554] bg-[#FDFEFE] dark:bg-[#062237] shadow-xs">
+          <div className="flex items-center justify-between text-xs text-[#717785] dark:text-[#94A3B8] mb-1">
             <span>Total Organizations</span>
-            <Building2 className="w-3.5 h-3.5 text-slate-400" />
+            <Building2 className="w-3.5 h-3.5 text-[#717785] dark:text-[#94A3B8]" />
           </div>
-          <div className="text-2xl font-bold text-slate-900 dark:text-slate-100">
+          <div className="text-2xl font-bold text-[#010627] dark:text-[#F5F6F6]">
             {totalOrgs}
           </div>
-          <div className="text-[11px] text-slate-400 mt-1">
+          <div className="text-[11px] text-[#717785] dark:text-[#94A3B8] mt-1">
             Registered campaign entities
           </div>
         </div>
 
-        <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs">
-          <div className="flex items-center justify-between text-xs text-emerald-600 dark:text-emerald-400 mb-1">
+        <div className="p-4 rounded-xl border border-[#ACB9D1] dark:border-[#0e3554] bg-[#FDFEFE] dark:bg-[#062237] shadow-xs">
+          <div className="flex items-center justify-between text-xs text-[#12CF94] dark:text-[#01C588] mb-1">
             <span>Active War Rooms</span>
-            <div className="w-2 h-2 rounded-full bg-emerald-500" />
+            <div className="w-2 h-2 rounded-full bg-[#12CF94] dark:bg-[#01C588]" />
           </div>
-          <div className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">
+          <div className="text-2xl font-bold text-[#12CF94] dark:text-[#01C588]">
             {activeCount}
           </div>
-          <div className="text-[11px] text-slate-400 mt-1">
+          <div className="text-[11px] text-[#717785] dark:text-[#94A3B8] mt-1">
             Live JWT & field voter operations
           </div>
         </div>
 
-        <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs">
-          <div className="flex items-center justify-between text-xs text-amber-600 dark:text-amber-400 mb-1">
+        <div className="p-4 rounded-xl border border-[#ACB9D1] dark:border-[#0e3554] bg-[#FDFEFE] dark:bg-[#062237] shadow-xs">
+          <div className="flex items-center justify-between text-xs text-[#FC7C36] dark:text-[#F48637] mb-1">
             <span>Pending Review</span>
-            <div className="w-2 h-2 rounded-full bg-amber-500" />
+            <div className="w-2 h-2 rounded-full bg-[#FC7C36] dark:bg-[#F48637]" />
           </div>
-          <div className="text-2xl font-bold text-amber-600 dark:text-amber-400">
+          <div className="text-2xl font-bold text-[#FC7C36] dark:text-[#F48637]">
             {pendingCount}
           </div>
-          <div className="text-[11px] text-slate-400 mt-1">
+          <div className="text-[11px] text-[#717785] dark:text-[#94A3B8] mt-1">
             Awaiting onboarding verification
           </div>
         </div>
 
-        <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs">
-          <div className="flex items-center justify-between text-xs text-slate-500 mb-1">
+        <div className="p-4 rounded-xl border border-[#ACB9D1] dark:border-[#0e3554] bg-[#FDFEFE] dark:bg-[#062237] shadow-xs">
+          <div className="flex items-center justify-between text-xs text-[#717785] dark:text-[#94A3B8] mb-1">
             <span>Suspended / Expired</span>
-            <ShieldAlert className="w-3.5 h-3.5 text-rose-500" />
+            <ShieldAlert className="w-3.5 h-3.5 text-[#FC7C36] dark:text-[#F48637]" />
           </div>
-          <div className="text-2xl font-bold text-slate-900 dark:text-slate-100">
+          <div className="text-2xl font-bold text-[#010627] dark:text-[#F5F6F6]">
             {suspendedOrExpiredCount}
           </div>
-          <div className="text-[11px] text-slate-400 mt-1">
+          <div className="text-[11px] text-[#717785] dark:text-[#94A3B8] mt-1">
             Restricted field write access
           </div>
         </div>
       </div>
 
       {/* 2. Filters & Actions Bar */}
-      <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs space-y-3">
+      <div className="p-4 rounded-xl border border-[#ACB9D1] dark:border-[#0e3554] bg-[#FDFEFE] dark:bg-[#062237] shadow-xs space-y-3">
         <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
           <div className="flex-1 max-w-md">
             <SearchInput
@@ -274,8 +274,8 @@ export function OrganizationDirectory({
         </div>
 
         {/* Second Row: Filters & Sort */}
-        <div className="flex flex-wrap items-center gap-3 pt-2 border-t border-slate-100 dark:border-slate-800/80 text-xs">
-          <div className="flex items-center gap-1.5 text-slate-500">
+        <div className="flex flex-wrap items-center gap-3 pt-2 border-t border-[#ACB9D1]/30 dark:border-[#0e3554]/50 text-xs">
+          <div className="flex items-center gap-1.5 text-[#717785] dark:text-[#94A3B8]">
             <Filter className="w-3.5 h-3.5" />
             <span className="font-medium">Filters:</span>
           </div>
@@ -345,11 +345,11 @@ export function OrganizationDirectory({
       </div>
 
       {/* 3. Table or Loading or Empty State */}
-      <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs overflow-hidden">
+      <div className="rounded-xl border border-[#ACB9D1] dark:border-[#0e3554] bg-[#FDFEFE] dark:bg-[#062237] shadow-xs overflow-hidden">
         {isLoading ? (
           <div className="p-12 text-center space-y-3">
-            <RefreshCw className="w-7 h-7 text-primary-500 animate-spin mx-auto" />
-            <p className="text-xs text-slate-500 font-medium">
+            <RefreshCw className="w-7 h-7 text-[#2087FE] dark:text-[#0D79FD] animate-spin mx-auto" />
+            <p className="text-xs text-[#717785] dark:text-[#94A3B8] font-medium">
               Synchronizing organization directory with INDIATA master registry...
             </p>
           </div>
@@ -389,11 +389,11 @@ export function OrganizationDirectory({
                         <div className="space-y-0.5">
                           <button
                             onClick={() => handleOpenDetails(org)}
-                            className="font-semibold text-slate-900 dark:text-slate-100 hover:text-primary-600 dark:hover:text-primary-400 text-left transition-colors"
+                            className="font-semibold text-[#010627] dark:text-[#F5F6F6] hover:text-[#2087FE] dark:hover:text-[#0D79FD] text-left transition-colors cursor-pointer"
                           >
                             {org.name}
                           </button>
-                          <div className="text-[11px] font-mono text-slate-500 dark:text-slate-400">
+                          <div className="text-[11px] font-mono text-[#717785] dark:text-[#94A3B8]">
                             {org.slug}
                           </div>
                         </div>
@@ -402,10 +402,10 @@ export function OrganizationDirectory({
                       {/* Type & Constituency */}
                       <TableCell>
                         <div className="space-y-0.5">
-                          <span className="text-slate-800 dark:text-slate-200 font-medium block">
+                          <span className="text-[#010627] dark:text-[#F5F6F6] font-medium block">
                             {org.constituencyName}
                           </span>
-                          <span className="text-[11px] text-slate-500 dark:text-slate-400">
+                          <span className="text-[11px] text-[#717785] dark:text-[#94A3B8]">
                             {org.electionType} • {org.district}
                           </span>
                         </div>
@@ -414,10 +414,10 @@ export function OrganizationDirectory({
                       {/* Associated Candidate & Contact */}
                       <TableCell>
                         <div className="space-y-0.5">
-                          <span className="font-medium text-slate-900 dark:text-slate-100 block">
+                          <span className="font-medium text-[#010627] dark:text-[#F5F6F6] block">
                             {org.associatedCandidateName}
                           </span>
-                          <span className="text-[11px] text-slate-500 dark:text-slate-400">
+                          <span className="text-[11px] text-[#717785] dark:text-[#94A3B8]">
                             {org.clientContactName}
                           </span>
                         </div>
@@ -426,7 +426,7 @@ export function OrganizationDirectory({
                       {/* Plan & AI */}
                       <TableCell>
                         <div className="flex flex-col gap-1 items-start">
-                          <span className="text-xs font-medium text-slate-800 dark:text-slate-200">
+                          <span className="text-xs font-medium text-[#010627] dark:text-[#F5F6F6]">
                             {org.planType === OrganizationPlanType.OFFICE_12M
                               ? "Annual Office (12M)"
                               : org.planType === OrganizationPlanType.OFFICE_6M
@@ -441,7 +441,7 @@ export function OrganizationDirectory({
                               AI ({org.aiSeatsLimit} seats)
                             </Badge>
                           ) : (
-                            <span className="text-[10px] text-slate-400">No AI Mode</span>
+                            <span className="text-[10px] text-[#717785] dark:text-[#94A3B8]">No AI Mode</span>
                           )}
                         </div>
                       </TableCell>
@@ -450,19 +450,19 @@ export function OrganizationDirectory({
                       <TableCell>
                         <div className="space-y-1 w-28">
                           <div className="flex justify-between text-[11px]">
-                            <span className="font-semibold text-slate-800 dark:text-slate-200">
+                            <span className="font-semibold text-[#010627] dark:text-[#F5F6F6]">
                               {org.activeWorkersCount}
                             </span>
-                            <span className="text-slate-400">/ {org.maxWorkersLimit}</span>
+                            <span className="text-[#717785] dark:text-[#94A3B8]">/ {org.maxWorkersLimit}</span>
                           </div>
-                          <div className="w-full bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden">
+                          <div className="w-full bg-[#E0EDFE] dark:bg-[#011A2D] h-1.5 rounded-full overflow-hidden">
                             <div
                               className={`h-full rounded-full ${
                                 usagePercent > 90
-                                  ? "bg-rose-500"
+                                  ? "bg-[#FC7C36] dark:bg-[#F48637]"
                                   : usagePercent > 70
-                                  ? "bg-amber-500"
-                                  : "bg-primary-500"
+                                  ? "bg-[#FC7C36] dark:bg-[#F48637]"
+                                  : "bg-[#2087FE] dark:bg-[#0D79FD]"
                               }`}
                               style={{ width: `${usagePercent}%` }}
                             />
@@ -489,7 +489,7 @@ export function OrganizationDirectory({
                       </TableCell>
 
                       {/* Created Date */}
-                      <TableCell className="text-[11px] text-slate-500">
+                      <TableCell className="text-[11px] text-[#717785] dark:text-[#94A3B8]">
                         {org.createdAt}
                       </TableCell>
 
@@ -499,7 +499,7 @@ export function OrganizationDirectory({
                           <Button
                             variant="ghost"
                             size="sm"
-                            className="p-1.5 h-auto text-slate-500 hover:text-slate-900 dark:hover:text-slate-100"
+                            className="p-1.5 h-auto text-[#717785] hover:text-[#010627] dark:text-[#94A3B8] dark:hover:text-[#F5F6F6]"
                             onClick={() => handleOpenDetails(org)}
                             title="View full organization details"
                           >
@@ -508,7 +508,7 @@ export function OrganizationDirectory({
                           <Button
                             variant="ghost"
                             size="sm"
-                            className="p-1.5 h-auto text-slate-500 hover:text-slate-900 dark:hover:text-slate-100"
+                            className="p-1.5 h-auto text-[#717785] hover:text-[#010627] dark:text-[#94A3B8] dark:hover:text-[#F5F6F6]"
                             onClick={() => handleOpenEdit(org)}
                             title="Edit organization"
                           >
@@ -517,7 +517,7 @@ export function OrganizationDirectory({
                           <Button
                             variant="ghost"
                             size="sm"
-                            className="p-1.5 h-auto text-slate-500 hover:text-rose-600 dark:hover:text-rose-400"
+                            className="p-1.5 h-auto text-[#717785] hover:text-[#FC7C36] dark:text-[#94A3B8] dark:hover:text-[#F48637]"
                             onClick={() => handleOpenStatusChange(org)}
                             title="Change status"
                           >

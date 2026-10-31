@@ -71,48 +71,69 @@
 }
 
 .dark {
-  --background: #191410;
-  --foreground: #F7EFE9;
-  --surface-low: #221C17;
-  --surface-container: #2B241E;
-  --surface-high: #352D26;
-  --surface-highest: #3F372F;
-  --card: #201A15;
-  --card-foreground: #F7EFE9;
+  /* Client-Approved Dark Theme Tokens */
+  --background: #011A2D;
+  --foreground: #F5F6F6;
+  --surface-low: #011A2D;
+  --surface-container: #062237;
+  --surface-high: #072439;
+  --surface-highest: #072439;
+  --card: #062237;
+  --card-foreground: #F5F6F6;
 
-  --primary: #FFB77D;
-  --primary-hover: #FFCBA2;
-  --primary-container: #8D4B00;
-  --primary-fixed: #6E3900;
-  --on-primary: #4C2400;
-  --on-primary-fixed: #FFDCC3;
-  --on-primary-fixed-variant: #FFB77D;
+  /* Client Exact Design System Tokens */
+  --client-bg: #011A2D;
+  --client-card: #062237;
+  --client-elevated: #072439;
+  --client-border: #0e3554;
+  --client-primary: #0D79FD;
+  --client-warning: #F48637;
+  --client-purple: #6C43FC;
+  --client-success: #01C588;
+  --client-dark: #F5F6F6;
 
-  --secondary: #92F5A4;
-  --secondary-hover: #B4F8C0;
-  --secondary-container: #005323;
-  --secondary-fixed: #003916;
-  --on-secondary: #003916;
-  --on-secondary-fixed-variant: #92F5A4;
+  /* Primary Blue */
+  --primary: #0D79FD;
+  --primary-hover: #0B68D9;
+  --primary-container: #072439;
+  --primary-fixed: #062237;
+  --on-primary: #FFFFFF;
+  --on-primary-fixed: #F5F6F6;
+  --on-primary-fixed-variant: #0D79FD;
 
-  --tertiary: #D2BBFF;
-  --tertiary-hover: #E3D5FF;
-  --tertiary-container: #5A00C6;
-  --tertiary-fixed: #3D0089;
-  --on-tertiary: #3D0089;
-  --on-tertiary-fixed-variant: #D2BBFF;
+  /* Success Green */
+  --secondary: #01C588;
+  --secondary-hover: #01AA75;
+  --secondary-container: #072439;
+  --secondary-fixed: #062237;
+  --on-secondary: #FFFFFF;
+  --on-secondary-fixed-variant: #01C588;
 
-  --on-surface: #F7EFE9;
-  --on-surface-variant: #DBC2B0;
-  --outline: #9F8A7A;
-  --outline-variant: #554336;
-  --border: #3F372F;
-  --border-strong: #4F453B;
+  /* Warning Orange */
+  --tertiary: #F48637;
+  --tertiary-hover: #D9732B;
+  --tertiary-container: #072439;
+  --tertiary-fixed: #062237;
+  --on-tertiary: #FFFFFF;
+  --on-tertiary-fixed-variant: #F48637;
 
-  --success: #92F5A4;
-  --warning: #FFB77D;
-  --error: #FFB4AB;
-  --error-container: #93000A;
+  /* Purple Accent */
+  --purple: #6C43FC;
+  --purple-hover: #5B35DE;
+
+  /* Neutral Text Hierarchy */
+  --on-surface: #F5F6F6;
+  --on-surface-variant: #94A3B8;
+  --outline: #0e3554;
+  --outline-variant: #0e3554;
+  --border: #0e3554;
+  --border-strong: #0e3554;
+
+  /* Operational Health & Feedback */
+  --success: #01C588;
+  --warning: #F48637;
+  --error: #BA1A1A;
+  --error-container: #FFDAD6;
 }
 
 body {
@@ -217,15 +238,36 @@ body {
   background: #F3F8FD;
 }
 
+.dark .scrollbar-thin::-webkit-scrollbar-track,
+.dark .custom-scroll::-webkit-scrollbar-track,
+.dark.scrollbar-thin::-webkit-scrollbar-track,
+.dark.custom-scroll::-webkit-scrollbar-track {
+  background: #011A2D;
+}
+
 .scrollbar-thin::-webkit-scrollbar-thumb,
 .custom-scroll::-webkit-scrollbar-thumb {
   background: #ACB9D1;
   border-radius: 4px;
 }
 
+.dark .scrollbar-thin::-webkit-scrollbar-thumb,
+.dark .custom-scroll::-webkit-scrollbar-thumb,
+.dark.scrollbar-thin::-webkit-scrollbar-thumb,
+.dark.custom-scroll::-webkit-scrollbar-thumb {
+  background: #0e3554;
+}
+
 .scrollbar-thin::-webkit-scrollbar-thumb:hover,
 .custom-scroll::-webkit-scrollbar-thumb:hover {
   background: #717785;
+}
+
+.dark .scrollbar-thin::-webkit-scrollbar-thumb:hover,
+.dark .custom-scroll::-webkit-scrollbar-thumb:hover,
+.dark.scrollbar-thin::-webkit-scrollbar-thumb:hover,
+.dark.custom-scroll::-webkit-scrollbar-thumb:hover {
+  background: #0D79FD;
 }
 
 /* Tabular Numbers for Metrics */

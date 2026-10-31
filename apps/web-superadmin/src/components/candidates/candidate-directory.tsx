@@ -126,61 +126,61 @@ export function CandidateDirectory({
     <div className="space-y-5">
       {/* 1. Summary KPI Strip */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-        <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs">
-          <div className="flex items-center justify-between text-xs text-slate-500 mb-1">
+        <div className="p-4 rounded-xl border border-[#ACB9D1] dark:border-[#0e3554] bg-[#FDFEFE] dark:bg-[#062237] shadow-xs">
+          <div className="flex items-center justify-between text-xs text-[#717785] dark:text-[#94A3B8] mb-1">
             <span>Total Candidates</span>
-            <Users className="w-3.5 h-3.5 text-slate-400" />
+            <Users className="w-3.5 h-3.5 text-[#717785] dark:text-[#94A3B8]" />
           </div>
-          <div className="text-2xl font-bold text-slate-900 dark:text-slate-100">
+          <div className="text-2xl font-bold text-[#010627] dark:text-[#F5F6F6]">
             {totalCount}
           </div>
-          <div className="text-[11px] text-slate-400 mt-1">
+          <div className="text-[11px] text-[#717785] dark:text-[#94A3B8] mt-1">
             Registered campaign tenants
           </div>
         </div>
 
-        <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs">
-          <div className="flex items-center justify-between text-xs text-emerald-600 dark:text-emerald-400 mb-1">
+        <div className="p-4 rounded-xl border border-[#ACB9D1] dark:border-[#0e3554] bg-[#FDFEFE] dark:bg-[#062237] shadow-xs">
+          <div className="flex items-center justify-between text-xs text-[#12CF94] dark:text-[#01C588] mb-1">
             <span>Active War Rooms</span>
-            <div className="w-2 h-2 rounded-full bg-emerald-500" />
+            <div className="w-2 h-2 rounded-full bg-[#12CF94] dark:bg-[#01C588]" />
           </div>
-          <div className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">
+          <div className="text-2xl font-bold text-[#12CF94] dark:text-[#01C588]">
             {activeCount}
           </div>
-          <div className="text-[11px] text-slate-400 mt-1">
+          <div className="text-[11px] text-[#717785] dark:text-[#94A3B8] mt-1">
             Live field voter operations
           </div>
         </div>
 
-        <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs">
-          <div className="flex items-center justify-between text-xs text-sky-600 dark:text-sky-400 mb-1">
+        <div className="p-4 rounded-xl border border-[#ACB9D1] dark:border-[#0e3554] bg-[#FDFEFE] dark:bg-[#062237] shadow-xs">
+          <div className="flex items-center justify-between text-xs text-[#2087FE] dark:text-[#0D79FD] mb-1">
             <span>Field Cadre Deployed</span>
-            <Users className="w-3.5 h-3.5 text-sky-500" />
+            <Users className="w-3.5 h-3.5 text-[#2087FE] dark:text-[#0D79FD]" />
           </div>
-          <div className="text-2xl font-bold text-sky-600 dark:text-sky-400">
+          <div className="text-2xl font-bold text-[#2087FE] dark:text-[#0D79FD]">
             {totalCadre}
           </div>
-          <div className="text-[11px] text-slate-400 mt-1">
+          <div className="text-[11px] text-[#717785] dark:text-[#94A3B8] mt-1">
             Karyakartas & booth agents active
           </div>
         </div>
 
-        <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs">
-          <div className="flex items-center justify-between text-xs text-amber-600 dark:text-amber-400 mb-1">
+        <div className="p-4 rounded-xl border border-[#ACB9D1] dark:border-[#0e3554] bg-[#FDFEFE] dark:bg-[#062237] shadow-xs">
+          <div className="flex items-center justify-between text-xs text-[#FC7C36] dark:text-[#F48637] mb-1">
             <span>Demo Accounts</span>
-            <div className="w-2 h-2 rounded-full bg-amber-500" />
+            <div className="w-2 h-2 rounded-full bg-[#FC7C36] dark:bg-[#F48637]" />
           </div>
-          <div className="text-2xl font-bold text-slate-900 dark:text-slate-100">
+          <div className="text-2xl font-bold text-[#010627] dark:text-[#F5F6F6]">
             {demoCount}
           </div>
-          <div className="text-[11px] text-slate-400 mt-1">
+          <div className="text-[11px] text-[#717785] dark:text-[#94A3B8] mt-1">
             14-Day pilots awaiting conversion
           </div>
         </div>
       </div>
 
       {/* 2. Search & Multi-Filter Bar */}
-      <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs space-y-3">
+      <div className="p-4 rounded-xl border border-[#ACB9D1] dark:border-[#0e3554] bg-[#FDFEFE] dark:bg-[#062237] shadow-xs space-y-3">
         <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
           <div className="flex-1 max-w-md">
             <SearchInput
@@ -214,8 +214,8 @@ export function CandidateDirectory({
         </div>
 
         {/* Filters Row */}
-        <div className="flex flex-wrap items-center gap-2.5 pt-2 border-t border-slate-100 dark:border-slate-800/80 text-xs">
-          <div className="flex items-center gap-1.5 text-slate-500 mr-1">
+        <div className="flex flex-wrap items-center gap-2.5 pt-2 border-t border-[#ACB9D1]/40 dark:border-[#0e3554]/50 text-xs">
+          <div className="flex items-center gap-1.5 text-[#717785] dark:text-[#94A3B8] mr-1">
             <Filter className="w-3.5 h-3.5" />
             <span className="font-medium">Filters:</span>
           </div>
@@ -293,7 +293,7 @@ export function CandidateDirectory({
       </div>
 
       {/* 3. Candidate Master Table */}
-      <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs overflow-hidden">
+      <div className="rounded-xl border border-[#ACB9D1] dark:border-[#0e3554] bg-[#FDFEFE] dark:bg-[#062237] shadow-xs overflow-hidden">
         {filteredCandidates.length === 0 ? (
           <EmptyState
             title="No candidates found"
@@ -328,17 +328,17 @@ export function CandidateDirectory({
                       {/* Name & ID */}
                       <TableCell>
                         <div className="flex items-center gap-2.5">
-                          <div className="w-8 h-8 rounded-lg bg-primary-600 text-white font-bold text-xs flex items-center justify-center flex-shrink-0">
+                          <div className="w-8 h-8 rounded-lg bg-[#2087FE] dark:bg-[#0D79FD] text-white font-bold text-xs flex items-center justify-center flex-shrink-0">
                             {cand.name.charAt(0)}
                           </div>
                           <div>
                             <button
                               onClick={() => onSelectCandidate(cand)}
-                              className="font-semibold text-slate-900 dark:text-slate-100 hover:text-primary-600 dark:hover:text-primary-400 text-left transition-colors block text-xs"
+                              className="font-semibold text-[#010627] dark:text-[#F5F6F6] hover:text-[#2087FE] dark:hover:text-[#0D79FD] text-left transition-colors block text-xs"
                             >
                               {cand.name}
                             </button>
-                            <div className="text-[11px] text-slate-400 flex items-center gap-1 font-mono">
+                            <div className="text-[11px] text-[#717785] dark:text-[#94A3B8] flex items-center gap-1 font-mono">
                               <span>{cand.id}</span> • <span>{cand.marathiName}</span>
                             </div>
                           </div>
@@ -348,10 +348,10 @@ export function CandidateDirectory({
                       {/* Party & Symbol */}
                       <TableCell>
                         <div className="space-y-0.5">
-                          <span className="font-medium text-slate-800 dark:text-slate-200 text-xs block">
+                          <span className="font-medium text-[#010627] dark:text-[#F5F6F6] text-xs block">
                             {cand.party}
                           </span>
-                          <span className="text-[11px] text-slate-400">
+                          <span className="text-[11px] text-[#717785] dark:text-[#94A3B8]">
                             Symbol: {cand.symbol}
                           </span>
                         </div>
@@ -360,10 +360,10 @@ export function CandidateDirectory({
                       {/* Geography */}
                       <TableCell>
                         <div className="space-y-0.5">
-                          <span className="font-medium text-slate-800 dark:text-slate-200 text-xs block">
+                          <span className="font-medium text-[#010627] dark:text-[#F5F6F6] text-xs block">
                             {cand.geography}
                           </span>
-                          <span className="text-[11px] text-slate-400">
+                          <span className="text-[11px] text-[#717785] dark:text-[#94A3B8]">
                             {cand.electionType}
                           </span>
                         </div>
@@ -375,7 +375,7 @@ export function CandidateDirectory({
                           <Badge variant={cand.accountType === "Sale" ? "success" : "warning"}>
                             {cand.accountType === "Sale" ? "Commercial" : "Demo Pilot"}
                           </Badge>
-                          <span className="text-[10px] text-slate-400 truncate max-w-[120px]">
+                          <span className="text-[10px] text-[#717785] dark:text-[#94A3B8] truncate max-w-[120px]">
                             {cand.planName}
                           </span>
                         </div>
@@ -385,19 +385,19 @@ export function CandidateDirectory({
                       <TableCell>
                         <div className="space-y-1 w-24">
                           <div className="flex justify-between text-[11px]">
-                            <span className="font-semibold text-slate-800 dark:text-slate-200">
+                            <span className="font-semibold text-[#010627] dark:text-[#F5F6F6]">
                               {cand.usersUsed}
                             </span>
-                            <span className="text-slate-400">/ {cand.usersAllowed}</span>
+                            <span className="text-[#717785] dark:text-[#94A3B8]">/ {cand.usersAllowed}</span>
                           </div>
-                          <div className="w-full bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden">
+                          <div className="w-full bg-[#E0EDFE] dark:bg-[#011A2D] h-1.5 rounded-full overflow-hidden">
                             <div
                               className={`h-full rounded-full ${
                                 usagePercent > 90
-                                  ? "bg-rose-500"
+                                  ? "bg-[#FC7C36] dark:bg-[#F48637]"
                                   : usagePercent > 70
-                                  ? "bg-amber-500"
-                                  : "bg-primary-500"
+                                  ? "bg-[#FC7C36] dark:bg-[#F48637]"
+                                  : "bg-[#2087FE] dark:bg-[#0D79FD]"
                               }`}
                               style={{ width: `${usagePercent}%` }}
                             />
@@ -413,7 +413,7 @@ export function CandidateDirectory({
                             AI ({cand.aiSeats || 5} seats)
                           </Badge>
                         ) : (
-                          <span className="text-[11px] text-slate-400">Disabled</span>
+                          <span className="text-[11px] text-[#717785] dark:text-[#94A3B8]">Disabled</span>
                         )}
                       </TableCell>
 
@@ -439,7 +439,7 @@ export function CandidateDirectory({
                           <Button
                             variant="ghost"
                             size="sm"
-                            className="p-1.5 h-auto text-slate-500 hover:text-slate-900 dark:hover:text-slate-100"
+                            className="p-1.5 h-auto text-[#717785] hover:text-[#010627] dark:text-[#94A3B8] dark:hover:text-[#F5F6F6]"
                             onClick={() => onSelectCandidate(cand)}
                             title="View Full Profile & Control Panel"
                           >
@@ -448,7 +448,7 @@ export function CandidateDirectory({
                           <Button
                             variant="ghost"
                             size="sm"
-                            className="p-1.5 h-auto text-slate-500 hover:text-primary-600 dark:hover:text-primary-400"
+                            className="p-1.5 h-auto text-[#717785] hover:text-[#2087FE] dark:text-[#94A3B8] dark:hover:text-[#0D79FD]"
                             onClick={() => setSelectedCandForDelivery(cand)}
                             title="Dispatch Credentials"
                           >
@@ -457,7 +457,7 @@ export function CandidateDirectory({
                           <Button
                             variant="ghost"
                             size="sm"
-                            className="p-1.5 h-auto text-slate-500 hover:text-rose-600 dark:hover:text-rose-400"
+                            className="p-1.5 h-auto text-[#717785] hover:text-[#FC7C36] dark:text-[#94A3B8] dark:hover:text-[#F48637]"
                             onClick={() => onToggleCandidateStatus(cand.id)}
                             title={cand.status === "Active" ? "Deactivate" : "Activate"}
                           >

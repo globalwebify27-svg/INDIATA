@@ -29,7 +29,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
         {label && (
           <label
             htmlFor={selectId}
-            className="block text-xs font-semibold text-[#010627] dark:text-slate-300 uppercase tracking-wider"
+            className="block text-xs font-semibold text-[#010627] dark:text-[#94A3B8] uppercase tracking-wider"
           >
             {label}
           </label>
@@ -38,10 +38,10 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
           <select
             id={selectId}
             ref={ref}
-            className={`w-full text-xs sm:text-sm rounded-lg border bg-[#FDFEFE] dark:bg-slate-900 text-[#010627] dark:text-slate-100 py-2 pl-3 pr-8 appearance-none focus:outline-none focus:ring-2 focus:ring-[#2087FE]/20 focus:border-[#2087FE] disabled:opacity-50 disabled:bg-[#F3F8FD] dark:disabled:bg-slate-950 transition-colors cursor-pointer ${
+            className={`w-full text-xs sm:text-sm rounded-lg border bg-[#FDFEFE] dark:bg-[#072439] text-[#010627] dark:text-[#F5F6F6] py-2 pl-3 pr-8 appearance-none focus:outline-none focus:ring-2 focus:ring-[#2087FE]/20 dark:focus:ring-[#0D79FD]/20 focus:border-[#2087FE] dark:focus:border-[#0D79FD] disabled:opacity-50 disabled:bg-[#F3F8FD] dark:disabled:bg-[#011A2D] transition-colors cursor-pointer ${
               error
-                ? "border-[#FC7C36] focus:border-[#FC7C36] focus:ring-[#FC7C36]/20"
-                : "border-[#ACB9D1] dark:border-slate-700"
+                ? "border-[#FC7C36] focus:border-[#FC7C36] focus:ring-[#FC7C36]/20 dark:border-[#F48637] dark:focus:border-[#F48637] dark:focus:ring-[#F48637]/20"
+                : "border-[#ACB9D1] dark:border-[#0e3554]"
             } ${className}`}
             {...props}
           >
@@ -50,20 +50,20 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
                 key={opt.value}
                 value={opt.value}
                 disabled={opt.disabled}
-                className="bg-[#FDFEFE] dark:bg-slate-900 text-[#010627] dark:text-slate-100"
+                className="bg-[#FDFEFE] dark:bg-[#072439] text-[#010627] dark:text-[#F5F6F6]"
               >
                 {opt.label}
               </option>
             ))}
           </select>
-          <div className="absolute right-3 text-[#717785] dark:text-slate-500 pointer-events-none">
+          <div className="absolute right-3 text-[#717785] dark:text-[#94A3B8] pointer-events-none">
             <ChevronDown className="w-4 h-4" />
           </div>
         </div>
         {error ? (
-          <p className="text-xs text-[#FC7C36] dark:text-rose-400">{error}</p>
+          <p className="text-xs text-[#FC7C36] dark:text-[#F48637]">{error}</p>
         ) : helperText ? (
-          <p className="text-xs text-[#717785] dark:text-slate-400">{helperText}</p>
+          <p className="text-xs text-[#717785] dark:text-[#94A3B8]">{helperText}</p>
         ) : null}
       </div>
     );
