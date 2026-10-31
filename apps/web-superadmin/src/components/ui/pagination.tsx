@@ -25,12 +25,12 @@ export function Pagination({
   const endItem = Math.min(currentPage * pageSize, totalRecords);
 
   return (
-    <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-4 py-3 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 text-xs text-slate-500 dark:text-slate-400">
+    <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-4 py-3 bg-[#FDFEFE] dark:bg-slate-900 border-t border-[#ACB9D1] dark:border-slate-800 text-xs text-[#717785] dark:text-slate-400">
       <div className="flex items-center gap-2">
         <span>
-          Showing <span className="font-semibold text-slate-900 dark:text-slate-100">{startItem}</span> to{" "}
-          <span className="font-semibold text-slate-900 dark:text-slate-100">{endItem}</span> of{" "}
-          <span className="font-semibold text-slate-900 dark:text-slate-100">{totalRecords}</span> entries
+          Showing <span className="font-semibold text-[#010627] dark:text-slate-100">{startItem}</span> to{" "}
+          <span className="font-semibold text-[#010627] dark:text-slate-100">{endItem}</span> of{" "}
+          <span className="font-semibold text-[#010627] dark:text-slate-100">{totalRecords}</span> entries
         </span>
         {onPageSizeChange && (
           <div className="ml-3 flex items-center gap-1.5">
@@ -38,7 +38,7 @@ export function Pagination({
             <select
               value={pageSize}
               onChange={(e) => onPageSizeChange(Number(e.target.value))}
-              className="px-2 py-1 rounded border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 outline-none text-xs"
+              className="px-2 py-1 rounded border border-[#ACB9D1] dark:border-slate-700 bg-[#FDFEFE] dark:bg-slate-800 text-[#010627] dark:text-slate-100 outline-none text-xs"
             >
               <option value={5}>5</option>
               <option value={10}>10</option>
@@ -73,14 +73,14 @@ export function Pagination({
               return (
                 <React.Fragment key={page}>
                   {prev && page - prev > 1 && (
-                    <span className="px-1 text-slate-400">...</span>
+                    <span className="px-1 text-[#717785]">...</span>
                   )}
                   <button
                     onClick={() => onPageChange(page)}
-                    className={`min-w-[28px] h-7 px-2 rounded text-xs font-medium transition-colors ${
+                    className={`min-w-[28px] h-7 px-2 rounded text-xs font-medium transition-colors cursor-pointer ${
                       currentPage === page
-                        ? "bg-sky-600 text-white font-semibold"
-                        : "hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300"
+                        ? "bg-[#2087FE] text-white font-semibold"
+                        : "hover:bg-[#E0EDFE] dark:hover:bg-slate-800 text-[#010627] dark:text-slate-300"
                     }`}
                   >
                     {page}

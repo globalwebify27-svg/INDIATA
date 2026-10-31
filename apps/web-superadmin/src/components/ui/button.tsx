@@ -24,17 +24,17 @@ export interface ButtonProps
 
 const variantStyles: Record<ButtonVariant, string> = {
   primary:
-    "bg-sky-600 hover:bg-sky-700 text-white shadow-xs border border-transparent focus-visible:ring-2 focus-visible:ring-sky-500",
+    "bg-[#2087FE] hover:bg-[#2087FE]/90 text-white shadow-xs border border-transparent focus-visible:ring-2 focus-visible:ring-[#2087FE]",
   secondary:
-    "bg-slate-800 hover:bg-slate-900 text-white shadow-xs border border-transparent focus-visible:ring-2 focus-visible:ring-slate-700 dark:bg-slate-700 dark:hover:bg-slate-600",
+    "bg-[#010627] hover:bg-[#010627]/90 text-white shadow-xs border border-transparent focus-visible:ring-2 focus-visible:ring-[#010627] dark:bg-slate-700 dark:hover:bg-slate-600",
   outline:
-    "bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-700 shadow-xs focus-visible:ring-2 focus-visible:ring-slate-400",
+    "bg-[#FDFEFE] dark:bg-slate-900 hover:bg-[#E0EDFE] dark:hover:bg-slate-800 text-[#010627] dark:text-slate-200 border border-[#ACB9D1] dark:border-slate-700 shadow-xs focus-visible:ring-2 focus-visible:ring-[#2087FE]",
   ghost:
-    "bg-transparent hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 focus-visible:ring-2 focus-visible:ring-slate-400",
+    "bg-transparent hover:bg-[#E0EDFE] dark:hover:bg-slate-800 text-[#010627] dark:text-slate-300 focus-visible:ring-2 focus-visible:ring-[#2087FE]",
   danger:
-    "bg-rose-600 hover:bg-rose-700 text-white shadow-xs border border-transparent focus-visible:ring-2 focus-visible:ring-rose-500",
+    "bg-[#FC7C36] hover:bg-[#FC7C36]/90 text-white shadow-xs border border-transparent focus-visible:ring-2 focus-visible:ring-[#FC7C36]",
   success:
-    "bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs border border-transparent focus-visible:ring-2 focus-visible:ring-emerald-500",
+    "bg-[#12CF94] hover:bg-[#12CF94]/90 text-[#010627] font-bold shadow-xs border border-transparent focus-visible:ring-2 focus-visible:ring-[#12CF94]",
 };
 
 const sizeStyles: Record<ButtonSize, string> = {

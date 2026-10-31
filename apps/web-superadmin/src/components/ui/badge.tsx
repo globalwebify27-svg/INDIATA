@@ -16,33 +16,33 @@ export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
 const variantClasses: Record<BadgeVariant, { container: string; dot: string }> = {
   success: {
     container:
-      "bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800",
-    dot: "bg-emerald-500",
+      "bg-[#B3EDD7] dark:bg-emerald-950/60 text-[#010627] dark:text-emerald-300 border-[#12CF94]/40 dark:border-emerald-800",
+    dot: "bg-[#12CF94]",
   },
   warning: {
     container:
-      "bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800",
-    dot: "bg-amber-500",
+      "bg-[#FC7C36]/15 dark:bg-amber-950/60 text-[#FC7C36] dark:text-amber-300 border-[#FC7C36]/30 dark:border-amber-800",
+    dot: "bg-[#FC7C36]",
   },
   danger: {
     container:
-      "bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border-rose-200 dark:border-rose-800",
-    dot: "bg-rose-500",
+      "bg-[#FC7C36]/15 dark:bg-rose-950/60 text-[#FC7C36] dark:text-rose-300 border-[#FC7C36]/30 dark:border-rose-800",
+    dot: "bg-[#FC7C36]",
   },
   info: {
     container:
-      "bg-sky-50 dark:bg-sky-950/60 text-sky-700 dark:text-sky-300 border-sky-200 dark:border-sky-800",
-    dot: "bg-sky-500",
+      "bg-[#E0EDFE] dark:bg-sky-950/60 text-[#2087FE] dark:text-sky-300 border-[#ACB9D1] dark:border-sky-800",
+    dot: "bg-[#2087FE]",
   },
   purple: {
     container:
-      "bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border-indigo-200 dark:border-indigo-800",
-    dot: "bg-indigo-500",
+      "bg-[#E0EDFE] dark:bg-indigo-950/60 text-[#2087FE] dark:text-indigo-300 border-[#ACB9D1] dark:border-indigo-800",
+    dot: "bg-[#2087FE]",
   },
   neutral: {
     container:
-      "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700",
-    dot: "bg-slate-400",
+      "bg-[#F3F8FD] dark:bg-slate-800 text-[#717785] dark:text-slate-300 border-[#ACB9D1] dark:border-slate-700",
+    dot: "bg-[#717785]",
   },
 };
 

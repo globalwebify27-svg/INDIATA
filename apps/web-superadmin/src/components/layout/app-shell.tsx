@@ -35,7 +35,7 @@ export function AppShell({
           "--header-height": "64px",
         } as React.CSSProperties
       }
-      className="min-h-screen bg-[#FFF8F2] dark:bg-[#191410] text-[#1E1B17] dark:text-[#F7EFE9] transition-colors"
+      className="min-h-screen bg-[#F3F8FD] dark:bg-[#191410] text-[#010627] dark:text-[#F7EFE9] transition-colors"
     >
       {/* 1. Permanently Fixed Left Sidebar (100vh) */}
       <Sidebar
@@ -66,17 +66,17 @@ export function AppShell({
         </main>
 
         {/* Enterprise Platform Footer */}
-        <footer className="py-4 px-6 border-t border-[#EAE5DC] dark:border-[#352B22] text-xs text-[#554336] dark:text-[#DBC2B0] bg-white/80 dark:bg-[#201A15]/80 backdrop-blur-xs flex flex-col sm:flex-row items-center justify-between gap-2 shadow-2xs">
+        <footer className="py-4 px-6 border-t border-[#ACB9D1] dark:border-[#352B22] text-xs text-[#010627] dark:text-[#DBC2B0] bg-[#FDFEFE]/80 dark:bg-[#201A15]/80 backdrop-blur-xs flex flex-col sm:flex-row items-center justify-between gap-2 shadow-2xs">
           <div className="flex items-center gap-2">
-            <span className="font-bold text-[#8D4B00] dark:text-[#FFB77D]">
+            <span className="font-bold text-[#2087FE] dark:text-[#FFB77D]">
               INDIATA Election-Operations Platform
             </span>
-            <span className="text-[#887364] dark:text-[#A8988C]">&bull;</span>
-            <span className="text-[11px] font-mono text-[#006D30] dark:text-[#92F5A4] font-semibold">
+            <span className="text-[#ACB9D1] dark:text-[#A8988C]">&bull;</span>
+            <span className="text-[11px] font-mono text-[#12CF94] dark:text-[#92F5A4] font-semibold">
               Secure Super Admin Console
             </span>
           </div>
-          <div className="text-[11px] text-[#887364] dark:text-[#A8988C]">
+          <div className="text-[11px] text-[#717785] dark:text-[#A8988C]">
             Encrypted Administrative Session &bull; ISO/IEC 27001 Certified &bull; High-Assurance Democratic Operations
           </div>
         </footer>

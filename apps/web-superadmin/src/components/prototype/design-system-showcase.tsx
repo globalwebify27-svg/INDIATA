@@ -33,51 +33,66 @@ export function DesignSystemShowcase() {
   return (
     <div className="space-y-6">
       {/* Intro Card */}
-      <div className="p-5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs">
-        <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-          <Sparkles className="w-4 h-4 text-sky-600 dark:text-sky-400" />
-          INDIATA Enterprise Design System Specification
+      <div className="p-5 rounded-xl border border-[#ACB9D1] dark:border-slate-800 bg-[#FDFEFE] dark:bg-slate-900 shadow-xs">
+        <h3 className="text-base font-semibold text-[#010627] dark:text-slate-100 flex items-center gap-2">
+          <Sparkles className="w-4 h-4 text-[#2087FE] dark:text-sky-400" />
+          INDIATA Client-Approved Design System Specification
         </h3>
-        <p className="mt-1 text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+        <p className="mt-1 text-xs text-[#717785] dark:text-slate-400 leading-relaxed">
           Living design tokens, reusable components, and states built specifically for high-concurrency multi-tenant administration.
         </p>
       </div>
 
       {/* 1. Color Palette Tokens */}
-      <div className="p-5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs">
-        <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-4">
-          Core Semantic Color Palette
+      <div className="p-5 rounded-xl border border-[#ACB9D1] dark:border-slate-800 bg-[#FDFEFE] dark:bg-slate-900 shadow-xs">
+        <h4 className="text-xs font-semibold uppercase tracking-wider text-[#717785] dark:text-slate-400 mb-4">
+          Client-Approved Light Theme Color Palette
         </h4>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
-          <div className="p-3 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-900 text-white">
-            <div className="text-xs font-bold">Dark Navy</div>
-            <div className="text-[10px] text-slate-400 font-mono mt-0.5">#0F172A</div>
-            <div className="text-[10px] text-slate-400 mt-2">Sidebar Canvas</div>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+          <div className="p-3 rounded-lg border border-[#ACB9D1] dark:border-slate-800 bg-[#F3F8FD] text-[#010627]">
+            <div className="text-xs font-bold">Primary Background</div>
+            <div className="text-[10px] text-[#717785] font-mono mt-0.5">#F3F8FD</div>
+            <div className="text-[10px] text-[#717785] mt-2">App Canvas</div>
           </div>
-          <div className="p-3 rounded-lg border border-slate-200 dark:border-slate-800 bg-sky-600 text-white">
-            <div className="text-xs font-bold">Restrained Blue</div>
-            <div className="text-[10px] text-sky-200 font-mono mt-0.5">#0284C7</div>
-            <div className="text-[10px] text-sky-100 mt-2">Primary Accent</div>
+          <div className="p-3 rounded-lg border border-[#ACB9D1] dark:border-slate-800 bg-[#FDFEFE] text-[#010627]">
+            <div className="text-xs font-bold">Secondary Background</div>
+            <div className="text-[10px] text-[#717785] font-mono mt-0.5">#FDFEFE</div>
+            <div className="text-[10px] text-[#717785] mt-2">Cards & Panels</div>
           </div>
-          <div className="p-3 rounded-lg border border-slate-200 dark:border-slate-800 bg-emerald-600 text-white">
-            <div className="text-xs font-bold">Emerald Green</div>
-            <div className="text-[10px] text-emerald-200 font-mono mt-0.5">#059669</div>
-            <div className="text-[10px] text-emerald-100 mt-2">Active / Success</div>
+          <div className="p-3 rounded-lg border border-[#ACB9D1] dark:border-slate-800 bg-[#E0EDFE] text-[#010627]">
+            <div className="text-xs font-bold">Soft Blue Surface</div>
+            <div className="text-[10px] text-[#2087FE] font-mono mt-0.5">#E0EDFE</div>
+            <div className="text-[10px] text-[#717785] mt-2">Highlighted Areas</div>
           </div>
-          <div className="p-3 rounded-lg border border-slate-200 dark:border-slate-800 bg-amber-500 text-white">
-            <div className="text-xs font-bold">Amber Warning</div>
-            <div className="text-[10px] text-amber-100 font-mono mt-0.5">#D97706</div>
-            <div className="text-[10px] text-amber-100 mt-2">Expiring / Review</div>
+          <div className="p-3 rounded-lg border border-[#ACB9D1] dark:border-slate-800 bg-[#ACB9D1] text-[#010627]">
+            <div className="text-xs font-bold">Border / Muted UI</div>
+            <div className="text-[10px] text-[#010627] font-mono mt-0.5">#ACB9D1</div>
+            <div className="text-[10px] text-[#010627]/80 mt-2">Dividers & Lines</div>
           </div>
-          <div className="p-3 rounded-lg border border-slate-200 dark:border-slate-800 bg-rose-600 text-white">
-            <div className="text-xs font-bold">Rose Danger</div>
-            <div className="text-[10px] text-rose-200 font-mono mt-0.5">#E11D48</div>
-            <div className="text-[10px] text-rose-100 mt-2">Suspended / Error</div>
+          <div className="p-3 rounded-lg border border-[#ACB9D1] dark:border-slate-800 bg-[#2087FE] text-white">
+            <div className="text-xs font-bold">Primary Blue</div>
+            <div className="text-[10px] text-white/90 font-mono mt-0.5">#2087FE</div>
+            <div className="text-[10px] text-white/80 mt-2">Active Navigation</div>
           </div>
-          <div className="p-3 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200">
-            <div className="text-xs font-bold">Neutral Slate</div>
-            <div className="text-[10px] text-slate-500 font-mono mt-0.5">#F8FAFC</div>
-            <div className="text-[10px] text-slate-500 mt-2">Content Canvas</div>
+          <div className="p-3 rounded-lg border border-[#ACB9D1] dark:border-slate-800 bg-[#12CF94] text-[#010627]">
+            <div className="text-xs font-bold">Success Green</div>
+            <div className="text-[10px] text-[#010627] font-mono mt-0.5">#12CF94</div>
+            <div className="text-[10px] text-[#010627]/80 mt-2">Live Status & OK</div>
+          </div>
+          <div className="p-3 rounded-lg border border-[#ACB9D1] dark:border-slate-800 bg-[#FC7C36] text-white">
+            <div className="text-xs font-bold">Warning Orange</div>
+            <div className="text-[10px] text-white/90 font-mono mt-0.5">#FC7C36</div>
+            <div className="text-[10px] text-white/80 mt-2">Alerts & Actions</div>
+          </div>
+          <div className="p-3 rounded-lg border border-[#ACB9D1] dark:border-slate-800 bg-[#010627] text-white">
+            <div className="text-xs font-bold">Primary Text</div>
+            <div className="text-[10px] text-white/80 font-mono mt-0.5">#010627</div>
+            <div className="text-[10px] text-white/70 mt-2">Headings & Copy</div>
+          </div>
+          <div className="p-3 rounded-lg border border-[#ACB9D1] dark:border-slate-800 bg-[#B3EDD7] text-[#010627]">
+            <div className="text-xs font-bold">Soft Success Bg</div>
+            <div className="text-[10px] text-[#010627] font-mono mt-0.5">#B3EDD7</div>
+            <div className="text-[10px] text-[#010627]/80 mt-2">Pills & Badges</div>
           </div>
         </div>
       </div>

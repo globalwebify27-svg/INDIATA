@@ -9,52 +9,63 @@
   --sidebar-width-expanded: 270px;
   --sidebar-width: var(--sidebar-width-collapsed);
 
-  /* Stitch Design Tokens - Election-Friendly Warm Civic Canvas */
-  --background: #FFF8F2;
-  --foreground: #1E1B17;
-  --surface-low: #FAF2EB;
-  --surface-container: #F4EDE6;
-  --surface-high: #EEE7E0;
-  --surface-highest: #E8E1DB;
-  --card: #FFFFFF;
-  --card-foreground: #1E1B17;
+  /* Client-Approved Light Theme Tokens */
+  --background: #F3F8FD;
+  --foreground: #010627;
+  --surface-low: #F3F8FD;
+  --surface-container: #E0EDFE;
+  --surface-high: #E0EDFE;
+  --surface-highest: #E0EDFE;
+  --card: #FDFEFE;
+  --card-foreground: #010627;
 
-  /* Restrained Saffron / Amber Primary */
-  --primary: #8D4B00;
-  --primary-hover: #733D00;
-  --primary-container: #B15F00;
-  --primary-fixed: #FFDCC3;
+  /* Client Exact Design System Tokens */
+  --client-bg: #F3F8FD;
+  --client-card: #FDFEFE;
+  --client-soft-blue: #E0EDFE;
+  --client-border: #ACB9D1;
+  --client-primary: #2087FE;
+  --client-success: #12CF94;
+  --client-soft-success: #B3EDD7;
+  --client-warning: #FC7C36;
+  --client-dark: #010627;
+
+  /* Primary Blue */
+  --primary: #2087FE;
+  --primary-hover: #1A6ED1;
+  --primary-container: #2087FE;
+  --primary-fixed: #E0EDFE;
   --on-primary: #FFFFFF;
-  --on-primary-fixed: #2F1500;
-  --on-primary-fixed-variant: #6E3900;
+  --on-primary-fixed: #010627;
+  --on-primary-fixed-variant: #2087FE;
 
-  /* Natural Operational Green */
-  --secondary: #006D30;
-  --secondary-hover: #005323;
-  --secondary-container: #DCFCE7;
-  --secondary-fixed: #95F8A7;
+  /* Success Green */
+  --secondary: #12CF94;
+  --secondary-hover: #0EAC7A;
+  --secondary-container: #B3EDD7;
+  --secondary-fixed: #B3EDD7;
   --on-secondary: #FFFFFF;
-  --on-secondary-fixed-variant: #005323;
+  --on-secondary-fixed-variant: #12CF94;
 
-  /* Civic Intelligence Violet */
-  --tertiary: #712AE2;
-  --tertiary-hover: #5A00C6;
-  --tertiary-container: #EDE9FE;
-  --tertiary-fixed: #EADDFF;
+  /* Warning Orange */
+  --tertiary: #FC7C36;
+  --tertiary-hover: #E26320;
+  --tertiary-container: #FFEDD5;
+  --tertiary-fixed: #FFEDD5;
   --on-tertiary: #FFFFFF;
-  --on-tertiary-fixed-variant: #5A00C6;
+  --on-tertiary-fixed-variant: #FC7C36;
 
   /* Neutral Text Hierarchy */
-  --on-surface: #1E1B17;
-  --on-surface-variant: #554336;
-  --outline: #887364;
-  --outline-variant: #DBC2B0;
-  --border: #EAE5DC;
-  --border-strong: #E2DDD3;
+  --on-surface: #010627;
+  --on-surface-variant: #717785;
+  --outline: #ACB9D1;
+  --outline-variant: #ACB9D1;
+  --border: #ACB9D1;
+  --border-strong: #ACB9D1;
 
   /* Operational Health & Feedback */
-  --success: #006D30;
-  --warning: #B15F00;
+  --success: #12CF94;
+  --warning: #FC7C36;
   --error: #BA1A1A;
   --error-container: #FFDAD6;
 }
@@ -203,18 +214,18 @@ body {
 
 .scrollbar-thin::-webkit-scrollbar-track,
 .custom-scroll::-webkit-scrollbar-track {
-  background: #FAF2EB;
+  background: #F3F8FD;
 }
 
 .scrollbar-thin::-webkit-scrollbar-thumb,
 .custom-scroll::-webkit-scrollbar-thumb {
-  background: #DBC2B0;
+  background: #ACB9D1;
   border-radius: 4px;
 }
 
 .scrollbar-thin::-webkit-scrollbar-thumb:hover,
 .custom-scroll::-webkit-scrollbar-thumb:hover {
-  background: #887364;
+  background: #717785;
 }
 
 /* Tabular Numbers for Metrics */

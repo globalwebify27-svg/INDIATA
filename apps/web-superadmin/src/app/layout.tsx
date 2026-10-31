@@ -55,7 +55,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="antialiased min-h-screen flex flex-col bg-[#FFF8F2] dark:bg-[#191410] text-[#1E1B17] dark:text-[#F7EFE9] font-sans selection:bg-[#FFDCC3] selection:text-[#2F1500]">
+      <body className="antialiased min-h-screen flex flex-col bg-[#F3F8FD] dark:bg-[#191410] text-[#010627] dark:text-[#F7EFE9] font-sans selection:bg-[#E0EDFE] selection:text-[#010627]">
         <ThemeProvider>
           <ToastProvider>{children}</ToastProvider>
         </ThemeProvider>
