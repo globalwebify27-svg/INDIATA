@@ -19,15 +19,15 @@ export function DashboardKpiGrid({
   onNavigate,
 }: DashboardKpiGridProps) {
   return (
-    <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
       {/* Card 1: Total Organizations */}
       <DashboardKpiCard
         title="Total Organizations"
         value={128}
-        icon={<Building2 className="w-5 h-5" />}
+        icon={<Building2 className="w-4 h-4" />}
         themeColor="saffron"
         badgeText="+12 this cycle"
-        primarySubtext="Total registered election entities"
+        primarySubtext="Registered entities"
         onClick={() => onNavigate("organizations")}
       />
 
@@ -35,10 +35,10 @@ export function DashboardKpiGrid({
       <DashboardKpiCard
         title="Active Subscriptions"
         value={104}
-        icon={<BadgeCheck className="w-5 h-5" />}
+        icon={<BadgeCheck className="w-4 h-4" />}
         themeColor="green"
         badgeText="92% retention"
-        primarySubtext="Paid & active war room licenses"
+        primarySubtext="Paid licenses"
         onClick={() => onNavigate("subscriptions")}
       />
 
@@ -46,10 +46,10 @@ export function DashboardKpiGrid({
       <DashboardKpiCard
         title="Pending Requests"
         value={7}
-        icon={<Clock className="w-5 h-5" />}
+        icon={<Clock className="w-4 h-4" />}
         themeColor="amber"
         badgeText="High Priority"
-        primarySubtext="Awaiting admin clearance & KYC"
+        primarySubtext="Awaiting KYC"
         onClick={() => onNavigate("candidate-requests")}
       />
 
@@ -57,10 +57,10 @@ export function DashboardKpiGrid({
       <DashboardKpiCard
         title="Settlements to Review"
         value="₹4.8L"
-        icon={<Wallet className="w-5 h-5" />}
+        icon={<Wallet className="w-4 h-4" />}
         themeColor="violet"
         badgeText="3 batches ready"
-        primarySubtext="Distributor payouts to verify"
+        primarySubtext="Distributor payouts"
         onClick={() => onNavigate("subscriptions")}
       />
     </section>
