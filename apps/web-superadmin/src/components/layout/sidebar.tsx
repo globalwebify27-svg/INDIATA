@@ -202,10 +202,14 @@ export function Sidebar({
                 onNavigate("dashboard");
                 onCloseMobile();
               }}
-              className="w-10 h-10 rounded-xl bg-[#2087FE] text-white flex items-center justify-center flex-shrink-0 shadow-xs ring-2 ring-[#2087FE]/20 transition-transform hover:scale-105 cursor-pointer relative group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2087FE]"
+              className="w-10 h-10 rounded-xl bg-white dark:bg-[#072439] border border-[#ACB9D1] dark:border-[#0e3554] p-1.5 flex items-center justify-center flex-shrink-0 shadow-2xs hover:scale-105 transition-transform cursor-pointer relative group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2087FE]"
               aria-label="INDIATA Super Admin Overview"
             >
-              <ShieldCheck className="w-5 h-5 text-white" />
+              <img
+                src="/brand/indiata-logo-compact.png"
+                alt="INDIATA"
+                className="w-full h-full object-contain"
+              />
               {/* Tooltip */}
               <div
                 role="tooltip"
@@ -220,43 +224,38 @@ export function Sidebar({
           /* EXPANDED HEADER (270px Width): Full Wordmark, Status Pulse, and Mobile Close */
           <div className="h-16 px-4 flex items-center justify-between border-b border-[#ACB9D1] dark:border-[#0e3554] flex-shrink-0 bg-[#FDFEFE] dark:bg-[#062237]">
             <div
-              className="flex items-center gap-3 overflow-hidden cursor-pointer"
+              className="flex items-center gap-2.5 overflow-hidden cursor-pointer"
               onClick={() => {
                 onNavigate("dashboard");
                 onCloseMobile();
               }}
             >
-              <div
-                aria-label="INDIATA Institutional Shield Emblem"
-                className="w-10 h-10 rounded-xl bg-[#2087FE] flex items-center justify-center text-white shadow-xs ring-2 ring-[#2087FE]/20 flex-shrink-0"
-              >
-                <ShieldCheck className="w-5 h-5 text-white" />
-              </div>
-              <div className="min-w-0">
-                <div className="flex items-center gap-2">
-                  <span className="text-lg font-bold text-[#2087FE] dark:text-[#0D79FD] tracking-tight">
-                    INDIATA
-                  </span>
-                  <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#12CF94] opacity-75" />
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-[#12CF94]" />
-                  </span>
-                </div>
-                <p className="text-[11px] font-medium text-[#717785] dark:text-[#94A3B8] truncate">
-                  Super Admin Console
-                </p>
+              <div className="h-8 flex items-center">
+                <img
+                  src="/brand/indiata-logo.png"
+                  alt="INDIATA"
+                  className="h-7 w-auto object-contain dark:hidden"
+                />
+                <img
+                  src="/brand/indiata-logo-dark.png"
+                  alt="INDIATA"
+                  className="h-7 w-auto object-contain hidden dark:block"
+                />
               </div>
             </div>
-
-            {/* Mobile Close Button (for drawer dismissal on small screens) */}
-            <button
-              type="button"
-              onClick={onCloseMobile}
-              className="md:hidden p-1.5 rounded-lg text-[#717785] hover:text-[#010627] dark:hover:text-[#F5F6F6] hover:bg-[#E0EDFE]/70 dark:hover:bg-[#072439] cursor-pointer"
-              aria-label="Close mobile navigation"
-            >
-              <X className="w-5 h-5" />
-            </button>
+            <div className="flex items-center gap-1.5">
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#ECE8FF] dark:bg-[#1E1B4B] text-[#493BBF] dark:text-[#C5C0FF]">
+                v4.2
+              </span>
+              <button
+                type="button"
+                onClick={onCloseMobile}
+                className="md:hidden p-1.5 rounded-lg text-[#717785] hover:text-[#010627] dark:hover:text-[#F5F6F6] hover:bg-[#E0EDFE]/70 dark:hover:bg-[#072439] cursor-pointer"
+                aria-label="Close menu"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
           </div>
         )}
 
@@ -349,7 +348,7 @@ export function Sidebar({
                       onCloseMobile();
                     }
                   }}
-                  className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-medium transition-colors duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2087FE] ${
+                  className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[13px] font-medium transition-colors duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2087FE] ${
                     isGroupActive && (!hasSub || !isSubExpanded)
                       ? "bg-[#2087FE] dark:bg-[#0D79FD] text-white dark:text-white font-bold shadow-xs border border-[#2087FE] dark:border-[#0D79FD]"
                       : "text-[#010627] dark:text-[#94A3B8] hover:bg-[#E0EDFE] dark:hover:bg-[#072439] hover:text-[#2087FE] dark:hover:text-[#F5F6F6]"

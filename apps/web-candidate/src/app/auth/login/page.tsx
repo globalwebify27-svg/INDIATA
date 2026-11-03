@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Eye, EyeOff, Shield, ArrowRight, Vote, Sparkles } from "lucide-react";
+import { Eye, EyeOff, Shield, ArrowRight, Sparkles } from "lucide-react";
 import { useAuth } from "@/context/auth-context";
 import { useToast } from "@/context/toast-context";
 import { Button } from "@/components/ui/button";
@@ -57,8 +57,8 @@ export default function LoginPage() {
   };
 
   const handleUseDemoCredentials = () => {
-    setIdentifier("candidate@rajtantra.in");
-    setPassword("Rajtantra@2026");
+    setIdentifier("candidate@indiata.in");
+    setPassword("Indiata@2026");
     setErrorMessage(null);
   };
 
@@ -67,18 +67,24 @@ export default function LoginPage() {
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         {/* Brand Header */}
         <div className="flex flex-col items-center text-center">
-          <div className="w-12 h-12 rounded-xl bg-[#6256D9] flex items-center justify-center text-white shadow-md mb-3 ring-2 ring-[#6256D9]/20">
-            <Vote className="w-6 h-6" />
+          <div className="h-10 mb-2 flex items-center justify-center">
+            <img
+              src="/brand/indiata-logo.png"
+              alt="INDIATA"
+              className="h-9 w-auto object-contain dark:hidden"
+            />
+            <img
+              src="/brand/indiata-logo-dark.png"
+              alt="INDIATA"
+              className="h-9 w-auto object-contain hidden dark:block"
+            />
           </div>
-          <h1 className="text-2xl font-extrabold tracking-tight text-[#252A3A] dark:text-[#F8FAFC]">
-            INDIATA
-          </h1>
           <div className="flex items-center gap-2 mt-1">
             <Badge variant="primary">Candidate Admin War Room</Badge>
             <span className="text-xs text-[#707E94] dark:text-[#94A3B8]">v4.2</span>
           </div>
           <p className="mt-2 text-xs text-[#707E94] dark:text-[#94A3B8]">
-            Institutional Election Management & Campaign Intelligence Platform
+            Institutional Election Management &amp; Campaign Intelligence Platform
           </p>
         </div>
       </div>
@@ -97,7 +103,7 @@ export default function LoginPage() {
               <Input
                 label="Email or Mobile Number"
                 type="text"
-                placeholder="candidate@rajtantra.in or 9822014590"
+                placeholder="candidate@indiata.in or 9822014590"
                 value={identifier}
                 onChange={(e) => setIdentifier(e.target.value)}
                 autoComplete="username"
@@ -178,11 +184,11 @@ export default function LoginPage() {
               <div className="bg-[#E0EDFE]/40 dark:bg-[#072439]/60 p-2.5 rounded-lg text-xs space-y-1 text-[#010627] dark:text-[#F5F6F6]">
                 <div className="flex justify-between">
                   <span className="text-[#717785] dark:text-[#94A3B8]">Login:</span>
-                  <span className="font-mono font-medium">candidate@rajtantra.in</span>
+                  <span className="font-mono font-medium">candidate@indiata.in</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-[#717785] dark:text-[#94A3B8]">Password:</span>
-                  <span className="font-mono font-medium">Rajtantra@2026</span>
+                  <span className="font-mono font-medium">Indiata@2026</span>
                 </div>
               </div>
             </div>

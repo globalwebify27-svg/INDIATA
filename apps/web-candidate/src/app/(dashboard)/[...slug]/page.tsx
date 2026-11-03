@@ -124,27 +124,27 @@ export default function ModulePreviewPlaceholder() {
       .replace(/^\//, "")
       .replace(/-/g, " ")
       .replace(/\b\w/g, (c) => c.toUpperCase()),
-    group: "Rajtantra War Room Module",
+    group: "INDIATA War Room Module",
     desc: "This workspace module interface is active for UI layout and component review.",
     badge: "Module Preview",
   };
 
   return (
-    <div className="space-y-6">
-      {/* Header Banner (Super Admin Surface Style) */}
-      <div className="bg-white dark:bg-[#0F172A] rounded-xl border border-[#E2E8F0] dark:border-[#1E293B] p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div className="space-y-5">
+      {/* Header Banner (Enterprise Surface Style) */}
+      <div className="bg-white dark:bg-[#162235] rounded-lg border border-[#E1E6EE] dark:border-[#23344E] p-5 shadow-2xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 mb-1.5">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-[#493BBF] dark:text-[#C5C0FF]">
+          <div className="flex items-center gap-2 mb-1">
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-[#3159A8] dark:text-[#4C74C9]">
               {info.group}
             </span>
             <Badge variant="primary">{info.badge}</Badge>
-            <Badge variant="neutral">UI Dev Preview</Badge>
+            <Badge variant="neutral">Administrative Module</Badge>
           </div>
-          <h1 className="text-2xl font-extrabold text-[#161B2A] dark:text-[#F8FAFC] tracking-tight">
+          <h1 className="text-[22px] sm:text-[24px] font-bold text-[#253247] dark:text-[#F1F5F9] tracking-tight">
             {info.title}
           </h1>
-          <p className="text-xs text-[#707E94] dark:text-[#94A3B8] mt-1 max-w-2xl leading-relaxed">
+          <p className="text-[12px] text-[#68758A] dark:text-[#8B9BB4] mt-1 max-w-2xl leading-relaxed">
             {info.desc}
           </p>
         </div>
@@ -153,7 +153,7 @@ export default function ModulePreviewPlaceholder() {
           <Link href="/dashboard">
             <Button variant="outline" size="md">
               <ArrowLeft className="w-4 h-4 mr-1.5" />
-              War Room Dashboard
+              Candidate Overview
             </Button>
           </Link>
         </div>
@@ -162,52 +162,52 @@ export default function ModulePreviewPlaceholder() {
       {/* Development Preview Slate */}
       <Card>
         <CardContent className="p-8">
-          <div className="max-w-xl mx-auto text-center py-6">
-            <div className="w-14 h-14 rounded-2xl bg-[#ECE8FF] dark:bg-[#1E1B4B] text-[#493BBF] dark:text-[#C5C0FF] flex items-center justify-center mx-auto mb-4 shadow-xs">
-              <Compass className="w-7 h-7" />
+          <div className="max-w-xl mx-auto text-center py-4">
+            <div className="w-12 h-12 rounded-lg bg-[#F0F4FA] dark:bg-[#1A2844] border border-[#D5DFEE] dark:border-[#2A3E5C] text-[#3159A8] dark:text-[#4C74C9] flex items-center justify-center mx-auto mb-3 shadow-2xs">
+              <Compass className="w-6 h-6" />
             </div>
-            <h2 className="text-lg font-bold text-[#161B2A] dark:text-[#F8FAFC]">
-              {info.title} UI Workspace
+            <h2 className="text-[17px] font-bold text-[#253247] dark:text-[#F1F5F9]">
+              {info.title} Administrative Workspace
             </h2>
-            <p className="text-xs text-[#707E94] dark:text-[#94A3B8] mt-2 leading-relaxed">
-              This module screen is connected to the active Rajtantra Candidate War Room shell. 
-              Navigation, theme switching, responsive collapsible sidebar, and header controls are fully active.
+            <p className="text-[12px] text-[#68758A] dark:text-[#8B9BB4] mt-1.5 leading-relaxed">
+              This module is active in the INDIATA Candidate War Room shell. 
+              Navigation, theme switching, responsive collapsible sidebar, and header controls are fully operational.
             </p>
 
-            <div className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-3 text-left">
-              <div className="p-3.5 rounded-lg bg-[#F1F3FA] dark:bg-[#1E293B]/60 border border-[#E2E8F0] dark:border-[#1E293B]">
-                <div className="flex items-center gap-1.5 text-[#159B91] text-xs font-bold mb-1">
+            <div className="mt-5 grid grid-cols-1 sm:grid-cols-3 gap-3 text-left">
+              <div className="p-3 rounded-lg bg-[#F4F6F9] dark:bg-[#1E2D44] border border-[#E1E6EE] dark:border-[#23344E]">
+                <div className="flex items-center gap-1.5 text-[#24866A] text-[12px] font-semibold mb-1">
                   <CheckCircle2 className="w-3.5 h-3.5" />
-                  <span>Layout Active</span>
+                  <span>Shell Active</span>
                 </div>
-                <p className="text-[11px] text-[#707E94] dark:text-[#94A3B8]">
-                  Full responsive shell & navigation loaded
+                <p className="text-[11px] text-[#68758A] dark:text-[#8B9BB4]">
+                  Full responsive layout &amp; navigation loaded
                 </p>
               </div>
 
-              <div className="p-3.5 rounded-lg bg-[#F1F3FA] dark:bg-[#1E293B]/60 border border-[#E2E8F0] dark:border-[#1E293B]">
-                <div className="flex items-center gap-1.5 text-[#6256D9] dark:text-[#C5C0FF] text-xs font-bold mb-1">
+              <div className="p-3 rounded-lg bg-[#F4F6F9] dark:bg-[#1E2D44] border border-[#E1E6EE] dark:border-[#23344E]">
+                <div className="flex items-center gap-1.5 text-[#3159A8] dark:text-[#4C74C9] text-[12px] font-semibold mb-1">
                   <Sparkles className="w-3.5 h-3.5" />
-                  <span>Mock Session</span>
+                  <span>Role Clearance</span>
                 </div>
-                <p className="text-[11px] text-[#707E94] dark:text-[#94A3B8]">
-                  Zero database or login dependency
+                <p className="text-[11px] text-[#68758A] dark:text-[#8B9BB4]">
+                  Authenticated for Candidate AC-54
                 </p>
               </div>
 
-              <div className="p-3.5 rounded-lg bg-[#F1F3FA] dark:bg-[#1E293B]/60 border border-[#E2E8F0] dark:border-[#1E293B]">
-                <div className="flex items-center gap-1.5 text-[#E99A32] text-xs font-bold mb-1">
+              <div className="p-3 rounded-lg bg-[#F4F6F9] dark:bg-[#1E2D44] border border-[#E1E6EE] dark:border-[#23344E]">
+                <div className="flex items-center gap-1.5 text-[#C58A32] text-[12px] font-semibold mb-1">
                   <Clock className="w-3.5 h-3.5" />
-                  <span>Upcoming Phase</span>
+                  <span>Telemetric Link</span>
                 </div>
-                <p className="text-[11px] text-[#707E94] dark:text-[#94A3B8]">
-                  Ready for component & table injection
+                <p className="text-[11px] text-[#68758A] dark:text-[#8B9BB4]">
+                  Connected to ECI Master Roll telemetry
                 </p>
               </div>
             </div>
 
-            <div className="mt-6 pt-6 border-t border-[#E2E8F0] dark:border-[#1E293B] flex items-center justify-center gap-2">
-              <Link href="/dashboard" className="text-xs font-bold text-[#6256D9] dark:text-[#C5C0FF] hover:underline flex items-center gap-1">
+            <div className="mt-5 pt-4 border-t border-[#E1E6EE] dark:border-[#23344E] flex items-center justify-center gap-2">
+              <Link href="/dashboard" className="text-[12px] font-medium text-[#3159A8] dark:text-[#4C74C9] hover:underline flex items-center gap-1">
                 <span>Return to Overview</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </Link>

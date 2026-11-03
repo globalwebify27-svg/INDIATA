@@ -24,7 +24,7 @@ export function DashboardHeader({
       {/* Platform Overview Header & Actions Bar */}
       <section className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-2 border-b border-[#ACB9D1] dark:border-[#0e3554]">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-[#010627] dark:text-[#F5F6F6] tracking-tight">
+          <h1 className="text-2xl sm:text-[28px] font-bold text-[#010627] dark:text-[#F5F6F6] tracking-tight">
             Platform Overview
           </h1>
           <p className="text-xs sm:text-sm text-[#717785] dark:text-[#94A3B8] mt-0.5">

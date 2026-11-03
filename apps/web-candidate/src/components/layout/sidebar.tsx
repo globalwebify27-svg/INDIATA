@@ -113,34 +113,38 @@ export function Sidebar({
 
       {/* SIDEBAR ASIDE ELEMENT */}
       <aside
-        aria-label="Rajtantra Navigation"
-        className={`fixed top-0 left-0 bottom-0 z-50 flex flex-col justify-between p-4 h-screen bg-white dark:bg-[#0F172A] border-r border-[#C8C4D6]/60 dark:border-[#1E293B] shadow-sm select-none transition-all duration-200 ease-in-out ${
-          collapsed ? "md:w-[76px]" : "md:w-64"
+        aria-label="INDIATA Navigation"
+        className={`fixed top-0 left-0 bottom-0 z-50 flex flex-col justify-between p-3.5 h-screen bg-white dark:bg-[#162235] border-r border-[#E1E6EE] dark:border-[#23344E] shadow-xs select-none transition-all duration-200 ease-in-out ${
+          collapsed ? "md:w-[72px]" : "md:w-60"
         } ${
           mobileOpen
-            ? "translate-x-0 w-64"
+            ? "translate-x-0 w-60"
             : "-translate-x-full md:translate-x-0"
         }`}
       >
         {/* TOP BRAND ANCHOR */}
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-3">
           {collapsed && !mobileOpen ? (
             /* COLLAPSED LOGO */
             <div className="flex justify-center pt-1 pb-1">
               <Link
                 href="/dashboard"
-                className="w-10 h-10 rounded-xl bg-[#6256D9] text-white flex items-center justify-center shadow-sm relative group cursor-pointer"
-                aria-label="Rajtantra Election OS"
+                className="w-9 h-9 rounded-lg bg-white dark:bg-[#1E2D44] border border-[#E1E6EE] dark:border-[#23344E] p-1 flex items-center justify-center shadow-2xs relative group cursor-pointer hover:border-[#3159A8] transition-colors"
+                aria-label="INDIATA Election OS"
               >
-                <Vote className="w-5 h-5 text-white" />
+                <img
+                  src="/brand/indiata-logo-compact.png"
+                  alt="INDIATA"
+                  className="w-full h-full object-contain"
+                />
                 {/* Floating Tooltip */}
                 <div
                   role="tooltip"
-                  className="pointer-events-none absolute left-full top-1/2 -translate-y-1/2 ml-3 z-50 whitespace-nowrap rounded-lg bg-[#161B2A] text-white px-3 py-1.5 text-xs font-semibold shadow-xl opacity-0 transition-opacity duration-150 group-hover:opacity-100 flex items-center gap-1.5"
+                  className="pointer-events-none absolute left-full top-1/2 -translate-y-1/2 ml-3 z-50 whitespace-nowrap rounded-md bg-[#253247] text-white px-2.5 py-1 text-xs font-semibold shadow-xl opacity-0 transition-opacity duration-150 group-hover:opacity-100 flex items-center gap-1.5"
                 >
-                  <span>Rajtantra Election OS</span>
+                  <span>INDIATA</span>
                   <span className="text-[10px] bg-white/20 px-1.5 py-0.2 rounded">v4.2</span>
-                  <div className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-[#161B2A]" />
+                  <div className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-[#253247]" />
                 </div>
               </Link>
             </div>
@@ -150,28 +154,30 @@ export function Sidebar({
               <Link
                 href="/dashboard"
                 onClick={onCloseMobile}
-                className="flex items-center gap-3 overflow-hidden cursor-pointer group"
+                className="flex items-center gap-2 overflow-hidden cursor-pointer group"
+                aria-label="INDIATA Dashboard"
               >
-                <div className="w-10 h-10 rounded-xl bg-[#6256D9] text-white flex items-center justify-center shadow-sm shrink-0 group-hover:scale-105 transition-transform">
-                  <Vote className="w-5 h-5 text-white" />
-                </div>
-                <div>
-                  <div className="text-xl font-extrabold text-[#493BBF] dark:text-[#C5C0FF] tracking-tight leading-none">
-                    Rajtantra
-                  </div>
-                  <div className="text-[11px] font-semibold text-[#707E94] dark:text-[#94A3B8] tracking-wider uppercase mt-0.5">
-                    Election OS
-                  </div>
+                <div className="h-7 flex items-center">
+                  <img
+                    src="/brand/indiata-logo.png"
+                    alt="INDIATA"
+                    className="h-6 w-auto object-contain dark:hidden"
+                  />
+                  <img
+                    src="/brand/indiata-logo-dark.png"
+                    alt="INDIATA"
+                    className="h-6 w-auto object-contain hidden dark:block"
+                  />
                 </div>
               </Link>
               <div className="flex items-center gap-1.5">
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#ECE8FF] dark:bg-[#1E1B4B] text-[#493BBF] dark:text-[#C5C0FF]">
+                <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-[#EDF2F8] dark:bg-[#1E2D44] text-[#526B91] dark:text-[#8B9BB4] border border-[#D5DFEE] dark:border-[#2A3E5C]">
                   v4.2
                 </span>
                 <button
                   type="button"
                   onClick={onCloseMobile}
-                  className="md:hidden p-1 rounded-lg text-[#707E94] hover:text-[#161B2A]"
+                  className="md:hidden p-1 rounded-md text-[#68758A] hover:text-[#253247]"
                   aria-label="Close menu"
                 >
                   <X className="w-4 h-4" />
@@ -180,25 +186,22 @@ export function Sidebar({
             </div>
           )}
 
-          {/* LIVE WAR ROOM CTA */}
+          {/* LIVE WAR ROOM STATUS */}
           {collapsed && !mobileOpen ? (
             <div className="flex justify-center">
               <Link
                 href="/field-map"
-                className="w-10 h-10 rounded-xl bg-[#6256D9] text-white flex items-center justify-center shadow-sm relative group cursor-pointer hover:opacity-95"
+                className="w-9 h-9 rounded-lg bg-[#F0F4FA] dark:bg-[#1A2844] border border-[#D5DFEE] dark:border-[#2A3E5C] text-[#3159A8] dark:text-[#4C74C9] flex items-center justify-center relative group cursor-pointer hover:bg-[#E2EAF6] transition-colors"
                 title="Live War Room"
               >
-                <span className="relative flex h-2.5 w-2.5">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#86F5E9] opacity-75" />
-                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#86F5E9]" />
-                </span>
+                <span className="w-2 h-2 rounded-full bg-[#24866A]" />
                 {/* Floating Tooltip */}
                 <div
                   role="tooltip"
-                  className="pointer-events-none absolute left-full top-1/2 -translate-y-1/2 ml-3 z-50 whitespace-nowrap rounded-lg bg-[#161B2A] text-white px-3 py-1.5 text-xs font-semibold shadow-xl opacity-0 transition-opacity duration-150 group-hover:opacity-100 flex items-center gap-2"
+                  className="pointer-events-none absolute left-full top-1/2 -translate-y-1/2 ml-3 z-50 whitespace-nowrap rounded-md bg-[#253247] text-white px-2.5 py-1 text-xs font-semibold shadow-xl opacity-0 transition-opacity duration-150 group-hover:opacity-100 flex items-center gap-2"
                 >
                   <span>Live War Room</span>
-                  <div className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-[#161B2A]" />
+                  <div className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-[#253247]" />
                 </div>
               </Link>
             </div>
@@ -206,21 +209,18 @@ export function Sidebar({
             <Link
               href="/field-map"
               onClick={onCloseMobile}
-              className="w-full flex items-center justify-between px-3.5 py-2.5 bg-[#6256D9] text-white rounded-lg text-xs font-bold shadow-sm hover:opacity-95 transition-all active:scale-[0.99] cursor-pointer"
+              className="w-full flex items-center justify-between px-3 py-2 bg-[#F0F4FA] dark:bg-[#1A2844] border border-[#D5DFEE] dark:border-[#2A3E5C] text-[#3159A8] dark:text-[#4C74C9] rounded-lg text-xs font-semibold hover:bg-[#E2EAF6] transition-all cursor-pointer"
             >
               <span className="flex items-center gap-2">
-                <span className="relative flex h-2.5 w-2.5">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#86F5E9] opacity-75" />
-                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#86F5E9]" />
-                </span>
+                <span className="w-2 h-2 rounded-full bg-[#24866A]" />
                 <span>Live War Room</span>
               </span>
-              <Radio className="w-4 h-4 text-white" />
+              <Radio className="w-3.5 h-3.5 text-[#3159A8] dark:text-[#4C74C9]" />
             </Link>
           )}
 
           {/* NAV ITEMS SECTION */}
-          <div className="space-y-0.5 max-h-[calc(100vh-270px)] overflow-y-auto pr-1 custom-scrollbar">
+          <div className="space-y-0.5 max-h-[calc(100vh-250px)] overflow-y-auto pr-1 custom-scrollbar">
             {NAV_ITEMS.map((item) => {
               const active = isItemActive(item.href);
               const IconComp = item.icon;
@@ -230,37 +230,32 @@ export function Sidebar({
                   <div key={item.key} className="relative flex justify-center py-0.5">
                     <Link
                       href={item.href}
-                      className={`w-11 h-11 rounded-xl flex items-center justify-center transition-all duration-150 relative group cursor-pointer ${
+                      className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all duration-150 relative group cursor-pointer ${
                         active
-                          ? "bg-[#493BBF] text-white shadow-xs font-bold"
-                          : "text-[#707E94] dark:text-[#94A3B8] hover:bg-[#F2F3FF] dark:hover:bg-[#1E293B] hover:text-[#493BBF] dark:hover:text-[#C5C0FF]"
+                          ? "bg-[#F0F4FA] dark:bg-[#1A2844] text-[#3159A8] dark:text-[#4C74C9] font-semibold border-l-2 border-[#3159A8] dark:border-[#4C74C9]"
+                          : "text-[#68758A] dark:text-[#8B9BB4] hover:bg-[#F4F6F9] dark:hover:bg-[#1E2D44] hover:text-[#253247] dark:hover:text-[#F1F5F9]"
                       }`}
                       aria-label={item.label}
                     >
-                      <IconComp className="w-5 h-5 shrink-0" />
-
-                      {/* Active Left Pip */}
-                      {active && (
-                        <span className="absolute left-1 top-2.5 bottom-2.5 w-1 rounded-full bg-white" />
-                      )}
+                      <IconComp className="w-4 h-4 shrink-0" />
 
                       {/* Notification Dot */}
                       {item.badge && !active && (
-                        <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-[#BA1A1A] ring-2 ring-white dark:ring-[#0F172A]" />
+                        <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-[#C58A32]" />
                       )}
 
                       {/* Floating Tooltip */}
                       <div
                         role="tooltip"
-                        className="pointer-events-none absolute left-full top-1/2 -translate-y-1/2 ml-3 z-50 whitespace-nowrap rounded-lg bg-[#161B2A] text-white px-3 py-1.5 text-xs font-semibold shadow-xl opacity-0 transition-opacity duration-150 group-hover:opacity-100 flex items-center gap-2"
+                        className="pointer-events-none absolute left-full top-1/2 -translate-y-1/2 ml-3 z-50 whitespace-nowrap rounded-md bg-[#253247] text-white px-2.5 py-1 text-xs font-semibold shadow-xl opacity-0 transition-opacity duration-150 group-hover:opacity-100 flex items-center gap-2"
                       >
                         <span>{item.label}</span>
                         {item.badge && (
-                          <span className="px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-[#BA1A1A] text-white">
+                          <span className="px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-[#C58A32] text-white">
                             {item.badge}
                           </span>
                         )}
-                        <div className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-[#161B2A]" />
+                        <div className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-[#253247]" />
                       </div>
                     </Link>
                   </div>
@@ -272,18 +267,18 @@ export function Sidebar({
                   key={item.key}
                   href={item.href}
                   onClick={onCloseMobile}
-                  className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-semibold transition-colors duration-150 ${
+                  className={`flex items-center gap-2.5 px-3 py-1.5 rounded-md text-[13px] transition-colors duration-150 ${
                     active
-                      ? "bg-[#493BBF]/10 text-[#493BBF] dark:text-[#C5C0FF] border-l-4 border-[#493BBF]"
-                      : "text-[#474554] dark:text-[#94A3B8] hover:text-[#161B2A] dark:hover:text-[#F8FAFC] hover:bg-[#F2F3FF] dark:hover:bg-[#1E293B]"
+                      ? "bg-[#F0F4FA] dark:bg-[#1A2844] text-[#3159A8] dark:text-[#4C74C9] border-l-3 border-[#3159A8] dark:border-[#4C74C9] font-semibold"
+                      : "text-[#253247] dark:text-[#F1F5F9] hover:text-[#3159A8] dark:hover:text-[#4C74C9] hover:bg-[#F4F6F9] dark:hover:bg-[#1E2D44] font-medium"
                   } ${item.badge ? "justify-between" : ""}`}
                 >
-                  <span className="flex items-center gap-3 truncate">
-                    <IconComp className={`w-4 h-4 shrink-0 ${active ? "text-[#493BBF] dark:text-[#C5C0FF]" : "text-[#707E94] dark:text-[#94A3B8]"}`} />
+                  <span className="flex items-center gap-2.5 truncate">
+                    <IconComp className={`w-4 h-4 shrink-0 ${active ? "text-[#3159A8] dark:text-[#4C74C9]" : "text-[#68758A] dark:text-[#8B9BB4]"}`} />
                     <span className="truncate">{item.label}</span>
                   </span>
                   {item.badge && (
-                    <span className="px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-[#FFDAD6] text-[#BA1A1A] shrink-0">
+                    <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-[#FDF7ED] text-[#C58A32] border border-[#F5E2C4] shrink-0">
                       {item.badge}
                     </span>
                   )}
@@ -294,7 +289,7 @@ export function Sidebar({
         </div>
 
         {/* FOOTER CLUSTER */}
-        <div className="pt-3 border-t border-[#C8C4D6]/60 dark:border-[#1E293B] space-y-1">
+        <div className="pt-2.5 border-t border-[#E1E6EE] dark:border-[#23344E] space-y-1">
           {FOOTER_ITEMS.map((item) => {
             const IconComp = item.icon;
             if (collapsed && !mobileOpen) {
@@ -302,16 +297,16 @@ export function Sidebar({
                 <div key={item.key} className="flex justify-center py-0.5">
                   <Link
                     href={item.href}
-                    className="w-10 h-10 rounded-xl flex items-center justify-center text-[#707E94] hover:text-[#493BBF] hover:bg-[#F2F3FF] dark:hover:bg-[#1E293B] transition-colors relative group"
+                    className="w-9 h-9 rounded-md flex items-center justify-center text-[#68758A] hover:text-[#3159A8] hover:bg-[#F4F6F9] dark:hover:bg-[#1E2D44] transition-colors relative group"
                     aria-label={item.label}
                   >
                     <IconComp className="w-4 h-4" />
                     <div
                       role="tooltip"
-                      className="pointer-events-none absolute left-full top-1/2 -translate-y-1/2 ml-3 z-50 whitespace-nowrap rounded-lg bg-[#161B2A] text-white px-3 py-1.5 text-xs font-semibold shadow-xl opacity-0 transition-opacity duration-150 group-hover:opacity-100"
+                      className="pointer-events-none absolute left-full top-1/2 -translate-y-1/2 ml-3 z-50 whitespace-nowrap rounded-md bg-[#253247] text-white px-2.5 py-1 text-xs font-semibold shadow-xl opacity-0 transition-opacity duration-150 group-hover:opacity-100"
                     >
                       <span>{item.label}</span>
-                      <div className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-[#161B2A]" />
+                      <div className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-[#253247]" />
                     </div>
                   </Link>
                 </div>
@@ -323,9 +318,9 @@ export function Sidebar({
                 key={item.key}
                 href={item.href}
                 onClick={onCloseMobile}
-                className="flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-semibold text-[#474554] dark:text-[#94A3B8] hover:text-[#161B2A] dark:hover:text-[#F8FAFC] hover:bg-[#F2F3FF] dark:hover:bg-[#1E293B] transition-colors"
+                className="flex items-center gap-2.5 px-3 py-1.5 rounded-md text-[13px] font-medium text-[#68758A] dark:text-[#8B9BB4] hover:text-[#253247] dark:hover:text-[#F1F5F9] hover:bg-[#F4F6F9] dark:hover:bg-[#1E2D44] transition-colors"
               >
-                <IconComp className="w-4 h-4 text-[#707E94]" />
+                <IconComp className="w-4 h-4 text-[#68758A] dark:text-[#8B9BB4]" />
                 <span>{item.label}</span>
               </Link>
             );
@@ -335,28 +330,28 @@ export function Sidebar({
           {collapsed && !mobileOpen ? (
             <div className="flex justify-center pt-1">
               <div
-                className="w-8 h-8 rounded-lg bg-[#EAEDFF] dark:bg-[#1E293B] flex items-center justify-center relative group cursor-pointer"
+                className="w-8 h-8 rounded-md bg-[#EDF2F8] dark:bg-[#1E2D44] flex items-center justify-center relative group cursor-pointer"
                 title="ECI Servers Sync: Optimal"
               >
-                <span className="w-2 h-2 rounded-full bg-[#005C56]" />
+                <span className="w-2 h-2 rounded-full bg-[#24866A]" />
                 <div
                   role="tooltip"
-                  className="pointer-events-none absolute left-full top-1/2 -translate-y-1/2 ml-3 z-50 whitespace-nowrap rounded-lg bg-[#161B2A] text-white px-3 py-1.5 text-xs font-semibold shadow-xl opacity-0 transition-opacity duration-150 group-hover:opacity-100"
+                  className="pointer-events-none absolute left-full top-1/2 -translate-y-1/2 ml-3 z-50 whitespace-nowrap rounded-md bg-[#253247] text-white px-2.5 py-1 text-xs font-semibold shadow-xl opacity-0 transition-opacity duration-150 group-hover:opacity-100"
                 >
                   <span>ECI Servers Sync: Optimal</span>
-                  <div className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-[#161B2A]" />
+                  <div className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-[#253247]" />
                 </div>
               </div>
             </div>
           ) : (
-            <div className="mt-2 p-2.5 rounded-lg bg-[#EAEDFF] dark:bg-[#1E293B] border border-[#C8C4D6]/60 dark:border-[#334155] flex items-center justify-between">
+            <div className="mt-1.5 p-2 rounded-md bg-[#EDF2F8] dark:bg-[#1E2D44] border border-[#D5DFEE] dark:border-[#2A3E5C] flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-[#005C56]" />
-                <span className="text-[10px] font-bold text-[#474554] dark:text-[#94A3B8] uppercase tracking-wider">
-                  ECI Servers Sync
+                <span className="w-2 h-2 rounded-full bg-[#24866A]" />
+                <span className="text-[10px] font-semibold text-[#68758A] dark:text-[#8B9BB4] uppercase tracking-wider">
+                  ECI Sync
                 </span>
               </div>
-              <span className="text-xs font-bold text-[#493BBF] dark:text-[#C5C0FF]">
+              <span className="text-xs font-semibold text-[#24866A] dark:text-[#2EA885]">
                 Optimal
               </span>
             </div>

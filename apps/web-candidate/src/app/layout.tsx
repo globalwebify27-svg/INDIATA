@@ -5,8 +5,11 @@ import { ToastProvider } from "@/context/toast-context";
 import { AuthProvider } from "@/context/auth-context";
 
 export const metadata: Metadata = {
-  title: "Rajtantra Election OS - War Room Command Dashboard",
+  title: "INDIATA Election OS - War Room Command Dashboard",
   description: "Constituency Election Management & Campaign Intelligence Platform",
+  icons: {
+    icon: "/favicon.ico",
+  },
 };
 
 export default function RootLayout({

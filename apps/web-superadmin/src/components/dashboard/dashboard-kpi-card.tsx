@@ -81,7 +81,7 @@ export function DashboardKpiCard({
             <p className="text-xs font-semibold text-[#717785] dark:text-[#94A3B8]">
               {title}
             </p>
-            <h3 className="text-3xl sm:text-4xl font-extrabold text-[#010627] dark:text-[#F5F6F6] mt-1 tracking-tight tabular-nums">
+            <h3 className="text-[28px] sm:text-[32px] font-bold text-[#010627] dark:text-[#F5F6F6] mt-1 tracking-tight tabular-nums">
               {displayValue}
             </h3>
           </div>

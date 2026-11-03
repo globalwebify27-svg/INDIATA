@@ -124,11 +124,20 @@ export function Header({
         {/* Contextual Breadcrumb Ribbon */}
         <nav
           aria-label="Breadcrumb navigation"
-          className="flex items-center gap-1 sm:gap-1.5 text-xs text-[#717785] dark:text-[#94A3B8] min-w-0"
+          className="flex items-center gap-1.5 sm:gap-2 text-xs text-[#717785] dark:text-[#94A3B8] min-w-0"
         >
-          <span className="text-[#2087FE] dark:text-[#0D79FD] font-bold flex-shrink-0">
-            INDIATA
-          </span>
+          <div className="h-5 flex items-center flex-shrink-0">
+            <img
+              src="/brand/indiata-logo.png"
+              alt="INDIATA"
+              className="h-5 w-auto object-contain dark:hidden"
+            />
+            <img
+              src="/brand/indiata-logo-dark.png"
+              alt="INDIATA"
+              className="h-5 w-auto object-contain hidden dark:block"
+            />
+          </div>
           <span className="text-[#ACB9D1] dark:text-[#0e3554] text-xs flex-shrink-0">
             &rsaquo;
           </span>

@@ -11,7 +11,6 @@ import {
   Bell,
   Sun,
   Moon,
-  Radio,
   Check,
   Building,
   Settings,
@@ -87,13 +86,6 @@ export function Header({
     }, 700);
   };
 
-  const handleEmergency = () => {
-    showToast(
-      "error",
-      "Emergency Protocol Armed",
-      "High-priority dispatch notification sent to central war room command.",
-    );
-  };
 
   const handleToggle = () => {
     if (typeof window !== "undefined" && window.innerWidth < 768) {
@@ -104,120 +96,122 @@ export function Header({
   };
 
   return (
-    <header className="sticky top-0 right-0 z-30 flex items-center justify-between px-4 sm:px-6 h-16 w-full bg-white dark:bg-[#0F172A] border-b border-[#E2E8F0] dark:border-[#1E293B] shadow-xs select-none">
-      {/* LEFT: Sidebar Toggle & Search & Location Badges */}
-      <div className="flex items-center gap-3">
+    <header className="sticky top-0 right-0 z-30 flex items-center justify-between px-3 sm:px-4 lg:px-5 h-[60px] w-full max-w-full bg-white dark:bg-[#162235] border-b border-[#E1E6EE] dark:border-[#23344E] shadow-2xs select-none gap-2 sm:gap-3 overflow-hidden min-w-0">
+      {/* LEFT: Sidebar Toggle & Breadcrumbs & Search */}
+      <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
         {/* Sidebar Toggle Button */}
         <button
           type="button"
           onClick={handleToggle}
-          className="p-2 rounded-lg text-[#493BBF] hover:bg-[#493BBF]/10 transition-colors cursor-pointer"
+          className="p-1.5 rounded-md text-[#526B91] hover:text-[#3159A8] hover:bg-[#F0F4FA] dark:hover:bg-[#1E2D44] transition-colors cursor-pointer shrink-0"
           aria-label={collapsed ? "Expand navigation" : "Collapse navigation"}
           title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
         >
           <Menu className="w-5 h-5" />
         </button>
 
+        {/* Institutional Breadcrumb */}
+        <nav
+          aria-label="Breadcrumb navigation"
+          className="hidden md:flex items-center gap-1.5 text-xs text-[#68758A] dark:text-[#8B9BB4] shrink-0 font-medium"
+        >
+          <span className="hover:text-[#253247] transition-colors">INDIATA</span>
+          <span className="text-[#ACB9D1]">&rsaquo;</span>
+          <span className="hover:text-[#253247] transition-colors">Candidate Portal</span>
+          <span className="text-[#ACB9D1]">&rsaquo;</span>
+          <span className="text-[#253247] dark:text-[#F1F5F9] font-semibold">Overview</span>
+        </nav>
+
         {/* Search Input Box */}
-        <form onSubmit={handleSearchSubmit} className="relative w-56 sm:w-72">
-          <Search className="w-4 h-4 text-[#493BBF] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+        <form onSubmit={handleSearchSubmit} className="relative flex-1 min-w-[120px] max-w-[220px] sm:max-w-[260px]">
+          <Search className="w-3.5 h-3.5 text-[#68758A] absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search voter EPIC, booth..."
-            className="w-full pl-9 pr-4 py-1.5 bg-[#F2F3FF] dark:bg-[#1E293B] text-[#161B2A] dark:text-[#F8FAFC] placeholder:text-[#787585] dark:placeholder:text-[#94A3B8] border border-[#493BBF]/20 rounded-lg text-xs font-medium focus:outline-none focus:border-[#493BBF] focus:ring-2 focus:ring-[#493BBF]/20 transition-all shadow-2xs"
+            className="w-full pl-8 pr-2.5 py-1 bg-[#F4F6F9] dark:bg-[#1E2D44] text-[#253247] dark:text-[#F1F5F9] placeholder:text-[#68758A] dark:placeholder:text-[#8B9BB4] border border-[#E1E6EE] dark:border-[#23344E] rounded-md text-[13px] font-normal focus:outline-none focus:border-[#3159A8] focus:ring-1 focus:ring-[#3159A8] transition-all shadow-2xs truncate"
           />
         </form>
 
-        {/* Location & Election Selector Badges */}
-        <div className="hidden xl:flex items-center gap-2">
-          {/* East Delhi AC-54 */}
-          <div className="flex items-center gap-1.5 bg-gradient-to-r from-[#493BBF]/10 to-[#6256D9]/10 text-[#493BBF] dark:text-[#C5C0FF] px-3 py-1 rounded-full border border-[#493BBF]/30 text-xs font-bold shadow-2xs hover:scale-105 transition-transform cursor-pointer">
-            <MapPin className="w-3.5 h-3.5 text-[#493BBF]" />
-            <span>East Delhi</span>
-            <span className="text-[10px] text-white bg-[#493BBF] px-1.5 py-0.2 rounded-full font-extrabold">
-              AC-54
-            </span>
+        {/* Administrative Selectors (Visible on desktop) */}
+        <div className="hidden lg:flex items-center gap-2 shrink-0">
+          {/* Constituency Selector */}
+          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#F4F6F9] dark:bg-[#1E2D44] border border-[#E1E6EE] dark:border-[#23344E] text-xs font-medium text-[#253247] dark:text-[#F1F5F9] shadow-2xs">
+            <MapPin className="w-3.5 h-3.5 text-[#526B91]" />
+            <span>East Delhi (AC-54)</span>
           </div>
 
-          {/* General 2024 */}
-          <div className="text-[#0060AB] dark:text-[#88BEF8] px-3 py-1 text-xs font-bold bg-[#0060AB]/10 rounded-full border border-[#0060AB]/30 flex items-center gap-1.5 shadow-2xs hover:scale-105 transition-transform cursor-pointer">
-            <Vote className="w-3.5 h-3.5" />
-            <span>General 2024</span>
+          {/* Election Selector */}
+          <div className="hidden xl:flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#F4F6F9] dark:bg-[#1E2D44] border border-[#E1E6EE] dark:border-[#23344E] text-xs font-medium text-[#253247] dark:text-[#F1F5F9] shadow-2xs">
+            <Vote className="w-3.5 h-3.5 text-[#526B91]" />
+            <span>General Election 2024</span>
           </div>
         </div>
       </div>
 
-      {/* RIGHT: Live Nodes & Quick Actions */}
-      <div className="flex items-center gap-2.5 sm:gap-3">
-        {/* 14,290 Live Nodes Badge */}
-        <div className="hidden md:flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-700 dark:text-emerald-400 text-xs font-bold shadow-2xs">
-          <span className="relative flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75" />
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500 shadow-sm" />
-          </span>
-          <span>14,290 Live Nodes</span>
-        </div>
-
+      {/* RIGHT: System Sync & Notifications & Profile */}
+      <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
         {/* Sync Button */}
         <button
           type="button"
           onClick={handleSyncRoll}
-          className="p-2 rounded-lg text-[#493BBF] dark:text-[#C5C0FF] bg-[#493BBF]/5 hover:bg-[#493BBF]/15 border border-[#493BBF]/20 transition-all cursor-pointer"
-          title="Synchronize Live Roll Status"
+          className="p-1.5 rounded-md text-[#526B91] dark:text-[#8B9BB4] hover:text-[#3159A8] hover:bg-[#F0F4FA] dark:hover:bg-[#1E2D44] border border-[#E1E6EE] dark:border-[#23344E] transition-all cursor-pointer shrink-0"
+          title="Synchronize Roll Telemetry"
+          aria-label="Synchronize Roll Telemetry"
         >
           <RefreshCw
-            className={`w-4 h-4 ${isSyncing ? "animate-spin" : ""}`}
+            className={`w-3.5 h-3.5 ${isSyncing ? "animate-spin text-[#3159A8]" : ""}`}
           />
         </button>
 
         {/* Notification Bell */}
-        <div className="relative" ref={notificationsRef}>
+        <div className="relative shrink-0" ref={notificationsRef}>
           <button
             type="button"
             onClick={() => setNotificationsOpen(!notificationsOpen)}
-            className="p-2 rounded-lg text-amber-600 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 transition-colors shadow-2xs cursor-pointer"
+            className="p-1.5 rounded-md text-[#526B91] dark:text-[#8B9BB4] hover:text-[#3159A8] hover:bg-[#F0F4FA] dark:hover:bg-[#1E2D44] border border-[#E1E6EE] dark:border-[#23344E] transition-colors shadow-2xs cursor-pointer relative"
             title="Notifications"
+            aria-label="Notifications"
           >
-            <Bell className="w-4 h-4" />
+            <Bell className="w-3.5 h-3.5" />
+            <span className="absolute top-1 right-1 w-1.5 h-1.5 bg-[#C58A32] rounded-full pointer-events-none" />
           </button>
-          <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-[#BA1A1A] rounded-full animate-pulse pointer-events-none" />
 
           {/* Notifications Popover */}
           {notificationsOpen && (
-            <div className="absolute right-0 mt-2 w-80 rounded-xl bg-white dark:bg-[#0F172A] border border-[#E2E8F0] dark:border-[#1E293B] shadow-xl py-2 z-50 animate-in fade-in slide-in-from-top-2">
-              <div className="px-3.5 py-2 border-b border-[#E2E8F0] dark:border-[#1E293B] flex items-center justify-between">
-                <span className="text-xs font-bold text-[#161B2A] dark:text-[#F8FAFC]">
-                  War Room Telemetry Alerts
+            <div className="absolute right-0 mt-2 w-80 rounded-lg bg-white dark:bg-[#162235] border border-[#E1E6EE] dark:border-[#23344E] shadow-lg py-2 z-50 animate-in fade-in slide-in-from-top-1">
+              <div className="px-3.5 py-2 border-b border-[#E1E6EE] dark:border-[#23344E] flex items-center justify-between">
+                <span className="text-xs font-semibold text-[#253247] dark:text-[#F1F5F9]">
+                  Administrative Alerts
                 </span>
-                <span className="text-[10px] font-bold text-[#493BBF] bg-[#ECE8FF] px-1.5 py-0.5 rounded">
-                  3 New
+                <span className="text-[10px] font-semibold text-[#3159A8] bg-[#F0F4FA] dark:bg-[#1A2844] px-1.5 py-0.5 rounded">
+                  2 Pending
                 </span>
               </div>
-              <div className="divide-y divide-[#E2E8F0] dark:divide-[#1E293B] max-h-72 overflow-y-auto">
-                <div className="p-3 hover:bg-[#F1F3FA] dark:hover:bg-[#1E293B] transition-colors cursor-pointer">
-                  <div className="flex items-center gap-1.5 text-xs font-bold text-[#159B91]">
+              <div className="divide-y divide-[#E1E6EE] dark:divide-[#23344E] max-h-72 overflow-y-auto">
+                <div className="p-3 hover:bg-[#F4F6F9] dark:hover:bg-[#1E2D44] transition-colors cursor-pointer">
+                  <div className="flex items-center gap-1.5 text-xs font-semibold text-[#24866A]">
                     <Check className="w-3.5 h-3.5" />
                     <span>ECI Draft Roll Batch #4029 Synced</span>
                   </div>
-                  <p className="text-[11px] text-[#707E94] dark:text-[#94A3B8] mt-0.5">
-                    1,420 records processed across 8 wards.
+                  <p className="text-[11px] text-[#68758A] dark:text-[#8B9BB4] mt-0.5">
+                    1,420 electors processed across 8 wards.
                   </p>
-                  <span className="text-[9px] text-[#707E94] mt-1 block">
+                  <span className="text-[10px] text-[#68758A] mt-1 block">
                     4 minutes ago
                   </span>
                 </div>
 
-                <div className="p-3 hover:bg-[#F1F3FA] dark:hover:bg-[#1E293B] transition-colors cursor-pointer">
-                  <div className="flex items-center gap-1.5 text-xs font-bold text-[#E99A32]">
+                <div className="p-3 hover:bg-[#F4F6F9] dark:hover:bg-[#1E2D44] transition-colors cursor-pointer">
+                  <div className="flex items-center gap-1.5 text-xs font-semibold text-[#C58A32]">
                     <Vote className="w-3.5 h-3.5" />
-                    <span>BLO Verification Required</span>
+                    <span>BLO Verification Pending</span>
                   </div>
-                  <p className="text-[11px] text-[#707E94] dark:text-[#94A3B8] mt-0.5">
-                    6 Booth vacancies flagged for urgent officer mapping.
+                  <p className="text-[11px] text-[#68758A] dark:text-[#8B9BB4] mt-0.5">
+                    6 Booth vacancies flagged for officer assignment.
                   </p>
-                  <span className="text-[9px] text-[#707E94] mt-1 block">
+                  <span className="text-[10px] text-[#68758A] mt-1 block">
                     18 minutes ago
                   </span>
                 </div>
@@ -230,65 +224,51 @@ export function Header({
         <button
           type="button"
           onClick={toggleTheme}
-          className="p-2 rounded-lg text-[#707E94] hover:text-[#161B2A] dark:hover:text-white hover:bg-[#F1F3FA] dark:hover:bg-[#1E293B] transition-colors cursor-pointer"
+          className="p-1.5 rounded-md text-[#68758A] hover:text-[#253247] dark:hover:text-[#F1F5F9] hover:bg-[#F4F6F9] dark:hover:bg-[#1E2D44] transition-colors cursor-pointer shrink-0"
           title={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+          aria-label="Toggle color theme"
         >
           {theme === "dark" ? (
-            <Sun className="w-4 h-4 text-amber-400" />
+            <Sun className="w-3.5 h-3.5 text-amber-400" />
           ) : (
-            <Moon className="w-4 h-4 text-[#707E94]" />
+            <Moon className="w-3.5 h-3.5 text-[#68758A]" />
           )}
         </button>
 
-        {/* Emergency Action Button */}
-        <button
-          type="button"
-          onClick={handleEmergency}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gradient-to-r from-red-600 to-rose-600 text-white shadow-sm hover:shadow-md hover:from-red-700 hover:to-rose-700 text-xs font-bold transition-all active:scale-95 cursor-pointer"
-        >
-          <Radio className="w-3.5 h-3.5 animate-pulse" />
-          <span className="hidden sm:inline">Emergency</span>
-        </button>
-
         {/* Candidate Profile Avatar Dropdown */}
-        <div className="relative pl-2 border-l border-[#C8C4D6]/60 dark:border-[#334155]" ref={userMenuRef}>
+        <div className="relative pl-1.5 sm:pl-2 border-l border-[#E1E6EE] dark:border-[#23344E] shrink-0" ref={userMenuRef}>
           <button
             type="button"
             onClick={() => setUserMenuOpen(!userMenuOpen)}
-            className="flex items-center gap-2.5 p-0.5 rounded-lg hover:bg-[#F1F3FA] dark:hover:bg-[#1E293B] transition-colors cursor-pointer"
+            className="flex items-center gap-2 p-1 rounded-md hover:bg-[#F4F6F9] dark:hover:bg-[#1E2D44] transition-colors cursor-pointer"
           >
-            <div className="relative ring-2 ring-[#493BBF]/40 rounded-full p-0.5">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#493BBF] to-[#6256D9] text-white flex items-center justify-center text-xs font-extrabold shadow-sm">
-                RS
-              </div>
-              <span className="absolute -bottom-0.5 -right-0.5 bg-emerald-500 text-white rounded-full p-0.5 flex items-center justify-center ring-2 ring-white dark:ring-[#0F172A]">
-                <Check className="w-2 h-2 text-white" />
-              </span>
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#3159A8] text-white flex items-center justify-center text-xs font-semibold shadow-2xs shrink-0">
+              RS
             </div>
 
-            <div className="text-left hidden lg:block leading-none">
-              <div className="text-xs font-extrabold text-[#161B2A] dark:text-[#F8FAFC]">
+            <div className="text-left hidden lg:block leading-none max-w-[130px]">
+              <div className="text-xs font-semibold text-[#253247] dark:text-[#F1F5F9] truncate">
                 Rajeshwar Sharma
               </div>
-              <div className="text-[10px] text-[#493BBF] dark:text-[#C5C0FF] font-bold mt-0.5">
+              <div className="text-[10px] text-[#68758A] dark:text-[#8B9BB4] font-medium mt-0.5 truncate">
                 Candidate • AC-54
               </div>
             </div>
-            <ChevronDown className="w-3 h-3 text-[#707E94] hidden lg:block" />
+            <ChevronDown className="w-3.5 h-3.5 text-[#68758A] hidden lg:block shrink-0" />
           </button>
 
           {/* User Menu Dropdown */}
           {userMenuOpen && (
-            <div className="absolute right-0 mt-2 w-56 rounded-xl bg-white dark:bg-[#0F172A] border border-[#E2E8F0] dark:border-[#1E293B] shadow-xl py-1.5 z-50 animate-in fade-in slide-in-from-top-2">
-              <div className="px-3.5 py-2 border-b border-[#E2E8F0] dark:border-[#1E293B]">
-                <p className="text-xs font-bold text-[#161B2A] dark:text-[#F8FAFC]">
+            <div className="absolute right-0 mt-2 w-56 rounded-lg bg-white dark:bg-[#162235] border border-[#E1E6EE] dark:border-[#23344E] shadow-lg py-1 z-50 animate-in fade-in slide-in-from-top-1">
+              <div className="px-3.5 py-2 border-b border-[#E1E6EE] dark:border-[#23344E]">
+                <p className="text-xs font-semibold text-[#253247] dark:text-[#F1F5F9]">
                   Rajeshwar Sharma
                 </p>
-                <p className="text-[10px] text-[#707E94] dark:text-[#94A3B8] truncate mt-0.5">
-                  candidate@rajtantra.in
+                <p className="text-[10px] text-[#68758A] dark:text-[#8B9BB4] truncate mt-0.5">
+                  candidate@indiata.in
                 </p>
-                <span className="inline-block mt-1.5 px-1.5 py-0.5 rounded text-[10px] font-bold bg-[#E6F7F5] text-[#159B91]">
-                  Candidate Clearance L4
+                <span className="inline-block mt-1 px-1.5 py-0.2 rounded text-[10px] font-semibold bg-[#EBF7F3] text-[#24866A] border border-[#24866A]/20">
+                  Authorized Candidate
                 </span>
               </div>
 
@@ -296,32 +276,32 @@ export function Header({
                 <Link
                   href="/settings/organization"
                   onClick={() => setUserMenuOpen(false)}
-                  className="flex items-center gap-2.5 px-3.5 py-2 text-xs text-[#161B2A] dark:text-[#F8FAFC] hover:bg-[#F1F3FA] dark:hover:bg-[#1E293B] transition-colors"
+                  className="flex items-center gap-2 px-3 py-1.5 text-xs text-[#253247] dark:text-[#F1F5F9] hover:bg-[#F4F6F9] dark:hover:bg-[#1E2D44] transition-colors"
                 >
-                  <Building className="w-4 h-4 text-[#707E94]" />
+                  <Building className="w-3.5 h-3.5 text-[#68758A]" />
                   <span>Kasba Peth War Room</span>
                 </Link>
 
                 <Link
                   href="/settings"
                   onClick={() => setUserMenuOpen(false)}
-                  className="flex items-center gap-2.5 px-3.5 py-2 text-xs text-[#161B2A] dark:text-[#F8FAFC] hover:bg-[#F1F3FA] dark:hover:bg-[#1E293B] transition-colors"
+                  className="flex items-center gap-2 px-3 py-1.5 text-xs text-[#253247] dark:text-[#F1F5F9] hover:bg-[#F4F6F9] dark:hover:bg-[#1E2D44] transition-colors"
                 >
-                  <Settings className="w-4 h-4 text-[#707E94]" />
+                  <Settings className="w-3.5 h-3.5 text-[#68758A]" />
                   <span>Settings</span>
                 </Link>
               </div>
 
-              <div className="border-t border-[#E2E8F0] dark:border-[#1E293B] pt-1">
+              <div className="border-t border-[#E1E6EE] dark:border-[#23344E] pt-1">
                 <button
                   type="button"
                   onClick={() => {
                     setUserMenuOpen(false);
                     logout();
                   }}
-                  className="w-full flex items-center gap-2.5 px-3.5 py-2 text-xs text-[#E15B70] hover:bg-[#FDF2F4] dark:hover:bg-[#4C0519]/30 transition-colors"
+                  className="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-[#C84D55] hover:bg-[#FDF2F3] dark:hover:bg-[#3D1417] transition-colors cursor-pointer"
                 >
-                  <LogOut className="w-4 h-4" />
+                  <LogOut className="w-3.5 h-3.5" />
                   <span>Sign Out</span>
                 </button>
               </div>

@@ -104,7 +104,7 @@ export default function ForgotPasswordPage() {
               <form onSubmit={handleSubmit} className="space-y-4">
                 <Input
                   label="Registered Mobile or Email"
-                  placeholder="e.g. 9822014590 or candidate@rajtantra.in"
+                  placeholder="e.g. 9822014590 or candidate@indiata.in"
                   value={identifier}
                   onChange={(e) => setIdentifier(e.target.value)}
                   required

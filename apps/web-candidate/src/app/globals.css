@@ -4,85 +4,82 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  /* Layout Dimensions */
-  --header-height: 64px;
-  --sidebar-width: 256px;
-  --sidebar-collapsed-width: 76px;
+  /* Layout Dimensions (Enterprise Scale) */
+  --header-height: 60px;
+  --sidebar-width: 240px;
+  --sidebar-collapsed-width: 72px;
 
-  /* Rajtantra Election OS Palette (DESIGN(1).md) */
-  --background: #F1F3FA;
-  --foreground: #161B2A;
+  /* INDIATA Enterprise Government Technology Palette */
+  --background: #F4F6F9;
+  --foreground: #253247;
   --card: #FFFFFF;
-  --card-foreground: #161B2A;
+  --card-foreground: #253247;
 
-  /* Primary & Accent Identity */
-  --primary: #493BBF;
-  --primary-hover: #3E30AC;
-  --primary-container: #6256D9;
-  --primary-light: #ECE8FF;
+  /* Primary Enterprise Identity */
+  --primary: #3159A8;
+  --primary-hover: #264687;
+  --primary-container: #3E6BC4;
+  --primary-light: #F0F4FA;
   --on-primary: #FFFFFF;
 
-  --secondary: #0060AB;
-  --secondary-hover: #004D8A;
-  --secondary-light: #EBF3FB;
+  /* Secondary Administrative Slate */
+  --secondary: #526B91;
+  --secondary-hover: #415574;
+  --secondary-light: #EDF2F8;
 
-  --tertiary: #005C56;
-  --tertiary-fixed: #86F5E9;
-  --teal: #159B91;
-  --teal-light: #E6F7F5;
+  /* Semantic Status Palette */
+  --success: #24866A;
+  --success-light: #EBF7F3;
+  --warning: #C58A32;
+  --warning-light: #FDF7ED;
+  --danger: #C84D55;
+  --danger-light: #FDF2F3;
 
-  --amber: #E99A32;
-  --amber-light: #FEF7ED;
-
-  --coral: #E15B70;
-  --coral-light: #FDF2F4;
-
-  --text-primary: #161B2A;
-  --text-muted: #707E94;
-  --border: #E2E8F0;
-  --border-subtle: #C8C4D6;
+  /* Neutral Typography & Borders */
+  --text-primary: #253247;
+  --text-muted: #68758A;
+  --border: #E1E6EE;
+  --border-subtle: #EBEFF5;
 }
 
 .dark {
-  --background: #0B1120;
-  --foreground: #F8FAFC;
-  --card: #0F172A;
-  --card-foreground: #F8FAFC;
+  --background: #0E1726;
+  --foreground: #F1F5F9;
+  --card: #162235;
+  --card-foreground: #F1F5F9;
 
-  --primary: #6366F1;
-  --primary-hover: #4F46E5;
-  --primary-container: #493BBF;
-  --primary-light: #1E1B4B;
+  --primary: #4C74C9;
+  --primary-hover: #3D62AF;
+  --primary-container: #3159A8;
+  --primary-light: #1A2844;
   --on-primary: #FFFFFF;
 
-  --secondary: #38BDF8;
-  --secondary-hover: #0284C7;
-  --secondary-light: #082F49;
+  --secondary: #748BAE;
+  --secondary-hover: #5D7395;
+  --secondary-light: #1E2D44;
 
-  --tertiary: #14B8A6;
-  --tertiary-fixed: #86F5E9;
-  --teal: #14B8A6;
-  --teal-light: #042F2E;
+  --success: #2EA885;
+  --success-light: #0B3327;
+  --warning: #E0A244;
+  --warning-light: #3D2B0C;
+  --danger: #E06068;
+  --danger-light: #3D1417;
 
-  --amber: #F59E0B;
-  --amber-light: #451A03;
-
-  --coral: #FB7185;
-  --coral-light: #4C0519;
-
-  --text-primary: #F8FAFC;
-  --text-muted: #94A3B8;
-  --border: #1E293B;
-  --border-subtle: #334155;
+  --text-primary: #F1F5F9;
+  --text-muted: #8B9BB4;
+  --border: #23344E;
+  --border-subtle: #1C2B40;
 }
 
-body {
+html, body {
   background-color: var(--background);
   color: var(--foreground);
   font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   margin: 0;
   padding: 0;
   min-height: 100vh;
+  max-width: 100vw;
+  overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }
 

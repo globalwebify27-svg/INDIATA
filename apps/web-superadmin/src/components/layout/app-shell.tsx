@@ -22,7 +22,7 @@ export function AppShell({
   onTogglePricingVisibility,
   children,
 }: AppShellProps) {
-  const [collapsed, setCollapsed] = useState(true);
+  const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const sidebarWidth = collapsed ? "68px" : "270px";
