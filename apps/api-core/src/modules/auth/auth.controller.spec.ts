@@ -99,4 +99,50 @@ describe("AuthController", () => {
     expect(result.id).toBe("usr-1");
     expect(result.organizationName).toBe("Kasba Peth");
   });
+
+  it("should call registerEnquiry on service and return acknowledgement", async () => {
+    const mockEnquiryResult = {
+      enquiryNumber: "ENQ-2026-12345",
+      message: "Enquiry submitted successfully",
+      status: "PENDING",
+      candidateName: "Rameshwar Patil",
+      constituencyName: "Kasba Peth",
+      createdAt: new Date(),
+    };
+    service.registerEnquiry = jest.fn().mockResolvedValue(mockEnquiryResult);
+
+    const dto = {
+      fullName: "Rameshwar Patil",
+      mobile: "+919822014590",
+      email: "rameshwar@patil.in",
+      password: "Password123",
+      candidateName: "Rameshwar Patil",
+      candidateContact: "+919822014590",
+      candidateType: "MLA",
+      partyName: "BJP",
+      electionType: "VIDHAN_SABHA",
+      state: "Maharashtra",
+      district: "Pune",
+      constituencyName: "Kasba Peth",
+      boothsCount: 250,
+      electionYear: 2026,
+      requestedServices: ["VOTER_DATA"],
+    };
+
+    const result = await controller.registerEnquiry(dto);
+    expect(result).toEqual(mockEnquiryResult);
+    expect(service.registerEnquiry).toHaveBeenCalledWith(dto);
+  });
+
+  it("should call forgotPassword on service and return challenge response", async () => {
+    service.forgotPassword = jest.fn().mockResolvedValue({
+      message: "Verification code dispatched",
+      challengeSent: true,
+    });
+
+    const result = await controller.forgotPassword({ identifier: "candidate@rajtantra.in" });
+    expect(result.challengeSent).toBe(true);
+    expect(service.forgotPassword).toHaveBeenCalledWith({ identifier: "candidate@rajtantra.in" });
+  });
 });
+

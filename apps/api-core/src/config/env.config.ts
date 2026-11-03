@@ -1,4 +1,27 @@
+import * as fs from "fs";
+import * as path from "path";
 import { z } from "zod";
+
+// Auto-load .env file if available in environment
+if (typeof process.loadEnvFile === "function") {
+  const possiblePaths = [
+    path.resolve(process.cwd(), ".env"),
+    path.resolve(process.cwd(), "apps/api-core/.env"),
+    path.resolve(process.cwd(), "../../.env"),
+    path.resolve(__dirname, "../../../.env"),
+    path.resolve(__dirname, "../../../../.env"),
+  ];
+  for (const p of possiblePaths) {
+    if (fs.existsSync(p)) {
+      try {
+        process.loadEnvFile(p);
+        break;
+      } catch {
+        // Continue if parse error or missing
+      }
+    }
+  }
+}
 
 export const EnvSchema = z.object({
   NODE_ENV: z
@@ -43,3 +66,14 @@ export function validateEnv(
 }
 
 export const env = validateEnv(process.env);
+
+// Ensure process.env has values populated so Prisma and external tools can read them
+if (!process.env.DATABASE_URL) {
+  process.env.DATABASE_URL = env.DATABASE_URL;
+}
+for (const [key, val] of Object.entries(env)) {
+  if (process.env[key] === undefined && val !== undefined) {
+    process.env[key] = String(val);
+  }
+}
+

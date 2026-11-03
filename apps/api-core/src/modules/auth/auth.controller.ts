@@ -19,11 +19,35 @@ import {
   RefreshTokenDtoSchema,
   AuthTokenPair,
   AuthenticatedUser,
+  RegisterEnquiryDto,
+  RegisterEnquiryDtoSchema,
+  ForgotPasswordDto,
+  ForgotPasswordDtoSchema,
 } from "@rajtantra/common-types";
+import { RegisterEnquiryResult } from "./auth.service";
 
 @Controller("auth")
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
+
+  @Post("register-enquiry")
+  @Public()
+  @HttpCode(HttpStatus.CREATED)
+  async registerEnquiry(
+    @Body(new ZodValidationPipe(RegisterEnquiryDtoSchema)) dto: RegisterEnquiryDto,
+  ): Promise<RegisterEnquiryResult> {
+    return this.authService.registerEnquiry(dto);
+  }
+
+  @Post("forgot-password")
+  @Public()
+  @HttpCode(HttpStatus.OK)
+  async forgotPassword(
+    @Body(new ZodValidationPipe(ForgotPasswordDtoSchema)) dto: ForgotPasswordDto,
+  ): Promise<{ message: string; challengeSent: boolean }> {
+    return this.authService.forgotPassword(dto);
+  }
+
 
   @Post("login")
   @Public()

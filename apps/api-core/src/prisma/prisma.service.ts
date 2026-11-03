@@ -5,6 +5,7 @@ import {
   Logger,
 } from "@nestjs/common";
 import { PrismaClient } from "@rajtantra/database";
+import { env } from "../config/env.config";
 
 @Injectable()
 export class PrismaService
@@ -15,6 +16,11 @@ export class PrismaService
 
   constructor() {
     super({
+      datasources: {
+        db: {
+          url: env.DATABASE_URL,
+        },
+      },
       log:
         process.env.NODE_ENV === "development" ? ["error", "warn"] : ["error"],
     });

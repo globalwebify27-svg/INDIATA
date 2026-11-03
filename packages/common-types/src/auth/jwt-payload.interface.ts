@@ -47,3 +47,18 @@ export interface MobileActivationPayload {
   deviceModel?: string;
   osVersion?: string;
 }
+
+export interface LoginResult {
+  user: AuthenticatedUser;
+  tokens: AuthTokenPair;
+}
+
+export interface RegisterEnquiryResult {
+  enquiryNumber: string;
+  message: string;
+  status: string;
+  candidateName: string;
+  constituencyName: string;
+  createdAt: Date;
+}
+

@@ -1,5 +1,6 @@
 packages:
   - 'apps/web-superadmin'
+  - 'apps/web-candidate'
   - 'apps/api-core'
   - 'packages/*'
 allowBuilds:

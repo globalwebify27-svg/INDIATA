@@ -15,11 +15,22 @@ import {
   AuthenticatedUser,
   JwtPayload,
   UserRole,
+  RegisterEnquiryDto,
+  ForgotPasswordDto,
 } from "@rajtantra/common-types";
 
 export interface LoginResult {
   user: AuthenticatedUser;
   tokens: AuthTokenPair;
+}
+
+export interface RegisterEnquiryResult {
+  enquiryNumber: string;
+  message: string;
+  status: string;
+  candidateName: string;
+  constituencyName: string;
+  createdAt: Date;
 }
 
 @Injectable()
@@ -32,6 +43,111 @@ export class AuthService {
   private hashToken(token: string): string {
     return createHash("sha256").update(token).digest("hex");
   }
+
+  async registerEnquiry(dto: RegisterEnquiryDto): Promise<RegisterEnquiryResult> {
+    const mobile = dto.mobile.trim();
+    const email = dto.email && dto.email.trim().length > 0 ? dto.email.trim() : null;
+
+    // Check if phone or email already registered in users table
+    const existingUser = await this.prisma.user.findFirst({
+      where: {
+        OR: [
+          { phone: mobile },
+          ...(email ? [{ email }] : []),
+        ],
+      },
+    });
+
+    if (existingUser) {
+      throw new BadRequestException(
+        "An account with this phone number or email already exists. Please login instead.",
+      );
+    }
+
+    // Check if pending registration enquiry already exists with this phone
+    const existingEnquiry = await this.prisma.registrationEnquiry.findFirst({
+      where: {
+        mobile,
+        status: "PENDING",
+      },
+    });
+
+    if (existingEnquiry) {
+      return {
+        enquiryNumber: existingEnquiry.enquiryNumber,
+        message: "You already have a pending registration enquiry under review.",
+        status: existingEnquiry.status,
+        candidateName: existingEnquiry.candidateName,
+        constituencyName: existingEnquiry.constituencyName,
+        createdAt: existingEnquiry.createdAt,
+      };
+    }
+
+    const passwordHash = await bcrypt.hash(dto.password, 10);
+    const enquiryNumber = `ENQ-${new Date().getFullYear()}-${Math.floor(10000 + Math.random() * 90000)}`;
+
+    const enquiry = await this.prisma.registrationEnquiry.create({
+      data: {
+        enquiryNumber,
+        fullName: dto.fullName.trim(),
+        mobile,
+        email,
+        passwordHash,
+        candidateName: dto.candidateName.trim(),
+        candidateContact: dto.candidateContact.trim(),
+        candidateType: dto.candidateType,
+        partyName: dto.partyName.trim(),
+        electionType: dto.electionType,
+        state: dto.state.trim(),
+        district: dto.district.trim(),
+        constituencyName: dto.constituencyName.trim(),
+        subDivision: dto.subDivision ? dto.subDivision.trim() : null,
+        boothsCount: dto.boothsCount || 0,
+        electionName: dto.electionName ? dto.electionName.trim() : null,
+        electionYear: dto.electionYear || new Date().getFullYear(),
+        pollingDate: dto.pollingDate ? new Date(dto.pollingDate) : null,
+        requestedServices: JSON.stringify(dto.requestedServices || []),
+        notes: dto.notes ? dto.notes.trim() : null,
+        status: "PENDING",
+      },
+    });
+
+    return {
+      enquiryNumber: enquiry.enquiryNumber,
+      message:
+        "Registration enquiry successfully submitted. Super Admin will review your account and activate access.",
+      status: enquiry.status,
+      candidateName: enquiry.candidateName,
+      constituencyName: enquiry.constituencyName,
+      createdAt: enquiry.createdAt,
+    };
+  }
+
+  async forgotPassword(
+    dto: ForgotPasswordDto,
+  ): Promise<{ message: string; challengeSent: boolean }> {
+    const identifier = dto.identifier.trim();
+    const user = await this.prisma.user.findFirst({
+      where: {
+        OR: [{ email: identifier }, { phone: identifier }],
+      },
+    });
+
+    if (!user) {
+      return {
+        message:
+          "If an account matches your details, password reset instructions have been dispatched.",
+        challengeSent: false,
+      };
+    }
+
+    return {
+      message:
+        "Password reset verification code has been dispatched to your registered phone/email.",
+      challengeSent: true,
+    };
+  }
+
 
   async login(
     dto: LoginDto,

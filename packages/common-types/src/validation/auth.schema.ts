@@ -41,3 +41,42 @@ export const MobileActivationDtoSchema = z.object({
 });
 
 export type MobileActivationDto = z.infer<typeof MobileActivationDtoSchema>;
+
+export const RegisterEnquiryDtoSchema = z.object({
+  fullName: z.string().min(2, "Full name must be at least 2 characters").max(150),
+  mobile: z.string().min(10, "Mobile number must be at least 10 digits").max(15),
+  email: z.string().email("Invalid email address").optional().or(z.literal("")),
+  password: z.string().min(6, "Password must be at least 6 characters").max(128),
+  candidateName: z.string().min(2, "Candidate name must be at least 2 characters").max(150),
+  candidateContact: z.string().min(10, "Candidate contact must be at least 10 digits").max(15),
+  candidateType: z.string().min(2, "Candidate type is required").max(50),
+  partyName: z.string().min(2, "Party / Organization name is required").max(150),
+  electionType: z.string().min(2, "Election type is required").max(50),
+  state: z.string().min(2, "State is required").max(50),
+  district: z.string().min(2, "District is required").max(100),
+  constituencyName: z.string().min(2, "Constituency name is required").max(150),
+  subDivision: z.string().max(150).optional(),
+  boothsCount: z.number().int().nonnegative().optional().default(0),
+  electionName: z.string().max(150).optional(),
+  electionYear: z.number().int().optional(),
+  pollingDate: z.string().optional(),
+  requestedServices: z.array(z.string()).optional().default([]),
+  notes: z.string().max(1000).optional(),
+});
+
+export type RegisterEnquiryDto = z.infer<typeof RegisterEnquiryDtoSchema>;
+
+export const ForgotPasswordDtoSchema = z.object({
+  identifier: z.string().min(3, "Email or phone number is required").max(120),
+});
+
+export type ForgotPasswordDto = z.infer<typeof ForgotPasswordDtoSchema>;
+
+export const ResetPasswordDtoSchema = z.object({
+  identifier: z.string().min(3, "Email or phone number is required").max(120),
+  otp: z.string().min(4, "OTP code must be at least 4 digits").max(8),
+  newPassword: z.string().min(6, "New password must be at least 6 characters").max(128),
+});
+
+export type ResetPasswordDto = z.infer<typeof ResetPasswordDtoSchema>;
+
