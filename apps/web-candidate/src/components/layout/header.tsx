@@ -6,16 +6,17 @@ import {
   Menu,
   Search,
   MapPin,
-  Vote,
-  RefreshCw,
+  Sparkles,
   Bell,
   Sun,
   Moon,
-  Check,
   Building,
   Settings,
   LogOut,
   ChevronDown,
+  ChevronRight,
+  Check,
+  X,
 } from "lucide-react";
 import { useAuth } from "@/context/auth-context";
 import { useTheme } from "@/context/theme-context";
@@ -27,37 +28,49 @@ export interface HeaderProps {
   onOpenMobile: () => void;
 }
 
+const CONSTITUENCIES = [
+  { id: "pune-pc", name: "34 - Pune Parliamentary Constituency", type: "Lok Sabha" },
+  { id: "kothrud-ac", name: "214 - Kothrud Assembly Segment", type: "Vidhan Sabha" },
+  { id: "shivajinagar-ac", name: "215 - Shivajinagar Assembly Segment", type: "Vidhan Sabha" },
+];
+
 export function Header({
   collapsed,
   onToggleCollapse,
   onOpenMobile,
 }: HeaderProps) {
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const { showToast } = useToast();
 
   const [searchQuery, setSearchQuery] = useState("");
+  const [searchResultsOpen, setSearchResultsOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
-  const [isSyncing, setIsSyncing] = useState(false);
+  const [constituencyDropdownOpen, setConstituencyDropdownOpen] = useState(false);
+  const [selectedConstituency, setSelectedConstituency] = useState(
+    user?.constituencyName || "34 - Pune Parliamentary Constituency"
+  );
 
   const userMenuRef = useRef<HTMLDivElement>(null);
   const notificationsRef = useRef<HTMLDivElement>(null);
+  const constituencyRef = useRef<HTMLDivElement>(null);
+  const searchRef = useRef<HTMLDivElement>(null);
 
-  // Close menus on outside click
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
-      if (
-        userMenuRef.current &&
-        !userMenuRef.current.contains(e.target as Node)
-      ) {
+      const target = e.target as Node;
+      if (userMenuRef.current && !userMenuRef.current.contains(target)) {
         setUserMenuOpen(false);
       }
-      if (
-        notificationsRef.current &&
-        !notificationsRef.current.contains(e.target as Node)
-      ) {
+      if (notificationsRef.current && !notificationsRef.current.contains(target)) {
         setNotificationsOpen(false);
+      }
+      if (constituencyRef.current && !constituencyRef.current.contains(target)) {
+        setConstituencyDropdownOpen(false);
+      }
+      if (searchRef.current && !searchRef.current.contains(target)) {
+        setSearchResultsOpen(false);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
@@ -67,25 +80,13 @@ export function Header({
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!searchQuery.trim()) return;
+    setSearchResultsOpen(false);
     showToast(
       "info",
       "Voter Registry Search",
       `Filtering electors for: "${searchQuery}"`,
     );
   };
-
-  const handleSyncRoll = () => {
-    setIsSyncing(true);
-    setTimeout(() => {
-      setIsSyncing(false);
-      showToast(
-        "success",
-        "Roll Telemetry Synced",
-        "All 264 Polling Booths synchronized with ECI master roll.",
-      );
-    }, 700);
-  };
-
 
   const handleToggle = () => {
     if (typeof window !== "undefined" && window.innerWidth < 768) {
@@ -95,125 +96,197 @@ export function Header({
     }
   };
 
+  const candidateInitials = user?.name
+    ? user.name
+        .split(" ")
+        .map((p) => p[0])
+        .slice(0, 2)
+        .join("")
+        .toUpperCase()
+    : "VP";
+
   return (
-    <header className="sticky top-0 right-0 z-30 flex items-center justify-between px-3 sm:px-4 lg:px-5 h-[60px] w-full max-w-full bg-white dark:bg-[#162235] border-b border-[#E1E6EE] dark:border-[#23344E] shadow-2xs select-none gap-2 sm:gap-3 overflow-hidden min-w-0">
-      {/* LEFT: Sidebar Toggle & Breadcrumbs & Search */}
-      <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
-        {/* Sidebar Toggle Button */}
+    <header className="h-16 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800 px-4 sm:px-6 flex items-center justify-between sticky top-0 z-30 shadow-premium-xs select-none gap-3">
+      {/* LEFT: Sidebar Toggle + Constituency Pill + War Room Live */}
+      <div className="flex items-center gap-3 min-w-0">
         <button
           type="button"
           onClick={handleToggle}
-          className="p-1.5 rounded-md text-[#526B91] hover:text-[#3159A8] hover:bg-[#F0F4FA] dark:hover:bg-[#1E2D44] transition-colors cursor-pointer shrink-0"
+          className="p-1.5 rounded-lg text-slate-500 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors shrink-0"
           aria-label={collapsed ? "Expand navigation" : "Collapse navigation"}
           title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
         >
           <Menu className="w-5 h-5" />
         </button>
 
-        {/* Institutional Breadcrumb */}
-        <nav
-          aria-label="Breadcrumb navigation"
-          className="hidden md:flex items-center gap-1.5 text-xs text-[#68758A] dark:text-[#8B9BB4] shrink-0 font-medium"
-        >
-          <span className="hover:text-[#253247] transition-colors">INDIATA</span>
-          <span className="text-[#ACB9D1]">&rsaquo;</span>
-          <span className="hover:text-[#253247] transition-colors">Candidate Portal</span>
-          <span className="text-[#ACB9D1]">&rsaquo;</span>
-          <span className="text-[#253247] dark:text-[#F1F5F9] font-semibold">Overview</span>
-        </nav>
+        {/* Constituency Context Selector Pill */}
+        <div className="relative" ref={constituencyRef}>
+          <button
+            type="button"
+            onClick={() => setConstituencyDropdownOpen(!constituencyDropdownOpen)}
+            className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700/80 text-xs font-semibold text-slate-800 dark:text-slate-200 transition-colors"
+          >
+            <MapPin className="w-3.5 h-3.5 text-brand-600" />
+            <span className="truncate max-w-[140px] sm:max-w-[210px]">
+              {selectedConstituency}
+            </span>
+            <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
+          </button>
 
-        {/* Search Input Box */}
-        <form onSubmit={handleSearchSubmit} className="relative flex-1 min-w-[120px] max-w-[220px] sm:max-w-[260px]">
-          <Search className="w-3.5 h-3.5 text-[#68758A] absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search voter EPIC, booth..."
-            className="w-full pl-8 pr-2.5 py-1 bg-[#F4F6F9] dark:bg-[#1E2D44] text-[#253247] dark:text-[#F1F5F9] placeholder:text-[#68758A] dark:placeholder:text-[#8B9BB4] border border-[#E1E6EE] dark:border-[#23344E] rounded-md text-[13px] font-normal focus:outline-none focus:border-[#3159A8] focus:ring-1 focus:ring-[#3159A8] transition-all shadow-2xs truncate"
-          />
-        </form>
+          {constituencyDropdownOpen && (
+            <div className="absolute left-0 mt-2 w-72 bg-white dark:bg-slate-900 rounded-xl shadow-xl border border-slate-200 dark:border-slate-800 p-2 z-50 animate-scale-up">
+              <div className="px-2 py-1.5 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                Select Active Constituency
+              </div>
+              <div className="space-y-1">
+                {CONSTITUENCIES.map((c) => {
+                  const isCurrent = selectedConstituency.includes(c.name.split(" ")[2] || "");
+                  return (
+                    <button
+                      key={c.id}
+                      type="button"
+                      onClick={() => {
+                        setSelectedConstituency(c.name);
+                        setConstituencyDropdownOpen(false);
+                        showToast("info", "Active Constituency", `Switched focus to ${c.name}`);
+                      }}
+                      className="w-full text-left px-3 py-2 text-xs rounded-lg hover:bg-brand-50 hover:text-brand-700 font-medium flex items-center justify-between transition-colors"
+                    >
+                      <span>{c.name} ({c.type})</span>
+                      {isCurrent && <Check className="w-3.5 h-3.5 text-brand-600 shrink-0" />}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+        </div>
 
-        {/* Administrative Selectors (Visible on desktop) */}
-        <div className="hidden lg:flex items-center gap-2 shrink-0">
-          {/* Constituency Selector */}
-          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#F4F6F9] dark:bg-[#1E2D44] border border-[#E1E6EE] dark:border-[#23344E] text-xs font-medium text-[#253247] dark:text-[#F1F5F9] shadow-2xs">
-            <MapPin className="w-3.5 h-3.5 text-[#526B91]" />
-            <span>East Delhi (AC-54)</span>
-          </div>
-
-          {/* Election Selector */}
-          <div className="hidden xl:flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#F4F6F9] dark:bg-[#1E2D44] border border-[#E1E6EE] dark:border-[#23344E] text-xs font-medium text-[#253247] dark:text-[#F1F5F9] shadow-2xs">
-            <Vote className="w-3.5 h-3.5 text-[#526B91]" />
-            <span>General Election 2024</span>
-          </div>
+        {/* War Room Live Pulsing Indicator */}
+        <div className="hidden lg:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-brand-50 text-brand-700 border border-brand-200 text-[11px] font-medium">
+          <span className="w-2 h-2 rounded-full bg-brand-500 animate-pulse" />
+          <span>War Room Live</span>
         </div>
       </div>
 
-      {/* RIGHT: System Sync & Notifications & Profile */}
-      <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-        {/* Sync Button */}
-        <button
-          type="button"
-          onClick={handleSyncRoll}
-          className="p-1.5 rounded-md text-[#526B91] dark:text-[#8B9BB4] hover:text-[#3159A8] hover:bg-[#F0F4FA] dark:hover:bg-[#1E2D44] border border-[#E1E6EE] dark:border-[#23344E] transition-all cursor-pointer shrink-0"
-          title="Synchronize Roll Telemetry"
-          aria-label="Synchronize Roll Telemetry"
-        >
-          <RefreshCw
-            className={`w-3.5 h-3.5 ${isSyncing ? "animate-spin text-[#3159A8]" : ""}`}
+      {/* CENTER: Global Search */}
+      <div ref={searchRef} className="flex-1 max-w-lg mx-2 sm:mx-6 relative">
+        <form onSubmit={handleSearchSubmit} className="relative">
+          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+          <input
+            type="text"
+            placeholder="Global search: voter name, EPIC ID, booth, phone..."
+            value={searchQuery}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              setSearchResultsOpen(true);
+            }}
+            onFocus={() => setSearchResultsOpen(true)}
+            className="w-full pl-10 pr-8 py-2 bg-slate-50 hover:bg-slate-100/80 focus:bg-white text-xs text-slate-800 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition-all placeholder:text-slate-400 dark:bg-slate-800 dark:text-slate-100 dark:border-slate-700"
           />
-        </button>
+          {searchQuery && (
+            <button
+              type="button"
+              onClick={() => {
+                setSearchQuery("");
+                setSearchResultsOpen(false);
+              }}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          )}
+        </form>
 
-        {/* Notification Bell */}
-        <div className="relative shrink-0" ref={notificationsRef}>
+        {/* Quick Search Results Overlay */}
+        {searchResultsOpen && searchQuery.trim().length > 1 && (
+          <div className="absolute left-0 right-0 mt-2 bg-white dark:bg-slate-900 rounded-xl shadow-2xl border border-slate-200 dark:border-slate-800 max-h-96 overflow-y-auto z-50 p-2">
+            <div className="px-3 py-1.5 text-[11px] font-semibold text-slate-400 uppercase tracking-wider flex justify-between">
+              <span>Matching Elector Records</span>
+              <span>Press ESC to dismiss</span>
+            </div>
+            <div className="divide-y divide-slate-100 dark:divide-slate-800">
+              <Link
+                href={`/voters?search=${encodeURIComponent(searchQuery)}`}
+                onClick={() => setSearchResultsOpen(false)}
+                className="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 flex items-center justify-between group transition-colors block"
+              >
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-50 text-brand-600 uppercase">
+                      EPIC SEARCH
+                    </span>
+                    <span className="text-xs font-semibold text-slate-800 dark:text-slate-100 group-hover:text-brand-600">
+                      View all voter entries matching &quot;{searchQuery}&quot;
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-slate-500 mt-0.5">
+                    Search across 2,045 Polling Stations &amp; 21.54 L Electors
+                  </p>
+                </div>
+                <ChevronRight className="w-3.5 h-3.5 text-slate-300 group-hover:text-brand-600 transition-colors" />
+              </Link>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* RIGHT: AI Mode + Notifications + Theme + Profile */}
+      <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+        {/* AI Mode Gradient Action Button */}
+        <Link
+          href="/ai/assistant"
+          className="flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-semibold shadow-xs transition-all bg-gradient-to-r from-brand-600 to-indigo-600 text-white hover:opacity-95"
+          title="Open Global AI Election Intelligence"
+        >
+          <Sparkles className="w-4 h-4 text-amber-300 animate-pulse shrink-0" />
+          <span className="hidden sm:inline">AI Mode</span>
+        </Link>
+
+        {/* Notifications Dropdown */}
+        <div className="relative" ref={notificationsRef}>
           <button
             type="button"
             onClick={() => setNotificationsOpen(!notificationsOpen)}
-            className="p-1.5 rounded-md text-[#526B91] dark:text-[#8B9BB4] hover:text-[#3159A8] hover:bg-[#F0F4FA] dark:hover:bg-[#1E2D44] border border-[#E1E6EE] dark:border-[#23344E] transition-colors shadow-2xs cursor-pointer relative"
-            title="Notifications"
-            aria-label="Notifications"
+            className="p-2 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors relative"
+            title="System Notifications"
           >
-            <Bell className="w-3.5 h-3.5" />
-            <span className="absolute top-1 right-1 w-1.5 h-1.5 bg-[#C58A32] rounded-full pointer-events-none" />
+            <Bell className="w-5 h-5" />
+            <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-rose-500 ring-2 ring-white dark:ring-slate-900" />
           </button>
 
-          {/* Notifications Popover */}
           {notificationsOpen && (
-            <div className="absolute right-0 mt-2 w-80 rounded-lg bg-white dark:bg-[#162235] border border-[#E1E6EE] dark:border-[#23344E] shadow-lg py-2 z-50 animate-in fade-in slide-in-from-top-1">
-              <div className="px-3.5 py-2 border-b border-[#E1E6EE] dark:border-[#23344E] flex items-center justify-between">
-                <span className="text-xs font-semibold text-[#253247] dark:text-[#F1F5F9]">
-                  Administrative Alerts
+            <div className="absolute right-0 mt-2 w-80 bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800 overflow-hidden z-50">
+              <div className="px-4 py-3 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50 dark:bg-slate-800/50">
+                <span className="font-bold text-xs text-slate-800 dark:text-slate-100">
+                  Operational Alerts (3 new)
                 </span>
-                <span className="text-[10px] font-semibold text-[#3159A8] bg-[#F0F4FA] dark:bg-[#1A2844] px-1.5 py-0.5 rounded">
-                  2 Pending
-                </span>
+                <button
+                  type="button"
+                  onClick={() => setNotificationsOpen(false)}
+                  className="text-[11px] text-brand-600 hover:underline font-semibold"
+                >
+                  Mark all read
+                </button>
               </div>
-              <div className="divide-y divide-[#E1E6EE] dark:divide-[#23344E] max-h-72 overflow-y-auto">
-                <div className="p-3 hover:bg-[#F4F6F9] dark:hover:bg-[#1E2D44] transition-colors cursor-pointer">
-                  <div className="flex items-center gap-1.5 text-xs font-semibold text-[#24866A]">
-                    <Check className="w-3.5 h-3.5" />
-                    <span>ECI Draft Roll Batch #4029 Synced</span>
-                  </div>
-                  <p className="text-[11px] text-[#68758A] dark:text-[#8B9BB4] mt-0.5">
-                    1,420 electors processed across 8 wards.
+              <div className="max-h-80 overflow-y-auto divide-y divide-slate-100 dark:divide-slate-800">
+                <div className="p-3 text-xs hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                  <p className="font-semibold text-slate-800 dark:text-slate-100">
+                    3 Swing Booths Require Slip Surge
                   </p>
-                  <span className="text-[10px] text-[#68758A] mt-1 block">
-                    4 minutes ago
-                  </span>
+                  <p className="text-[11px] text-slate-500 mt-0.5">
+                    Booth #103 &amp; #108 are under 50% distribution.
+                  </p>
+                  <span className="text-[10px] text-slate-400 mt-1 block">5m ago</span>
                 </div>
-
-                <div className="p-3 hover:bg-[#F4F6F9] dark:hover:bg-[#1E2D44] transition-colors cursor-pointer">
-                  <div className="flex items-center gap-1.5 text-xs font-semibold text-[#C58A32]">
-                    <Vote className="w-3.5 h-3.5" />
-                    <span>BLO Verification Pending</span>
-                  </div>
-                  <p className="text-[11px] text-[#68758A] dark:text-[#8B9BB4] mt-0.5">
-                    6 Booth vacancies flagged for officer assignment.
+                <div className="p-3 text-xs hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                  <p className="font-semibold text-slate-800 dark:text-slate-100">
+                    ECI Draft Roll Batch #4029 Synced
                   </p>
-                  <span className="text-[10px] text-[#68758A] mt-1 block">
-                    18 minutes ago
-                  </span>
+                  <p className="text-[11px] text-slate-500 mt-0.5">
+                    1,420 records processed across 8 wards.
+                  </p>
+                  <span className="text-[10px] text-slate-400 mt-1 block">22m ago</span>
                 </div>
               </div>
             </div>
@@ -224,51 +297,50 @@ export function Header({
         <button
           type="button"
           onClick={toggleTheme}
-          className="p-1.5 rounded-md text-[#68758A] hover:text-[#253247] dark:hover:text-[#F1F5F9] hover:bg-[#F4F6F9] dark:hover:bg-[#1E2D44] transition-colors cursor-pointer shrink-0"
+          className="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
           title={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
-          aria-label="Toggle color theme"
+          aria-label="Toggle theme"
         >
           {theme === "dark" ? (
-            <Sun className="w-3.5 h-3.5 text-amber-400" />
+            <Sun className="w-4.5 h-4.5 text-amber-400" />
           ) : (
-            <Moon className="w-3.5 h-3.5 text-[#68758A]" />
+            <Moon className="w-4.5 h-4.5" />
           )}
         </button>
 
-        {/* Candidate Profile Avatar Dropdown */}
-        <div className="relative pl-1.5 sm:pl-2 border-l border-[#E1E6EE] dark:border-[#23344E] shrink-0" ref={userMenuRef}>
+        {/* User Profile Avatar Dropdown */}
+        <div className="relative pl-1 border-l border-slate-200 dark:border-slate-800" ref={userMenuRef}>
           <button
             type="button"
             onClick={() => setUserMenuOpen(!userMenuOpen)}
-            className="flex items-center gap-2 p-1 rounded-md hover:bg-[#F4F6F9] dark:hover:bg-[#1E2D44] transition-colors cursor-pointer"
+            className="flex items-center gap-2 p-1 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
           >
-            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#3159A8] text-white flex items-center justify-center text-xs font-semibold shadow-2xs shrink-0">
-              RS
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-600 text-white font-bold flex items-center justify-center text-xs shadow-sm shrink-0">
+              {candidateInitials}
             </div>
 
-            <div className="text-left hidden lg:block leading-none max-w-[130px]">
-              <div className="text-xs font-semibold text-[#253247] dark:text-[#F1F5F9] truncate">
-                Rajeshwar Sharma
+            <div className="text-left hidden md:block leading-tight max-w-[120px]">
+              <div className="text-xs font-bold text-slate-800 dark:text-slate-100 truncate">
+                {user?.name || "Adv. Vikram Patil"}
               </div>
-              <div className="text-[10px] text-[#68758A] dark:text-[#8B9BB4] font-medium mt-0.5 truncate">
-                Candidate • AC-54
+              <div className="text-[10px] text-slate-500 truncate">
+                Candidate Admin
               </div>
             </div>
-            <ChevronDown className="w-3.5 h-3.5 text-[#68758A] hidden lg:block shrink-0" />
+            <ChevronDown className="w-3.5 h-3.5 text-slate-400 hidden md:block" />
           </button>
 
-          {/* User Menu Dropdown */}
           {userMenuOpen && (
-            <div className="absolute right-0 mt-2 w-56 rounded-lg bg-white dark:bg-[#162235] border border-[#E1E6EE] dark:border-[#23344E] shadow-lg py-1 z-50 animate-in fade-in slide-in-from-top-1">
-              <div className="px-3.5 py-2 border-b border-[#E1E6EE] dark:border-[#23344E]">
-                <p className="text-xs font-semibold text-[#253247] dark:text-[#F1F5F9]">
-                  Rajeshwar Sharma
+            <div className="absolute right-0 mt-2 w-64 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl py-2 z-50">
+              <div className="px-4 py-2 border-b border-slate-100 dark:border-slate-800">
+                <p className="text-xs font-bold text-slate-800 dark:text-slate-100">
+                  {user?.name || "Adv. Vikram Patil"}
                 </p>
-                <p className="text-[10px] text-[#68758A] dark:text-[#8B9BB4] truncate mt-0.5">
-                  candidate@indiata.in
+                <p className="text-[11px] text-slate-500 truncate mt-0.5">
+                  {user?.email || "candidate@rajtantra.in"}
                 </p>
-                <span className="inline-block mt-1 px-1.5 py-0.2 rounded text-[10px] font-semibold bg-[#EBF7F3] text-[#24866A] border border-[#24866A]/20">
-                  Authorized Candidate
+                <span className="inline-block mt-1.5 px-2 py-0.5 rounded text-[10px] font-bold bg-brand-50 text-brand-700">
+                  Candidate Admin • 34 Pune PC
                 </span>
               </div>
 
@@ -276,32 +348,32 @@ export function Header({
                 <Link
                   href="/settings/organization"
                   onClick={() => setUserMenuOpen(false)}
-                  className="flex items-center gap-2 px-3 py-1.5 text-xs text-[#253247] dark:text-[#F1F5F9] hover:bg-[#F4F6F9] dark:hover:bg-[#1E2D44] transition-colors"
+                  className="flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
                 >
-                  <Building className="w-3.5 h-3.5 text-[#68758A]" />
-                  <span>Kasba Peth War Room</span>
+                  <Building className="w-4 h-4 text-slate-400" />
+                  <span>Constituency War Room</span>
                 </Link>
 
                 <Link
                   href="/settings"
                   onClick={() => setUserMenuOpen(false)}
-                  className="flex items-center gap-2 px-3 py-1.5 text-xs text-[#253247] dark:text-[#F1F5F9] hover:bg-[#F4F6F9] dark:hover:bg-[#1E2D44] transition-colors"
+                  className="flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
                 >
-                  <Settings className="w-3.5 h-3.5 text-[#68758A]" />
-                  <span>Settings</span>
+                  <Settings className="w-4 h-4 text-slate-400" />
+                  <span>Portal Settings</span>
                 </Link>
               </div>
 
-              <div className="border-t border-[#E1E6EE] dark:border-[#23344E] pt-1">
+              <div className="border-t border-slate-100 dark:border-slate-800 pt-1">
                 <button
                   type="button"
                   onClick={() => {
                     setUserMenuOpen(false);
                     logout();
                   }}
-                  className="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-[#C84D55] hover:bg-[#FDF2F3] dark:hover:bg-[#3D1417] transition-colors cursor-pointer"
+                  className="w-full flex items-center gap-2.5 px-4 py-2 text-xs font-semibold text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors"
                 >
-                  <LogOut className="w-3.5 h-3.5" />
+                  <LogOut className="w-4 h-4" />
                   <span>Sign Out</span>
                 </button>
               </div>

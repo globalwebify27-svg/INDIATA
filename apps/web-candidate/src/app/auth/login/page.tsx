@@ -16,7 +16,6 @@ export default function LoginPage() {
   const { showToast } = useToast();
   const router = useRouter();
 
-  // In development UI preview mode, skip the login screen and redirect to War Room dashboard
   useEffect(() => {
     if (isAuthenticated) {
       router.replace("/dashboard");
@@ -63,37 +62,37 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F3F8FD] dark:bg-[#011A2D] flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         {/* Brand Header */}
         <div className="flex flex-col items-center text-center">
           <div className="h-10 mb-2 flex items-center justify-center">
             <img
               src="/brand/indiata-logo.png"
-              alt="INDIATA"
+              alt="Rajtantra"
               className="h-9 w-auto object-contain dark:hidden"
             />
             <img
               src="/brand/indiata-logo-dark.png"
-              alt="INDIATA"
+              alt="Rajtantra"
               className="h-9 w-auto object-contain hidden dark:block"
             />
           </div>
           <div className="flex items-center gap-2 mt-1">
-            <Badge variant="primary">Candidate Admin War Room</Badge>
-            <span className="text-xs text-[#707E94] dark:text-[#94A3B8]">v4.2</span>
+            <Badge variant="primary">Candidate War Room Command</Badge>
+            <span className="text-xs text-slate-400">v4.2</span>
           </div>
-          <p className="mt-2 text-xs text-[#707E94] dark:text-[#94A3B8]">
+          <p className="mt-2 text-xs text-slate-500">
             Institutional Election Management &amp; Campaign Intelligence Platform
           </p>
         </div>
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md px-4 sm:px-0">
-        <Card className="border-[#ACB9D1] dark:border-[#0e3554] shadow-sm">
+        <Card className="rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-premium-sm">
           <CardContent className="pt-6">
             {errorMessage && (
-              <div className="mb-5 p-3.5 rounded-lg bg-[#FFDAD6] border border-[#BA1A1A]/30 text-[#BA1A1A] text-xs font-medium flex items-start gap-2.5">
+              <div className="mb-5 p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-medium flex items-start gap-2.5">
                 <Shield className="w-4 h-4 shrink-0 mt-0.5" />
                 <span>{errorMessage}</span>
               </div>
@@ -112,12 +111,12 @@ export default function LoginPage() {
 
               <div>
                 <div className="flex items-center justify-between mb-1.5">
-                  <label className="block text-xs font-semibold text-[#010627] dark:text-[#F5F6F6] uppercase tracking-wide">
-                    Password <span className="text-[#BA1A1A]">*</span>
+                  <label className="block text-xs font-semibold text-slate-800 dark:text-slate-200 uppercase tracking-wide">
+                    Password <span className="text-rose-600">*</span>
                   </label>
                   <Link
                     href="/auth/forgot-password"
-                    className="text-xs font-medium text-[#2087FE] hover:underline"
+                    className="text-xs font-medium text-brand-600 hover:underline"
                   >
                     Forgot password?
                   </Link>
@@ -130,12 +129,12 @@ export default function LoginPage() {
                     onChange={(e) => setPassword(e.target.value)}
                     autoComplete="current-password"
                     required
-                    className="w-full px-3.5 py-2.5 pr-10 rounded-lg border text-sm transition-colors bg-white dark:bg-[#072439] text-[#010627] dark:text-[#F5F6F6] border-[#ACB9D1] dark:border-[#0e3554] focus:outline-none focus:ring-2 focus:ring-[#2087FE] focus:border-[#2087FE]"
+                    className="w-full px-3.5 py-2.5 pr-10 rounded-xl border text-xs transition-colors bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent placeholder:text-slate-400"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-[#717785] dark:text-[#94A3B8] hover:text-[#010627]"
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-700"
                   >
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
@@ -143,12 +142,12 @@ export default function LoginPage() {
               </div>
 
               <div className="flex items-center justify-between text-xs pt-1">
-                <label className="flex items-center gap-2 cursor-pointer text-[#717785] dark:text-[#94A3B8]">
+                <label className="flex items-center gap-2 cursor-pointer text-slate-500">
                   <input
                     type="checkbox"
                     checked={rememberMe}
                     onChange={(e) => setRememberMe(e.target.checked)}
-                    className="rounded border-[#ACB9D1] text-[#2087FE] focus:ring-[#2087FE]"
+                    className="rounded border-slate-300 text-brand-600 focus:ring-brand-500"
                   />
                   <span>Remember this device</span>
                 </label>
@@ -167,27 +166,27 @@ export default function LoginPage() {
             </form>
 
             {/* Quick Demo Credentials Assistant */}
-            <div className="mt-6 pt-5 border-t border-[#ACB9D1]/30 dark:border-[#0e3554]/60">
+            <div className="mt-6 pt-5 border-t border-slate-100 dark:border-slate-800">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-[11px] font-semibold text-[#717785] dark:text-[#94A3B8] uppercase tracking-wider flex items-center gap-1.5">
-                  <Sparkles className="w-3.5 h-3.5 text-[#2087FE]" />
+                <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
+                  <Sparkles className="w-3.5 h-3.5 text-brand-600" />
                   Demo Access Credentials
                 </span>
                 <button
                   type="button"
                   onClick={handleUseDemoCredentials}
-                  className="text-xs text-[#2087FE] font-medium hover:underline cursor-pointer"
+                  className="text-xs text-brand-600 font-medium hover:underline cursor-pointer"
                 >
                   Auto-fill Form
                 </button>
               </div>
-              <div className="bg-[#E0EDFE]/40 dark:bg-[#072439]/60 p-2.5 rounded-lg text-xs space-y-1 text-[#010627] dark:text-[#F5F6F6]">
+              <div className="bg-brand-50/60 dark:bg-slate-800/60 p-2.5 rounded-xl border border-brand-200/60 dark:border-slate-700 text-xs space-y-1 text-slate-800 dark:text-slate-200">
                 <div className="flex justify-between">
-                  <span className="text-[#717785] dark:text-[#94A3B8]">Login:</span>
+                  <span className="text-slate-500">Login:</span>
                   <span className="font-mono font-medium">candidate@indiata.in</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-[#717785] dark:text-[#94A3B8]">Password:</span>
+                  <span className="text-slate-500">Password:</span>
                   <span className="font-mono font-medium">Indiata@2026</span>
                 </div>
               </div>
@@ -197,11 +196,11 @@ export default function LoginPage() {
 
         {/* Onboarding Registration Link */}
         <div className="mt-6 text-center">
-          <p className="text-xs text-[#717785] dark:text-[#94A3B8]">
+          <p className="text-xs text-slate-500">
             Not yet registered for this election cycle?{" "}
             <Link
               href="/auth/register"
-              className="font-semibold text-[#2087FE] hover:underline"
+              className="font-semibold text-brand-600 hover:underline"
             >
               Submit Registration Enquiry
             </Link>

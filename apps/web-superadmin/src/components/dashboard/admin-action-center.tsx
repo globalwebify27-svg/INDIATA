@@ -45,11 +45,11 @@ export function AdminActionCenter({
   };
 
   return (
-    <div className="bg-white dark:bg-[#062237] rounded-xl border border-[#ACB9D1]/80 dark:border-[#0e3554] shadow-xs hover:shadow-sm transition-all duration-200 p-4 sm:p-4.5 space-y-3.5">
+    <div className="bg-white dark:bg-[#062237] rounded-xl border border-[#E2E8F0] dark:border-[#0e3554] shadow-sm hover:shadow-md transition-all duration-200 p-5 sm:p-5.5 space-y-4">
       {/* Triage Header */}
-      <div className="flex items-center justify-between pb-3 border-b border-[#ACB9D1]/40 dark:border-[#0e3554]">
+      <div className="flex items-center justify-between pb-3 border-b border-[#F1F5F9] dark:border-[#0e3554]">
         <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#2087FE] to-[#0D62D9] text-white flex items-center justify-center shadow-xs">
+          <div className="w-7 h-7 rounded-lg bg-blue-50 dark:bg-blue-950/50 text-[#2087FE] dark:text-[#38BDF8] flex items-center justify-center">
             <ClipboardCheck className="w-3.5 h-3.5" />
           </div>
           <div>
@@ -95,7 +95,7 @@ export function AdminActionCenter({
             <button
               type="button"
               onClick={() => handleApprove("Kothrud Central Campaign Committee")}
-              className="px-3 py-1 rounded-md bg-gradient-to-r from-[#2087FE] to-[#1267D8] hover:from-[#1A77E8] hover:to-[#0F58BD] text-white text-[11.5px] font-semibold shadow-2xs hover:shadow-xs transition-all active:scale-95 cursor-pointer"
+              className="px-3 py-1 rounded-md bg-[#2087FE] hover:bg-[#1A77E8] active:bg-[#1267D8] text-white text-[11.5px] font-semibold shadow-sm hover:shadow-md transition-all active:scale-95 cursor-pointer"
             >
               Approve
             </button>
@@ -147,7 +147,7 @@ export function AdminActionCenter({
             <button
               type="button"
               onClick={() => handleGrantQuota("Pune Cantonment Vidhan Sabha Unit")}
-              className="px-3 py-1 rounded-md bg-gradient-to-r from-[#12CF94] to-[#0AA675] hover:from-[#0FB883] hover:to-[#089669] text-white font-bold text-[11.5px] transition-all shadow-2xs hover:shadow-xs active:scale-95 cursor-pointer"
+              className="px-3 py-1 rounded-md bg-[#12CF94] hover:bg-[#0FB883] active:bg-[#0AA675] text-white font-bold text-[11.5px] transition-all shadow-sm hover:shadow-md active:scale-95 cursor-pointer"
             >
               Grant Quota
             </button>
@@ -156,7 +156,7 @@ export function AdminActionCenter({
       </div>
 
       {/* Footer Action link */}
-      <div className="pt-2.5 border-t border-[#ACB9D1]/40 dark:border-[#0e3554] flex items-center justify-between flex-wrap gap-2 text-[11px]">
+      <div className="pt-2.5 border-t border-[#F1F5F9] dark:border-[#0e3554] flex items-center justify-between flex-wrap gap-2 text-[11px]">
         <button
           type="button"
           onClick={() => onNavigate("candidate-requests")}

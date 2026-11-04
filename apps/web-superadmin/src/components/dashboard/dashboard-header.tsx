@@ -22,7 +22,7 @@ export function DashboardHeader({
   return (
     <div className="space-y-3.5">
       {/* Platform Overview Header & Actions Bar */}
-      <section className="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-2 border-b border-[#ACB9D1]/50 dark:border-[#0e3554]">
+      <section className="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-3 border-b border-[#E2E8F0] dark:border-[#0e3554]">
         <div>
           <h1 className="text-[20px] sm:text-[22px] font-bold text-[#010627] dark:text-[#F5F6F6] tracking-tight">
             Platform Overview
@@ -47,7 +47,7 @@ export function DashboardHeader({
           <button
             type="button"
             onClick={onOpenAddCandidate}
-            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-[#2087FE] to-[#1267D8] hover:from-[#1A77E8] hover:to-[#0F58BD] text-white text-[11.5px] font-semibold shadow-xs hover:shadow-md transition-all active:scale-95 cursor-pointer focus:ring-2 focus:ring-[#2087FE]/30"
+            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-[#2087FE] hover:bg-[#1A77E8] active:bg-[#1267D8] text-white text-[11.5px] font-semibold shadow-sm hover:shadow-md transition-all active:scale-95 cursor-pointer focus:ring-2 focus:ring-[#2087FE]/30"
           >
             <Plus className="w-3.5 h-3.5 text-white" />
             <span>+ Add Organization</span>
@@ -56,9 +56,9 @@ export function DashboardHeader({
       </section>
 
       {/* Tactical Alert Notice Banner (Maharashtra Cadence) */}
-      <div className="bg-gradient-to-r from-[#F0F7FF] via-[#F8FBFF] to-white dark:from-[#062237] dark:via-[#092B45] dark:to-[#0A314E] border border-[#2087FE]/20 dark:border-[#0D79FD]/30 border-l-4 border-l-[#2087FE] dark:border-l-[#0D79FD] rounded-xl p-3 sm:p-3.5 shadow-xs hover:shadow-sm transition-all duration-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div className="bg-[#F8FAFC] dark:bg-[#062237] border border-[#E2E8F0] dark:border-[#0D79FD]/30 border-l-4 border-l-[#2087FE] dark:border-l-[#0D79FD] rounded-xl p-3.5 sm:p-4 shadow-sm hover:shadow-md transition-all duration-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex items-start gap-3">
-          <div className="p-1.5 rounded-lg bg-gradient-to-br from-[#2087FE] to-[#0D62D9] text-white shadow-xs mt-0.5 flex-shrink-0">
+          <div className="p-1.5 rounded-lg bg-blue-50 dark:bg-blue-950/50 text-[#2087FE] dark:text-[#38BDF8] mt-0.5 flex-shrink-0">
             <CheckCircle2 className="w-3.5 h-3.5" />
           </div>
           <div>

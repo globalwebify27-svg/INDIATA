@@ -14,8 +14,8 @@ export function QuotaDistributionPanel() {
   return (
     <div className="space-y-5">
       {/* 1. Subscription & Quota Overview Card */}
-      <div className="bg-white dark:bg-[#062237] rounded-xl border border-[#ACB9D1]/80 dark:border-[#0e3554] shadow-xs hover:shadow-sm transition-all duration-200 p-4 sm:p-4.5">
-        <div className="flex items-center justify-between pb-3 border-b border-[#ACB9D1]/40 dark:border-[#0e3554]">
+      <div className="bg-white dark:bg-[#062237] rounded-xl border border-[#E2E8F0] dark:border-[#0e3554] shadow-sm hover:shadow-md transition-all duration-200 p-4 sm:p-5">
+        <div className="flex items-center justify-between pb-3 border-b border-[#F1F5F9] dark:border-[#0e3554]">
           <div>
             <h2 className="text-[14.5px] sm:text-[15px] font-bold text-[#010627] dark:text-[#F5F6F6]">
               Subscription &amp; Quota Overview
@@ -33,17 +33,17 @@ export function QuotaDistributionPanel() {
         <div className="mt-3.5">
           <div className="h-2.5 w-full bg-[#F3F8FD] dark:bg-[#011A2D] rounded-full overflow-hidden flex gap-0.5 shadow-inner p-0.5">
             <div
-              className="bg-gradient-to-r from-[#2087FE] to-[#38BDF8] h-full rounded-l-full transition-all duration-300"
+              className="bg-[#2087FE] h-full rounded-l-full transition-all duration-300"
               style={{ width: "56%" }}
               title="Vidhan Sabha War Room: 56%"
             />
             <div
-              className="bg-gradient-to-r from-[#FC7C36] to-[#F59E0B] h-full transition-all duration-300"
+              className="bg-[#FC7C36] h-full transition-all duration-300"
               style={{ width: "31%" }}
               title="Lok Sabha War Room: 31%"
             />
             <div
-              className="bg-gradient-to-r from-[#12CF94] to-[#10B981] h-full rounded-r-full transition-all duration-300"
+              className="bg-[#12CF94] h-full rounded-r-full transition-all duration-300"
               style={{ width: "13%" }}
               title="Municipal & Civic: 13%"
             />
@@ -90,9 +90,9 @@ export function QuotaDistributionPanel() {
         </div>
 
         {/* Gateway Health Telemetry Box */}
-        <div className="mt-3.5 p-2.5 rounded-lg bg-gradient-to-r from-[#F0FDF4] to-[#F8FAFC] dark:from-[#062D24] dark:to-[#062237] border border-emerald-200/90 dark:border-emerald-800/50 flex items-center justify-between shadow-2xs">
+        <div className="mt-3.5 p-2.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200/80 dark:border-emerald-800/50 flex items-center justify-between shadow-sm">
           <div className="flex items-center gap-2.5">
-            <div className="p-1.5 rounded-lg bg-gradient-to-br from-[#12CF94] to-[#0AA675] text-white shadow-xs">
+            <div className="p-1.5 rounded-lg bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400">
               <Radio className="w-3.5 h-3.5" />
             </div>
             <div>
@@ -115,8 +115,8 @@ export function QuotaDistributionPanel() {
       </div>
 
       {/* 2. Organization Status Distribution Card */}
-      <div className="bg-white dark:bg-[#062237] rounded-xl border border-[#ACB9D1]/80 dark:border-[#0e3554] shadow-xs hover:shadow-sm transition-all duration-200 p-4 sm:p-4.5">
-        <div className="flex items-center justify-between pb-3 border-b border-[#ACB9D1]/40 dark:border-[#0e3554]">
+      <div className="bg-white dark:bg-[#062237] rounded-xl border border-[#E2E8F0] dark:border-[#0e3554] shadow-sm hover:shadow-md transition-all duration-200 p-4 sm:p-5">
+        <div className="flex items-center justify-between pb-3 border-b border-[#F1F5F9] dark:border-[#0e3554]">
           <h2 className="text-[14.5px] sm:text-[15px] font-bold text-[#010627] dark:text-[#F5F6F6]">
             Organization Status Distribution
           </h2>
@@ -143,7 +143,7 @@ export function QuotaDistributionPanel() {
               </div>
             </div>
             <div className="h-1 w-full bg-[#E1E6EE] dark:bg-[#0e3554] rounded-full overflow-hidden">
-              <div className="h-full bg-gradient-to-r from-[#12CF94] to-[#10B981] rounded-full" style={{ width: "81.2%" }} />
+              <div className="h-full bg-[#12CF94] rounded-full" style={{ width: "81.2%" }} />
             </div>
           </div>
 
@@ -164,7 +164,7 @@ export function QuotaDistributionPanel() {
               </div>
             </div>
             <div className="h-1 w-full bg-[#E1E6EE] dark:bg-[#0e3554] rounded-full overflow-hidden">
-              <div className="h-full bg-gradient-to-r from-[#FC7C36] to-[#F59E0B] rounded-full" style={{ width: "13.3%" }} />
+              <div className="h-full bg-[#FC7C36] rounded-full" style={{ width: "13.3%" }} />
             </div>
           </div>
 

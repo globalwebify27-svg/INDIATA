@@ -41,11 +41,11 @@ export default function DashboardLayout({
 
   if (isLoading || !isAuthenticated) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#F4F6F9] dark:bg-[#0E1726]">
+      <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950">
         <div className="flex flex-col items-center gap-3">
-          <div className="w-8 h-8 border-3 border-[#3159A8] border-t-transparent rounded-full animate-spin" />
-          <p className="text-xs text-[#68758A] dark:text-[#8B9BB4] font-medium">
-            Connecting to INDIATA Election OS...
+          <div className="w-8 h-8 border-3 border-brand-600 border-t-transparent rounded-full animate-spin" />
+          <p className="text-xs text-slate-500 font-medium">
+            Connecting to INDATA Election OS...
           </p>
         </div>
       </div>
@@ -53,7 +53,7 @@ export default function DashboardLayout({
   }
 
   return (
-    <div className="min-h-screen bg-[#F4F6F9] dark:bg-[#0E1726] text-[#253247] dark:text-[#F1F5F9] flex flex-col font-sans max-w-[100vw] overflow-x-hidden">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 flex flex-col font-sans max-w-[100vw] overflow-x-hidden">
       {/* COLLAPSIBLE SIDEBAR */}
       <Sidebar
         collapsed={collapsed}
@@ -65,10 +65,10 @@ export default function DashboardLayout({
       {/* MAIN CONTENT SHELL (Adjusts automatically when sidebar collapses/expands) */}
       <div
         className={`flex-1 flex flex-col transition-all duration-200 ease-in-out min-h-screen min-w-0 max-w-full overflow-x-hidden ${
-          collapsed ? "md:ml-[72px]" : "md:ml-60"
+          collapsed ? "md:ml-20" : "md:ml-64"
         }`}
       >
-        {/* COMPACT TOP HEADER */}
+        {/* TOP HEADER */}
         <Header
           collapsed={collapsed}
           onToggleCollapse={handleToggleCollapse}

@@ -99,9 +99,9 @@ export function OrganizationsDirectoryTable() {
   };
 
   return (
-    <section className="bg-white dark:bg-[#062237] rounded-xl border border-[#ACB9D1]/80 dark:border-[#0e3554] shadow-xs hover:shadow-sm transition-all duration-200 overflow-hidden">
+    <section className="bg-white dark:bg-[#062237] rounded-xl border border-[#E2E8F0] dark:border-[#0e3554] shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden">
       {/* Table Header & Filter Toolbar */}
-      <div className="p-4 sm:p-4.5 border-b border-[#ACB9D1]/40 dark:border-[#0e3554] flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+      <div className="p-4 sm:p-5 border-b border-[#F1F5F9] dark:border-[#0e3554] flex flex-col lg:flex-row lg:items-center justify-between gap-3">
         <div>
           <h2 className="text-[14.5px] sm:text-[15px] font-bold text-[#010627] dark:text-[#F5F6F6]">
             Registered Organizations &amp; Campaign War Rooms
@@ -187,10 +187,10 @@ export function OrganizationsDirectoryTable() {
             {filteredOrgs.map((org) => {
               const avatarStyles =
                 org.avatarColor === "saffron"
-                  ? "bg-gradient-to-br from-[#FC7C36] to-[#E25C18] text-white shadow-2xs"
+                  ? "bg-orange-50 dark:bg-orange-950/50 text-orange-600 dark:text-orange-400"
                   : org.avatarColor === "violet"
-                  ? "bg-gradient-to-br from-[#7C3AED] to-[#5B21B6] text-white shadow-2xs"
-                  : "bg-gradient-to-br from-[#12CF94] to-[#0AA675] text-white shadow-2xs";
+                  ? "bg-purple-50 dark:bg-purple-950/50 text-purple-600 dark:text-purple-400"
+                  : "bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400";
 
               const statusStyles =
                 org.status === "Active"

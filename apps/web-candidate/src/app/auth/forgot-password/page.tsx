@@ -50,21 +50,21 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F3F8FD] dark:bg-[#011A2D] flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[#f8fafc] dark:bg-[#020617] flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full mx-auto">
         <div className="text-center mb-6">
-          <div className="inline-flex w-12 h-12 rounded-xl bg-[#2087FE] items-center justify-center text-white shadow-md mb-2">
+          <div className="inline-flex w-12 h-12 rounded-xl bg-[#2554a8] items-center justify-center text-white shadow-md mb-2">
             <KeyRound className="w-6 h-6" />
           </div>
-          <h1 className="text-2xl font-extrabold text-[#010627] dark:text-[#F5F6F6]">
+          <h1 className="text-2xl font-extrabold text-[#0f172a] dark:text-[#F5F6F6]">
             Password Recovery
           </h1>
-          <p className="text-xs text-[#717785] dark:text-[#94A3B8] mt-1">
+          <p className="text-xs text-[#64748b] dark:text-[#94A3B8] mt-1">
             INDIATA Candidate War Room Account Security
           </p>
         </div>
 
-        <Card className="border-[#ACB9D1] dark:border-[#0e3554] shadow-sm">
+        <Card className="border-[#cbd5e1] dark:border-[#0e3554] shadow-sm">
           <CardHeader>
             <CardTitle className="text-base">Reset Account Password</CardTitle>
             <CardDescription>
@@ -85,12 +85,12 @@ export default function ForgotPasswordPage() {
                 <div className="w-12 h-12 rounded-full bg-[#12CF94]/20 text-[#12CF94] flex items-center justify-center mx-auto">
                   <CheckCircle2 className="w-6 h-6" />
                 </div>
-                <h4 className="text-sm font-bold text-[#010627] dark:text-[#F5F6F6]">
+                <h4 className="text-sm font-bold text-[#0f172a] dark:text-[#F5F6F6]">
                   Verification Instructions Dispatched
                 </h4>
-                <p className="text-xs text-[#717785] dark:text-[#94A3B8]">
+                <p className="text-xs text-[#64748b] dark:text-[#94A3B8]">
                   If an account exists with{" "}
-                  <strong className="text-[#010627] dark:text-[#F5F6F6]">{identifier}</strong>, password reset verification has been dispatched via SMS / email.
+                  <strong className="text-[#0f172a] dark:text-[#F5F6F6]">{identifier}</strong>, password reset verification has been dispatched via SMS / email.
                 </p>
                 <div className="pt-2">
                   <Link href="/auth/login">
@@ -123,7 +123,7 @@ export default function ForgotPasswordPage() {
                 <div className="text-center pt-2">
                   <Link
                     href="/auth/login"
-                    className="inline-flex items-center text-xs text-[#717785] dark:text-[#94A3B8] hover:text-[#2087FE] hover:underline"
+                    className="inline-flex items-center text-xs text-[#64748b] dark:text-[#94A3B8] hover:text-[#2554a8] hover:underline"
                   >
                     <ArrowLeft className="w-3.5 h-3.5 mr-1" />
                     Back to Sign In

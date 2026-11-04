@@ -49,11 +49,11 @@ export function RecentActivityPanel({
   ];
 
   return (
-    <div className="bg-white dark:bg-[#062237] rounded-xl border border-[#ACB9D1]/80 dark:border-[#0e3554] shadow-xs hover:shadow-sm transition-all duration-200 p-4 sm:p-4.5 space-y-3.5">
+    <div className="bg-white dark:bg-[#062237] rounded-xl border border-[#E2E8F0] dark:border-[#0e3554] shadow-sm hover:shadow-md transition-all duration-200 p-5 sm:p-5.5 space-y-4">
       {/* Header */}
-      <div className="flex items-center justify-between pb-3 border-b border-[#ACB9D1]/40 dark:border-[#0e3554]">
+      <div className="flex items-center justify-between pb-3 border-b border-[#F1F5F9] dark:border-[#0e3554]">
         <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#7C3AED] to-[#5B21B6] text-white flex items-center justify-center shadow-xs">
+          <div className="w-7 h-7 rounded-lg bg-purple-50 dark:bg-purple-950/50 text-purple-600 dark:text-purple-400 flex items-center justify-center">
             <Clock className="w-3.5 h-3.5" />
           </div>
           <div>
@@ -94,7 +94,7 @@ export function RecentActivityPanel({
       </div>
 
       {/* Footer Quick Direct Rail */}
-      <div className="pt-2.5 border-t border-[#ACB9D1]/40 dark:border-[#0e3554] flex items-center justify-between flex-wrap gap-2 text-[11px]">
+      <div className="pt-2.5 border-t border-[#F1F5F9] dark:border-[#0e3554] flex items-center justify-between flex-wrap gap-2 text-[11px]">
         <button
           type="button"
           onClick={() => onNavigate("audit")}

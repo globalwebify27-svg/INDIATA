@@ -10,20 +10,20 @@
   --sidebar-width: var(--sidebar-width-collapsed);
 
   /* Client-Approved Light Theme Tokens */
-  --background: #F3F8FD;
+  --background: #F8FAFC;
   --foreground: #010627;
-  --surface-low: #F3F8FD;
-  --surface-container: #E0EDFE;
-  --surface-high: #E0EDFE;
-  --surface-highest: #E0EDFE;
-  --card: #FDFEFE;
+  --surface-low: #F8FAFC;
+  --surface-container: #EEF4FB;
+  --surface-high: #E8F0FA;
+  --surface-highest: #E2ECFF;
+  --card: #FFFFFF;
   --card-foreground: #010627;
 
   /* Client Exact Design System Tokens */
-  --client-bg: #F3F8FD;
-  --client-card: #FDFEFE;
+  --client-bg: #F8FAFC;
+  --client-card: #FFFFFF;
   --client-soft-blue: #E0EDFE;
-  --client-border: #ACB9D1;
+  --client-border: #E2E8F0;
   --client-primary: #2087FE;
   --client-success: #12CF94;
   --client-soft-success: #B3EDD7;
@@ -58,10 +58,10 @@
   /* Neutral Text Hierarchy */
   --on-surface: #010627;
   --on-surface-variant: #717785;
-  --outline: #ACB9D1;
-  --outline-variant: #ACB9D1;
-  --border: #ACB9D1;
-  --border-strong: #ACB9D1;
+  --outline: #E2E8F0;
+  --outline-variant: #E2E8F0;
+  --border: #E2E8F0;
+  --border-strong: #CBD5E1;
 
   /* Operational Health & Feedback */
   --success: #12CF94;
@@ -235,7 +235,7 @@ body {
 
 .scrollbar-thin::-webkit-scrollbar-track,
 .custom-scroll::-webkit-scrollbar-track {
-  background: #F3F8FD;
+  background: #F8FAFC;
 }
 
 .dark .scrollbar-thin::-webkit-scrollbar-track,
@@ -247,7 +247,7 @@ body {
 
 .scrollbar-thin::-webkit-scrollbar-thumb,
 .custom-scroll::-webkit-scrollbar-thumb {
-  background: #ACB9D1;
+  background: #CBD5E1;
   border-radius: 4px;
 }
 

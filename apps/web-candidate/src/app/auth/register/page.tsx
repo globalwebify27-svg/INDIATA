@@ -196,17 +196,17 @@ export default function RegisterEnquiryPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#F3F8FD] dark:bg-[#011A2D] py-10 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[#f8fafc] dark:bg-[#020617] py-10 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto">
         {/* Brand Header */}
         <div className="text-center mb-8">
-          <div className="inline-flex w-12 h-12 rounded-xl bg-[#2087FE] items-center justify-center text-white shadow-md mb-2">
+          <div className="inline-flex w-12 h-12 rounded-xl bg-[#2554a8] items-center justify-center text-white shadow-md mb-2">
             <Vote className="w-6 h-6" />
           </div>
-          <h1 className="text-2xl font-extrabold text-[#010627] dark:text-[#F5F6F6]">
+          <h1 className="text-2xl font-extrabold text-[#0f172a] dark:text-[#F5F6F6]">
             Candidate Registration Enquiry
           </h1>
-          <p className="text-xs text-[#717785] dark:text-[#94A3B8] mt-1">
+          <p className="text-xs text-[#64748b] dark:text-[#94A3B8] mt-1">
             Complete the 7-step election configuration for Super Admin review & activation
           </p>
         </div>
@@ -226,8 +226,8 @@ export default function RegisterEnquiryPage() {
                       isCompleted
                         ? "bg-[#12CF94] text-white"
                         : isCurrent
-                          ? "bg-[#2087FE] text-white ring-4 ring-[#2087FE]/20"
-                          : "bg-slate-200 dark:bg-[#072439] text-[#717785] dark:text-[#94A3B8]"
+                          ? "bg-[#2554a8] text-white ring-4 ring-[#2554a8]/20"
+                          : "bg-slate-200 dark:bg-[#072439] text-[#64748b] dark:text-[#94A3B8]"
                     }`}
                   >
                     {isCompleted ? <CheckCircle2 className="w-4 h-4" /> : stepNumber}
@@ -235,10 +235,10 @@ export default function RegisterEnquiryPage() {
                   <span
                     className={`mt-1.5 text-[10px] font-medium hidden sm:block ${
                       isCurrent
-                        ? "text-[#2087FE] font-bold"
+                        ? "text-[#2554a8] font-bold"
                         : isCompleted
                           ? "text-[#12CF94]"
-                          : "text-[#717785] dark:text-[#94A3B8]"
+                          : "text-[#64748b] dark:text-[#94A3B8]"
                     }`}
                   >
                     {label}
@@ -250,7 +250,7 @@ export default function RegisterEnquiryPage() {
         </div>
 
         {/* Step Card Content */}
-        <Card className="border-[#ACB9D1] dark:border-[#0e3554] shadow-sm">
+        <Card className="border-[#cbd5e1] dark:border-[#0e3554] shadow-sm">
           {errorMsg && (
             <div className="m-5 mb-0 p-3.5 rounded-lg bg-[#FFDAD6] border border-[#BA1A1A]/30 text-[#BA1A1A] text-xs font-medium flex items-start gap-2">
               <Shield className="w-4 h-4 shrink-0 mt-0.5" />
@@ -260,7 +260,7 @@ export default function RegisterEnquiryPage() {
 
           <CardHeader>
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-[#2087FE] uppercase tracking-wider">
+              <span className="text-xs font-bold text-[#2554a8] uppercase tracking-wider">
                 Step {currentStep} of 7: {stepLabels[currentStep - 1]}
               </span>
               <Badge variant="neutral">Pre-Activation Enquiry</Badge>
@@ -355,13 +355,13 @@ export default function RegisterEnquiryPage() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-semibold text-[#010627] dark:text-[#F5F6F6] mb-1.5 uppercase tracking-wide">
+                    <label className="block text-xs font-semibold text-[#0f172a] dark:text-[#F5F6F6] mb-1.5 uppercase tracking-wide">
                       Candidate Type <span className="text-[#BA1A1A]">*</span>
                     </label>
                     <select
                       value={formData.candidateType}
                       onChange={(e) => updateField("candidateType", e.target.value)}
-                      className="w-full px-3.5 py-2.5 rounded-lg border text-sm bg-white dark:bg-[#072439] text-[#010627] dark:text-[#F5F6F6] border-[#ACB9D1] dark:border-[#0e3554] focus:ring-2 focus:ring-[#2087FE]"
+                      className="w-full px-3.5 py-2.5 rounded-lg border text-sm bg-white dark:bg-[#072439] text-[#0f172a] dark:text-[#F5F6F6] border-[#cbd5e1] dark:border-[#0e3554] focus:ring-2 focus:ring-[#2554a8]"
                     >
                       <option value="MP">Member of Parliament (MP)</option>
                       <option value="MLA">Member of Legislative Assembly (MLA)</option>
@@ -394,25 +394,25 @@ export default function RegisterEnquiryPage() {
                       onClick={() => updateField("electionType", tier.id)}
                       className={`p-4 rounded-xl border cursor-pointer transition-all flex items-start justify-between ${
                         isSelected
-                          ? "bg-[#E0EDFE]/50 dark:bg-[#072439] border-[#2087FE] ring-2 ring-[#2087FE]/20"
-                          : "bg-white dark:bg-[#062237] border-[#ACB9D1] dark:border-[#0e3554] hover:border-[#2087FE]"
+                          ? "bg-[#e8edf9]/50 dark:bg-[#072439] border-[#2554a8] ring-2 ring-[#2554a8]/20"
+                          : "bg-white dark:bg-[#062237] border-[#cbd5e1] dark:border-[#0e3554] hover:border-[#2554a8]"
                       }`}
                     >
                       <div className="flex items-start gap-3">
                         <div
                           className={`w-5 h-5 rounded-full mt-0.5 border flex items-center justify-center shrink-0 ${
                             isSelected
-                              ? "border-[#2087FE] bg-[#2087FE] text-white"
-                              : "border-[#ACB9D1]"
+                              ? "border-[#2554a8] bg-[#2554a8] text-white"
+                              : "border-[#cbd5e1]"
                           }`}
                         >
                           {isSelected && <div className="w-2 h-2 rounded-full bg-white" />}
                         </div>
                         <div>
-                          <div className="text-sm font-bold text-[#010627] dark:text-[#F5F6F6]">
+                          <div className="text-sm font-bold text-[#0f172a] dark:text-[#F5F6F6]">
                             {tier.label}
                           </div>
-                          <div className="text-xs text-[#717785] dark:text-[#94A3B8] mt-0.5">
+                          <div className="text-xs text-[#64748b] dark:text-[#94A3B8] mt-0.5">
                             {tier.desc}
                           </div>
                         </div>
@@ -503,7 +503,7 @@ export default function RegisterEnquiryPage() {
             {/* STEP 6: Data & Service Selection */}
             {currentStep === 6 && (
               <div className="space-y-3">
-                <p className="text-xs text-[#717785] dark:text-[#94A3B8] mb-2">
+                <p className="text-xs text-[#64748b] dark:text-[#94A3B8] mb-2">
                   Select the specialized data rolls and campaign modules you require. Final terms will be reviewed by Super Admin.
                 </p>
                 {DATA_SERVICES.map((service) => {
@@ -514,21 +514,21 @@ export default function RegisterEnquiryPage() {
                       onClick={() => toggleService(service.id)}
                       className={`p-3.5 rounded-lg border cursor-pointer transition-colors flex items-start gap-3 ${
                         isChecked
-                          ? "bg-[#E0EDFE]/40 dark:bg-[#072439] border-[#2087FE]"
-                          : "bg-white dark:bg-[#062237] border-[#ACB9D1] dark:border-[#0e3554]"
+                          ? "bg-[#e8edf9]/40 dark:bg-[#072439] border-[#2554a8]"
+                          : "bg-white dark:bg-[#062237] border-[#cbd5e1] dark:border-[#0e3554]"
                       }`}
                     >
                       <input
                         type="checkbox"
                         checked={isChecked}
                         onChange={() => {}} // Handled by container
-                        className="mt-1 rounded border-[#ACB9D1] text-[#2087FE] focus:ring-[#2087FE]"
+                        className="mt-1 rounded border-[#cbd5e1] text-[#2554a8] focus:ring-[#2554a8]"
                       />
                       <div className="flex-1">
-                        <div className="text-xs font-bold text-[#010627] dark:text-[#F5F6F6]">
+                        <div className="text-xs font-bold text-[#0f172a] dark:text-[#F5F6F6]">
                           {service.title}
                         </div>
-                        <div className="text-[11px] text-[#717785] dark:text-[#94A3B8] mt-0.5">
+                        <div className="text-[11px] text-[#64748b] dark:text-[#94A3B8] mt-0.5">
                           {service.desc}
                         </div>
                       </div>
@@ -537,7 +537,7 @@ export default function RegisterEnquiryPage() {
                 })}
 
                 <div className="pt-2">
-                  <label className="block text-xs font-semibold text-[#010627] dark:text-[#F5F6F6] mb-1.5 uppercase tracking-wide">
+                  <label className="block text-xs font-semibold text-[#0f172a] dark:text-[#F5F6F6] mb-1.5 uppercase tracking-wide">
                     Additional Requirements or Notes
                   </label>
                   <textarea
@@ -545,7 +545,7 @@ export default function RegisterEnquiryPage() {
                     placeholder="Specify any custom requirements (e.g. number of field worker seats, regional languages)..."
                     value={formData.notes}
                     onChange={(e) => updateField("notes", e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-lg border text-sm bg-white dark:bg-[#072439] text-[#010627] dark:text-[#F5F6F6] border-[#ACB9D1] dark:border-[#0e3554] focus:ring-2 focus:ring-[#2087FE]"
+                    className="w-full px-3.5 py-2.5 rounded-lg border text-sm bg-white dark:bg-[#072439] text-[#0f172a] dark:text-[#F5F6F6] border-[#cbd5e1] dark:border-[#0e3554] focus:ring-2 focus:ring-[#2554a8]"
                   />
                 </div>
               </div>
@@ -554,47 +554,47 @@ export default function RegisterEnquiryPage() {
             {/* STEP 7: Review & Submit */}
             {currentStep === 7 && (
               <div className="space-y-4">
-                <div className="p-4 rounded-xl bg-[#E0EDFE]/30 dark:bg-[#072439]/50 border border-[#2087FE]/20 space-y-3">
-                  <div className="flex items-center justify-between border-b border-[#ACB9D1]/30 pb-2">
-                    <span className="text-xs font-semibold text-[#717785] dark:text-[#94A3B8]">
+                <div className="p-4 rounded-xl bg-[#e8edf9]/30 dark:bg-[#072439]/50 border border-[#2554a8]/20 space-y-3">
+                  <div className="flex items-center justify-between border-b border-[#cbd5e1]/30 pb-2">
+                    <span className="text-xs font-semibold text-[#64748b] dark:text-[#94A3B8]">
                       Candidate Profile
                     </span>
                     <Badge variant="primary">{formData.candidateType}</Badge>
                   </div>
                   <div className="grid grid-cols-2 gap-2 text-xs">
                     <div>
-                      <span className="text-[#717785] dark:text-[#94A3B8]">Candidate:</span>{" "}
-                      <span className="font-semibold text-[#010627] dark:text-[#F5F6F6]">
+                      <span className="text-[#64748b] dark:text-[#94A3B8]">Candidate:</span>{" "}
+                      <span className="font-semibold text-[#0f172a] dark:text-[#F5F6F6]">
                         {formData.candidateName}
                       </span>
                     </div>
                     <div>
-                      <span className="text-[#717785] dark:text-[#94A3B8]">Party:</span>{" "}
-                      <span className="font-semibold text-[#010627] dark:text-[#F5F6F6]">
+                      <span className="text-[#64748b] dark:text-[#94A3B8]">Party:</span>{" "}
+                      <span className="font-semibold text-[#0f172a] dark:text-[#F5F6F6]">
                         {formData.partyName}
                       </span>
                     </div>
                     <div>
-                      <span className="text-[#717785] dark:text-[#94A3B8]">Login Mobile:</span>{" "}
-                      <span className="font-semibold text-[#010627] dark:text-[#F5F6F6]">
+                      <span className="text-[#64748b] dark:text-[#94A3B8]">Login Mobile:</span>{" "}
+                      <span className="font-semibold text-[#0f172a] dark:text-[#F5F6F6]">
                         {formData.mobile}
                       </span>
                     </div>
                     <div>
-                      <span className="text-[#717785] dark:text-[#94A3B8]">Constituency:</span>{" "}
-                      <span className="font-semibold text-[#010627] dark:text-[#F5F6F6]">
+                      <span className="text-[#64748b] dark:text-[#94A3B8]">Constituency:</span>{" "}
+                      <span className="font-semibold text-[#0f172a] dark:text-[#F5F6F6]">
                         {formData.constituencyName} ({formData.district})
                       </span>
                     </div>
                     <div>
-                      <span className="text-[#717785] dark:text-[#94A3B8]">Election Tier:</span>{" "}
-                      <span className="font-semibold text-[#010627] dark:text-[#F5F6F6]">
+                      <span className="text-[#64748b] dark:text-[#94A3B8]">Election Tier:</span>{" "}
+                      <span className="font-semibold text-[#0f172a] dark:text-[#F5F6F6]">
                         {formData.electionType}
                       </span>
                     </div>
                     <div>
-                      <span className="text-[#717785] dark:text-[#94A3B8]">Target Booths:</span>{" "}
-                      <span className="font-semibold text-[#010627] dark:text-[#F5F6F6]">
+                      <span className="text-[#64748b] dark:text-[#94A3B8]">Target Booths:</span>{" "}
+                      <span className="font-semibold text-[#0f172a] dark:text-[#F5F6F6]">
                         ~{formData.boothsCount} Polling Stations
                       </span>
                     </div>
@@ -602,7 +602,7 @@ export default function RegisterEnquiryPage() {
                 </div>
 
                 <div>
-                  <span className="text-xs font-semibold text-[#717785] dark:text-[#94A3B8] block mb-1.5">
+                  <span className="text-xs font-semibold text-[#64748b] dark:text-[#94A3B8] block mb-1.5">
                     Selected Services & Addons ({formData.requestedServices.length}):
                   </span>
                   <div className="flex flex-wrap gap-1.5">
@@ -622,14 +622,14 @@ export default function RegisterEnquiryPage() {
           </CardContent>
 
           {/* Stepper Navigation Actions */}
-          <div className="p-5 border-t border-[#ACB9D1] dark:border-[#0e3554] flex items-center justify-between">
+          <div className="p-5 border-t border-[#cbd5e1] dark:border-[#0e3554] flex items-center justify-between">
             {currentStep > 1 ? (
               <Button type="button" variant="outline" onClick={handlePrevStep}>
                 <ChevronLeft className="w-4 h-4 mr-1" />
                 Previous Step
               </Button>
             ) : (
-              <Link href="/auth/login" className="text-xs text-[#717785] hover:underline">
+              <Link href="/auth/login" className="text-xs text-[#64748b] hover:underline">
                 Return to Login
               </Link>
             )}

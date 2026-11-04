@@ -11,7 +11,7 @@ export function Card({ className, children, ...props }: CardProps) {
     <div
       className={twMerge(
         clsx(
-          "bg-white dark:bg-[#0F172A] rounded-xl border border-[#E2E8F0] dark:border-[#1E293B] shadow-xs",
+          "bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-premium-xs hover:shadow-premium-md transition-all duration-200",
           className,
         ),
       )}
@@ -30,7 +30,7 @@ export function CardHeader({
   return (
     <div
       className={twMerge(
-        clsx("p-5 border-b border-[#E2E8F0] dark:border-[#1E293B]", className),
+        clsx("p-5 border-b border-slate-100 dark:border-slate-800", className),
       )}
       {...props}
     >
@@ -47,7 +47,8 @@ export function CardTitle({
   return (
     <h3
       className={twMerge(
-        clsx("text-base font-bold text-[#252A3A] dark:text-[#F8FAFC]", className),
+        clsx("text-base font-bold text-slate-900 dark:text-white", className),
+        className,
       )}
       {...props}
     >
@@ -64,7 +65,8 @@ export function CardDescription({
   return (
     <p
       className={twMerge(
-        clsx("text-xs text-[#707E94] dark:text-[#94A3B8] mt-1", className),
+        clsx("text-xs text-slate-500 dark:text-slate-400 mt-0.5", className),
+        className,
       )}
       {...props}
     >
@@ -93,7 +95,7 @@ export function CardFooter({
   return (
     <div
       className={twMerge(
-        clsx("p-5 border-t border-[#E2E8F0] dark:border-[#1E293B] flex items-center justify-between", className),
+        clsx("p-5 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between", className),
       )}
       {...props}
     >

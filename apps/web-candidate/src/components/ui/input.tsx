@@ -17,10 +17,10 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         {label && (
           <label
             htmlFor={inputId}
-            className="block text-xs font-semibold text-[#252A3A] dark:text-[#F8FAFC] mb-1.5 uppercase tracking-wide"
+            className="block text-xs font-semibold text-slate-800 dark:text-slate-200 mb-1.5 uppercase tracking-wide"
           >
             {label}
-            {props.required && <span className="text-[#E15B70] ml-1">*</span>}
+            {props.required && <span className="text-rose-600 ml-1">*</span>}
           </label>
         )}
         <input
@@ -28,21 +28,21 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
           id={inputId}
           className={twMerge(
             clsx(
-              "w-full px-3.5 py-2 rounded-lg border text-sm transition-colors",
-              "bg-white dark:bg-[#0F172A] text-[#252A3A] dark:text-[#F8FAFC]",
-              "border-[#E2E8F0] dark:border-[#1E293B]",
-              "focus:outline-none focus:ring-2 focus:ring-[#6256D9] focus:border-[#6256D9]",
-              "placeholder:text-[#707E94] dark:placeholder:text-[#94A3B8]",
-              "disabled:bg-[#F1F3FA] dark:disabled:bg-[#1E293B] disabled:cursor-not-allowed",
-              error && "border-[#E15B70] focus:ring-[#E15B70] focus:border-[#E15B70]",
+              "w-full px-3.5 py-2 rounded-xl border text-xs transition-colors",
+              "bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100",
+              "border-slate-200 dark:border-slate-700",
+              "focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent",
+              "placeholder:text-slate-400 dark:placeholder:text-slate-500",
+              "disabled:bg-slate-100 dark:disabled:bg-slate-800 disabled:cursor-not-allowed",
+              error && "border-rose-500 focus:ring-rose-500",
               className,
             ),
           )}
           {...props}
         />
-        {error && <p className="mt-1 text-xs text-[#E15B70] font-medium">{error}</p>}
+        {error && <p className="mt-1 text-xs text-rose-600 font-medium">{error}</p>}
         {helperText && !error && (
-          <p className="mt-1 text-xs text-[#707E94] dark:text-[#94A3B8]">{helperText}</p>
+          <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">{helperText}</p>
         )}
       </div>
     );
