@@ -6,10 +6,12 @@ import { apiFetch } from "@/lib/api-client";
 import {
   AuthTokenPair,
   LoginResult,
+  UserRole,
 } from "@rajtantra/common-types";
 import {
   IS_DEV_PREVIEW,
   MOCK_DEV_CANDIDATE_USER,
+  MOCK_DEV_SUPERADMIN_USER,
   MOCK_DEV_TOKENS,
   ExtendedUser,
 } from "@/data/mock-candidate-data";
@@ -86,7 +88,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [loadProfile]);
 
   const login = async (identifier: string, password: string) => {
+    const cleanId = identifier.trim().toLowerCase();
+
     if (IS_DEV_PREVIEW) {
+      const isSuperAdmin = cleanId.includes("superadmin");
+      if (isSuperAdmin) {
+        setUser(MOCK_DEV_SUPERADMIN_USER);
+        setTokens(MOCK_DEV_TOKENS);
+        setIsLoading(false);
+        const superAdminUrl = process.env.NEXT_PUBLIC_SUPERADMIN_URL || "http://localhost:3000";
+        if (typeof window !== "undefined") {
+          window.location.href = superAdminUrl;
+        }
+        return;
+      }
+
       setUser(MOCK_DEV_CANDIDATE_USER);
       setTokens(MOCK_DEV_TOKENS);
       setIsLoading(false);
@@ -111,6 +127,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
         // Fetch full profile with organization details
         await loadProfile();
+
+        // Dynamic Role-Based Redirection
+        if (authUser.role === UserRole.SUPER_ADMIN) {
+          const superAdminUrl = process.env.NEXT_PUBLIC_SUPERADMIN_URL || "http://localhost:3000";
+          window.location.href = `${superAdminUrl}?token=${authTokens.accessToken}&refresh=${authTokens.refreshToken}`;
+          return;
+        }
+
+        if (authUser.role === UserRole.DISTRIBUTOR) {
+          const distributorUrl = process.env.NEXT_PUBLIC_DISTRIBUTOR_URL || "http://localhost:3002";
+          window.location.href = `${distributorUrl}?token=${authTokens.accessToken}&refresh=${authTokens.refreshToken}`;
+          return;
+        }
+
         router.push("/dashboard");
       }
     } catch (err) {
