@@ -8,19 +8,17 @@ export interface ExtendedUser extends AuthenticatedUser {
 }
 
 /**
- * UI Development Preview Mode flag.
+ * UI Development & Direct Client Preview Mode flag.
  *
- * Automatically enabled in development (process.env.NODE_ENV !== "production")
- * Allows UI developers to design, review, and verify all portal screens and layouts
- * with zero database, zero MySQL, and zero backend authentication dependencies.
+ * Defaults to true for all preview, demonstration, and standalone client UI links
+ * (ensuring zero database, zero MySQL, and zero authentication blockers).
  *
- * To disable preview mode and test full production authentication:
- * set NEXT_PUBLIC_DISABLE_DEV_PREVIEW="true" in .env.local or .env
+ * To disable preview mode and connect to a real live production API server:
+ * set NEXT_PUBLIC_ENABLE_REAL_API="true" or NEXT_PUBLIC_DISABLE_DEV_PREVIEW="true"
  */
 export const IS_DEV_PREVIEW =
-  process.env.NEXT_PUBLIC_DEV_PREVIEW === "true" ||
-  (process.env.NODE_ENV !== "production" &&
-    process.env.NEXT_PUBLIC_DISABLE_DEV_PREVIEW !== "true");
+  process.env.NEXT_PUBLIC_DISABLE_DEV_PREVIEW !== "true" &&
+  process.env.NEXT_PUBLIC_ENABLE_REAL_API !== "true";
 
 export const MOCK_DEV_CANDIDATE_USER: ExtendedUser = {
   id: "cnd-dev-preview-001",

@@ -1,0 +1,15 @@
+{
+  "extends": "../config-typescript/base.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "lib": ["DOM", "ES2022"],
+    "paths": {
+      "@rajtantra/common-types": ["../common-types/dist/index.d.ts"]
+    }
+  },
+  "include": ["src/**/*"]
+}

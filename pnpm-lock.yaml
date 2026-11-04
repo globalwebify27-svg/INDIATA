@@ -386,6 +386,22 @@ importers:
         specifier: ^5.8.2
         version: 5.9.3
 
+  packages/auth:
+    dependencies:
+      '@rajtantra/common-types':
+        specifier: workspace:*
+        version: link:../common-types
+    devDependencies:
+      '@rajtantra/config-typescript':
+        specifier: workspace:*
+        version: link:../config-typescript
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.8.2
+        version: 5.9.3
+
   packages/common-types:
     dependencies:
       zod:

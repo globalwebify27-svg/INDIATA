@@ -1,4 +1,5 @@
 import { UserRole } from "../enums/roles.enum";
+import { PortalAccessInfo } from "./portal-access.interface";
 
 /**
  * Claims embedded inside a verified JWT access token.
@@ -51,6 +52,8 @@ export interface MobileActivationPayload {
 export interface LoginResult {
   user: AuthenticatedUser;
   tokens: AuthTokenPair;
+  portals?: PortalAccessInfo[];
+  primaryPortal?: PortalAccessInfo;
 }
 
 export interface RegisterEnquiryResult {

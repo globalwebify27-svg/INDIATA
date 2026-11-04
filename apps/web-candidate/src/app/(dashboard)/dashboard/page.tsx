@@ -18,11 +18,6 @@ import {
   Search,
   CheckCircle2,
   UserPlus,
-  Zap,
-  Layers,
-  Navigation,
-  Activity,
-  TrendingUp,
 } from "lucide-react";
 import { useAuth } from "@/context/auth-context";
 import { useToast } from "@/context/toast-context";
@@ -131,7 +126,6 @@ export default function CandidateWarRoomDashboard() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [boothFilter, setBoothFilter] = useState("");
   const [selectedGrade, setSelectedGrade] = useState("all");
-  const [mapLayer, setMapLayer] = useState<"all" | "cadre" | "booths">("all");
 
   const handleRefresh = () => {
     setIsRefreshing(true);
@@ -143,14 +137,6 @@ export default function CandidateWarRoomDashboard() {
         "Synchronized with ECI live rolls, 2,045 Polling Stations & GPS trackers.",
       );
     }, 600);
-  };
-
-  const handleTriggerQuickAction = () => {
-    showToast(
-      "info",
-      "Strategy Alert Dispatched",
-      "Field alert sent to 8 Karyakarta squads in Wards 12 & 13 to prioritize Booths 103 & 108.",
-    );
   };
 
   const filteredBooths = BOOTH_DATA.filter((b) => {
@@ -457,412 +443,214 @@ export default function CandidateWarRoomDashboard() {
         </div>
       </section>
 
-      {/* 4. RE-ARCHITECTED MID SECTION: REALISTIC ELECTION GIS CONSOLE & HIGH-TECH AI STRATEGY ENGINE */}
+      {/* 4. REFERENCE 1 EXACT REPRODUCTION: LIVE FIELD OPERATIONS PREVIEW & INDIATA AI BOT INSIGHTS */}
       <section className="grid grid-cols-1 lg:grid-cols-12 gap-5">
-        {/* Left 7 Columns: Professional Election GIS Operations Console */}
+        {/* Left Column (7 cols): Live Field Operations Preview */}
         <div className="lg:col-span-7 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 p-5 shadow-premium-xs flex flex-col justify-between">
-          {/* Header Bar with Layer Toggles */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100 dark:border-slate-800">
-            <div>
-              <div className="flex items-center gap-2">
-                <div className="p-1.5 rounded-xl bg-brand-50 text-brand-600 dark:bg-brand-950/40 dark:text-brand-300">
-                  <Navigation className="w-4 h-4" />
-                </div>
-                <h2 className="text-base font-bold text-slate-900 dark:text-white">
-                  Field Operations Telemetry GIS
-                </h2>
-              </div>
-              <p className="text-xs text-slate-500 mt-0.5">
-                Live GPS cadre tracking, ward slip velocity, and booth geofences across 34 - Pune PC.
-              </p>
-            </div>
-
-            {/* Interactive Layer Switches */}
-            <div className="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800 p-0.5 rounded-xl text-xs font-semibold">
-              <span className="hidden sm:flex items-center gap-1 pl-2 text-slate-400 text-[11px]">
-                <Layers className="w-3 h-3" />
-                <span>Layers:</span>
-              </span>
-              <button
-                type="button"
-                onClick={() => setMapLayer("all")}
-                className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
-                  mapLayer === "all"
-                    ? "bg-white dark:bg-slate-900 text-brand-600 dark:text-brand-300 shadow-xs"
-                    : "text-slate-500 hover:text-slate-800 dark:hover:text-white"
-                }`}
-              >
-                All Feeds
-              </button>
-              <button
-                type="button"
-                onClick={() => setMapLayer("cadre")}
-                className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
-                  mapLayer === "cadre"
-                    ? "bg-white dark:bg-slate-900 text-brand-600 dark:text-brand-300 shadow-xs"
-                    : "text-slate-500 hover:text-slate-800 dark:hover:text-white"
-                }`}
-              >
-                Cadre (14)
-              </button>
-              <button
-                type="button"
-                onClick={() => setMapLayer("booths")}
-                className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
-                  mapLayer === "booths"
-                    ? "bg-white dark:bg-slate-900 text-brand-600 dark:text-brand-300 shadow-xs"
-                    : "text-slate-500 hover:text-slate-800 dark:hover:text-white"
-                }`}
-              >
-                Booths (2,045)
-              </button>
-            </div>
-          </div>
-
-          {/* Cartographic GIS Interactive Canvas */}
-          <div className="relative h-72 sm:h-80 my-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200/80 dark:border-slate-800 overflow-hidden">
-            {/* Cartographic Latitude/Longitude Reference Grid */}
-            <div
-              className="absolute inset-0 opacity-30 dark:opacity-20 pointer-events-none"
-              style={{
-                backgroundImage:
-                  "linear-gradient(to right, #94a3b8 1px, transparent 1px), linear-gradient(to bottom, #94a3b8 1px, transparent 1px)",
-                backgroundSize: "40px 40px",
-              }}
-            />
-
-            {/* Coordinates Ticker */}
-            <div className="absolute top-2.5 left-3 text-[10px] font-mono text-slate-400 select-none z-10 flex items-center gap-1.5">
-              <MapPin className="w-3 h-3 text-brand-500" />
-              <span>LAT: 18.5204° N</span>
-              <span>LON: 73.8567° E</span>
-              <span className="hidden sm:inline text-emerald-600 font-semibold">• ECI GEO-LOCKED</span>
-            </div>
-
-            {/* Realistic Cartographic Ward SVG Map */}
-            <svg
-              className="w-full h-full absolute inset-0"
-              viewBox="0 0 700 350"
-              preserveAspectRatio="xMidYMid meet"
-            >
-              <defs>
-                <linearGradient id="gradKothrud" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#2554a8" stopOpacity="0.15" />
-                  <stop offset="100%" stopColor="#2554a8" stopOpacity="0.04" />
-                </linearGradient>
-                <linearGradient id="gradErandwane" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#06b6d4" stopOpacity="0.15" />
-                  <stop offset="100%" stopColor="#06b6d4" stopOpacity="0.04" />
-                </linearGradient>
-                <linearGradient id="gradDeccan" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#f59e0b" stopOpacity="0.2" />
-                  <stop offset="100%" stopColor="#f59e0b" stopOpacity="0.06" />
-                </linearGradient>
-                <linearGradient id="gradShivaji" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#6366f1" stopOpacity="0.15" />
-                  <stop offset="100%" stopColor="#6366f1" stopOpacity="0.04" />
-                </linearGradient>
-              </defs>
-
-              {/* Realistic Road Arteries (Paud Road, Karve Road, FC Road, Ganeshkhind) */}
-              <g stroke="#cbd5e1" strokeWidth="3" fill="none" opacity="0.7">
-                {/* Paud Road Spine */}
-                <path d="M 40,240 Q 220,190 380,180 T 660,140" stroke="#94a3b8" strokeWidth="2.5" />
-                {/* Karve Road Cross */}
-                <path d="M 120,60 Q 240,160 320,320" stroke="#94a3b8" strokeWidth="2" strokeDasharray="5 3" />
-                {/* FC Road Axis */}
-                <path d="M 360,40 Q 420,180 500,310" stroke="#94a3b8" strokeWidth="2" />
-                {/* Mutha River Bend */}
-                <path d="M 280,340 C 350,220 460,180 680,110" stroke="#0284c7" strokeWidth="5" strokeOpacity="0.25" strokeLinecap="round" />
-              </g>
-
-              {/* Ward 12: Kothrud West */}
-              <polygon
-                points="60,100 230,80 260,260 70,280"
-                fill="url(#gradKothrud)"
-                stroke="#2554a8"
-                strokeWidth="1.5"
-                strokeDasharray="4 2"
-              />
-              <text x="90" y="125" fill="#2554a8" fontSize="11" fontWeight="700" letterSpacing="0.5">
-                WARD 12 (KOTHRUD)
-              </text>
-              <text x="90" y="140" fill="#64748b" fontSize="9" fontWeight="500">
-                88% Voter Slip Coverage
-              </text>
-
-              {/* Ward 13: Erandwane */}
-              <polygon
-                points="240,75 410,65 390,265 265,260"
-                fill="url(#gradErandwane)"
-                stroke="#06b6d4"
-                strokeWidth="1.5"
-              />
-              <text x="270" y="95" fill="#0891b2" fontSize="11" fontWeight="700" letterSpacing="0.5">
-                WARD 13 (ERANDWANE)
-              </text>
-              <text x="270" y="110" fill="#64748b" fontSize="9" fontWeight="500">
-                79% Coverage • Stable
-              </text>
-
-              {/* Ward 14: Deccan Gymkhana (Priority Swing Zone) */}
-              <polygon
-                points="420,60 580,70 560,250 400,265"
-                fill="url(#gradDeccan)"
-                stroke="#f59e0b"
-                strokeWidth="2"
-              />
-              <text x="435" y="90" fill="#b45309" fontSize="11" fontWeight="800" letterSpacing="0.5">
-                WARD 14 (DECCAN SWING)
-              </text>
-              <text x="435" y="105" fill="#d97706" fontSize="9" fontWeight="600">
-                ⚠️ Slip Threshold Under 50%
-              </text>
-
-              {/* Ward 15: Shivajinagar North */}
-              <polygon
-                points="360,20 620,15 670,110 430,60"
-                fill="url(#gradShivaji)"
-                stroke="#6366f1"
-                strokeWidth="1.5"
-                strokeDasharray="3 3"
-              />
-
-              {/* Polling Station Nodes (Booths) */}
-              {(mapLayer === "all" || mapLayer === "booths") && (
-                <g>
-                  {/* Booth #101 Navbharat */}
-                  <g transform="translate(140, 180)">
-                    <circle r="7" fill="#2554a8" />
-                    <circle r="12" fill="#2554a8" fillOpacity="0.2" className="animate-ping" />
-                    <text x="12" y="4" fill="#0f172a" fontSize="10" fontWeight="700">#101 Navbharat (92%)</text>
-                  </g>
-
-                  {/* Booth #103 Dr. Ambedkar Samaj Mandir (Swing) */}
-                  <g transform="translate(470, 160)">
-                    <circle r="8" fill="#f59e0b" stroke="#ffffff" strokeWidth="2" />
-                    <circle r="16" fill="#f59e0b" fillOpacity="0.3" className="animate-ping" />
-                    <text x="14" y="4" fill="#b45309" fontSize="10" fontWeight="800">#103 Paud Phata (48%)</text>
-                  </g>
-
-                  {/* Booth #105 Garware College */}
-                  <g transform="translate(320, 200)">
-                    <circle r="7" fill="#06b6d4" />
-                    <text x="12" y="4" fill="#0f172a" fontSize="10" fontWeight="700">#105 Garware (82%)</text>
-                  </g>
-
-                  {/* Booth #108 Deccan Gokhale */}
-                  <g transform="translate(510, 210)">
-                    <circle r="8" fill="#f43f5e" stroke="#ffffff" strokeWidth="2" />
-                    <circle r="14" fill="#f43f5e" fillOpacity="0.3" className="animate-ping" />
-                    <text x="14" y="4" fill="#e11d48" fontSize="10" fontWeight="800">#108 Deccan (44%)</text>
-                  </g>
-                </g>
-              )}
-
-              {/* Active Karyakarta Trajectories & Live GPS Tracking Nodes */}
-              {(mapLayer === "all" || mapLayer === "cadre") && (
-                <g>
-                  {/* Trajectory 1: Kothrud route */}
-                  <path
-                    d="M 90,210 Q 140,170 190,195 T 240,160"
-                    fill="none"
-                    stroke="#2554a8"
-                    strokeWidth="2.5"
-                    strokeDasharray="4 2"
-                  />
-                  {/* Trajectory 2: Deccan swing coverage */}
-                  <path
-                    d="M 430,120 Q 470,160 520,180 T 550,225"
-                    fill="none"
-                    stroke="#f59e0b"
-                    strokeWidth="3"
-                    strokeLinecap="round"
-                  />
-
-                  {/* Field Agent Ping 1: Pooja Jadhav */}
-                  <g transform="translate(190, 195)">
-                    <circle r="6" fill="#10b981" stroke="#ffffff" strokeWidth="2" />
-                    <circle r="12" fill="#10b981" fillOpacity="0.3" className="animate-ping" />
-                  </g>
-
-                  {/* Field Agent Ping 2: Ganesh Patil */}
-                  <g transform="translate(320, 140)">
-                    <circle r="6" fill="#2554a8" stroke="#ffffff" strokeWidth="2" />
-                    <circle r="12" fill="#2554a8" fillOpacity="0.3" className="animate-ping" />
-                  </g>
-
-                  {/* Field Agent Ping 3: Vikas Mane (Swing) */}
-                  <g transform="translate(520, 180)">
-                    <circle r="7" fill="#f59e0b" stroke="#ffffff" strokeWidth="2" />
-                    <circle r="14" fill="#f59e0b" fillOpacity="0.3" className="animate-ping" />
-                  </g>
-                </g>
-              )}
-            </svg>
-
-            {/* Over-Map Live Agent Chips */}
-            <div className="absolute bottom-3 left-3 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md px-3 py-2 rounded-xl border border-slate-200/90 dark:border-slate-800 shadow-sm text-xs hidden sm:flex items-center gap-4">
-              <div className="flex items-center gap-1.5 font-semibold text-slate-800 dark:text-slate-100">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                <span>Pooja J. (Booth 101 • 42 / hr)</span>
-              </div>
-              <div className="flex items-center gap-1.5 font-semibold text-slate-800 dark:text-slate-100">
-                <span className="w-2 h-2 rounded-full bg-brand-600 animate-pulse" />
-                <span>Ganesh P. (Booth 102 • Active)</span>
-              </div>
-              <div className="flex items-center gap-1.5 font-semibold text-amber-700 dark:text-amber-400">
-                <span className="w-2 h-2 rounded-full bg-amber-500 animate-ping" />
-                <span>Vikas M. (Booth 103 • Canvassing Swing)</span>
-              </div>
-            </div>
-
-            {/* Top-Right Quick Legend */}
-            <div className="absolute top-2.5 right-3 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md px-2.5 py-1.5 rounded-lg border border-slate-200/80 dark:border-slate-800 text-[10.5px] font-medium text-slate-600 dark:text-slate-300 flex items-center gap-3">
-              <span className="flex items-center gap-1">
-                <span className="w-2 h-2 rounded-full bg-emerald-500" />
-                <span>&gt;80% Handed</span>
-              </span>
-              <span className="flex items-center gap-1">
-                <span className="w-2 h-2 rounded-full bg-amber-500" />
-                <span>Swing Surge</span>
-              </span>
-              <span className="flex items-center gap-1">
-                <span className="w-2 h-2 rounded-full bg-rose-500" />
-                <span>Critical (&lt;50%)</span>
-              </span>
-            </div>
-          </div>
-
-          {/* Lower Telemetry Status Strip */}
-          <div className="pt-2 flex flex-col sm:flex-row sm:items-center justify-between text-xs text-slate-500 gap-2 border-t border-slate-100 dark:border-slate-800">
-            <div className="flex items-center gap-4 text-[11.5px]">
-              <span className="flex items-center gap-1.5 font-semibold text-emerald-600">
-                <Activity className="w-3.5 h-3.5 animate-pulse" />
-                <span>14 Cadre GPS Nodes Online</span>
-              </span>
-              <span className="hidden sm:inline text-slate-400">&bull;</span>
-              <span className="hidden sm:inline">Slip Velocity: <strong>1,420 slips / hr</strong></span>
-              <span className="hidden md:inline text-slate-400">&bull;</span>
-              <span className="hidden md:inline text-slate-500">ECI Geofence: <strong>Locked</strong></span>
-            </div>
-
-            <Link
-              href="/field-map"
-              className="text-xs font-semibold text-brand-600 hover:underline flex items-center gap-1 self-start sm:self-center"
-            >
-              <span>Expand Full Interactive GIS</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
-          </div>
-        </div>
-
-        {/* Right 5 Columns: Enterprise RAJTANTRA AI STRATEGY ENGINE (Cohesive Light Theme) */}
-        <div className="lg:col-span-5 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 p-5 shadow-premium-xs flex flex-col justify-between relative overflow-hidden">
-          <div className="space-y-4">
-            {/* AI Engine Header */}
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+          <div>
+            {/* Header */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-100 dark:border-slate-800">
               <div className="flex items-center gap-2.5">
-                <div className="p-2 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-600 text-white shadow-xs">
-                  <Sparkles className="w-4 h-4 text-amber-300 animate-pulse" />
+                <div className="w-8 h-8 rounded-xl bg-violet-50 text-violet-600 dark:bg-violet-950/40 dark:text-violet-300 flex items-center justify-center shrink-0">
+                  <MapPin className="w-4 h-4 text-brand-600" />
                 </div>
                 <div>
-                  <h3 className="text-xs font-black text-slate-900 dark:text-white tracking-wide uppercase flex items-center gap-1.5">
-                    RAJTANTRA AI STRATEGY ENGINE
-                  </h3>
-                  <p className="text-[10px] text-slate-500">
-                    Real-Time Elector Sentiment &amp; Turnout Modeling
+                  <h2 className="text-sm font-bold text-slate-900 dark:text-white">
+                    Live Field Operations Preview
+                  </h2>
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    Visualizing active Karyakarta survey tracks across Kothrud, Erandwane, and Shivajinagar.
                   </p>
                 </div>
               </div>
-              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                Live Model v4.2
-              </span>
-            </div>
 
-            {/* Prescriptive Strategic Opportunity Alert Container */}
-            <div className="bg-gradient-to-br from-amber-50/70 via-white to-brand-50/40 dark:from-amber-950/20 dark:via-slate-900 dark:to-brand-950/20 border border-amber-200/90 dark:border-amber-800/50 rounded-xl p-3.5 space-y-2.5 shadow-premium-xs">
-              <div className="flex items-center justify-between">
-                <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-amber-800 dark:text-amber-300 bg-amber-100 dark:bg-amber-900/50 px-2 py-0.5 rounded-md">
-                  <Zap className="w-3 h-3 text-amber-600" />
-                  High-Impact Campaign Signal
-                </span>
-                <span className="text-[10.5px] font-semibold text-emerald-600 flex items-center gap-1">
-                  <TrendingUp className="w-3 h-3" />
-                  +18.4% Net Lift
-                </span>
-              </div>
-
-              <div>
-                <h4 className="text-xs font-bold text-slate-900 dark:text-white">
-                  Women Electorate Mobilization (Ladki Bahin Yojana)
-                </h4>
-                <p className="text-[11.5px] text-slate-600 dark:text-slate-300 mt-1 leading-relaxed">
-                  Direct benefit disbursement telemetry indicates an <strong>+18.4% favorable swing</strong> among 42,000 women voters in Wards 12 &amp; 13.
-                </p>
-              </div>
-
-              {/* Actionable Prescriptive Strategy Badge */}
-              <div className="p-2.5 rounded-lg bg-amber-100/60 dark:bg-amber-950/40 border border-amber-200/80 dark:border-amber-900/60 text-xs">
-                <span className="font-bold text-amber-900 dark:text-amber-200 block text-[11px] mb-0.5">
-                  💡 Recommended Tactic:
-                </span>
-                <span className="text-amber-800 dark:text-amber-300 text-[11.5px] leading-tight block">
-                  Deploy 8 dedicated women Karyakarta squads to <strong>Booths #103 &amp; #108</strong> before 4:00 PM to maximize slip handoff.
-                </span>
-              </div>
-
-              <button
-                type="button"
-                onClick={handleTriggerQuickAction}
-                className="w-full py-1.5 px-3 rounded-lg bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs transition-colors flex items-center justify-center gap-1.5 cursor-pointer shadow-xs active:scale-95"
+              <Link
+                href="/field-map"
+                className="text-xs font-semibold text-brand-600 hover:text-brand-700 flex items-center gap-1 shrink-0 self-start sm:self-center"
               >
-                <Zap className="w-3 h-3" />
-                <span>Dispatch Tactic Alert to Ward 12 &amp; 14 Teams</span>
-              </button>
+                <span>Expand Interactive Full Map</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
             </div>
 
-            {/* Three Turnout & Electoral Forecast Gauges */}
-            <div className="grid grid-cols-3 gap-2 pt-1 text-center">
-              <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/60">
-                <div className="text-[10px] font-semibold text-slate-500 uppercase">Projected Turnout</div>
-                <div className="text-base font-black text-slate-900 dark:text-white mt-0.5 tabular-nums">
-                  68.4%
+            {/* Visual Canvas Area with Subtle Dotted Grid and Smooth Wave */}
+            <div className="relative h-64 sm:h-72 my-4 rounded-xl bg-slate-50/70 dark:bg-slate-950/60 border border-slate-200/70 dark:border-slate-800 overflow-hidden">
+              {/* Subtle Dot Matrix Pattern */}
+              <div
+                className="absolute inset-0 opacity-40 dark:opacity-20 pointer-events-none"
+                style={{
+                  backgroundImage: "radial-gradient(circle, #94a3b8 1px, transparent 1px)",
+                  backgroundSize: "24px 24px",
+                }}
+              />
+
+              {/* Smooth Area Curve SVG */}
+              <svg
+                className="w-full h-full absolute inset-0"
+                viewBox="0 0 700 280"
+                preserveAspectRatio="none"
+              >
+                <defs>
+                  <linearGradient id="liveWaveGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stopColor="#7c3aed" stopOpacity="0.18" />
+                    <stop offset="70%" stopColor="#8b5cf6" stopOpacity="0.06" />
+                    <stop offset="100%" stopColor="#8b5cf6" stopOpacity="0.00" />
+                  </linearGradient>
+                  <linearGradient id="waveLineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stopColor="#6366f1" />
+                    <stop offset="50%" stopColor="#8b5cf6" />
+                    <stop offset="100%" stopColor="#7c3aed" />
+                  </linearGradient>
+                </defs>
+
+                {/* Translucent Purple Wave Area Fill */}
+                <path
+                  d="M 0,200 C 80,200 120,135 190,135 C 260,135 300,195 370,195 C 440,195 480,95 560,95 C 630,95 670,165 700,165 L 700,280 L 0,280 Z"
+                  fill="url(#liveWaveGrad)"
+                />
+
+                {/* Smooth Glowing Bezier Stroke Line */}
+                <path
+                  d="M 0,200 C 80,200 120,135 190,135 C 260,135 300,195 370,195 C 440,195 480,95 560,95 C 630,95 670,165 700,165"
+                  fill="none"
+                  stroke="url(#waveLineGrad)"
+                  strokeWidth="3"
+                  strokeLinecap="round"
+                />
+
+                {/* Node 1: Pooja J. (Booth 101) - Purple Crest */}
+                <g>
+                  <circle cx="190" cy="135" r="14" fill="#6366f1" fillOpacity="0.2" className="animate-ping" />
+                  <circle cx="190" cy="135" r="6.5" fill="#4f46e5" stroke="#ffffff" strokeWidth="2.5" />
+                </g>
+
+                {/* Node 2: Ganesh P. (Booth 102) - Cyan Valley */}
+                <g>
+                  <circle cx="370" cy="195" r="14" fill="#06b6d4" fillOpacity="0.2" className="animate-ping" />
+                  <circle cx="370" cy="195" r="6.5" fill="#06b6d4" stroke="#ffffff" strokeWidth="2.5" />
+                </g>
+
+                {/* Node 3: Vikas M. (Booth 104) - Blue Crest */}
+                <g>
+                  <circle cx="560" cy="95" r="14" fill="#3b82f6" fillOpacity="0.2" className="animate-ping" />
+                  <circle cx="560" cy="95" r="6.5" fill="#2563eb" stroke="#ffffff" strokeWidth="2.5" />
+                </g>
+              </svg>
+
+              {/* Floating Legend Card in Upper-Right of Canvas */}
+              <div className="absolute top-3 right-3 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md px-3 py-2 rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-xs space-y-1.5 text-xs">
+                <div className="flex items-center gap-2 font-semibold text-slate-700 dark:text-slate-200">
+                  <span className="w-2 h-2 rounded-full bg-[#4f46e5]" />
+                  <span>Pooja J. (Booth 101)</span>
                 </div>
-                <div className="text-[10px] text-emerald-600 font-semibold mt-0.5">
-                  Target: 72%
+                <div className="flex items-center gap-2 font-semibold text-slate-700 dark:text-slate-200">
+                  <span className="w-2 h-2 rounded-full bg-[#06b6d4]" />
+                  <span>Ganesh P. (Booth 102)</span>
+                </div>
+                <div className="flex items-center gap-2 font-semibold text-slate-700 dark:text-slate-200">
+                  <span className="w-2 h-2 rounded-full bg-[#2563eb]" />
+                  <span>Vikas M. (Booth 104)</span>
                 </div>
               </div>
 
-              <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/60">
-                <div className="text-[10px] font-semibold text-slate-500 uppercase">Supporter Base</div>
-                <div className="text-base font-black text-slate-900 dark:text-white mt-0.5 tabular-nums">
-                  46.8%
+              {/* Bottom-Left Indicators inside Canvas */}
+              <div className="absolute bottom-3 left-3 flex items-center gap-3.5 text-xs font-semibold text-slate-700 dark:text-slate-300">
+                <div className="flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-[#4f46e5]" />
+                  <span>Active Karyakarta</span>
                 </div>
-                <div className="text-[10px] text-emerald-600 font-semibold mt-0.5">
-                  +4.2% Lead
-                </div>
-              </div>
-
-              <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/60">
-                <div className="text-[10px] font-semibold text-slate-500 uppercase">Undecided Swing</div>
-                <div className="text-base font-black text-amber-600 mt-0.5 tabular-nums">
-                  18.5%
-                </div>
-                <div className="text-[10px] text-slate-500 font-semibold mt-0.5">
-                  High Target
+                <div className="flex items-center gap-1.5">
+                  <span className="w-3.5 h-2 rounded bg-violet-200 dark:bg-violet-900/60 border border-violet-300 dark:border-violet-700" />
+                  <span>Swing Zone</span>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Bottom AI Suite Action */}
-          <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800">
+          {/* Lower Telemetry Strip */}
+          <div className="pt-2 flex flex-col sm:flex-row sm:items-center justify-between text-xs text-slate-500 gap-1 border-t border-slate-100 dark:border-slate-800">
+            <span>Boundary: 34 - Pune Parliamentary Constituency</span>
+            <span className="text-emerald-600 font-medium">Last ping: 12 seconds ago</span>
+          </div>
+        </div>
+
+        {/* Right Column (5 cols): INDIATA AI BOT INSIGHTS (Light Theme Cohesive) */}
+        <div className="lg:col-span-5 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 p-5 shadow-premium-xs flex flex-col justify-between">
+          <div className="space-y-4">
+            {/* Header */}
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+              <div className="flex items-center gap-2">
+                <div className="w-7 h-7 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-600 text-white flex items-center justify-center shadow-xs">
+                  <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+                </div>
+                <div>
+                  <h3 className="text-xs font-bold text-slate-900 dark:text-white tracking-wider uppercase">
+                    INDIATA AI BOT INSIGHTS
+                  </h3>
+                  <p className="text-[10px] text-slate-400">
+                    Autonomous Strategy Feed
+                  </p>
+                </div>
+              </div>
+
+              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500 text-white shadow-2xs">
+                Live Model
+              </span>
+            </div>
+
+            {/* Main Insight Box with Light Tint matching Reference 1 */}
+            <div className="bg-violet-50/70 dark:bg-slate-800/60 border border-violet-100 dark:border-slate-700/80 rounded-2xl p-4 space-y-3">
+              <div className="flex items-start gap-1.5 text-xs font-bold text-brand-700 dark:text-brand-300">
+                <Sparkles className="w-3.5 h-3.5 text-brand-600 shrink-0 mt-0.5" />
+                <span>Key Opportunity: Ladki Bahin Yojana Sentiment Lift</span>
+              </div>
+
+              <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                Survey data indicates an 18.4% favorable sentiment swing among women voters in Wards 12 &amp; 13 following direct benefit disbursements.
+              </p>
+
+              {/* Three Metric Gauges */}
+              <div className="grid grid-cols-3 gap-2 pt-1 text-center">
+                <div className="p-2.5 rounded-xl bg-white/90 dark:bg-slate-900/80 border border-slate-200/70 dark:border-slate-700/60 shadow-2xs">
+                  <div className="text-[10px] font-medium text-slate-500">Projected Turnout</div>
+                  <div className="text-base font-black text-slate-900 dark:text-white mt-0.5 tabular-nums">
+                    68.4%
+                  </div>
+                  <div className="text-[10px] text-slate-500 mt-0.5 font-medium">
+                    (Target: 72%)
+                  </div>
+                </div>
+
+                <div className="p-2.5 rounded-xl bg-white/90 dark:bg-slate-900/80 border border-slate-200/70 dark:border-slate-700/60 shadow-2xs">
+                  <div className="text-[10px] font-medium text-slate-500">Supporter Base</div>
+                  <div className="text-base font-black text-slate-900 dark:text-white mt-0.5 tabular-nums">
+                    46.8%
+                  </div>
+                  <div className="text-[10px] text-emerald-600 font-bold mt-0.5">
+                    (+4.2%)
+                  </div>
+                </div>
+
+                <div className="p-2.5 rounded-xl bg-white/90 dark:bg-slate-900/80 border border-slate-200/70 dark:border-slate-700/60 shadow-2xs">
+                  <div className="text-[10px] font-medium text-slate-500">Undecided Voters</div>
+                  <div className="text-base font-black text-slate-900 dark:text-white mt-0.5 tabular-nums">
+                    18.5%
+                  </div>
+                  <div className="text-[10px] text-amber-600 font-medium mt-0.5">
+                    Swing Target
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom Action Button matching Reference 1 */}
+          <div className="mt-4 pt-2">
             <Link
               href="/ai/assistant"
-              className="w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl text-xs transition-colors shadow-md shadow-brand-600/20"
+              className="w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl text-xs transition-colors shadow-md shadow-brand-600/20 active:scale-98 cursor-pointer"
             >
-              <span>Open Complete AI Strategy Suite</span>
+              <span>Open Strategy Bot Analytics</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>

@@ -17,12 +17,11 @@ import {
   UserRole,
   RegisterEnquiryDto,
   ForgotPasswordDto,
+  LoginResult,
+  PortalAccessInfo,
 } from "@rajtantra/common-types";
 
-export interface LoginResult {
-  user: AuthenticatedUser;
-  tokens: AuthTokenPair;
-}
+export type { LoginResult };
 
 export interface RegisterEnquiryResult {
   enquiryNumber: string;
@@ -156,10 +155,13 @@ export class AuthService {
   ): Promise<LoginResult> {
     const identifier = dto.identifier.trim();
 
-    // Find user by email or phone
+    // Find user by email or phone with tenant details
     const user = await this.prisma.user.findFirst({
       where: {
         OR: [{ email: identifier }, { phone: identifier }],
+      },
+      include: {
+        organization: true,
       },
     });
 
@@ -221,10 +223,92 @@ export class AuthService {
       hasAiSeat: user.hasAiSeat,
     };
 
+    const portals = this.resolveAuthorizedPortals(
+      user.role as UserRole,
+      user.organization?.name,
+      user.organization?.constituencyName,
+    );
+    const primaryPortal = portals.find((p) => p.isDefault) || portals[0];
+
     return {
       user: authenticatedUser,
       tokens,
+      portals,
+      primaryPortal,
     };
+  }
+
+  private resolveAuthorizedPortals(
+    role: UserRole,
+    organizationName?: string | null,
+    constituencyName?: string | null,
+  ): PortalAccessInfo[] {
+    const origins = env.CORS_ORIGIN.split(",").map((s) => s.trim());
+    const superAdminUrl = origins[0] || "http://localhost:3000";
+    const candidateUrl = origins[1] || "http://localhost:3001";
+
+    if (role === UserRole.SUPER_ADMIN) {
+      return [
+        {
+          portalKey: "SUPER_ADMIN",
+          title: "Super Admin Platform Command",
+          subtitle: "Multi-tenant War Room Infrastructure, KYC & Licencing",
+          url: superAdminUrl,
+          role: UserRole.SUPER_ADMIN,
+          isDefault: true,
+        },
+        {
+          portalKey: "CANDIDATE_WAR_ROOM",
+          title: "Candidate War Room (Supervisory Mode)",
+          subtitle: "Inspect live booth readiness & GIS telemetry across constituencies",
+          url: `${candidateUrl}/dashboard`,
+          role: UserRole.SUPER_ADMIN,
+          isDefault: false,
+        },
+      ];
+    }
+
+    if (role === UserRole.CANDIDATE_ADMIN) {
+      return [
+        {
+          portalKey: "CANDIDATE_WAR_ROOM",
+          title: organizationName || "Constituency War Room",
+          subtitle: constituencyName
+            ? `Constituency: ${constituencyName}`
+            : "Voter intelligence, GIS telemetry & cadre command",
+          url: `${candidateUrl}/dashboard`,
+          role: UserRole.CANDIDATE_ADMIN,
+          organizationName,
+          constituencyName,
+          isDefault: true,
+        },
+      ];
+    }
+
+    if (role === UserRole.DISTRIBUTOR) {
+      return [
+        {
+          portalKey: "DISTRIBUTOR_PARTNER",
+          title: "Distributor Partner Network",
+          subtitle: "Agency onboarding, candidate allocation & commission ledger",
+          url: "http://localhost:3002",
+          role: UserRole.DISTRIBUTOR,
+          isDefault: true,
+        },
+      ];
+    }
+
+    // Default: Karyakarta
+    return [
+      {
+        portalKey: "KARYAKARTA_FIELD",
+        title: "Field Karyakarta Canvassing",
+        subtitle: "Booth voter slip handoff & family survey check-ins",
+        url: "http://localhost:3003",
+        role: UserRole.KARYAKARTA,
+        isDefault: true,
+      },
+    ];
   }
 
   async refresh(dto: RefreshTokenDto): Promise<AuthTokenPair> {

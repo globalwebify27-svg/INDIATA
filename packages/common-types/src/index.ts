@@ -8,6 +8,7 @@ export * from "./enums/organization.enum";
 
 // Auth & Session
 export * from "./auth/jwt-payload.interface";
+export * from "./auth/portal-access.interface";
 
 // Tenancy
 export * from "./tenancy/tenant-context.interface";

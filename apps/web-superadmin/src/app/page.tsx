@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { AppShell } from "../components/layout/app-shell";
 import { DashboardView } from "../components/dashboard/dashboard-view";
 import { useToast } from "../context/toast-context";
@@ -21,6 +21,22 @@ import {
 
 export default function SuperAdminPortalPage() {
   const { toast } = useToast();
+
+  // Capture Single Sign-On session handoff from Central Login if present
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get("token");
+    const refresh = params.get("refresh");
+    if (token) {
+      localStorage.setItem("rajtantra_access_token", token);
+      if (refresh) {
+        localStorage.setItem("rajtantra_refresh_token", refresh);
+      }
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  }, []);
+
   const [activeNav, setActiveNav] = useState<NavKey>("dashboard");
   const [pricingVisible, setPricingVisible] = useState(true);
   const [candidates] = useState<CandidateRecord[]>(MOCK_CANDIDATES);
