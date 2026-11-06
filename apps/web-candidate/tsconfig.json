@@ -3,7 +3,11 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@rajtantra/common-types": ["../../packages/common-types/src"],
+      "@rajtantra/auth": ["../../packages/auth/src"],
+      "@rajtantra/rbac": ["../../packages/rbac/src"],
+      "@rajtantra/ui": ["../../packages/ui/src"]
     },
     "plugins": [
       {
