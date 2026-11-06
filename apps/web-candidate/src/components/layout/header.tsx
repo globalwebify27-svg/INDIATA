@@ -13,6 +13,7 @@ import {
   Building,
   Settings,
   LogOut,
+  Shield,
   ChevronDown,
   ChevronRight,
   Check,
@@ -362,6 +363,14 @@ export function Header({
                   <Settings className="w-4 h-4 text-slate-400" />
                   <span>Portal Settings</span>
                 </Link>
+
+                <a
+                  href={process.env.NEXT_PUBLIC_SUPERADMIN_URL || "http://localhost:3000"}
+                  className="flex items-center gap-2.5 px-4 py-2 text-xs font-semibold text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-950/30 transition-colors"
+                >
+                  <Shield className="w-4 h-4 text-purple-600 dark:text-purple-400" />
+                  <span>Super Admin Portal (Port 3000)</span>
+                </a>
               </div>
 
               <div className="border-t border-slate-100 dark:border-slate-800 pt-1">

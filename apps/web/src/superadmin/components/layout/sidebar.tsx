@@ -1,0 +1,545 @@
+"use client";
+
+import React, { useState, useEffect } from "react";
+import {
+  LayoutDashboard,
+  Building2,
+  Users,
+  UserPlus,
+  Inbox,
+  FileQuestion,
+  Briefcase,
+  Megaphone,
+  Bot,
+  CreditCard,
+  ShieldAlert,
+  Settings,
+  Layers,
+  ShieldCheck,
+  ChevronDown,
+  ChevronRight,
+  X,
+  Activity,
+} from "lucide-react";
+import { NavKey } from "../../types/superadmin.types";
+
+export interface SidebarProps {
+  activeNav: NavKey;
+  onNavigate: (key: NavKey) => void;
+  collapsed: boolean;
+  onToggleCollapse?: () => void;
+  mobileOpen: boolean;
+  onCloseMobile: () => void;
+}
+
+interface NavSubItem {
+  key: NavKey;
+  label: string;
+  badge?: string;
+  icon: React.ReactNode;
+}
+
+interface NavItemConfig {
+  key: NavKey;
+  label: string;
+  icon: React.ReactNode;
+  badge?: string;
+  subItems?: NavSubItem[];
+}
+
+export function Sidebar({
+  activeNav,
+  onNavigate,
+  collapsed,
+  mobileOpen,
+  onCloseMobile,
+}: SidebarProps) {
+  const [candidatesExpanded, setCandidatesExpanded] = useState(false);
+  const [distributorsExpanded, setDistributorsExpanded] = useState(false);
+
+  // Close mobile drawer on Escape key press
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && mobileOpen) {
+        onCloseMobile();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [mobileOpen, onCloseMobile]);
+
+  // Lock background scroll when mobile drawer is open
+  useEffect(() => {
+    if (mobileOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [mobileOpen]);
+
+  const navItems: NavItemConfig[] = [
+    {
+      key: "dashboard",
+      label: "Overview Dashboard",
+      icon: <LayoutDashboard className="w-5 h-5 flex-shrink-0" />,
+    },
+    {
+      key: "organizations",
+      label: "Organizations & War Rooms",
+      icon: <Building2 className="w-5 h-5 flex-shrink-0" />,
+    },
+    {
+      key: "all-candidates",
+      label: "Candidate Directory",
+      icon: <Users className="w-5 h-5 flex-shrink-0" />,
+      badge: "3",
+      subItems: [
+        {
+          key: "all-candidates",
+          label: "All Candidates",
+          icon: <Users className="w-4 h-4" />,
+        },
+        {
+          key: "add-candidate",
+          label: "Onboard Candidate",
+          icon: <UserPlus className="w-4 h-4" />,
+        },
+        {
+          key: "candidate-requests",
+          label: "Registration Leads",
+          badge: "3",
+          icon: <Inbox className="w-4 h-4" />,
+        },
+        {
+          key: "enquiries",
+          label: "Quota Enquiries",
+          badge: "4",
+          icon: <FileQuestion className="w-4 h-4" />,
+        },
+      ],
+    },
+    {
+      key: "all-distributors",
+      label: "Distributor Partners",
+      icon: <Briefcase className="w-5 h-5 flex-shrink-0" />,
+      badge: "2",
+      subItems: [
+        {
+          key: "all-distributors",
+          label: "All Distributors",
+          icon: <Briefcase className="w-4 h-4" />,
+        },
+        {
+          key: "distributor-requests",
+          label: "Partner Applications",
+          badge: "2",
+          icon: <Inbox className="w-4 h-4" />,
+        },
+      ],
+    },
+    {
+      key: "campaigns",
+      label: "Broadcast Campaigns",
+      icon: <Megaphone className="w-5 h-5 flex-shrink-0" />,
+    },
+    {
+      key: "ai-dashboard",
+      label: "AI Governance",
+      icon: <Bot className="w-5 h-5 flex-shrink-0" />,
+    },
+    {
+      key: "subscriptions",
+      label: "Subscriptions & Licences",
+      icon: <CreditCard className="w-5 h-5 flex-shrink-0" />,
+    },
+    {
+      key: "audit",
+      label: "Security Audit Ledger",
+      icon: <ShieldAlert className="w-5 h-5 flex-shrink-0" />,
+    },
+    {
+      key: "settings",
+      label: "Platform Settings",
+      icon: <Settings className="w-5 h-5 flex-shrink-0" />,
+    },
+    {
+      key: "components",
+      label: "UI Design System",
+      icon: <Layers className="w-5 h-5 flex-shrink-0" />,
+    },
+  ];
+
+  return (
+    <>
+      {/* Mobile Drawer Backdrop */}
+      {mobileOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/60 backdrop-blur-xs md:hidden transition-opacity"
+          onClick={onCloseMobile}
+          aria-hidden="true"
+        />
+      )}
+
+      {/* Main Sidebar Element (Permanently Fixed to Viewport Left) */}
+      <aside
+        id="superadmin-sidebar"
+        aria-label="Super Admin Primary Navigation"
+        className={`fixed top-0 inset-y-0 left-0 z-50 md:z-40 flex flex-col h-screen h-[100dvh] bg-[#FDFEFE] dark:bg-[#062237] border-r border-[#ACB9D1] dark:border-[#0e3554] text-[#010627] dark:text-[#94A3B8] transition-all duration-200 ease-in-out motion-reduce:transition-none select-none shadow-sm ${
+          collapsed ? "w-[68px]" : "w-[270px]"
+        } ${mobileOpen ? "translate-x-0 !w-[270px]" : "-translate-x-full md:translate-x-0"}`}
+      >
+        {/* Brand Header with Institutional Shield and Wordmark */}
+        {collapsed && !mobileOpen ? (
+          /* COLLAPSED HEADER (68px Rail): Centered Institutional Shield Emblem */
+          <div className="h-16 px-2 flex items-center justify-center border-b border-[#ACB9D1] dark:border-[#0e3554] flex-shrink-0">
+            {/* Brand Shield Logo with Accessible Tooltip */}
+            <button
+              type="button"
+              onClick={() => {
+                onNavigate("dashboard");
+                onCloseMobile();
+              }}
+              className="w-10 h-10 rounded-xl bg-white dark:bg-[#072439] border border-[#ACB9D1] dark:border-[#0e3554] p-1.5 flex items-center justify-center flex-shrink-0 shadow-2xs hover:scale-105 transition-transform cursor-pointer relative group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2087FE]"
+              aria-label="INDIATA Super Admin Overview"
+            >
+              <img
+                src="/brand/indiata-logo-compact.png"
+                alt="INDIATA"
+                className="w-full h-full object-contain"
+              />
+              {/* Tooltip */}
+              <div
+                role="tooltip"
+                className="pointer-events-none absolute left-full top-1/2 -translate-y-1/2 ml-3 z-50 whitespace-nowrap rounded-lg bg-[#010627] dark:bg-[#072439] text-white dark:text-[#F5F6F6] px-3 py-1.5 text-xs font-semibold shadow-xl opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-visible:opacity-100"
+              >
+                <span>INDIATA Super Admin</span>
+                <div className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-[#010627] dark:border-r-[#072439]" />
+              </div>
+            </button>
+          </div>
+        ) : (
+          /* EXPANDED HEADER (270px Width): Full Wordmark, Status Pulse, and Mobile Close */
+          <div className="h-16 px-4 flex items-center justify-between border-b border-[#ACB9D1] dark:border-[#0e3554] flex-shrink-0 bg-[#FDFEFE] dark:bg-[#062237]">
+            <div
+              className="flex items-center gap-2.5 overflow-hidden cursor-pointer"
+              onClick={() => {
+                onNavigate("dashboard");
+                onCloseMobile();
+              }}
+            >
+              <div className="h-8 flex items-center">
+                <img
+                  src="/brand/indiata-logo.png"
+                  alt="INDIATA"
+                  className="h-7 w-auto object-contain dark:hidden"
+                />
+                <img
+                  src="/brand/indiata-logo-dark.png"
+                  alt="INDIATA"
+                  className="h-7 w-auto object-contain hidden dark:block"
+                />
+              </div>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#ECE8FF] dark:bg-[#1E1B4B] text-[#493BBF] dark:text-[#C5C0FF]">
+                v4.2
+              </span>
+              <button
+                type="button"
+                onClick={onCloseMobile}
+                className="md:hidden p-1.5 rounded-lg text-[#717785] hover:text-[#010627] dark:hover:text-[#F5F6F6] hover:bg-[#E0EDFE]/70 dark:hover:bg-[#072439] cursor-pointer"
+                aria-label="Close menu"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Navigation Items Scroll Area */}
+        <nav
+          className={`flex-1 overflow-y-auto space-y-1.5 custom-scroll ${
+            collapsed && !mobileOpen ? "px-2 py-3" : "px-3 py-4"
+          }`}
+        >
+          {navItems.map((item) => {
+            const hasSub = Boolean(item.subItems && item.subItems.length > 0);
+            const isGroupActive =
+              activeNav === item.key ||
+              (item.subItems && item.subItems.some((s) => s.key === activeNav));
+
+            const isSubExpanded =
+              item.key === "all-candidates"
+                ? candidatesExpanded
+                : distributorsExpanded;
+
+            const toggleAccordion = () => {
+              if (item.key === "all-candidates") {
+                setCandidatesExpanded(!candidatesExpanded);
+              }
+              if (item.key === "all-distributors") {
+                setDistributorsExpanded(!distributorsExpanded);
+              }
+            };
+
+            // 1. COLLAPSED MODE: Clean centered icon rail with accessible tooltips
+            if (collapsed && !mobileOpen) {
+              return (
+                <div key={item.key} className="relative flex justify-center py-0.5">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onNavigate(item.key);
+                      onCloseMobile();
+                    }}
+                    className={`w-11 h-11 rounded-xl flex items-center justify-center transition-all duration-150 relative group cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2087FE] ${
+                      isGroupActive
+                        ? "bg-[#2087FE] dark:bg-[#0D79FD] text-white dark:text-white font-bold shadow-xs ring-1 ring-[#2087FE]/30"
+                        : "text-[#010627] dark:text-[#94A3B8] hover:bg-[#E0EDFE] dark:hover:bg-[#072439] hover:text-[#2087FE] dark:hover:text-[#0D79FD]"
+                    }`}
+                    aria-label={item.label}
+                  >
+                    {item.icon}
+
+                    {/* Active Route Left Pip */}
+                    {isGroupActive && (
+                      <span className="absolute left-0.5 top-2.5 bottom-2.5 w-1 rounded-full bg-white dark:bg-white" />
+                    )}
+
+                    {/* Notification/Pending Micro Badge Dot */}
+                    {item.badge && !isGroupActive && (
+                      <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-[#FC7C36]" />
+                    )}
+
+                    {/* Accessible Floating Tooltip (Hover and Focus-Visible) */}
+                    <div
+                      role="tooltip"
+                      className="pointer-events-none absolute left-full top-1/2 -translate-y-1/2 ml-3 z-50 whitespace-nowrap rounded-lg bg-[#010627] dark:bg-[#072439] text-white dark:text-[#F5F6F6] px-3 py-1.5 text-xs font-semibold shadow-xl opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-visible:opacity-100"
+                    >
+                      <div className="flex items-center gap-2">
+                        <span>{item.label}</span>
+                        {item.badge && (
+                          <span className="px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-[#E0EDFE] dark:bg-[#0D79FD]/15 text-[#2087FE] dark:text-[#0D79FD]">
+                            {item.badge}
+                          </span>
+                        )}
+                      </div>
+                      {/* Tooltip Arrow */}
+                      <div className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-[#010627] dark:border-r-[#072439]" />
+                    </div>
+                  </button>
+                </div>
+              );
+            }
+
+            // 2. EXPANDED MODE: Full hierarchical navigation list with accordion support
+            return (
+              <div key={item.key} className="space-y-1">
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (hasSub) {
+                      toggleAccordion();
+                    } else {
+                      onNavigate(item.key);
+                      onCloseMobile();
+                    }
+                  }}
+                  className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[13px] font-medium transition-colors duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2087FE] ${
+                    isGroupActive && (!hasSub || !isSubExpanded)
+                      ? "bg-[#2087FE] dark:bg-[#0D79FD] text-white dark:text-white font-bold shadow-xs border border-[#2087FE] dark:border-[#0D79FD]"
+                      : "text-[#010627] dark:text-[#94A3B8] hover:bg-[#E0EDFE] dark:hover:bg-[#072439] hover:text-[#2087FE] dark:hover:text-[#F5F6F6]"
+                  }`}
+                  aria-expanded={hasSub ? isSubExpanded : undefined}
+                >
+                  <div className="flex items-center gap-3 min-w-0">
+                    <span
+                      className={
+                        isGroupActive && (!hasSub || !isSubExpanded)
+                          ? "text-white dark:text-white"
+                          : isGroupActive
+                          ? "text-[#2087FE] dark:text-[#0D79FD]"
+                          : "text-[#717785] dark:text-[#94A3B8]"
+                      }
+                    >
+                      {item.icon}
+                    </span>
+                    <span className="truncate">{item.label}</span>
+                  </div>
+
+                  <div className="flex items-center gap-2 flex-shrink-0">
+                    {item.badge && (
+                      <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-bold ${
+                        isGroupActive && (!hasSub || !isSubExpanded)
+                          ? "bg-white text-[#2087FE]"
+                          : "bg-[#E0EDFE] dark:bg-[#0D79FD]/15 text-[#2087FE] dark:text-[#0D79FD]"
+                      }`}>
+                        {item.badge}
+                      </span>
+                    )}
+                    {hasSub && (
+                      <span className={isGroupActive && (!hasSub || !isSubExpanded) ? "text-white" : "text-[#717785] dark:text-[#94A3B8]"}>
+                        {isSubExpanded ? (
+                          <ChevronDown className="w-3.5 h-3.5" />
+                        ) : (
+                          <ChevronRight className="w-3.5 h-3.5" />
+                        )}
+                      </span>
+                    )}
+                  </div>
+                </button>
+
+                {/* Sub-Items Tree when Expanded */}
+                {hasSub && isSubExpanded && (
+                  <div className="pl-6 space-y-1 pt-0.5">
+                    {item.subItems?.map((sub) => {
+                      const isSubActive = activeNav === sub.key;
+                      return (
+                        <button
+                          key={sub.key}
+                          type="button"
+                          onClick={() => {
+                            onNavigate(sub.key);
+                            onCloseMobile();
+                          }}
+                          className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs transition-colors duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2087FE] ${
+                            isSubActive
+                              ? "bg-[#E0EDFE] dark:bg-[#072439] text-[#2087FE] dark:text-[#0D79FD] font-bold shadow-xs border-l-2 border-[#2087FE] dark:border-[#0D79FD]"
+                              : "text-[#010627] dark:text-[#94A3B8] hover:bg-[#E0EDFE]/60 dark:hover:bg-[#072439] hover:text-[#2087FE] dark:hover:text-[#0D79FD]"
+                          }`}
+                        >
+                          <div className="flex items-center gap-2.5 truncate">
+                            <span className={isSubActive ? "text-[#2087FE] dark:text-[#0D79FD]" : "text-[#717785] dark:text-[#94A3B8]"}>{sub.icon}</span>
+                            <span className="truncate">{sub.label}</span>
+                          </div>
+                          {sub.badge && (
+                            <span className="px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-[#E0EDFE] dark:bg-[#0D79FD]/15 text-[#2087FE] dark:text-[#0D79FD]">
+                              {sub.badge}
+                            </span>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </nav>
+
+        {/* Footer Operational Utilities and Admin Profile */}
+        <div className="border-t border-[#ACB9D1] dark:border-[#0e3554] bg-[#FDFEFE] dark:bg-[#062237] flex-shrink-0">
+          {collapsed && !mobileOpen ? (
+            /* COLLAPSED FOOTER (68px Rail): Centered Tooltip Buttons */
+            <div className="py-3 px-2 flex flex-col items-center gap-2">
+              {/* Security Audit Icon */}
+              <button
+                type="button"
+                onClick={() => onNavigate("audit")}
+                className="w-10 h-10 rounded-xl bg-[#B3EDD7]/60 dark:bg-[#01C588]/20 border border-[#12CF94]/40 dark:border-[#01C588]/40 flex items-center justify-center text-[#12CF94] dark:text-[#01C588] transition-colors relative group cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2087FE]"
+                aria-label="Security Audit: Active"
+              >
+                <ShieldCheck className="w-4 h-4" />
+                {/* Tooltip */}
+                <div
+                  role="tooltip"
+                  className="pointer-events-none absolute left-full top-1/2 -translate-y-1/2 ml-3 z-50 whitespace-nowrap rounded-lg bg-[#010627] dark:bg-[#072439] text-white dark:text-[#F5F6F6] px-3 py-1.5 text-xs font-semibold shadow-xl opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-visible:opacity-100"
+                >
+                  <span>Security Audit: Active (L0)</span>
+                  <div className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-[#010627] dark:border-r-[#072439]" />
+                </div>
+              </button>
+
+              {/* System Health Pulse Icon */}
+              <button
+                type="button"
+                className="w-10 h-10 rounded-xl bg-[#FDFEFE] dark:bg-[#062237] border border-[#ACB9D1] dark:border-[#0e3554] flex items-center justify-center text-[#12CF94] dark:text-[#01C588] transition-colors relative group cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2087FE]"
+                aria-label="System Health: 99.98% Operational"
+              >
+                <Activity className="w-4 h-4 animate-pulse text-[#12CF94] dark:text-[#01C588]" />
+                {/* Tooltip */}
+                <div
+                  role="tooltip"
+                  className="pointer-events-none absolute left-full top-1/2 -translate-y-1/2 ml-3 z-50 whitespace-nowrap rounded-lg bg-[#010627] dark:bg-[#072439] text-white dark:text-[#F5F6F6] px-3 py-1.5 text-xs font-semibold shadow-xl opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-visible:opacity-100"
+                >
+                  <span>System Health: 99.98% SLA</span>
+                  <div className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-[#010627] dark:border-r-[#072439]" />
+                </div>
+              </button>
+
+              {/* Administrator Profile Avatar Badge */}
+              <button
+                type="button"
+                onClick={() => onNavigate("profile")}
+                className="w-10 h-10 rounded-xl bg-[#2087FE] dark:bg-[#0D79FD] text-white dark:text-white font-bold text-xs flex items-center justify-center border border-[#2087FE]/20 shadow-xs relative group cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2087FE]"
+                aria-label="Root Super Admin (admin@indiata.gov.in)"
+              >
+                SA
+                <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-[#12CF94] dark:bg-[#01C588] border-2 border-[#FDFEFE] dark:border-[#062237]" />
+                {/* Tooltip */}
+                <div
+                  role="tooltip"
+                  className="pointer-events-none absolute left-full top-1/2 -translate-y-1/2 ml-3 z-50 whitespace-nowrap rounded-lg bg-[#010627] dark:bg-[#072439] text-white dark:text-[#F5F6F6] px-3 py-1.5 text-xs font-semibold shadow-xl opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-visible:opacity-100"
+                >
+                  <div>
+                    <div className="font-bold">Root Super Admin</div>
+                    <div className="text-[10px] opacity-80 font-mono">admin@indiata.gov.in (L0)</div>
+                  </div>
+                  <div className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-[#010627] dark:border-r-[#072439]" />
+                </div>
+              </button>
+            </div>
+          ) : (
+            /* EXPANDED FOOTER (270px Width): Full Information Rows & Profile Card */
+            <div className="p-3.5 space-y-2.5">
+              <div className="space-y-1.5">
+                {/* Security Audit Row */}
+                <div className="flex items-center justify-between px-3 py-2 rounded-lg bg-[#E0EDFE]/60 dark:bg-[#072439] text-[#010627] dark:text-[#94A3B8] text-xs">
+                  <div className="flex items-center gap-2">
+                    <ShieldCheck className="w-4 h-4 text-[#12CF94] dark:text-[#01C588]" />
+                    <span>Security Audit</span>
+                  </div>
+                  <span className="text-[11px] text-[#12CF94] dark:text-[#01C588] font-bold">
+                    Active
+                  </span>
+                </div>
+
+                {/* System Health Row */}
+                <div className="flex items-center justify-between px-3 py-2 rounded-lg bg-[#E0EDFE]/60 dark:bg-[#072439] text-[#010627] dark:text-[#94A3B8] text-xs">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-[#12CF94] dark:bg-[#01C588] animate-pulse" />
+                    <span>System Health</span>
+                  </div>
+                  <span className="text-[11px] text-[#12CF94] dark:text-[#01C588] font-bold font-mono">
+                    99.98%
+                  </span>
+                </div>
+              </div>
+
+              {/* Full Admin Profile Badge Card */}
+              <div className="p-2.5 rounded-xl bg-[#FDFEFE] dark:bg-[#072439] border border-[#ACB9D1] dark:border-[#0e3554] flex items-center gap-2.5 shadow-xs">
+                <div className="w-9 h-9 rounded-lg bg-[#2087FE] dark:bg-[#0D79FD] text-white dark:text-white font-bold text-xs flex items-center justify-center flex-shrink-0">
+                  SA
+                </div>
+                <div className="min-w-0 flex-1 leading-tight">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-xs font-bold text-[#010627] dark:text-[#F5F6F6] truncate">
+                      Root Super Admin
+                    </span>
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#12CF94] dark:bg-[#01C588]" />
+                  </div>
+                  <p className="text-[10px] text-[#717785] dark:text-[#94A3B8] truncate font-mono mt-0.5">
+                    admin@indiata.gov.in
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </aside>
+    </>
+  );
+}

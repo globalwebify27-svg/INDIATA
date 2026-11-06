@@ -1,0 +1,187 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-brand-50: #f4f6fc;
+  --color-brand-100: #e8edf9;
+  --color-brand-200: #d1ddf4;
+  --color-brand-300: #a7bfea;
+  --color-brand-400: #759bdd;
+  --color-brand-500: #4e7acc;
+  --color-brand-600: #2554a8;
+  --color-brand-700: #1b4188;
+  --color-brand-800: #17366f;
+  --color-brand-900: #152e5a;
+  --color-brand-950: #0c1a34;
+
+  --shadow-premium-xs: 0 1px 2px 0 rgba(15, 23, 42, 0.04);
+  --shadow-premium-sm: 0 1px 3px 0 rgba(15, 23, 42, 0.06), 0 1px 2px -1px rgba(15, 23, 42, 0.04);
+  --shadow-premium-md: 0 4px 12px -2px rgba(15, 23, 42, 0.06), 0 2px 6px -2px rgba(15, 23, 42, 0.03);
+  --shadow-premium-lg: 0 10px 25px -3px rgba(15, 23, 42, 0.08), 0 4px 10px -4px rgba(15, 23, 42, 0.03);
+
+  --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
+}
+
+:root {
+  /* Layout Dimensions */
+  --header-height: 64px;
+  --sidebar-width: 256px;
+  --sidebar-collapsed-width: 80px;
+
+  /* Reference 2 Extracted Brand Scale */
+  --brand-50: #f4f6fc;
+  --brand-100: #e8edf9;
+  --brand-200: #d1ddf4;
+  --brand-300: #a7bfea;
+  --brand-400: #759bdd;
+  --brand-500: #4e7acc;
+  --brand-600: #2554a8;
+  --brand-700: #1b4188;
+  --brand-800: #17366f;
+  --brand-900: #152e5a;
+  --brand-950: #0c1a34;
+
+  /* Surfaces & Backgrounds */
+  --background: #f8fafc;
+  --foreground: #1e293b;
+  --card: #ffffff;
+  --card-foreground: #1e293b;
+
+  /* Sidebar Tokens (Dark Navy Slate) */
+  --sidebar-bg: #020617;
+  --sidebar-text: #94a3b8;
+  --sidebar-text-hover: #ffffff;
+  --sidebar-active-bg: #2554a8;
+  --sidebar-active-text: #ffffff;
+  --sidebar-border: #0f172a;
+
+  /* Primary Brand Identity */
+  --primary: #2554a8;
+  --primary-hover: #1b4188;
+  --primary-container: #e8edf9;
+  --primary-light: #f4f6fc;
+  --on-primary: #ffffff;
+
+  /* Secondary Accent */
+  --secondary: #4f46e5;
+  --secondary-hover: #4338ca;
+  --secondary-light: #eef2ff;
+
+  /* Semantic Status Palette */
+  --success: #10b981;
+  --success-light: #ecfdf5;
+  --warning: #f59e0b;
+  --warning-light: #fffbeb;
+  --danger: #ef4444;
+  --danger-light: #fef2f2;
+
+  /* Neutral Typography & Borders */
+  --text-primary: #1e293b;
+  --text-secondary: #64748b;
+  --text-muted: #94a3b8;
+  --border: #e2e8f0;
+  --border-subtle: #f1f5f9;
+}
+
+.dark {
+  --background: #020617;
+  --foreground: #f8fafc;
+  --card: #0f172a;
+  --card-foreground: #f8fafc;
+
+  --sidebar-bg: #020617;
+  --sidebar-text: #94a3b8;
+  --sidebar-text-hover: #ffffff;
+  --sidebar-active-bg: #2554a8;
+  --sidebar-active-text: #ffffff;
+  --sidebar-border: #0f172a;
+
+  --primary: #3b82f6;
+  --primary-hover: #2554a8;
+  --primary-container: #1e293b;
+  --primary-light: #0f172a;
+  --on-primary: #ffffff;
+
+  --secondary: #6366f1;
+  --secondary-hover: #4f46e5;
+  --secondary-light: #1e1b4b;
+
+  --success: #10b981;
+  --success-light: #064e3b;
+  --warning: #f59e0b;
+  --warning-light: #451a03;
+  --danger: #ef4444;
+  --danger-light: #450a0a;
+
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --border: #1e293b;
+  --border-subtle: #0f172a;
+}
+
+html, body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  letter-spacing: -0.011em;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  max-width: 100vw;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+}
+
+/* Custom Premium Elevation Utilities */
+.shadow-premium-xs {
+  box-shadow: 0 1px 2px 0 rgba(15, 23, 42, 0.04);
+}
+
+.shadow-premium-sm {
+  box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.06), 0 1px 2px -1px rgba(15, 23, 42, 0.04);
+}
+
+.shadow-premium-md {
+  box-shadow: 0 4px 12px -2px rgba(15, 23, 42, 0.06), 0 2px 6px -2px rgba(15, 23, 42, 0.03);
+}
+
+.shadow-premium-lg {
+  box-shadow: 0 10px 25px -3px rgba(15, 23, 42, 0.08), 0 4px 10px -4px rgba(15, 23, 42, 0.03);
+}
+
+/* Tabular Numerals for high precision metric displays */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Custom Sleek Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #334155;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}

@@ -1,0 +1,23 @@
+{
+  "name": "@rajtantra/rbac",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Role-Based Access Control matrix, permission checks, and React guards for Rajtantra",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "type-check": "tsc --noEmit",
+    "clean": "rimraf dist"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0"
+  },
+  "devDependencies": {
+    "@rajtantra/config-typescript": "workspace:*",
+    "@types/react": "^19.0.10",
+    "react": "^19.0.0",
+    "rimraf": "^6.0.1",
+    "typescript": "^5.8.2"
+  }
+}

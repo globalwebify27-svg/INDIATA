@@ -121,14 +121,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             role: UserRole.SUPER_ADMIN,
             isDefault: true,
           },
-          {
-            portalKey: "CANDIDATE_WAR_ROOM",
-            title: "Candidate War Room (Supervisory Mode)",
-            subtitle: "Inspect live booth readiness & GIS telemetry across constituencies",
-            url: "/dashboard",
-            role: UserRole.SUPER_ADMIN,
-            isDefault: false,
-          },
         ];
         return {
           user: MOCK_DEV_SUPERADMIN_USER,
@@ -213,6 +205,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const cleanId = identifier.trim().toLowerCase();
         const isSuperAdmin = cleanId.includes("superadmin");
         const fallbackUser = isSuperAdmin ? MOCK_DEV_SUPERADMIN_USER : MOCK_DEV_CANDIDATE_USER;
+        const superAdminUrl = process.env.NEXT_PUBLIC_SUPERADMIN_URL || "http://localhost:3000";
 
         setUser(fallbackUser);
         setTokens(MOCK_DEV_TOKENS);
@@ -221,32 +214,52 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           localStorage.setItem("rajtantra_refresh_token", MOCK_DEV_TOKENS.refreshToken);
         }
         setIsLoading(false);
-        router.push("/dashboard");
+        if (isSuperAdmin) {
+          window.location.href = `${superAdminUrl}?token=${encodeURIComponent(
+            MOCK_DEV_TOKENS.accessToken,
+          )}&refresh=${encodeURIComponent(MOCK_DEV_TOKENS.refreshToken)}`;
+        } else {
+          router.push("/dashboard");
+        }
         return {
           user: fallbackUser,
           tokens: MOCK_DEV_TOKENS,
           portals: [
-            {
-              portalKey: "CANDIDATE_WAR_ROOM",
-              title: "Kasba Peth Constituency War Room",
-              subtitle: "Voter intelligence, GIS telemetry & cadre command",
-              url: "/dashboard",
-              role: UserRole.CANDIDATE_ADMIN,
-              organizationName: "Kasba Peth Constituency War Room 2026",
-              constituencyName: "215 - Kasba Peth",
-              isDefault: true,
-            },
+            isSuperAdmin
+              ? {
+                  portalKey: "SUPER_ADMIN",
+                  title: "Super Admin Platform Command",
+                  subtitle: "Multi-tenant War Room Infrastructure, KYC & Licencing",
+                  url: superAdminUrl,
+                  role: UserRole.SUPER_ADMIN,
+                  isDefault: true,
+                }
+              : {
+                  portalKey: "CANDIDATE_WAR_ROOM",
+                  title: "Kasba Peth Constituency War Room",
+                  subtitle: "Voter intelligence, GIS telemetry & cadre command",
+                  url: "/dashboard",
+                  role: UserRole.CANDIDATE_ADMIN,
+                  organizationName: "Kasba Peth Constituency War Room 2026",
+                  constituencyName: "215 - Kasba Peth",
+                  isDefault: true,
+                },
           ],
-          primaryPortal: {
-            portalKey: "CANDIDATE_WAR_ROOM",
-            title: "Kasba Peth Constituency War Room",
-            subtitle: "Voter intelligence, GIS telemetry & cadre command",
-            url: "/dashboard",
-            role: UserRole.CANDIDATE_ADMIN,
-            organizationName: "Kasba Peth Constituency War Room 2026",
-            constituencyName: "215 - Kasba Peth",
-            isDefault: true,
-          },
+          primaryPortal: isSuperAdmin
+            ? {
+                portalKey: "SUPER_ADMIN",
+                title: "Super Admin Platform Command",
+                subtitle: "Multi-tenant War Room Infrastructure, KYC & Licencing",
+                url: superAdminUrl,
+                role: UserRole.SUPER_ADMIN,
+              }
+            : {
+                portalKey: "CANDIDATE_WAR_ROOM",
+                title: "Kasba Peth Constituency War Room",
+                subtitle: "Voter intelligence, GIS telemetry & cadre command",
+                url: "/dashboard",
+                role: UserRole.CANDIDATE_ADMIN,
+              },
         };
       }
 

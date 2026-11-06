@@ -1,4 +1,6 @@
 packages:
+  - 'apps/web-auth'
+  - 'apps/web'
   - 'apps/web-superadmin'
   - 'apps/web-candidate'
   - 'apps/api-core'

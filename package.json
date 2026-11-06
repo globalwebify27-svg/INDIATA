@@ -5,8 +5,11 @@
   "description": "Rajtantra — Election Management & Campaign Intelligence Platform",
   "packageManager": "pnpm@12.15.0",
   "scripts": {
-    "build": "turbo run build",
-    "dev": "turbo run dev",
+    "build": "pnpm --filter @rajtantra/web build",
+    "dev": "pnpm --filter @rajtantra/web dev",
+    "dev:all": "turbo run dev",
+    "dev:candidate": "pnpm --filter @rajtantra/web-candidate dev",
+    "dev:superadmin": "pnpm --filter @rajtantra/web-superadmin dev",
     "lint": "turbo run lint",
     "test": "turbo run test",
     "type-check": "turbo run type-check",

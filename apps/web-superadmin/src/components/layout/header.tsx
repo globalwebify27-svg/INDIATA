@@ -11,6 +11,7 @@ import {
   LogOut,
   Key,
   Shield,
+  BarChart3,
   Eye,
   EyeOff,
   Command,
@@ -311,6 +312,14 @@ export function Header({
                   <Shield className="w-3.5 h-3.5 text-[#717785] dark:text-[#94A3B8]" />
                   Access Audit Ledger
                 </button>
+
+                <a
+                  href={process.env.NEXT_PUBLIC_CANDIDATE_URL || "http://localhost:3001/dashboard"}
+                  className="w-full flex items-center gap-2 px-3 py-2 text-[#2087FE] dark:text-[#0D79FD] hover:bg-[#E0EDFE] dark:hover:bg-[#062237] text-left transition-colors font-medium cursor-pointer"
+                >
+                  <BarChart3 className="w-3.5 h-3.5 text-[#2087FE] dark:text-[#0D79FD]" />
+                  Candidate War Room (Port 3001)
+                </a>
               </div>
 
               <div className="border-t border-[#ACB9D1] dark:border-[#0e3554] pt-1">

@@ -1,0 +1,141 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-brand-50: #f4f6fc;
+  --color-brand-100: #e8edf9;
+  --color-brand-200: #d1ddf4;
+  --color-brand-300: #a7bfea;
+  --color-brand-400: #759bdd;
+  --color-brand-500: #4e7acc;
+  --color-brand-600: #2554a8;
+  --color-brand-700: #1b4188;
+  --color-brand-800: #17366f;
+  --color-brand-900: #152e5a;
+  --color-brand-950: #0c1a34;
+
+  --shadow-premium-xs: 0 1px 2px 0 rgba(15, 23, 42, 0.04);
+  --shadow-premium-sm: 0 1px 3px 0 rgba(15, 23, 42, 0.06), 0 1px 2px -1px rgba(15, 23, 42, 0.04);
+  --shadow-premium-md: 0 4px 12px -2px rgba(15, 23, 42, 0.06), 0 2px 6px -2px rgba(15, 23, 42, 0.03);
+  --shadow-premium-lg: 0 10px 25px -3px rgba(15, 23, 42, 0.08), 0 4px 10px -4px rgba(15, 23, 42, 0.03);
+
+  --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
+}
+
+:root {
+  /* Layout Dimensions */
+  --header-height: 64px;
+  --sidebar-width: 256px;
+  --sidebar-collapsed-width: 80px;
+  --sidebar-width-collapsed: 68px;
+  --sidebar-width-expanded: 270px;
+
+  /* Brand Scale */
+  --brand-50: #f4f6fc;
+  --brand-100: #e8edf9;
+  --brand-200: #d1ddf4;
+  --brand-300: #a7bfea;
+  --brand-400: #759bdd;
+  --brand-500: #4e7acc;
+  --brand-600: #2554a8;
+  --brand-700: #1b4188;
+  --brand-800: #17366f;
+  --brand-900: #152e5a;
+  --brand-950: #0c1a34;
+
+  /* Surfaces & Backgrounds */
+  --background: #f8fafc;
+  --foreground: #1e293b;
+  --card: #ffffff;
+  --card-foreground: #0f172a;
+
+  /* Superadmin Exact Design System Tokens */
+  --client-bg: #F8FAFC;
+  --client-card: #FFFFFF;
+  --client-soft-blue: #E0EDFE;
+  --client-border: #E2E8F0;
+  --client-primary: #2087FE;
+  --client-success: #12CF94;
+  --client-soft-success: #B3EDD7;
+  --client-warning: #FC7C36;
+  --client-dark: #010627;
+
+  /* Primary Blue */
+  --primary: #2087FE;
+  --primary-hover: #1A6ED1;
+  --primary-container: #2087FE;
+  --primary-fixed: #E0EDFE;
+  --on-primary: #FFFFFF;
+  --on-primary-fixed: #010627;
+  --on-primary-fixed-variant: #2087FE;
+
+  /* Secondary Green */
+  --secondary: #12CF94;
+  --secondary-hover: #0EAC7A;
+  --secondary-container: #B3EDD7;
+  --secondary-fixed: #B3EDD7;
+  --on-secondary: #FFFFFF;
+  --on-secondary-fixed-variant: #12CF94;
+
+  /* Warning Orange */
+  --warning: #FC7C36;
+  --on-warning: #FFFFFF;
+  --warning-container: #FC7C36;
+}
+
+.dark {
+  --background: #090f1d;
+  --foreground: #f1f5f9;
+  --card: #0d1527;
+  --card-foreground: #f8fafc;
+
+  --client-bg: #030e17;
+  --client-card: #072439;
+  --client-soft-blue: #0e3554;
+  --client-border: #0e3554;
+  --client-primary: #0D79FD;
+  --client-success: #01C588;
+  --client-soft-success: #01C588;
+  --client-warning: #F48637;
+  --client-dark: #F5F6F6;
+
+  --primary: #0D79FD;
+  --primary-hover: #318FFD;
+  --primary-container: #0D79FD;
+  --on-primary: #FFFFFF;
+
+  --secondary: #01C588;
+  --secondary-hover: #1AD89D;
+  --secondary-container: #01C588;
+  --on-secondary: #011A2D;
+
+  --warning: #F48637;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.3);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.5);
+}

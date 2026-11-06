@@ -57,6 +57,7 @@ model Organization {
   distributorId    String?            @db.VarChar(36)
   distributor      Distributor?       @relation(fields: [distributorId], references: [id], onDelete: SetNull)
   users            User[]
+  auditLogs        AuditLog[]
   createdAt        DateTime           @default(now())
   updatedAt        DateTime           @updatedAt
 
@@ -84,28 +85,164 @@ model Distributor {
 }
 
 model User {
-  id                 String         @id @default(uuid()) @db.VarChar(36)
-  email              String?        @unique @db.VarChar(120)
-  phone              String         @unique @db.VarChar(20)
-  name               String         @db.VarChar(150)
-  passwordHash       String?        @db.VarChar(255)
-  role               Role           @default(KARYAKARTA)
-  status             UserStatus     @default(ACTIVE)
-  organizationId     String?        @db.VarChar(36)
-  organization       Organization?  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  distributorProfile Distributor?   @relation("DistributorUser")
-  hasAiSeat          Boolean        @default(false)
-  activationKey      String?        @unique @db.VarChar(6)
-  reactivationKey    String?        @db.VarChar(12)
-  deviceUuid         String?        @db.VarChar(128)
+  id                 String             @id @default(uuid()) @db.VarChar(36)
+  email              String?            @unique @db.VarChar(120)
+  phone              String             @unique @db.VarChar(20)
+  name               String             @db.VarChar(150)
+  passwordHash       String?            @db.VarChar(255)
+  role               Role               @default(KARYAKARTA)
+  status             UserStatus         @default(ACTIVE)
+  organizationId     String?            @db.VarChar(36)
+  organization       Organization?      @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  distributorProfile Distributor?       @relation("DistributorUser")
+  hasAiSeat          Boolean            @default(false)
+  activationKey      String?            @unique @db.VarChar(6)
+  reactivationKey    String?            @db.VarChar(12)
+  deviceUuid         String?            @db.VarChar(128)
+  twoFactorSecret    String?            @db.VarChar(128)
+  isTwoFactorEnabled Boolean            @default(false)
+  twoFactorBackupCodes String?          @db.Text
   lastLoginAt        DateTime?
   refreshTokens      RefreshToken[]
-  createdAt          DateTime       @default(now())
-  updatedAt          DateTime       @updatedAt
+  userRoles          UserRole[]
+  portalAssignments  PortalAssignment[]
+  sessions           UserSession[]
+  auditLogs          AuditLog[]
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
 
   @@index([organizationId, role])
   @@index([phone])
   @@map("users")
+}
+
+// -------------------------------------------------------------
+// NORMALIZED RBAC ENTITIES
+// -------------------------------------------------------------
+
+model RoleDefinition {
+  id          String           @id @default(uuid()) @db.VarChar(36)
+  code        String           @unique @db.VarChar(50) // e.g. "SUPER_ADMIN", "CANDIDATE_ADMIN"
+  name        String           @db.VarChar(100)
+  description String?          @db.VarChar(255)
+  isSystem    Boolean          @default(false)
+  userRoles   UserRole[]
+  permissions RolePermission[]
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  @@map("roles")
+}
+
+model Permission {
+  id          String           @id @default(uuid()) @db.VarChar(36)
+  code        String           @unique @db.VarChar(100) // e.g. "candidates.create", "voters.export"
+  domain      String           @db.VarChar(50)         // e.g. "candidates", "voters", "campaigns"
+  description String?          @db.VarChar(255)
+  roles       RolePermission[]
+  createdAt   DateTime         @default(now())
+
+  @@index([domain])
+  @@map("permissions")
+}
+
+model UserRole {
+  userId     String         @db.VarChar(36)
+  roleId     String         @db.VarChar(36)
+  user       User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role       RoleDefinition @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  assignedAt DateTime       @default(now())
+
+  @@id([userId, roleId])
+  @@map("user_roles")
+}
+
+model RolePermission {
+  roleId       String         @db.VarChar(36)
+  permissionId String         @db.VarChar(36)
+  role         RoleDefinition @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission   Permission     @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@id([roleId, permissionId])
+  @@map("role_permissions")
+}
+
+// -------------------------------------------------------------
+// PORTAL FEDERATION & ASSIGNMENT
+// -------------------------------------------------------------
+
+model Portal {
+  id          String             @id @default(uuid()) @db.VarChar(36)
+  key         String             @unique @db.VarChar(50) // "SUPER_ADMIN", "CANDIDATE_WAR_ROOM", etc.
+  name        String             @db.VarChar(100)
+  description String?            @db.VarChar(255)
+  baseUrl     String             @db.VarChar(255)
+  assignments PortalAssignment[]
+  createdAt   DateTime           @default(now())
+
+  @@map("portals")
+}
+
+model PortalAssignment {
+  userId    String   @db.VarChar(36)
+  portalId  String   @db.VarChar(36)
+  isDefault Boolean  @default(false)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  portal    Portal   @relation(fields: [portalId], references: [id], onDelete: Cascade)
+
+  @@id([userId, portalId])
+  @@map("portal_assignments")
+}
+
+// -------------------------------------------------------------
+// SESSION TRACKING & SECURITY LEDGER
+// -------------------------------------------------------------
+
+model UserSession {
+  id           String    @id @default(uuid()) @db.VarChar(36)
+  userId       String    @db.VarChar(36)
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  refreshToken String    @unique @db.VarChar(64)
+  deviceUuid   String?   @db.VarChar(128)
+  userAgent    String?   @db.VarChar(255)
+  ipAddress    String?   @db.VarChar(45)
+  isRevoked    Boolean   @default(false)
+  lastActiveAt DateTime  @default(now())
+  expiresAt    DateTime
+  createdAt    DateTime  @default(now())
+
+  @@index([userId, isRevoked])
+  @@map("user_sessions")
+}
+
+model LoginAttempt {
+  id         String   @id @default(uuid()) @db.VarChar(36)
+  identifier String   @db.VarChar(120)
+  ipAddress  String   @db.VarChar(45)
+  isSuccess  Boolean  @default(false)
+  createdAt  DateTime @default(now())
+
+  @@index([identifier, createdAt])
+  @@index([ipAddress, createdAt])
+  @@map("login_attempts")
+}
+
+model AuditLog {
+  id             String        @id @default(uuid()) @db.VarChar(36)
+  userId         String?       @db.VarChar(36)
+  user           User?         @relation(fields: [userId], references: [id], onDelete: SetNull)
+  organizationId String?       @db.VarChar(36)
+  organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  action         String        @db.VarChar(100) // e.g. "candidate.create", "role.change"
+  resource       String        @db.VarChar(100) // e.g. "Candidate", "Organization"
+  resourceId     String?       @db.VarChar(36)
+  diff           String?       @db.Text
+  ipAddress      String?       @db.VarChar(45)
+  createdAt      DateTime      @default(now())
+
+  @@index([organizationId])
+  @@index([userId])
+  @@map("audit_logs")
 }
 
 model RefreshToken {
@@ -162,4 +299,3 @@ model RegistrationEnquiry {
   @@index([status])
   @@map("registration_enquiries")
 }
-

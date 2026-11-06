@@ -25,6 +25,7 @@
     "@prisma/client": "^5.22.0",
     "@rajtantra/common-types": "workspace:*",
     "@rajtantra/database": "workspace:*",
+    "@rajtantra/rbac": "workspace:*",
     "bcryptjs": "^3.0.2",
     "helmet": "^8.0.0",
     "passport": "^0.7.0",

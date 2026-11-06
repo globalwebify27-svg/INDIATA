@@ -11,6 +11,7 @@ export interface JwtPayload {
   role: UserRole;
   organizationId: string | null;
   hasAiSeat: boolean;
+  permissions?: string[];
   iat?: number;
   exp?: number;
 }
@@ -26,6 +27,7 @@ export interface AuthenticatedUser {
   role: UserRole;
   organizationId: string | null;
   hasAiSeat: boolean;
+  permissions?: string[];
 }
 
 /**

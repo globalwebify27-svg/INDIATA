@@ -1,0 +1,21 @@
+{
+  "name": "@rajtantra/api-client",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Universal typed API client with credentials support for Rajtantra",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "type-check": "tsc --noEmit",
+    "clean": "rimraf dist"
+  },
+  "dependencies": {
+    "@rajtantra/common-types": "workspace:*"
+  },
+  "devDependencies": {
+    "@rajtantra/config-typescript": "workspace:*",
+    "rimraf": "^6.0.1",
+    "typescript": "^5.8.2"
+  }
+}

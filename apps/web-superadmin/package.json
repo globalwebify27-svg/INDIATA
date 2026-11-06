@@ -4,9 +4,9 @@
   "private": true,
   "description": "Rajtantra Super Admin Platform Management Portal",
   "scripts": {
-    "dev": "next dev --port 3000",
+    "dev": "next dev --port 3002",
     "build": "next build",
-    "start": "next start --port 3000",
+    "start": "next start --port 3002",
     "lint": "next lint",
     "type-check": "tsc --noEmit",
     "clean": "rimraf .next dist"

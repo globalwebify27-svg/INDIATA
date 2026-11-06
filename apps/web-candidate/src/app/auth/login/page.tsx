@@ -23,6 +23,7 @@ import {
   PortalAccessInfo,
   AuthenticatedUser,
   AuthTokenPair,
+  UserRole,
 } from "@rajtantra/common-types";
 
 export default function LoginPage() {
@@ -30,10 +31,15 @@ export default function LoginPage() {
   const { showToast } = useToast();
   const router = useRouter();
 
-  // If already logged in, send to war room by default
+  // If already authenticated and not explicitly in an active logout cycle, route to dashboard
   useEffect(() => {
     if (isAuthenticated) {
-      router.replace("/dashboard");
+      const wasLoggedOut =
+        typeof window !== "undefined" &&
+        sessionStorage.getItem("rajtantra_logged_out") === "true";
+      if (!wasLoggedOut) {
+        router.replace("/dashboard");
+      }
     }
   }, [isAuthenticated, router]);
 
@@ -44,7 +50,7 @@ export default function LoginPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  // Multi-Portal Selection Workflow States
+  // Multi-Portal Selection Workflow States (for secondary console choice)
   const [step, setStep] = useState<"login" | "portal-selection">("login");
   const [authorizedPortals, setAuthorizedPortals] = useState<PortalAccessInfo[]>([]);
   const [portalUser, setPortalUser] = useState<AuthenticatedUser | null>(null);
@@ -67,21 +73,35 @@ export default function LoginPage() {
     try {
       const result = await login(identifier.trim(), password);
 
-      // If user has access to multiple portals, present the selection console
+      const isSuperAdmin =
+        identifier.trim().toLowerCase().includes("superadmin") ||
+        result?.user?.role === UserRole.SUPER_ADMIN;
+
+      if (isSuperAdmin) {
+        showToast("success", "Super Admin Authorized", "Launching Super Admin Portal...");
+        const targetUrl = process.env.NEXT_PUBLIC_SUPERADMIN_URL || "http://localhost:3000";
+        if (result?.tokens) {
+          window.location.href = `${targetUrl}?token=${encodeURIComponent(
+            result.tokens.accessToken,
+          )}&refresh=${encodeURIComponent(result.tokens.refreshToken)}`;
+        } else {
+          window.location.href = targetUrl;
+        }
+        return;
+      }
+
+      // If user has multiple sub-portals (and not superadmin), show selector fallback
       if (result && result.portals && result.portals.length > 1) {
         setAuthorizedPortals(result.portals);
         setPortalUser(result.user);
         setPortalTokens(result.tokens);
         setStep("portal-selection");
-        showToast(
-          "info",
-          "Multi-Portal Account",
-          "Your account has multiple workspaces. Please select your target console.",
-        );
         return;
       }
 
-      showToast("success", "Welcome Back", "Session verified successfully.");
+      // Candidate login: go directly to candidate war room dashboard
+      showToast("success", "Welcome Back", "Signed into Candidate War Room successfully.");
+      router.push("/dashboard");
     } catch (err: unknown) {
       const msg =
         err instanceof Error
@@ -115,10 +135,32 @@ export default function LoginPage() {
     setErrorMessage(null);
     try {
       await login("candidate@rajtantra.in", "Rajtantra@2026");
-      showToast("success", "Demo Mode", "Launching Candidate War Room...");
+      showToast("success", "Candidate Portal", "Opening Candidate War Room...");
       router.push("/dashboard");
     } catch {
       router.push("/dashboard");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleDirectLaunchSuperAdmin = async () => {
+    setIsSubmitting(true);
+    setErrorMessage(null);
+    try {
+      const result = await login("superadmin@rajtantra.in", "Rajtantra@2026");
+      showToast("success", "Super Admin Portal", "Opening Super Admin Portal (Port 3000)...");
+      const targetUrl = process.env.NEXT_PUBLIC_SUPERADMIN_URL || "http://localhost:3000";
+      if (result?.tokens) {
+        window.location.href = `${targetUrl}?token=${encodeURIComponent(
+          result.tokens.accessToken,
+        )}&refresh=${encodeURIComponent(result.tokens.refreshToken)}`;
+      } else {
+        window.location.href = targetUrl;
+      }
+    } catch {
+      const targetUrl = process.env.NEXT_PUBLIC_SUPERADMIN_URL || "http://localhost:3000";
+      window.location.href = targetUrl;
     } finally {
       setIsSubmitting(false);
     }
@@ -164,7 +206,7 @@ export default function LoginPage() {
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md px-4 sm:px-0">
-        {/* VIEW 1: CENTRAL CREDENTIALS LOGIN FORM */}
+        {/* VIEW 1: CREDENTIALS LOGIN FORM */}
         {step === "login" && (
           <Card className="rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-premium-sm">
             <CardContent className="pt-6">
@@ -243,28 +285,41 @@ export default function LoginPage() {
                   className="w-full mt-2 font-semibold"
                   isLoading={isSubmitting}
                 >
-                  Sign In to War Room
+                  {identifier.includes("superadmin")
+                    ? "Launch Super Admin Portal"
+                    : "Sign In to Candidate War Room"}
                   <ArrowRight className="w-4 h-4 ml-1.5" />
                 </Button>
 
-                {/* Direct Demo Entry (Instant UI Access for Clients) */}
-                <button
-                  type="button"
-                  onClick={handleDirectLaunchCandidate}
-                  disabled={isSubmitting}
-                  className="w-full mt-2.5 py-2.5 px-3 rounded-xl border border-brand-200 dark:border-brand-800 bg-brand-50/70 hover:bg-brand-100 dark:bg-brand-950/40 text-brand-700 dark:text-brand-300 text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer shadow-2xs"
-                >
-                  <Sparkles className="w-3.5 h-3.5 text-brand-600 dark:text-brand-400" />
-                  <span>Direct Demo Access (Skip Login &amp; View UI)</span>
-                </button>
+                {/* Direct 1-Click Launch Entry */}
+                <div className="grid grid-cols-2 gap-2 mt-2.5">
+                  <button
+                    type="button"
+                    onClick={handleDirectLaunchCandidate}
+                    disabled={isSubmitting}
+                    className="py-2.5 px-3 rounded-xl border border-brand-200 dark:border-brand-800 bg-brand-50/70 hover:bg-brand-100 dark:bg-brand-950/40 text-brand-700 dark:text-brand-300 text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-2xs"
+                  >
+                    <BarChart3 className="w-3.5 h-3.5 text-brand-600" />
+                    <span>Candidate Portal (3001)</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleDirectLaunchSuperAdmin}
+                    disabled={isSubmitting}
+                    className="py-2.5 px-3 rounded-xl border border-purple-200 dark:border-purple-800 bg-purple-50/70 hover:bg-purple-100 dark:bg-purple-950/40 text-purple-700 dark:text-purple-300 text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-2xs"
+                  >
+                    <Shield className="w-3.5 h-3.5 text-purple-600" />
+                    <span>Super Admin Portal (3000)</span>
+                  </button>
+                </div>
               </form>
 
-              {/* Quick Demo Credentials Assistant for Client Testing */}
+              {/* Quick Demo Credentials Assistant */}
               <div className="mt-6 pt-5 border-t border-slate-100 dark:border-slate-800">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
                     <Sparkles className="w-3.5 h-3.5 text-brand-600" />
-                    Role-Based Demo Access
+                    Role-Based Access
                   </span>
                   <span className="text-[10px] text-slate-400">1-Click Auto Fill</span>
                 </div>
@@ -273,17 +328,25 @@ export default function LoginPage() {
                   <button
                     type="button"
                     onClick={handleUseCandidateDemo}
-                    className="px-2.5 py-2 rounded-xl border border-brand-200 dark:border-brand-900 bg-brand-50/70 hover:bg-brand-100 dark:bg-brand-950/40 text-brand-700 dark:text-brand-300 text-xs font-semibold transition-all cursor-pointer text-left"
+                    className={`px-2.5 py-2 rounded-xl border text-xs font-semibold transition-all cursor-pointer text-left ${
+                      !identifier.includes("superadmin") && identifier.length > 0
+                        ? "border-brand-500 bg-brand-100/70 dark:bg-brand-900/40 text-brand-800 dark:text-brand-200"
+                        : "border-brand-200 dark:border-brand-900 bg-brand-50/70 hover:bg-brand-100 dark:bg-brand-950/40 text-brand-700 dark:text-brand-300"
+                    }`}
                   >
-                    <div className="text-[10px] text-brand-500 font-bold uppercase">Single-Portal</div>
+                    <div className="text-[10px] text-brand-500 font-bold uppercase">Candidate War Room</div>
                     Candidate Admin
                   </button>
                   <button
                     type="button"
                     onClick={handleUseSuperAdminDemo}
-                    className="px-2.5 py-2 rounded-xl border border-purple-200 dark:border-purple-900 bg-purple-50/70 hover:bg-purple-100 dark:bg-purple-950/40 text-purple-700 dark:text-purple-300 text-xs font-semibold transition-all cursor-pointer text-left"
+                    className={`px-2.5 py-2 rounded-xl border text-xs font-semibold transition-all cursor-pointer text-left ${
+                      identifier.includes("superadmin")
+                        ? "border-purple-500 bg-purple-100/70 dark:bg-purple-900/40 text-purple-800 dark:text-purple-200"
+                        : "border-purple-200 dark:border-purple-900 bg-purple-50/70 hover:bg-purple-100 dark:bg-purple-950/40 text-purple-700 dark:text-purple-300"
+                    }`}
                   >
-                    <div className="text-[10px] text-purple-500 font-bold uppercase">Multi-Portal</div>
+                    <div className="text-[10px] text-purple-500 font-bold uppercase">Super Admin Portal</div>
                     Super Admin
                   </button>
                 </div>
@@ -294,11 +357,11 @@ export default function LoginPage() {
                     <span className="font-mono font-medium">{identifier || "Select above"}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-slate-400">Behavior:</span>
+                    <span className="text-slate-400">Target Workspace:</span>
                     <span className="font-semibold text-brand-600 dark:text-brand-400">
                       {identifier.includes("superadmin")
-                        ? "Opens Multi-Portal Selector Console"
-                        : "Direct Auto-Redirect to War Room"}
+                        ? "Super Admin Portal (http://localhost:3000)"
+                        : "Candidate War Room (http://localhost:3001/dashboard)"}
                     </span>
                   </div>
                 </div>
@@ -307,7 +370,7 @@ export default function LoginPage() {
           </Card>
         )}
 
-        {/* VIEW 2: MULTI-PORTAL SELECTION CONSOLE */}
+        {/* VIEW 2: MULTI-PORTAL SELECTION CONSOLE (FALLBACK) */}
         {step === "portal-selection" && (
           <Card className="rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-premium-md overflow-hidden animate-in fade-in zoom-in-95 duration-200">
             <div className="bg-gradient-to-r from-brand-600 to-indigo-700 p-5 text-white">
