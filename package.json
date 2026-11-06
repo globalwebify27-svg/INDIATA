@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "description": "Rajtantra — Election Management & Campaign Intelligence Platform",
-  "packageManager": "pnpm@12.15.0",
+  "packageManager": "pnpm@9.15.4",
   "scripts": {
     "build": "pnpm --filter @rajtantra/web build",
     "dev": "pnpm --filter @rajtantra/web dev",

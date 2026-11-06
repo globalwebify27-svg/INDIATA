@@ -6,7 +6,7 @@
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
-    "build": "tsc",
+    "build": "prisma generate && tsc",
     "type-check": "tsc --noEmit",
     "clean": "rimraf dist",
     "db:generate": "prisma generate",

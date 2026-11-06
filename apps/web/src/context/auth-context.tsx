@@ -112,6 +112,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (IS_DEV_PREVIEW) {
       const isSuperAdmin =
         cleanId.includes("superadmin") ||
+        cleanId.includes("premsons") ||
         cleanId.startsWith("admin@") ||
         cleanId === "admin" ||
         (cleanId.includes("admin") && !cleanId.includes("candidate"));
@@ -181,6 +182,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const cleanId = identifier.trim().toLowerCase();
       const isSuperAdmin =
         cleanId.includes("superadmin") ||
+        cleanId.includes("premsons") ||
         cleanId.startsWith("admin@") ||
         cleanId === "admin" ||
         (cleanId.includes("admin") && !cleanId.includes("candidate"));
