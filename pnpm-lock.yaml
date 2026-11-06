@@ -47,6 +47,9 @@ importers:
       '@rajtantra/database':
         specifier: workspace:*
         version: link:../../packages/database
+      '@rajtantra/rbac':
+        specifier: workspace:*
+        version: link:../../packages/rbac
       bcryptjs:
         specifier: ^3.0.2
         version: 3.0.3
