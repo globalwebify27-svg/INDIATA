@@ -17,7 +17,6 @@ import {
   RefreshCw,
   Search,
   CheckCircle2,
-  UserPlus,
 } from "lucide-react";
 import { useAuth } from "@/context/auth-context";
 import { useToast } from "@/context/toast-context";
@@ -234,11 +233,11 @@ export default function CandidateWarRoomDashboard() {
           </button>
 
           <Link
-            href="/voters"
+            href="/candidate/voters"
             className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold shadow-xs transition-all cursor-pointer"
           >
-            <UserPlus className="w-3.5 h-3.5" />
-            <span>+ Register Elector</span>
+            <Users className="w-3.5 h-3.5" />
+            <span>Total Voters Roll</span>
           </Link>
         </div>
       </section>
@@ -259,7 +258,7 @@ export default function CandidateWarRoomDashboard() {
           </div>
         </div>
 
-        <Link href="/field-map" className="shrink-0 self-end sm:self-center">
+        <Link href="/candidate/field-map" className="shrink-0 self-end sm:self-center">
           <button
             type="button"
             className="whitespace-nowrap px-3.5 py-1.5 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl text-xs transition-colors shadow-xs flex items-center gap-1.5 cursor-pointer active:scale-95"
@@ -647,7 +646,7 @@ export default function CandidateWarRoomDashboard() {
           {/* Bottom Action Button matching Reference 1 */}
           <div className="mt-4 pt-2">
             <Link
-              href="/ai/assistant"
+              href="/candidate/strategy"
               className="w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl text-xs transition-colors shadow-md shadow-brand-600/20 active:scale-98 cursor-pointer"
             >
               <span>Open Strategy Bot Analytics</span>
@@ -693,7 +692,7 @@ export default function CandidateWarRoomDashboard() {
             </select>
 
             <Link
-              href="/voters"
+              href="/candidate/voters"
               className="text-xs font-semibold text-brand-600 hover:underline flex items-center gap-1 ml-2"
             >
               <span>Filter Total Voters by Booth</span>
@@ -792,7 +791,7 @@ export default function CandidateWarRoomDashboard() {
                     </div>
                   </td>
                   <td className="py-3 px-4 text-right">
-                    <Link href={`/voters?booth=${encodeURIComponent(row.boothNumber)}`}>
+                    <Link href={`/candidate/voters?booth=${encodeURIComponent(row.boothNumber)}`}>
                       <button
                         type="button"
                         className="px-2.5 py-1 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-brand-500 hover:bg-brand-50 hover:text-brand-700 text-slate-700 dark:text-slate-300 font-semibold text-[11px] transition-colors cursor-pointer"
@@ -823,7 +822,7 @@ export default function CandidateWarRoomDashboard() {
                 </p>
               </div>
               <Link
-                href="/campaigns"
+                href="/candidate/campaigns"
                 className="text-xs font-semibold text-brand-600 hover:underline"
               >
                 Manage Campaigns
@@ -912,7 +911,7 @@ export default function CandidateWarRoomDashboard() {
                 </p>
               </div>
               <Link
-                href="/office/tickets"
+                href="/candidate/office"
                 className="text-xs font-semibold text-brand-600 hover:underline"
               >
                 Open Ticket Desk
@@ -1007,7 +1006,7 @@ export default function CandidateWarRoomDashboard() {
             </p>
           </div>
           <Link
-            href="/voters"
+            href="/candidate/voters"
             className="text-xs font-semibold text-brand-600 hover:underline flex items-center gap-1"
           >
             <span>Explore Full Board</span>

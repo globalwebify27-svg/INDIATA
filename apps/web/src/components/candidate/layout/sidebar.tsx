@@ -8,7 +8,6 @@ import {
   MapPin,
   AlertCircle,
   Users,
-  UserCheck,
   BookOpen,
   Filter,
   FileEdit,
@@ -21,6 +20,7 @@ import {
   Bot,
   CreditCard,
   BarChart3,
+  Settings,
   ChevronLeft,
   ChevronRight,
   LogOut,
@@ -58,22 +58,22 @@ export const NAV_GROUPS: NavGroupConfig[] = [
       {
         key: "dashboard",
         label: "War Room Dashboard",
-        href: "/dashboard",
+        href: "/candidate",
         icon: LayoutDashboard,
       },
       {
         key: "field-map",
         label: "Live Field Map",
-        href: "/field-map",
+        href: "/candidate/field-map",
         icon: MapPin,
         pulseDot: true,
       },
       {
         key: "tickets",
         label: "Office & Issues",
-        href: "/office/tickets",
+        href: "/candidate/office",
         icon: AlertCircle,
-        badge: 2,
+        badge: 4,
         badgeType: "warning",
       },
     ],
@@ -84,33 +84,19 @@ export const NAV_GROUPS: NavGroupConfig[] = [
       {
         key: "voters",
         label: "Total Voters",
-        href: "/voters",
+        href: "/candidate/voters",
         icon: Users,
-      },
-      {
-        key: "voter-profile",
-        label: "Central Voter Profile",
-        href: "/voters/profile",
-        icon: UserCheck,
       },
       {
         key: "phonebook",
         label: "Phone Book",
-        href: "/voters/phonebook",
+        href: "/candidate/phonebook",
         icon: BookOpen,
-      },
-      {
-        key: "requests",
-        label: "Voter Update Requests",
-        href: "/voters/requests",
-        icon: FileEdit,
-        badge: 14,
-        badgeType: "warning",
       },
       {
         key: "filters",
         label: "Filters & Segmentation",
-        href: "/voters/filters",
+        href: "/candidate/filters",
         icon: Filter,
       },
     ],
@@ -121,72 +107,86 @@ export const NAV_GROUPS: NavGroupConfig[] = [
       {
         key: "users",
         label: "Users & Karyakarta",
-        href: "/users",
+        href: "/candidate/users",
         icon: Users,
         pulseDot: true,
       },
       {
+        key: "members",
+        label: "Members & Cadre",
+        href: "/candidate/members",
+        icon: BadgeCheck,
+      },
+      {
+        key: "requests",
+        label: "Field Update Requests",
+        href: "/candidate/update-requests",
+        icon: FileEdit,
+        badge: 14,
+        badgeType: "warning",
+      },
+      {
         key: "blo",
         label: "BLO Information",
-        href: "/blo",
+        href: "/candidate/blo",
         icon: Shield,
       },
       {
         key: "booths",
         label: "Booth Management",
-        href: "/booths",
+        href: "/candidate/booths",
         icon: Vote,
       },
       {
-        key: "members",
-        label: "Members & Cadre",
-        href: "/members",
-        icon: BadgeCheck,
-      },
-      {
         key: "activities",
-        label: "User Activities",
-        href: "/users/activities",
+        label: "User Activities Audit",
+        href: "/candidate/activities",
         icon: Activity,
       },
     ],
   },
   {
-    groupTitle: "CAMPAIGN & PLANS",
+    groupTitle: "CAMPAIGN & STRATEGY",
     items: [
       {
         key: "campaigns",
         label: "Campaign Control",
-        href: "/campaigns",
+        href: "/candidate/campaigns",
         icon: Megaphone,
       },
       {
         key: "ai-calling",
         label: "AI Calling Outreach",
-        href: "/ai/calling",
+        href: "/candidate/ai/calling",
         icon: PhoneCall,
         badge: "AI",
         badgeType: "violet",
       },
       {
-        key: "ai-assistant",
-        label: "AI Strategy Advisor",
-        href: "/ai/assistant",
+        key: "strategy",
+        label: "Previous Election & Strategy",
+        href: "/candidate/strategy",
         icon: Bot,
-        badge: "Bot",
+        badge: "AI",
         badgeType: "violet",
-      },
-      {
-        key: "subscriptions",
-        label: "Subscription Plans",
-        href: "/subscriptions",
-        icon: CreditCard,
       },
       {
         key: "reports",
         label: "Reports & Analytics",
-        href: "/reports",
+        href: "/candidate/reports",
         icon: BarChart3,
+      },
+      {
+        key: "subscriptions",
+        label: "Subscription Plans",
+        href: "/candidate/subscriptions",
+        icon: CreditCard,
+      },
+      {
+        key: "settings",
+        label: "Portal & Party Settings",
+        href: "/candidate/settings",
+        icon: Settings,
       },
     ],
   },
@@ -223,10 +223,16 @@ export function Sidebar({
   }, [mobileOpen]);
 
   const isItemActive = (href: string) => {
-    if (href === "/dashboard") {
-      return pathname === "/dashboard" || pathname === "/";
+    if (href === "/candidate") {
+      return pathname === "/candidate" || pathname === "/dashboard" || pathname === "/";
     }
-    return pathname === href || pathname.startsWith(href + "/");
+    const cleanHref = href.replace("/candidate", "");
+    return (
+      pathname === href ||
+      pathname.startsWith(href + "/") ||
+      pathname === cleanHref ||
+      (cleanHref !== "" && pathname.startsWith(cleanHref + "/"))
+    );
   };
 
   const candidateInitials = user?.name

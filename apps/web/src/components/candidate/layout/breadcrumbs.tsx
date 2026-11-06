@@ -20,7 +20,7 @@ export function Breadcrumbs({ items, currentPage }: BreadcrumbsProps) {
     <nav aria-label="Breadcrumb" className="flex items-center text-xs text-[#667085] dark:text-[#94A3B8]">
       <div className="flex items-center gap-1.5 flex-wrap">
         <Link
-          href="/dashboard"
+          href="/candidate"
           className="flex items-center gap-1 font-bold text-[#5146D8] dark:text-[#8B7CEF] hover:opacity-80 transition-opacity"
         >
           <ShieldCheck className="w-3.5 h-3.5" />

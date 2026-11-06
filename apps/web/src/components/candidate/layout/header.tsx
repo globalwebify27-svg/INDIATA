@@ -347,7 +347,7 @@ export function Header({
 
               <div className="py-1">
                 <Link
-                  href="/settings/organization"
+                  href="/candidate/settings"
                   onClick={() => setUserMenuOpen(false)}
                   className="flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
                 >
@@ -356,7 +356,7 @@ export function Header({
                 </Link>
 
                 <Link
-                  href="/settings"
+                  href="/candidate/settings"
                   onClick={() => setUserMenuOpen(false)}
                   className="flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
                 >
@@ -364,13 +364,13 @@ export function Header({
                   <span>Portal Settings</span>
                 </Link>
 
-                <a
-                  href={process.env.NEXT_PUBLIC_SUPERADMIN_URL || "http://localhost:3000"}
+                <Link
+                  href="/super-admin"
                   className="flex items-center gap-2.5 px-4 py-2 text-xs font-semibold text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-950/30 transition-colors"
                 >
                   <Shield className="w-4 h-4 text-purple-600 dark:text-purple-400" />
-                  <span>Super Admin Portal (Port 3000)</span>
-                </a>
+                  <span>Super Admin Portal</span>
+                </Link>
               </div>
 
               <div className="border-t border-slate-100 dark:border-slate-800 pt-1">
