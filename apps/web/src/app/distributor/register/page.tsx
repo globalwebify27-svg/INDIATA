@@ -88,9 +88,9 @@ export default function RegisterPage() {
                   Track Application Status
                 </Button>
               </Link>
-              <Link href="/distributor/login">
+              <Link href="/login">
                 <Button variant="outline" className="w-full">
-                  Return to Distributor Sign In
+                  Return to Central Sign In
                 </Button>
               </Link>
             </div>
@@ -242,7 +242,7 @@ export default function RegisterPage() {
           <div className="mt-6 pt-6 border-t border-slate-200 dark:border-slate-800 text-center">
             <p className="text-xs text-slate-600 dark:text-slate-400">
               Already registered as a franchise partner?{" "}
-              <Link href="/distributor/login" className="text-[#2087FE] font-semibold hover:underline">
+              <Link href="/login" className="text-[#2087FE] font-semibold hover:underline">
                 Sign In here
               </Link>
             </p>

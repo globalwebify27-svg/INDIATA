@@ -10,7 +10,7 @@ export default function DistributorEntryPage() {
 
   useEffect(() => {
     if (!isAuthenticated) {
-      router.replace("/distributor/login");
+      router.replace("/login");
     } else {
       router.replace("/distributor/dashboard");
     }

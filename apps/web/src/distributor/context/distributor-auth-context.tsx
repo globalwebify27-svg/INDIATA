@@ -39,8 +39,8 @@ export function DistributorAuthProvider({ children }: { children: ReactNode }) {
     if (!pathname.startsWith("/distributor")) return;
 
     if (!distributor) {
-      if (pathname !== "/distributor/login" && pathname !== "/distributor/register") {
-        router.push("/distributor/login");
+      if (pathname !== "/login" && pathname !== "/distributor/register") {
+        router.push("/login");
       }
       return;
     }
@@ -58,6 +58,7 @@ export function DistributorAuthProvider({ children }: { children: ReactNode }) {
       }
     } else if (distributor.status === DistributorStatus.ACTIVE) {
       if (
+        pathname === "/login" ||
         pathname === "/distributor/login" ||
         pathname === "/distributor/pending-approval" ||
         pathname === "/distributor/blocked"
@@ -128,7 +129,9 @@ export function DistributorAuthProvider({ children }: { children: ReactNode }) {
 
   const logout = () => {
     setDistributor(null);
-    router.push("/login");
+    if (typeof window !== "undefined") {
+      window.location.replace("/login");
+    }
   };
 
   const setMockAccount = (mockStatus: DistributorStatus) => {
