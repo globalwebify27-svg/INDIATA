@@ -9,6 +9,7 @@
     "dev": "pnpm --filter @rajtantra/web dev",
     "dev:all": "turbo run dev",
     "dev:candidate": "pnpm --filter @rajtantra/web-candidate dev",
+    "dev:distributor": "pnpm --filter @rajtantra/web-distributor dev",
     "dev:superadmin": "pnpm --filter @rajtantra/web-superadmin dev",
     "lint": "turbo run lint",
     "test": "turbo run test",

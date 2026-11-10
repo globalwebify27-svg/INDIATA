@@ -5,9 +5,13 @@
     "paths": {
       "@/*": ["./src/*"],
       "@rajtantra/common-types": ["../../packages/common-types/src"],
+      "@rajtantra/common-types/*": ["../../packages/common-types/src/*"],
       "@rajtantra/auth": ["../../packages/auth/src"],
+      "@rajtantra/auth/*": ["../../packages/auth/src/*"],
       "@rajtantra/rbac": ["../../packages/rbac/src"],
-      "@rajtantra/ui": ["../../packages/ui/src"]
+      "@rajtantra/rbac/*": ["../../packages/rbac/src/*"],
+      "@rajtantra/ui": ["../../packages/ui/src"],
+      "@rajtantra/ui/*": ["../../packages/ui/src/*"]
     },
     "plugins": [
       {

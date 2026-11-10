@@ -1,0 +1,24 @@
+{
+  "extends": "@rajtantra/config-typescript/nextjs.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@rajtantra/common-types": ["../../packages/common-types/src"],
+      "@rajtantra/common-types/*": ["../../packages/common-types/src/*"],
+      "@rajtantra/auth": ["../../packages/auth/src"],
+      "@rajtantra/auth/*": ["../../packages/auth/src/*"],
+      "@rajtantra/rbac": ["../../packages/rbac/src"],
+      "@rajtantra/rbac/*": ["../../packages/rbac/src/*"],
+      "@rajtantra/ui": ["../../packages/ui/src"],
+      "@rajtantra/ui/*": ["../../packages/ui/src/*"]
+    },
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
+  },
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "exclude": ["node_modules"]
+}

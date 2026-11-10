@@ -27,19 +27,41 @@ export default function CentralLoginPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
+  const isDistributorIdentifier = (id: string) => {
+    const clean = id.trim().toLowerCase();
+    if (!clean) return false;
+    return (
+      clean.includes("distributor") ||
+      clean.includes("franchise") ||
+      clean.includes("partner") ||
+      clean.startsWith("dis-") ||
+      clean.includes("mahamedia") ||
+      clean.includes("marathwada") ||
+      clean.includes("khandesh")
+    );
+  };
+
   const isSuperAdminIdentifier = (id: string) => {
     const clean = id.trim().toLowerCase();
     if (!clean) return false;
     return (
-      clean.includes("superadmin") ||
-      clean.includes("premsons") ||
-      clean.startsWith("admin@") ||
-      clean === "admin" ||
-      (clean.includes("admin") && !clean.includes("candidate"))
+      !isDistributorIdentifier(clean) &&
+      (clean.includes("superadmin") ||
+        clean.includes("premsons") ||
+        clean.startsWith("admin@") ||
+        clean === "admin" ||
+        (clean.includes("admin") && !clean.includes("candidate")))
     );
   };
 
+  const isCurrentDistributor = isDistributorIdentifier(identifier);
   const isCurrentSuperAdmin = isSuperAdminIdentifier(identifier);
+
+  const getTargetPortal = (id: string) => {
+    if (isDistributorIdentifier(id)) return { name: "Franchise Distributor Console", path: "/distributor/dashboard" };
+    if (isSuperAdminIdentifier(id)) return { name: "Super Admin Platform", path: "/super-admin" };
+    return { name: "Candidate War Room", path: "/candidate" };
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -65,20 +87,23 @@ export default function CentralLoginPage() {
     setIsSubmitting(true);
     try {
       const result = await login(cleanId, cleanPass);
-      const isSuper = isSuperAdminIdentifier(cleanId) || result?.user?.role === "SUPER_ADMIN";
+      const isDist = isDistributorIdentifier(cleanId) || result?.user?.role === "DISTRIBUTOR";
+      const isSuper = !isDist && (isSuperAdminIdentifier(cleanId) || result?.user?.role === "SUPER_ADMIN");
 
-      if (isSuper) {
+      if (isDist) {
+        showToast("success", "Franchise Distributor Authorized", "Redirecting to Regional Console...");
+        window.location.replace("/distributor/dashboard");
+      } else if (isSuper) {
         showToast("success", "Super Admin Authorized", "Redirecting to Super Admin Console...");
         window.location.replace("/super-admin");
       } else {
         showToast("success", "Candidate War Room Authorized", "Redirecting to Candidate Portal...");
         window.location.replace("/candidate");
       }
-    } catch (err: unknown) {
-      const isSuper = isSuperAdminIdentifier(cleanId);
-      const targetUrl = isSuper ? "/super-admin" : "/candidate";
-      showToast("info", "Opening Election Command", `Redirecting to ${isSuper ? "Super Admin" : "Candidate"} Portal...`);
-      window.location.replace(targetUrl);
+    } catch {
+      const target = getTargetPortal(cleanId);
+      showToast("info", "Opening Election Command", `Redirecting to ${target.name}...`);
+      window.location.replace(target.path);
     } finally {
       setIsSubmitting(false);
     }
@@ -104,6 +129,16 @@ export default function CentralLoginPage() {
     window.location.replace("/super-admin");
   };
 
+  const handleDirectLaunchDistributor = async () => {
+    setIsSubmitting(true);
+    try {
+      await login("distributor@mahamedia.com", "Rajtantra@2026");
+    } catch {
+      // Continue to target
+    }
+    window.location.replace("/distributor/dashboard");
+  };
+
   const handleUseCandidateDemo = () => {
     setIdentifier("candidate@rajtantra.in");
     setPassword("Rajtantra@2026");
@@ -112,6 +147,12 @@ export default function CentralLoginPage() {
 
   const handleUseSuperAdminDemo = () => {
     setIdentifier("superadmin@rajtantra.in");
+    setPassword("Rajtantra@2026");
+    setErrorMessage(null);
+  };
+
+  const handleUseDistributorDemo = () => {
+    setIdentifier("distributor@mahamedia.com");
     setPassword("Rajtantra@2026");
     setErrorMessage(null);
   };
@@ -221,40 +262,53 @@ export default function CentralLoginPage() {
 
               <Button
                 type="submit"
-                variant={isCurrentSuperAdmin ? "secondary" : "primary"}
+                variant={isCurrentDistributor ? "primary" : isCurrentSuperAdmin ? "secondary" : "primary"}
                 size="lg"
                 className={`w-full mt-2 font-semibold ${
-                  isCurrentSuperAdmin
+                  isCurrentDistributor
+                    ? "bg-[#2087FE] hover:bg-blue-600 text-white border-blue-600"
+                    : isCurrentSuperAdmin
                     ? "bg-purple-600 hover:bg-purple-700 text-white border-purple-600"
                     : ""
                 }`}
                 isLoading={isSubmitting}
               >
-                {isCurrentSuperAdmin
+                {isCurrentDistributor
+                  ? "Sign In to Franchise Distributor Console"
+                  : isCurrentSuperAdmin
                   ? "Sign In to Super Admin Platform"
                   : "Sign In to Candidate War Room"}
                 <ArrowRight className="w-4 h-4 ml-1.5" />
               </Button>
 
-              {/* Direct 1-Click Launch Entry */}
-              <div className="grid grid-cols-2 gap-2 mt-2.5">
+              {/* Direct 1-Click Launch Entry for All Portals (Unified Same Link) */}
+              <div className="grid grid-cols-3 gap-1.5 mt-2.5">
                 <button
                   type="button"
                   onClick={handleDirectLaunchCandidate}
                   disabled={isSubmitting}
-                  className="py-2.5 px-3 rounded-xl border border-brand-200 dark:border-brand-800 bg-brand-50/70 hover:bg-brand-100 dark:bg-brand-950/40 text-brand-700 dark:text-brand-300 text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-2xs"
+                  className="py-2.5 px-2 rounded-xl border border-brand-200 dark:border-brand-800 bg-brand-50/70 hover:bg-brand-100 dark:bg-brand-950/40 text-brand-700 dark:text-brand-300 text-[11px] font-bold transition-all flex flex-col items-center justify-center gap-1 cursor-pointer shadow-2xs text-center"
                 >
                   <BarChart3 className="w-3.5 h-3.5 text-brand-600" />
-                  <span>Candidate Portal</span>
+                  <span>Candidate</span>
                 </button>
                 <button
                   type="button"
                   onClick={handleDirectLaunchSuperAdmin}
                   disabled={isSubmitting}
-                  className="py-2.5 px-3 rounded-xl border border-purple-200 dark:border-purple-800 bg-purple-50/70 hover:bg-purple-100 dark:bg-purple-950/40 text-purple-700 dark:text-purple-300 text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-2xs"
+                  className="py-2.5 px-2 rounded-xl border border-purple-200 dark:border-purple-800 bg-purple-50/70 hover:bg-purple-100 dark:bg-purple-950/40 text-purple-700 dark:text-purple-300 text-[11px] font-bold transition-all flex flex-col items-center justify-center gap-1 cursor-pointer shadow-2xs text-center"
                 >
                   <Shield className="w-3.5 h-3.5 text-purple-600" />
-                  <span>Super Admin Portal</span>
+                  <span>Super Admin</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={handleDirectLaunchDistributor}
+                  disabled={isSubmitting}
+                  className="py-2.5 px-2 rounded-xl border border-blue-200 dark:border-blue-800 bg-blue-50/70 hover:bg-blue-100 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 text-[11px] font-bold transition-all flex flex-col items-center justify-center gap-1 cursor-pointer shadow-2xs text-center"
+                >
+                  <span className="w-3.5 h-3.5 rounded-full bg-blue-500 text-[9px] text-white flex items-center justify-center font-bold">D</span>
+                  <span>Distributor</span>
                 </button>
               </div>
             </form>
@@ -268,48 +322,64 @@ export default function CentralLoginPage() {
                 </span>
               </div>
 
-              <div className="grid grid-cols-2 gap-2 mb-2">
+              <div className="grid grid-cols-3 gap-1.5 mb-2">
                 <button
                   type="button"
                   onClick={handleUseCandidateDemo}
-                  className={`px-2.5 py-2 rounded-xl border text-xs font-semibold transition-all cursor-pointer text-left ${
-                    !isCurrentSuperAdmin && identifier.length > 0
+                  className={`px-2 py-2 rounded-xl border text-[11px] font-semibold transition-all cursor-pointer text-left ${
+                    !isCurrentSuperAdmin && !isCurrentDistributor && identifier.length > 0
                       ? "border-brand-500 bg-brand-100/70 dark:bg-brand-900/40 text-brand-800 dark:text-brand-200"
                       : "border-brand-200 dark:border-brand-900 bg-brand-50/70 hover:bg-brand-100 dark:bg-brand-950/40 text-brand-700 dark:text-brand-300"
                   }`}
                 >
-                  <div className="text-[10px] text-brand-500 font-bold uppercase">War Room</div>
-                  Candidate Admin
+                  <div className="text-[9px] text-brand-500 font-bold uppercase truncate">War Room</div>
+                  <div className="truncate">Candidate</div>
                 </button>
                 <button
                   type="button"
                   onClick={handleUseSuperAdminDemo}
-                  className={`px-2.5 py-2 rounded-xl border text-xs font-semibold transition-all cursor-pointer text-left ${
+                  className={`px-2 py-2 rounded-xl border text-[11px] font-semibold transition-all cursor-pointer text-left ${
                     isCurrentSuperAdmin
                       ? "border-purple-500 bg-purple-100/70 dark:bg-purple-900/40 text-purple-800 dark:text-purple-200"
                       : "border-purple-200 dark:border-purple-900 bg-purple-50/70 hover:bg-purple-100 dark:bg-purple-950/40 text-purple-700 dark:text-purple-300"
                   }`}
                 >
-                  <div className="text-[10px] text-purple-500 font-bold uppercase">Platform Console</div>
-                  Super Admin
+                  <div className="text-[9px] text-purple-500 font-bold uppercase truncate">Platform</div>
+                  <div className="truncate">Super Admin</div>
+                </button>
+                <button
+                  type="button"
+                  onClick={handleUseDistributorDemo}
+                  className={`px-2 py-2 rounded-xl border text-[11px] font-semibold transition-all cursor-pointer text-left ${
+                    isCurrentDistributor
+                      ? "border-blue-500 bg-blue-100/70 dark:bg-blue-900/40 text-blue-800 dark:text-blue-200"
+                      : "border-blue-200 dark:border-blue-900 bg-blue-50/70 hover:bg-blue-100 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300"
+                  }`}
+                >
+                  <div className="text-[9px] text-blue-500 font-bold uppercase truncate">Franchise</div>
+                  <div className="truncate">Distributor</div>
                 </button>
               </div>
 
               <div className="bg-slate-50 dark:bg-slate-800/60 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-[11.5px] space-y-1 text-slate-700 dark:text-slate-300">
                 <div className="flex justify-between">
                   <span className="text-slate-400">Active Identifier:</span>
-                  <span className="font-mono font-medium">{identifier || "Select above"}</span>
+                  <span className="font-mono font-medium truncate max-w-[200px]">{identifier || "Select role above"}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-slate-400">Target Destination:</span>
                   <span
                     className={`font-semibold ${
-                      isCurrentSuperAdmin
+                      isCurrentDistributor
+                        ? "text-blue-600 dark:text-blue-400"
+                        : isCurrentSuperAdmin
                         ? "text-purple-600 dark:text-purple-400"
                         : "text-brand-600 dark:text-brand-400"
                     }`}
                   >
-                    {isCurrentSuperAdmin
+                    {isCurrentDistributor
+                      ? "Distributor Console (/distributor)"
+                      : isCurrentSuperAdmin
                       ? "Super Admin Platform (/super-admin)"
                       : "Candidate War Room (/candidate)"}
                   </span>

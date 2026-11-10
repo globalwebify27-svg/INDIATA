@@ -3,6 +3,7 @@ packages:
   - 'apps/web'
   - 'apps/web-superadmin'
   - 'apps/web-candidate'
+  - 'apps/web-distributor'
   - 'apps/api-core'
   - 'packages/*'
 allowBuilds:

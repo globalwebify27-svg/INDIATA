@@ -1,0 +1,75 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-brand-50: #f4f6fc;
+  --color-brand-100: #e8edf9;
+  --color-brand-200: #d1ddf4;
+  --color-brand-300: #a7bfea;
+  --color-brand-400: #759bdd;
+  --color-brand-500: #4e7acc;
+  --color-brand-600: #2554a8;
+  --color-brand-700: #1b4188;
+  --color-brand-800: #17366f;
+  --color-brand-900: #152e5a;
+  --color-brand-950: #0c1a34;
+
+  --shadow-premium-xs: 0 1px 2px 0 rgba(15, 23, 42, 0.04);
+  --shadow-premium-sm: 0 1px 3px 0 rgba(15, 23, 42, 0.06), 0 1px 2px -1px rgba(15, 23, 42, 0.04);
+  --shadow-premium-md: 0 4px 12px -2px rgba(15, 23, 42, 0.06), 0 2px 6px -2px rgba(15, 23, 42, 0.03);
+  --shadow-premium-lg: 0 10px 25px -3px rgba(15, 23, 42, 0.08), 0 4px 10px -4px rgba(15, 23, 42, 0.03);
+
+  --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
+  --font-devanagari: 'Noto Sans Devanagari', 'Inter', system-ui, sans-serif;
+}
+
+:root {
+  --header-height: 64px;
+  --sidebar-width: 256px;
+  --sidebar-collapsed-width: 80px;
+
+  --background: #f8fafc;
+  --foreground: #1e293b;
+  --card: #ffffff;
+  --card-foreground: #0f172a;
+
+  /* Primary Blue Identity */
+  --primary: #2087FE;
+  --primary-hover: #1A6ED1;
+  --primary-light: #E0EDFE;
+
+  /* Executive Navy Identity */
+  --secondary: #010627;
+  --secondary-hover: #072439;
+
+  /* Success Green */
+  --success: #12CF94;
+  --success-dark: #01C588;
+
+  /* Warning Orange */
+  --warning: #FC7C36;
+}
+
+.dark {
+  --background: #090f1d;
+  --foreground: #f1f5f9;
+  --card: #0d1527;
+  --card-foreground: #f8fafc;
+
+  --primary: #0D79FD;
+  --primary-hover: #0b66d4;
+  --primary-light: #0e3554;
+
+  --secondary: #072439;
+  --secondary-hover: #0e3554;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}

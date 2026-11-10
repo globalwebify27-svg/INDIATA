@@ -39,6 +39,8 @@ enum DistributorStatus {
   ACTIVE
   INACTIVE
   SUSPENDED
+  PENDING
+  REJECTED
 }
 
 model Organization {

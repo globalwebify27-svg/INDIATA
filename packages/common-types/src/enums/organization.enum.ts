@@ -25,4 +25,6 @@ export enum DistributorStatus {
   ACTIVE = "ACTIVE",
   INACTIVE = "INACTIVE",
   SUSPENDED = "SUSPENDED",
+  PENDING = "PENDING",
+  REJECTED = "REJECTED",
 }
