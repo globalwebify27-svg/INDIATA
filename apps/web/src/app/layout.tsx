@@ -5,8 +5,8 @@ import { ToastProvider } from "@/context/toast-context";
 import { AuthProvider } from "@/context/auth-context";
 
 export const metadata: Metadata = {
-  title: "INDIATA Election OS — Rajtantra Platform Console",
-  description: "Institutional Election Management & Campaign Intelligence Platform",
+  title: "INDIATA | Central Platform SSO v5.0 — Enterprise Election Intelligence",
+  description: "Enterprise Election Intelligence & Campaign War Room Platform",
   icons: {
     icon: "/favicon.ico",
   },
