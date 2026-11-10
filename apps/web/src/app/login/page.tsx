@@ -18,11 +18,12 @@ import {
   Headphones,
   BadgeAlert,
   Send,
+  Users,
 } from "lucide-react";
 import { useAuth } from "@/context/auth-context";
 import { useToast } from "@/context/toast-context";
 
-type PortalType = "candidate" | "superadmin" | "distributor";
+type PortalType = "candidate" | "superadmin" | "distributor" | "karyakarta";
 type AuthTabType = "password" | "otp";
 
 export default function CentralLoginPage() {
@@ -54,11 +55,24 @@ export default function CentralLoginPage() {
     );
   };
 
+  const isKaryakartaId = (id: string) => {
+    const clean = id.trim().toLowerCase();
+    if (!clean) return false;
+    return (
+      clean.includes("karyakarta") ||
+      clean.includes("volunteer") ||
+      clean.includes("cadre") ||
+      clean.startsWith("kar-") ||
+      clean.startsWith("vol-")
+    );
+  };
+
   const isSuperAdminId = (id: string) => {
     const clean = id.trim().toLowerCase();
     if (!clean) return false;
     return (
       !isDistributorId(clean) &&
+      !isKaryakartaId(clean) &&
       (clean.includes("superadmin") ||
         clean.includes("premsons") ||
         clean.startsWith("admin@") ||
@@ -72,6 +86,8 @@ export default function CentralLoginPage() {
     const clean = val.toLowerCase();
     if (isDistributorId(clean)) {
       setActivePortal("distributor");
+    } else if (isKaryakartaId(clean)) {
+      setActivePortal("karyakarta");
     } else if (isSuperAdminId(clean)) {
       setActivePortal("superadmin");
     } else if (clean.includes("candidate") || clean.includes("war")) {
@@ -104,6 +120,18 @@ export default function CentralLoginPage() {
           iconColor: "text-blue-700",
           path: "/distributor/dashboard",
           color: "blue",
+        };
+      case "karyakarta":
+        return {
+          title: "Field Karyakarta & Booth Cadre Console (/karyakarta/dashboard)",
+          target: "Karyakarta Field Portal (/karyakarta/dashboard)",
+          tier: "Tier 4",
+          badgeBg: "bg-emerald-50 border-emerald-200 text-emerald-900",
+          pingColor: "bg-emerald-500",
+          dotColor: "bg-emerald-600",
+          iconColor: "text-emerald-700",
+          path: "/karyakarta/dashboard",
+          color: "emerald",
         };
       case "superadmin":
       default:
@@ -161,11 +189,15 @@ export default function CentralLoginPage() {
     try {
       const result = await login(cleanId, cleanPass);
       const isDist = isDistributorId(cleanId) || result?.user?.role === "DISTRIBUTOR" || activePortal === "distributor";
-      const isSuper = !isDist && (isSuperAdminId(cleanId) || result?.user?.role === "SUPER_ADMIN" || activePortal === "superadmin");
+      const isKar = !isDist && (isKaryakartaId(cleanId) || result?.user?.role === "KARYAKARTA" || activePortal === "karyakarta");
+      const isSuper = !isDist && !isKar && (isSuperAdminId(cleanId) || result?.user?.role === "SUPER_ADMIN" || activePortal === "superadmin");
 
       if (isDist) {
         showToast("success", "INDIATA Franchise Authorized", "Launching Regional Franchise Console...");
         window.location.replace("/distributor/dashboard");
+      } else if (isKar) {
+        showToast("success", "INDIATA Karyakarta Authorized", "Launching Field Cadre Console...");
+        window.location.replace("/karyakarta/dashboard");
       } else if (isSuper) {
         showToast("success", "INDIATA Super Admin Clearance", "Launching Master Platform Command...");
         window.location.replace("/super-admin");
@@ -623,8 +655,8 @@ export default function CentralLoginPage() {
               </div>
             </div>
 
-            {/* Segmented 3-Button Destination Launcher */}
-            <div className="grid grid-cols-3 gap-2">
+            {/* Segmented 4-Button Destination Launcher */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
               <button
                 type="button"
                 onClick={() => {
@@ -690,6 +722,28 @@ export default function CentralLoginPage() {
                 <p className="text-xs font-bold text-slate-800">Distributor</p>
                 <p className="text-[10px] text-slate-500 leading-tight">Franchise Desk</p>
               </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setActivePortal("karyakarta");
+                  handleDirectLaunch("/karyakarta/dashboard", "karyakarta@indiata.in");
+                }}
+                className={`p-2.5 rounded-lg border text-left transition-all cursor-pointer group ${
+                  activePortal === "karyakarta"
+                    ? "border-2 border-emerald-500 bg-emerald-50/70 shadow-sm"
+                    : "border-slate-200 bg-white hover:bg-slate-50"
+                }`}
+              >
+                <div className="flex items-center justify-between mb-1">
+                  <Users className="w-4 h-4 text-emerald-600 group-hover:scale-110 transition-transform" />
+                  <span className="text-[9px] font-mono px-1 py-0.5 rounded bg-emerald-50 text-emerald-700 font-semibold">
+                    /karyakarta
+                  </span>
+                </div>
+                <p className="text-xs font-bold text-slate-800">Karyakarta</p>
+                <p className="text-[10px] text-slate-500 leading-tight">Field Cadre</p>
+              </button>
             </div>
 
             {/* Development & QA 1-Click Role Switcher Drawer */}
@@ -702,7 +756,7 @@ export default function CentralLoginPage() {
                 <span className="text-[10px] font-mono text-slate-400">DEMO READY</span>
               </div>
 
-              <div className="grid grid-cols-3 gap-1.5">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
                 <button
                   type="button"
                   onClick={() => fillCredentials("candidate@indiata.in", "Rajtantra@2026", "candidate")}
@@ -739,7 +793,20 @@ export default function CentralLoginPage() {
                   }`}
                   title="distributor@mahamedia.com"
                 >
-                  Franchise Partner
+                  Franchise Desk
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => fillCredentials("karyakarta@indiata.in", "Rajtantra@2026", "karyakarta")}
+                  className={`px-2 py-1.5 rounded-md text-[11px] text-center transition-all truncate cursor-pointer ${
+                    activePortal === "karyakarta"
+                      ? "bg-emerald-100 text-emerald-900 border border-emerald-300 font-bold"
+                      : "bg-white text-slate-700 border border-slate-200 hover:border-emerald-400 hover:text-emerald-700 font-medium"
+                  }`}
+                  title="karyakarta@indiata.in"
+                >
+                  Field Cadre
                 </button>
               </div>
 
@@ -758,6 +825,8 @@ export default function CentralLoginPage() {
                       ? "text-purple-700"
                       : activePortal === "distributor"
                       ? "text-blue-700"
+                      : activePortal === "karyakarta"
+                      ? "text-emerald-700"
                       : "text-cyan-700"
                   }`}>
                     {targetInfo.target}
