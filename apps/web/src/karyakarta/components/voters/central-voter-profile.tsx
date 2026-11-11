@@ -257,7 +257,7 @@ export function CentralVoterProfile({
             {onOpenSurvey && (
               <button
                 onClick={() => onOpenSurvey(voter)}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs shadow-sm transition-colors cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#2087FE] hover:bg-blue-600 text-white font-bold text-xs shadow-sm transition-colors cursor-pointer"
               >
                 <FileText className="w-3.5 h-3.5" />
                 <span>Conduct Doorstep Survey</span>
@@ -468,7 +468,7 @@ export function CentralVoterProfile({
                   </div>
                   <div className="flex justify-between">
                     <span className="text-slate-500">Assembly:</span>
-                    <span className="font-bold text-purple-600">215 - Kasba Peth</span>
+                    <span className="font-bold text-[#2087FE]">215 - Kasba Peth</span>
                   </div>
                 </div>
               </div>

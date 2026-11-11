@@ -96,7 +96,7 @@ export function KaryakartaCharts({ stats, booths }: KaryakartaChartsProps) {
         <div>
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
-              <div className="p-2 rounded-xl bg-purple-50 dark:bg-purple-950/40 text-purple-600">
+              <div className="p-2 rounded-xl bg-blue-50 dark:bg-blue-950/40 text-[#2087FE]">
                 <PieChart className="w-4 h-4" />
               </div>
               <div>
@@ -108,7 +108,7 @@ export function KaryakartaCharts({ stats, booths }: KaryakartaChartsProps) {
                 </p>
               </div>
             </div>
-            <span className="text-xs font-mono font-bold text-purple-600 dark:text-purple-400">
+            <span className="text-xs font-mono font-bold text-[#2087FE] dark:text-blue-400">
               {stats.surveysCompleted} Classified
             </span>
           </div>

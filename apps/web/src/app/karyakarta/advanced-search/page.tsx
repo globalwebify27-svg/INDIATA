@@ -254,7 +254,7 @@ export default function AdvancedSearchPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
-            <SlidersHorizontal className="w-6 h-6 text-purple-600" />
+            <SlidersHorizontal className="w-6 h-6 text-[#2087FE]" />
             <span>Advanced Search &amp; Multi-Tier Filter</span>
           </h1>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
@@ -274,7 +274,7 @@ export default function AdvancedSearchPage() {
 
           <button
             onClick={() => setIsDrawerOpen(true)}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs shadow-md shadow-purple-600/20 cursor-pointer transition-all"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#2087FE] hover:bg-blue-600 text-white font-bold text-xs shadow-md shadow-blue-600/20 cursor-pointer transition-all"
           >
             <Filter className="w-4 h-4" />
             <span>Configure Matrix Filter</span>

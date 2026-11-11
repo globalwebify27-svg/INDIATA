@@ -70,8 +70,8 @@ export function FamilyTreeModal({
         <div className="p-5 sm:p-6 space-y-6 max-h-[75vh] overflow-y-auto">
           {/* Level 1: Head of Family */}
           <div className="flex flex-col items-center">
-            <div className="p-4 rounded-2xl bg-gradient-to-b from-purple-50 to-indigo-50/60 dark:from-purple-950/40 dark:to-slate-800/80 border-2 border-purple-400 dark:border-purple-700 shadow-md max-w-md w-full relative">
-              <span className="absolute -top-3 left-4 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-purple-600 text-white flex items-center gap-1 shadow-xs">
+            <div className="p-4 rounded-2xl bg-gradient-to-b from-blue-50 to-indigo-50/60 dark:from-blue-950/40 dark:to-slate-800/80 border-2 border-blue-400 dark:border-blue-700 shadow-md max-w-md w-full relative">
+              <span className="absolute -top-3 left-4 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#2087FE] text-white flex items-center gap-1 shadow-xs">
                 <Crown className="w-3 h-3 text-amber-300" />
                 <span>Head of Household</span>
               </span>
@@ -81,7 +81,7 @@ export function FamilyTreeModal({
                   <h4 className="font-bold text-slate-900 dark:text-white text-sm">
                     {head.name}
                   </h4>
-                  <p className="text-xs text-purple-700 dark:text-purple-300 font-marathi">
+                  <p className="text-xs text-blue-700 dark:text-blue-300 font-marathi">
                     {head.marathiName}
                   </p>
                   <div className="mt-1 flex items-center gap-2 text-[11px] text-slate-600 dark:text-slate-400">
@@ -110,7 +110,7 @@ export function FamilyTreeModal({
                         onOpenSurvey(head);
                         onClose();
                       }}
-                      className="p-1.5 rounded-lg bg-purple-600 text-white hover:bg-purple-700 text-xs font-semibold cursor-pointer"
+                      className="p-1.5 rounded-lg bg-[#2087FE] text-white hover:bg-blue-600 text-xs font-semibold cursor-pointer"
                       title="Conduct Survey"
                     >
                       <FileText className="w-3.5 h-3.5" />

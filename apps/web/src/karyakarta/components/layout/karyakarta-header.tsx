@@ -36,8 +36,8 @@ export function KaryakartaHeader({ onOpenMobile }: KaryakartaHeaderProps) {
         </button>
 
         <div className="flex items-center gap-2">
-          <div className="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-purple-50 dark:bg-purple-950/50 text-[#6256d9] dark:text-purple-300 border border-purple-200/80 dark:border-purple-800/80">
-            <MapPin className="w-3.5 h-3.5 text-[#6256d9]" />
+          <div className="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#E0EDFE] dark:bg-blue-950/40 text-[#2087FE] dark:text-blue-300 border border-blue-200/80 dark:border-blue-800/80">
+            <MapPin className="w-3.5 h-3.5 text-[#2087FE]" />
             <span>{user?.constituencyName || "215 - Kasba Peth Assembly"}</span>
           </div>
 
@@ -59,11 +59,11 @@ export function KaryakartaHeader({ onOpenMobile }: KaryakartaHeaderProps) {
           <span>Search Voter</span>
         </Link>
 
-        {/* AI Assistant Quick Pill */}
+        {/* AI Assistant Quick Pill (Candidate Gradient) */}
         {user?.hasAiSeat && (
           <Link
             href="/karyakarta/ai-mode"
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-gradient-to-r from-[#493bbf] to-[#6256d9] hover:from-[#3e2db4] hover:to-[#5346c8] text-white shadow-xs transition-all"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-gradient-to-r from-[#2087FE] to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white shadow-xs transition-all"
           >
             <Sparkles className="w-3.5 h-3.5 text-cyan-300" />
             <span className="hidden sm:inline">AI Assistant</span>
@@ -79,7 +79,7 @@ export function KaryakartaHeader({ onOpenMobile }: KaryakartaHeaderProps) {
               onClick={() => setLanguage(lang)}
               className={`px-2 py-1 rounded-lg text-[10px] font-bold transition-all cursor-pointer ${
                 language === lang
-                  ? "bg-white dark:bg-slate-700 text-[#6256d9] dark:text-white shadow-xs"
+                  ? "bg-white dark:bg-slate-700 text-[#2087FE] dark:text-white shadow-xs"
                   : "text-slate-500 hover:text-slate-900 dark:hover:text-white"
               }`}
             >
@@ -98,9 +98,9 @@ export function KaryakartaHeader({ onOpenMobile }: KaryakartaHeaderProps) {
           <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-rose-500" />
         </button>
 
-        {/* Karyakarta Avatar & Name */}
+        {/* Karyakarta Avatar & Name (Candidate Gradient) */}
         <div className="flex items-center gap-2 pl-2 border-l border-slate-200 dark:border-slate-800">
-          <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-[#6256d9] to-purple-400 flex items-center justify-center font-bold text-xs text-white shadow-xs">
+          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 flex items-center justify-center font-bold text-xs text-white shadow-xs">
             {user?.name.slice(0, 2).toUpperCase() || "SM"}
           </div>
           <div className="hidden xl:block text-left text-xs">

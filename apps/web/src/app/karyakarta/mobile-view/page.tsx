@@ -160,13 +160,13 @@ export default function KaryakartaMobileViewSimulator() {
       {/* ========================================================= */}
       <header className="w-full max-w-5xl bg-slate-900 border border-slate-800 rounded-2xl p-4 mb-6 shadow-xl flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#FF6B00] via-indigo-600 to-[#6256D9] flex items-center justify-center font-black text-white shadow-md">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 flex items-center justify-center font-black text-white shadow-md">
             IN
           </div>
           <div>
             <div className="flex items-center gap-2">
               <h1 className="font-black text-base tracking-tight text-white">INDIATA Karyakarta</h1>
-              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#FF6B00]/20 text-[#FF6B00] border border-[#FF6B00]/30">
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#E0EDFE] text-[#2087FE] border border-blue-200/80 dark:bg-blue-950/40 dark:text-blue-300 dark:border-blue-800/80">
                 MOBILE PROTOTYPE
               </span>
             </div>
@@ -183,7 +183,7 @@ export default function KaryakartaMobileViewSimulator() {
               onClick={() => setDeviceFrame("iphone")}
               className={`px-3 py-1.5 rounded-lg font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
                 deviceFrame === "iphone"
-                  ? "bg-[#6256D9] text-white shadow-sm"
+                  ? "bg-[#2087FE] text-white shadow-sm"
                   : "text-slate-400 hover:text-white"
               }`}
             >
@@ -194,7 +194,7 @@ export default function KaryakartaMobileViewSimulator() {
               onClick={() => setDeviceFrame("android")}
               className={`px-3 py-1.5 rounded-lg font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
                 deviceFrame === "android"
-                  ? "bg-[#6256D9] text-white shadow-sm"
+                  ? "bg-[#2087FE] text-white shadow-sm"
                   : "text-slate-400 hover:text-white"
               }`}
             >
@@ -205,7 +205,7 @@ export default function KaryakartaMobileViewSimulator() {
               onClick={() => setDeviceFrame("clean")}
               className={`px-3 py-1.5 rounded-lg font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
                 deviceFrame === "clean"
-                  ? "bg-[#6256D9] text-white shadow-sm"
+                  ? "bg-[#2087FE] text-white shadow-sm"
                   : "text-slate-400 hover:text-white"
               }`}
             >
@@ -272,7 +272,7 @@ export default function KaryakartaMobileViewSimulator() {
                 if (mod.openAi) setCurrentTab("more");
               }
             }}
-            className="px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-slate-300 hover:text-white hover:border-[#6256D9] shrink-0 font-medium transition-colors cursor-pointer"
+            className="px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-slate-300 hover:text-white hover:border-[#2087FE] shrink-0 font-medium transition-colors cursor-pointer"
           >
             {mod.label}
           </button>
@@ -338,7 +338,7 @@ export default function KaryakartaMobileViewSimulator() {
             {!isActivated ? (
               <div className="p-6 flex flex-col justify-between min-h-full">
                 <div className="space-y-6 pt-4 text-center">
-                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-[#FF6B00] via-indigo-600 to-[#6256D9] mx-auto flex items-center justify-center shadow-lg shadow-indigo-600/30">
+                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 mx-auto flex items-center justify-center shadow-lg shadow-indigo-600/30">
                     <span className="text-2xl font-black text-white">IN</span>
                   </div>
 
@@ -354,7 +354,7 @@ export default function KaryakartaMobileViewSimulator() {
                       Candidate Organization
                     </div>
                     <div className="text-sm font-bold text-white flex items-center gap-1.5">
-                      <Building className="w-3.5 h-3.5 text-[#FF6B00]" />
+                      <Building className="w-3.5 h-3.5 text-[#2087FE]" />
                       <span>Anand Shinde Campaign</span>
                     </div>
                     <div className="text-xs text-slate-400">
@@ -374,7 +374,7 @@ export default function KaryakartaMobileViewSimulator() {
                         onChange={(e) => setActivationKey(e.target.value.toUpperCase())}
                         maxLength={6}
                         placeholder="e.g. K9X2B7"
-                        className="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-center text-lg font-mono font-black tracking-widest text-[#FF6B00] focus:border-[#6256D9] focus:outline-hidden"
+                        className="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-center text-lg font-mono font-black tracking-widest text-[#2087FE] focus:border-[#2087FE] focus:outline-hidden"
                       />
                     </div>
 
@@ -387,7 +387,7 @@ export default function KaryakartaMobileViewSimulator() {
                         value={mobilePhone}
                         onChange={(e) => setMobilePhone(e.target.value)}
                         placeholder="10-digit mobile"
-                        className="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-sm font-bold text-white focus:border-[#6256D9] focus:outline-hidden"
+                        className="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-sm font-bold text-white focus:border-[#2087FE] focus:outline-hidden"
                       />
                     </div>
 
@@ -401,7 +401,7 @@ export default function KaryakartaMobileViewSimulator() {
                   <div className="space-y-2 pt-2">
                     <button
                       onClick={() => setIsActivated(true)}
-                      className="w-full py-3 rounded-xl bg-gradient-to-r from-[#FF6B00] to-orange-600 hover:from-orange-600 hover:to-orange-700 font-bold text-sm text-white shadow-md transition-all cursor-pointer"
+                      className="w-full py-3 rounded-xl bg-gradient-to-r from-[#2087FE] to-indigo-600 hover:from-blue-600 hover:to-indigo-700 font-bold text-sm text-white shadow-md transition-all cursor-pointer"
                     >
                       Verify & Activate App (प्रवेश करा)
                     </button>
@@ -438,7 +438,7 @@ export default function KaryakartaMobileViewSimulator() {
                           <span>FIELD CADRE ACTIVE</span>
                         </span>
                         <span className="text-[10px] text-slate-300 font-bold flex items-center gap-1">
-                          <Building className="w-3 h-3 text-[#FF6B00]" />
+                          <Building className="w-3 h-3 text-[#2087FE]" />
                           <span>Anand Shinde</span>
                         </span>
                       </div>
@@ -483,7 +483,7 @@ export default function KaryakartaMobileViewSimulator() {
                     <div>
                       <div className="flex items-center justify-between mb-2">
                         <h3 className="text-xs font-black text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
-                          <Sliders className="w-3.5 h-3.5 text-[#FF6B00]" />
+                          <Sliders className="w-3.5 h-3.5 text-[#2087FE]" />
                           <span>Field Telemetry (15 Metrics)</span>
                         </h3>
                         {kpiFilter !== "all" && (
@@ -657,7 +657,7 @@ export default function KaryakartaMobileViewSimulator() {
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         placeholder="Search English / मराठी / EPIC / House..."
-                        className="w-full bg-slate-900 border border-slate-800 rounded-xl pl-9 pr-8 py-2.5 text-xs text-white placeholder-slate-500 focus:border-[#6256D9] focus:outline-hidden"
+                        className="w-full bg-slate-900 border border-slate-800 rounded-xl pl-9 pr-8 py-2.5 text-xs text-white placeholder-slate-500 focus:border-[#2087FE] focus:outline-hidden"
                       />
                       {searchQuery && (
                         <button
@@ -684,7 +684,7 @@ export default function KaryakartaMobileViewSimulator() {
                           onClick={() => setSelectedFilterChip(chip.id)}
                           className={`px-2.5 py-1 rounded-lg shrink-0 transition-all cursor-pointer ${
                             selectedFilterChip === chip.id
-                              ? "bg-[#6256D9] text-white shadow-xs"
+                              ? "bg-[#2087FE] text-white shadow-xs"
                               : "bg-slate-900 text-slate-400 hover:text-white border border-slate-800"
                           }`}
                         >
@@ -788,7 +788,7 @@ export default function KaryakartaMobileViewSimulator() {
                                   setSelectedVoter(voter);
                                   setActiveDossierTab("personal");
                                 }}
-                                className="px-2 py-1 rounded-lg bg-[#6256D9] hover:bg-indigo-600 text-white text-[10px] font-bold flex items-center gap-1 cursor-pointer"
+                                className="px-2 py-1 rounded-lg bg-[#2087FE] hover:bg-blue-600 text-white text-[10px] font-bold flex items-center gap-1 cursor-pointer"
                               >
                                 <span>Profile</span>
                                 <ChevronRight className="w-3 h-3" />
@@ -806,9 +806,9 @@ export default function KaryakartaMobileViewSimulator() {
                 {/* ------------------------------------------------------- */}
                 {currentTab === "surveys" && (
                   <div className="p-4 space-y-4">
-                    <div className="p-4 rounded-2xl bg-gradient-to-r from-purple-950 via-slate-900 to-indigo-950 border border-purple-800/50">
+                    <div className="p-4 rounded-2xl bg-gradient-to-r from-blue-950 via-slate-900 to-indigo-950 border border-blue-800/50">
                       <h3 className="text-sm font-black text-white flex items-center gap-1.5">
-                        <FileText className="w-4 h-4 text-purple-400" />
+                        <FileText className="w-4 h-4 text-[#2087FE]" />
                         <span>26-Question Doorstep Survey</span>
                       </h3>
                       <p className="text-[11px] text-slate-300 mt-1">
@@ -839,7 +839,7 @@ export default function KaryakartaMobileViewSimulator() {
                                 setSurveyModalVoter(voter);
                                 setSurveySentiment(voter.classification);
                               }}
-                              className="px-3 py-1.5 rounded-lg bg-[#FF6B00] hover:bg-orange-600 text-white text-xs font-bold shadow-xs cursor-pointer"
+                              className="px-3 py-1.5 rounded-lg bg-[#2087FE] hover:bg-blue-600 text-white text-xs font-bold shadow-xs cursor-pointer"
                             >
                               Conduct Survey
                             </button>
@@ -918,7 +918,7 @@ export default function KaryakartaMobileViewSimulator() {
                     <div className="p-4 rounded-2xl bg-gradient-to-r from-indigo-950 via-purple-950 to-slate-900 border border-indigo-800/60 shadow-lg space-y-3">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-[#FF6B00] to-indigo-600 flex items-center justify-center">
+                          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#2087FE] to-indigo-600 flex items-center justify-center">
                             <Sparkles className="w-4 h-4 text-white" />
                           </div>
                           <div>
@@ -940,7 +940,7 @@ export default function KaryakartaMobileViewSimulator() {
                             key={idx}
                             className={`p-2.5 rounded-xl ${
                               msg.sender === "user"
-                                ? "bg-[#6256D9] text-white ml-6 text-right"
+                                ? "bg-[#2087FE] text-white ml-6 text-right"
                                 : "bg-slate-900 text-slate-200 mr-4 border border-slate-800"
                             }`}
                           >
@@ -987,7 +987,7 @@ export default function KaryakartaMobileViewSimulator() {
                               key={l}
                               onClick={() => setLanguage(l)}
                               className={`px-2 py-0.5 rounded-md cursor-pointer ${
-                                language === l ? "bg-[#6256D9] text-white" : "text-slate-400"
+                                language === l ? "bg-[#2087FE] text-white" : "text-slate-400"
                               }`}
                             >
                               {l.toUpperCase()}
@@ -1033,7 +1033,7 @@ export default function KaryakartaMobileViewSimulator() {
                     key={tab.id}
                     onClick={() => setCurrentTab(tab.id as any)}
                     className={`flex flex-col items-center gap-0.5 py-1 px-3 rounded-xl transition-all cursor-pointer ${
-                      isActive ? "text-[#FF6B00]" : "text-slate-400 hover:text-slate-200"
+                      isActive ? "text-[#2087FE]" : "text-slate-400 hover:text-slate-200"
                     }`}
                   >
                     <IconComponent className={`w-4 h-4 ${isActive ? "stroke-[2.5]" : ""}`} />
@@ -1087,7 +1087,7 @@ export default function KaryakartaMobileViewSimulator() {
                       onClick={() => setActiveDossierTab(tab.id)}
                       className={`px-2.5 py-1 rounded-lg shrink-0 cursor-pointer ${
                         activeDossierTab === tab.id
-                          ? "bg-[#6256D9] text-white"
+                          ? "bg-[#2087FE] text-white"
                           : "text-slate-400 hover:text-white bg-slate-800/60"
                       }`}
                     >
@@ -1357,7 +1357,7 @@ export default function KaryakartaMobileViewSimulator() {
                     );
                     setSurveyModalVoter(null);
                   }}
-                  className="w-full py-3 rounded-xl bg-[#FF6B00] hover:bg-orange-600 font-bold text-xs text-white shadow-md cursor-pointer"
+                  className="w-full py-3 rounded-xl bg-[#2087FE] hover:bg-blue-600 font-bold text-xs text-white shadow-md cursor-pointer"
                 >
                   Save & Geotag Survey (जतन करा)
                 </button>

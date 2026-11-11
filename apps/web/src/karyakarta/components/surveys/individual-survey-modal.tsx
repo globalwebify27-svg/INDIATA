@@ -252,7 +252,7 @@ export function IndividualSurveyModal({
                 type="checkbox"
                 checked={isVisited}
                 onChange={(e) => setIsVisited(e.target.checked)}
-                className="w-4 h-4 text-purple-600 rounded border-slate-300 focus:ring-purple-500"
+                className="w-4 h-4 text-[#2087FE] rounded border-slate-300 focus:ring-[#2087FE]"
               />
               <span className="text-xs font-bold text-slate-800 dark:text-slate-200">
                 Mark as Visited (Doorstep completed)
@@ -316,7 +316,7 @@ export function IndividualSurveyModal({
           {/* Section 4: Government Schemes Availed */}
           <div>
             <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-1.5">
-              <Tag className="w-3.5 h-3.5 text-purple-600" />
+              <Tag className="w-3.5 h-3.5 text-[#2087FE]" />
               <span>Government Schemes Availed / Requested</span>
             </label>
             <div className="flex flex-wrap gap-1.5">
@@ -379,7 +379,7 @@ export function IndividualSurveyModal({
                 value={candidateHelp}
                 onChange={(e) => setCandidateHelp(e.target.value)}
                 placeholder="e.g. Medical aid, school admission, ration card"
-                className="w-full text-xs p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 focus:ring-2 focus:ring-purple-500 focus:outline-none"
+                className="w-full text-xs p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 focus:ring-2 focus:ring-[#2087FE] focus:outline-none"
               />
             </div>
 
@@ -392,7 +392,7 @@ export function IndividualSurveyModal({
                 value={remarks}
                 onChange={(e) => setRemarks(e.target.value)}
                 placeholder="e.g. Influential in Somwar Ali, visit again"
-                className="w-full text-xs p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 focus:ring-2 focus:ring-purple-500 focus:outline-none"
+                className="w-full text-xs p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 focus:ring-2 focus:ring-[#2087FE] focus:outline-none"
               />
             </div>
           </div>
@@ -410,7 +410,7 @@ export function IndividualSurveyModal({
             <button
               type="submit"
               disabled={isSubmitting}
-              className="inline-flex items-center gap-1.5 px-5 py-2 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-bold text-xs shadow-md shadow-purple-600/20 cursor-pointer transition-all disabled:opacity-60"
+              className="inline-flex items-center gap-1.5 px-5 py-2 rounded-xl bg-gradient-to-r from-[#2087FE] to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-bold text-xs shadow-md shadow-blue-500/20 cursor-pointer transition-all disabled:opacity-60"
             >
               <Save className="w-3.5 h-3.5" />
               <span>{isSubmitting ? "Saving Survey..." : "Save Doorstep Survey"}</span>

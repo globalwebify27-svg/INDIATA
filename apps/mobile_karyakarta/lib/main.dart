@@ -15,11 +15,11 @@ class IndiataKaryakartaApp extends StatelessWidget {
       theme: ThemeData(
         useMaterial3: true,
         brightness: Brightness.dark,
-        scaffoldBackgroundColor: const Color(0xFF030712), // Deep Black/Slate
+        scaffoldBackgroundColor: const Color(0xFF010627), // Candidate Obsidian Navy
         colorScheme: const ColorScheme.dark(
-          primary: Color(0xFFFF6B00), // INDIATA Saffron
-          secondary: Color(0xFF6256D9), // Indigo
-          surface: Color(0xFF0B1527), // Deep Navy
+          primary: Color(0xFF2087FE), // Candidate Electric Royal Blue
+          secondary: Color(0xFF12CF94), // Candidate Emerald Green
+          surface: Color(0xFF020817), // Candidate Deep Slate
         ),
       ),
       home: const MainMobileScaffold(),
@@ -222,14 +222,14 @@ class _MainMobileScaffoldState extends State<MainMobileScaffold> {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               decoration: BoxDecoration(
-                color: const Color(0xFFFF6B00).withOpacity(0.2),
+                color: const Color(0xFF2087FE).withOpacity(0.15),
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: const Color(0xFFFF6B00).withOpacity(0.4)),
+                border: Border.all(color: const Color(0xFF2087FE).withOpacity(0.35)),
               ),
               child: const Text(
                 "INDIATA",
                 style: TextStyle(
-                  color: Color(0xFFFF6B00),
+                  color: Color(0xFF2087FE),
                   fontWeight: FontWeight.w900,
                   fontSize: 12,
                   letterSpacing: 1.2,
@@ -375,7 +375,7 @@ class _MainMobileScaffoldState extends State<MainMobileScaffold> {
           backgroundColor: Colors.transparent,
           elevation: 0,
           type: BottomNavigationBarType.fixed,
-          selectedItemColor: const Color(0xFFFF6B00), // Saffron active
+          selectedItemColor: const Color(0xFF2087FE), // Candidate Electric Blue active
           unselectedItemColor: Colors.grey,
           selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 10),
           unselectedLabelStyle: const TextStyle(fontSize: 10),
@@ -440,7 +440,7 @@ class _ActivationScreenState extends State<ActivationScreen> {
                   height: 64,
                   decoration: BoxDecoration(
                     gradient: const LinearGradient(
-                      colors: [Color(0xFFFF6B00), Color(0xFF6256D9)],
+                      colors: [Color(0xFF2563EB), Color(0xFF4F46E5), Color(0xFF9333EA)],
                     ),
                     borderRadius: BorderRadius.circular(20),
                   ),
@@ -475,11 +475,11 @@ class _ActivationScreenState extends State<ActivationScreen> {
                   fontSize: 20,
                   letterSpacing: 4,
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFFFF6B00),
+                  color: Color(0xFF2087FE),
                 ),
                 decoration: InputDecoration(
                   filled: true,
-                  fillColor: const Color(0xFF0B1527),
+                  fillColor: const Color(0xFF020817),
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
                 ),
               ),
@@ -494,7 +494,7 @@ class _ActivationScreenState extends State<ActivationScreen> {
                 style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                 decoration: InputDecoration(
                   filled: true,
-                  fillColor: const Color(0xFF0B1527),
+                  fillColor: const Color(0xFF020817),
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
                 ),
               ),
@@ -504,7 +504,7 @@ class _ActivationScreenState extends State<ActivationScreen> {
               ElevatedButton(
                 onPressed: widget.onActivated,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFFF6B00),
+                  backgroundColor: const Color(0xFF2087FE),
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                 ),
@@ -790,7 +790,7 @@ class _VoterSearchScreenState extends State<VoterSearchScreen> {
                           onPressed: () {
                             _showDossierModal(context, v);
                           },
-                          child: const Text("Open 6-Tab Profile", style: TextStyle(fontSize: 11, color: Color(0xFFFF6B00))),
+                          child: const Text("Open 6-Tab Profile", style: TextStyle(fontSize: 11, color: Color(0xFF2087FE))),
                         ),
                       ],
                     ),
@@ -809,7 +809,7 @@ class _VoterSearchScreenState extends State<VoterSearchScreen> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: const Color(0xFF0B1527),
+      backgroundColor: const Color(0xFF020817),
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
       builder: (ctx) {
         return DefaultTabController(
@@ -826,8 +826,8 @@ class _VoterSearchScreenState extends State<VoterSearchScreen> {
                 ),
                 const TabBar(
                   isScrollable: true,
-                  indicatorColor: Color(0xFFFF6B00),
-                  labelColor: Color(0xFFFF6B00),
+                  indicatorColor: Color(0xFF2087FE),
+                  labelColor: Color(0xFF2087FE),
                   unselectedLabelColor: Colors.grey,
                   tabs: [
                     Tab(text: "1. Details"),
@@ -858,7 +858,7 @@ class _VoterSearchScreenState extends State<VoterSearchScreen> {
                           children: ["Supporter", "Doubtful", "Opponent", "Neutral"].map((s) {
                             return ListTile(
                               title: Text(s),
-                              trailing: voter.classification == s ? const Icon(Icons.check, color: Color(0xFFFF6B00)) : null,
+                              trailing: voter.classification == s ? const Icon(Icons.check, color: Color(0xFF2087FE)) : null,
                               onTap: () {
                                 voter.classification = s;
                                 widget.onVoterUpdated(voter);
@@ -938,7 +938,7 @@ class DoorstepSurveyScreen extends StatelessWidget {
                   onPressed: () {
                     onSurveyComplete(v.id, "Supporter");
                   },
-                  style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFFF6B00)),
+                  style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF2087FE)),
                   child: const Text("Conduct Survey", style: TextStyle(color: Colors.white, fontSize: 11)),
                 ),
               ],
@@ -966,7 +966,7 @@ class SlipsPrintScreen extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
-            color: const Color(0xFF0B1527),
+            color: const Color(0xFF020817),
             borderRadius: BorderRadius.circular(14),
             border: Border.all(color: Colors.blueAccent.withOpacity(0.3)),
           ),
@@ -993,7 +993,7 @@ class SlipsPrintScreen extends StatelessWidget {
           return Container(
             margin: const EdgeInsets.only(bottom: 10),
             padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(color: const Color(0xFF0B1527), borderRadius: BorderRadius.circular(14)),
+            decoration: BoxDecoration(color: const Color(0xFF020817), borderRadius: BorderRadius.circular(14)),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -1005,7 +1005,7 @@ class SlipsPrintScreen extends StatelessWidget {
                   ],
                 ),
                 IconButton(
-                  icon: const Icon(Icons.print, color: Color(0xFFFF6B00)),
+                  icon: const Icon(Icons.print, color: Color(0xFF2087FE)),
                   onPressed: () {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text("Slip sent to TP-5801 Bluetooth Printer for ${v.name}!")),

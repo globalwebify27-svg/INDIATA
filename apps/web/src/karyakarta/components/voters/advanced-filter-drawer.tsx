@@ -85,14 +85,14 @@ export function AdvancedFilterDrawer({
         {/* Header */}
         <div className="p-4 sm:p-5 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-xl bg-purple-50 dark:bg-purple-950/50 text-purple-600 border border-purple-200 dark:border-purple-800">
+            <div className="p-2 rounded-xl bg-[#E0EDFE] text-[#2087FE] border border-blue-200/80 dark:bg-blue-950/40 dark:text-blue-300 dark:border-blue-800/80">
               <SlidersHorizontal className="w-4 h-4" />
             </div>
             <div>
               <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-1.5">
                 <span>Advanced Search Filters</span>
                 {activeCount > 0 && (
-                  <span className="px-2 py-0.2 rounded-full bg-purple-600 text-white font-mono text-[10px]">
+                  <span className="px-2 py-0.2 rounded-full bg-[#2087FE] text-white font-mono text-[10px]">
                     {activeCount} Active
                   </span>
                 )}
@@ -186,7 +186,7 @@ export function AdvancedFilterDrawer({
                       }
                       className={`text-[10px] px-2 py-0.5 rounded-md border transition-colors cursor-pointer ${
                         isPresetActive
-                          ? "bg-purple-600 text-white border-purple-600"
+                          ? "bg-[#2087FE] text-white border-[#2087FE]"
                           : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700"
                       }`}
                     >
@@ -271,7 +271,7 @@ export function AdvancedFilterDrawer({
           {/* GROUP 4: FIELD OUTREACH & VISIT STATUS */}
           <div className="space-y-3 pt-3 border-t border-slate-100 dark:border-slate-800">
             <span className="font-bold text-[11px] text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
-              <CheckCircle2 className="w-3.5 h-3.5 text-purple-600" />
+              <CheckCircle2 className="w-3.5 h-3.5 text-[#2087FE]" />
               <span>4. Field Outreach Status</span>
             </span>
 
@@ -287,7 +287,7 @@ export function AdvancedFilterDrawer({
                   onClick={() => update({ visitedStatus: v.id as any })}
                   className={`py-1.5 px-2 rounded-lg text-xs font-semibold border transition-all cursor-pointer ${
                     filters.visitedStatus === v.id
-                      ? "bg-purple-600 text-white border-purple-600 shadow-xs"
+                      ? "bg-[#2087FE] text-white border-[#2087FE] shadow-xs"
                       : "bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700"
                   }`}
                 >
