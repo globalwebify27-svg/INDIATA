@@ -25,10 +25,10 @@ export function KaryakartaLayout({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <div className="min-h-screen flex bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 antialiased max-w-[100vw] overflow-x-hidden">
-      {/* Desktop Persistent Sticky Sidebar */}
+    <div className="min-h-screen flex bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 antialiased max-w-[100vw] overflow-x-clip">
+      {/* Desktop Persistent Fixed Sidebar */}
       <div
-        className={`hidden lg:block shrink-0 h-screen sticky top-0 transition-all duration-200 ease-in-out z-40 ${
+        className={`hidden lg:block fixed top-0 left-0 bottom-0 z-40 h-screen transition-all duration-200 ease-in-out ${
           collapsed ? "w-20" : "w-64"
         }`}
       >
@@ -57,7 +57,11 @@ export function KaryakartaLayout({ children }: { children: React.ReactNode }) {
       )}
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0 min-h-screen">
+      <div
+        className={`flex-1 flex flex-col min-w-0 min-h-screen transition-all duration-200 ease-in-out ${
+          collapsed ? "lg:ml-20" : "lg:ml-64"
+        }`}
+      >
         <KaryakartaHeader
           collapsed={collapsed}
           onToggleCollapse={handleToggleCollapse}

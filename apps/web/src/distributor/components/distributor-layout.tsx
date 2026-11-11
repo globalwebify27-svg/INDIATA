@@ -35,10 +35,10 @@ export function DistributorLayout({
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 font-sans flex text-slate-900 dark:text-slate-100 antialiased max-w-[100vw] overflow-x-hidden">
-      {/* Sticky Persistent Sidebar for Desktop */}
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 font-sans flex text-slate-900 dark:text-slate-100 antialiased max-w-[100vw] overflow-x-clip">
+      {/* Fixed Persistent Sidebar for Desktop */}
       <div
-        className={`hidden md:block shrink-0 h-screen sticky top-0 transition-all duration-200 ease-in-out z-40 ${
+        className={`hidden md:block fixed top-0 left-0 bottom-0 z-40 h-screen transition-all duration-200 ease-in-out ${
           collapsed ? "w-20" : "w-64"
         }`}
       >
@@ -65,7 +65,11 @@ export function DistributorLayout({
       )}
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0 min-h-screen">
+      <div
+        className={`flex-1 flex flex-col min-w-0 min-h-screen transition-all duration-200 ease-in-out ${
+          collapsed ? "md:ml-20" : "md:ml-64"
+        }`}
+      >
         <DistributorHeader
           title={title}
           subtitle={subtitle}

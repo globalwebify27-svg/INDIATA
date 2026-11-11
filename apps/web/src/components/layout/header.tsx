@@ -107,7 +107,11 @@ export function Header({
     : "VP";
 
   return (
-    <header className="h-16 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800 px-4 sm:px-6 flex items-center justify-between sticky top-0 z-30 shadow-premium-xs select-none gap-3">
+    <header
+      className={`h-16 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800 px-4 sm:px-6 flex items-center justify-between fixed top-0 right-0 z-30 shadow-premium-xs select-none gap-3 transition-all duration-200 ease-in-out ${
+        collapsed ? "left-0 md:left-20" : "left-0 md:left-64"
+      }`}
+    >
       {/* LEFT: Sidebar Toggle + Constituency Pill + War Room Live */}
       <div className="flex items-center gap-3 min-w-0">
         <button

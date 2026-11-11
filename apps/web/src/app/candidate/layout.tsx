@@ -53,7 +53,7 @@ export default function CandidateLayout({
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 flex flex-col font-sans max-w-[100vw] overflow-x-hidden">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 flex flex-col font-sans max-w-[100vw] overflow-x-clip">
       {/* COLLAPSIBLE SIDEBAR */}
       <Sidebar
         collapsed={collapsed}
@@ -64,11 +64,11 @@ export default function CandidateLayout({
 
       {/* MAIN CONTENT SHELL */}
       <div
-        className={`flex-1 flex flex-col transition-all duration-200 ease-in-out min-h-screen min-w-0 max-w-full overflow-x-hidden ${
+        className={`flex-1 flex flex-col transition-all duration-200 ease-in-out min-h-screen min-w-0 max-w-full overflow-x-clip pt-16 ${
           collapsed ? "md:ml-20" : "md:ml-64"
         }`}
       >
-        {/* TOP HEADER */}
+        {/* TOP FIXED NAVBAR */}
         <Header
           collapsed={collapsed}
           onToggleCollapse={handleToggleCollapse}
