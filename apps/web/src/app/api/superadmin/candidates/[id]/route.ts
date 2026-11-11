@@ -1,0 +1,26 @@
+import { NextRequest, NextResponse } from "next/server";
+import { superAdminStore } from "../../store";
+
+export async function GET(
+  _req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const { id } = await params;
+  const cand = superAdminStore.getCandidateById(id);
+  if (!cand) {
+    return NextResponse.json({ success: false, error: "Candidate not found" }, { status: 404 });
+  }
+  return NextResponse.json({ success: true, data: cand });
+}
+
+export async function PATCH(
+  _req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const { id } = await params;
+  const updated = superAdminStore.toggleCandidateStatus(id);
+  if (!updated) {
+    return NextResponse.json({ success: false, error: "Candidate not found" }, { status: 404 });
+  }
+  return NextResponse.json({ success: true, data: updated });
+}
