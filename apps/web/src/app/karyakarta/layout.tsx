@@ -11,6 +11,7 @@ function KaryakartaLayoutWrapper({ children }: { children: React.ReactNode }) {
   const isAuthGate =
     pathname.includes("/pending-approval") ||
     pathname.includes("/blocked") ||
+    pathname.includes("/mobile-view") ||
     pathname.endsWith("/login") ||
     pathname.endsWith("/register");
 
