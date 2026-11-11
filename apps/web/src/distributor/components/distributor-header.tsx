@@ -3,6 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import {
+  Menu,
   Bell,
   UserPlus,
   Building,
@@ -13,31 +14,60 @@ import { useDistributorAuth } from "../context/distributor-auth-context";
 interface HeaderProps {
   title?: string;
   subtitle?: string;
+  collapsed?: boolean;
+  onToggleCollapse?: () => void;
+  onOpenMobile?: () => void;
 }
 
-export function DistributorHeader({ title, subtitle }: HeaderProps) {
+export function DistributorHeader({
+  title,
+  subtitle,
+  collapsed,
+  onToggleCollapse,
+  onOpenMobile,
+}: HeaderProps) {
   const { distributor } = useDistributorAuth();
 
+  const handleToggle = () => {
+    if (typeof window !== "undefined" && window.innerWidth < 768) {
+      onOpenMobile?.();
+    } else {
+      onToggleCollapse?.();
+    }
+  };
+
   return (
-    <header className="h-16 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-6 flex items-center justify-between sticky top-0 z-30">
-      {/* Title & Territory Info */}
-      <div className="flex items-center gap-4">
-        <div>
-          <h1 className="text-base font-bold text-slate-900 dark:text-white leading-tight">
+    <header className="h-16 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-4 sm:px-6 flex items-center justify-between sticky top-0 z-30 shadow-premium-xs">
+      {/* Title & Territory Info with Toggle Menu */}
+      <div className="flex items-center gap-3 min-w-0">
+        {(onOpenMobile || onToggleCollapse) && (
+          <button
+            type="button"
+            onClick={handleToggle}
+            className="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors shrink-0"
+            aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+            title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+          >
+            <Menu className="w-5 h-5" />
+          </button>
+        )}
+
+        <div className="min-w-0">
+          <h1 className="text-base font-bold text-slate-900 dark:text-white leading-tight truncate">
             {title || "Distributor Console"}
           </h1>
           {subtitle ? (
-            <p className="text-xs text-slate-600 dark:text-slate-300">{subtitle}</p>
+            <p className="text-xs text-slate-600 dark:text-slate-300 truncate">{subtitle}</p>
           ) : (
             <div className="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-300">
-              <span className="flex items-center gap-1 font-medium text-slate-700 dark:text-slate-200">
-                <Building className="w-3.5 h-3.5 text-[#2087FE]" />
-                {distributor?.name || "Maharashtra Western"}
+              <span className="flex items-center gap-1 font-medium text-slate-700 dark:text-slate-200 truncate">
+                <Building className="w-3.5 h-3.5 text-[#2087FE] shrink-0" />
+                <span>{distributor?.name || "Maharashtra Western"}</span>
               </span>
               <span>•</span>
-              <span className="flex items-center gap-1">
-                <MapPin className="w-3.5 h-3.5 text-slate-600 dark:text-slate-300" />
-                {distributor?.territory || "Pune Metro"}
+              <span className="flex items-center gap-1 truncate">
+                <MapPin className="w-3.5 h-3.5 text-slate-600 dark:text-slate-300 shrink-0" />
+                <span>{distributor?.territory || "Pune Metro"}</span>
               </span>
             </div>
           )}
@@ -45,7 +75,7 @@ export function DistributorHeader({ title, subtitle }: HeaderProps) {
       </div>
 
       {/* Actions & Profile */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2 sm:gap-3 shrink-0">
         {/* Scoped Tenant Isolation Security Pill */}
         <div className="hidden md:flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200/80 dark:border-emerald-800/80">
           <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
@@ -58,7 +88,7 @@ export function DistributorHeader({ title, subtitle }: HeaderProps) {
           className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-[#2087FE] hover:bg-blue-600 text-white transition-colors shadow-premium-xs"
         >
           <UserPlus className="w-3.5 h-3.5" />
-          <span>New Candidate</span>
+          <span className="hidden sm:inline">New Candidate</span>
         </Link>
 
         {/* Notification Bell */}
@@ -72,7 +102,7 @@ export function DistributorHeader({ title, subtitle }: HeaderProps) {
 
         {/* User Avatar & Name */}
         <div className="flex items-center gap-2.5 pl-2 border-l border-slate-200 dark:border-slate-800">
-          <div className="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center font-bold text-xs text-slate-700 dark:text-slate-200">
+          <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center font-bold text-xs text-white shadow-xs">
             {distributor?.contactPerson?.slice(0, 2).toUpperCase() || "SP"}
           </div>
           <div className="hidden lg:block text-left text-xs">

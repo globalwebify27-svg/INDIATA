@@ -4,26 +4,24 @@ import React, { useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  LayoutDashboard,
+  LayoutGrid,
   MapPin,
-  AlertCircle,
-  Users,
-  UserCheck,
-  BookOpen,
+  Building2,
+  CheckSquare,
+  BookUser,
   Filter,
-  FileEdit,
+  Users,
   Shield,
   Activity,
-  Vote,
-  BadgeCheck,
   Megaphone,
-  PhoneCall,
-  Bot,
   CreditCard,
   BarChart3,
+  History,
+  Settings,
+  LogOut,
   ChevronLeft,
   ChevronRight,
-  LogOut,
+  ChevronDown,
   X,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
@@ -32,11 +30,16 @@ import { useAuth } from "@/context/auth-context";
 export interface NavItemConfig {
   key: string;
   label: string;
-  href: string;
+  href?: string;
+  isAction?: boolean;
+  actionKey?: "logout";
   icon: LucideIcon;
+  iconColor: string; // Inactive accent color class
   badge?: string | number;
   badgeType?: "warning" | "teal" | "violet" | "default";
-  pulseDot?: boolean;
+  pulseDot?: boolean; // Cyan pulse dot
+  amberDot?: boolean; // Amber indicator dot (e.g. Users)
+  hasChevron?: boolean; // Downward chevron (e.g. Users)
 }
 
 export interface NavGroupConfig {
@@ -59,20 +62,23 @@ export const NAV_GROUPS: NavGroupConfig[] = [
         key: "dashboard",
         label: "War Room Dashboard",
         href: "/candidate",
-        icon: LayoutDashboard,
+        icon: LayoutGrid,
+        iconColor: "text-slate-300",
       },
       {
         key: "field-map",
         label: "Live Field Map",
         href: "/candidate/field-map",
         icon: MapPin,
+        iconColor: "text-cyan-400",
         pulseDot: true,
       },
       {
-        key: "tickets",
+        key: "office-issues",
         label: "Office & Issues",
-        href: "/candidate/office/tickets",
-        icon: AlertCircle,
+        href: "/candidate/office",
+        icon: Building2,
+        iconColor: "text-amber-400",
         badge: 2,
         badgeType: "warning",
       },
@@ -85,33 +91,22 @@ export const NAV_GROUPS: NavGroupConfig[] = [
         key: "voters",
         label: "Total Voters",
         href: "/candidate/voters",
-        icon: Users,
-      },
-      {
-        key: "voter-profile",
-        label: "Central Voter Profile",
-        href: "/candidate/voters/profile",
-        icon: UserCheck,
+        icon: CheckSquare,
+        iconColor: "text-cyan-400",
       },
       {
         key: "phonebook",
         label: "Phone Book",
-        href: "/candidate/voters/phonebook",
-        icon: BookOpen,
-      },
-      {
-        key: "requests",
-        label: "Voter Update Requests",
-        href: "/candidate/voters/requests",
-        icon: FileEdit,
-        badge: 14,
-        badgeType: "warning",
+        href: "/candidate/phonebook",
+        icon: BookUser,
+        iconColor: "text-purple-400",
       },
       {
         key: "filters",
-        label: "Filters & Segmentation",
-        href: "/candidate/voters/filters",
+        label: "Filters",
+        href: "/candidate/filters",
         icon: Filter,
+        iconColor: "text-blue-400",
       },
     ],
   },
@@ -120,34 +115,26 @@ export const NAV_GROUPS: NavGroupConfig[] = [
     items: [
       {
         key: "users",
-        label: "Users & Karyakarta",
+        label: "Users",
         href: "/candidate/users",
         icon: Users,
-        pulseDot: true,
+        iconColor: "text-emerald-400",
+        amberDot: true,
+        hasChevron: true,
       },
       {
         key: "blo",
         label: "BLO Information",
         href: "/candidate/blo",
         icon: Shield,
-      },
-      {
-        key: "booths",
-        label: "Booth Management",
-        href: "/candidate/booths",
-        icon: Vote,
-      },
-      {
-        key: "members",
-        label: "Members & Cadre",
-        href: "/candidate/members",
-        icon: BadgeCheck,
+        iconColor: "text-blue-400",
       },
       {
         key: "activities",
         label: "User Activities",
-        href: "/candidate/users/activities",
+        href: "/candidate/activities",
         icon: Activity,
+        iconColor: "text-cyan-400",
       },
     ],
   },
@@ -159,34 +146,53 @@ export const NAV_GROUPS: NavGroupConfig[] = [
         label: "Campaign Control",
         href: "/candidate/campaigns",
         icon: Megaphone,
-      },
-      {
-        key: "ai-calling",
-        label: "AI Calling Outreach",
-        href: "/candidate/ai/calling",
-        icon: PhoneCall,
-        badge: "AI",
-        badgeType: "violet",
-      },
-      {
-        key: "ai-assistant",
-        label: "AI Strategy Advisor",
-        href: "/candidate/ai/assistant",
-        icon: Bot,
-        badge: "Bot",
-        badgeType: "violet",
+        iconColor: "text-rose-400",
       },
       {
         key: "subscriptions",
         label: "Subscription Plans",
         href: "/candidate/subscriptions",
         icon: CreditCard,
+        iconColor: "text-amber-400",
       },
+    ],
+  },
+  {
+    groupTitle: "ANALYTICS & STRATEGY",
+    items: [
       {
         key: "reports",
-        label: "Reports & Analytics",
+        label: "Reports",
         href: "/candidate/reports",
         icon: BarChart3,
+        iconColor: "text-purple-400",
+      },
+      {
+        key: "strategy",
+        label: "Previous Election & Strategy",
+        href: "/candidate/strategy",
+        icon: History,
+        iconColor: "text-fuchsia-400",
+      },
+    ],
+  },
+  {
+    groupTitle: "ADMINISTRATION",
+    items: [
+      {
+        key: "settings",
+        label: "Profile & Party Settings",
+        href: "/candidate/settings",
+        icon: Settings,
+        iconColor: "text-slate-400",
+      },
+      {
+        key: "logout",
+        label: "Logout",
+        isAction: true,
+        actionKey: "logout",
+        icon: LogOut,
+        iconColor: "text-rose-400",
       },
     ],
   },
@@ -222,7 +228,8 @@ export function Sidebar({
     };
   }, [mobileOpen]);
 
-  const isItemActive = (href: string) => {
+  const isItemActive = (href?: string) => {
+    if (!href) return false;
     if (href === "/candidate") {
       return pathname === "/candidate" || pathname === "/dashboard" || pathname === "/";
     }
@@ -250,9 +257,9 @@ export function Sidebar({
         />
       )}
 
-      {/* REFERENCE 2 EXACT THEME: SLATE-950 DEEP NAVY SIDEBAR */}
+      {/* CANDIDATE SIDEBAR: OBSIDIAN SLATE-950 THEME */}
       <aside
-        aria-label="Rajtantra Candidate Navigation"
+        aria-label="INDIATA Candidate Navigation"
         className={`fixed top-0 left-0 bottom-0 z-50 flex flex-col justify-between h-screen bg-slate-950 text-slate-300 border-r border-slate-900 shadow-xl select-none transition-all duration-200 ease-in-out ${
           collapsed ? "md:w-20" : "md:w-64"
         } ${
@@ -262,21 +269,31 @@ export function Sidebar({
         }`}
       >
         {/* BRAND HEADER BAR */}
-        <div className="h-16 px-4 flex items-center justify-between border-b border-slate-900/80 bg-slate-950">
+        <div className="h-16 px-4 flex items-center justify-between border-b border-slate-900/80 bg-slate-950 shrink-0">
           {collapsed && !mobileOpen ? (
-            <div className="w-full flex items-center justify-center">
+            <div className="w-full flex items-center justify-center relative">
               <Link
-                href="/dashboard"
+                href="/candidate"
                 className="w-10 h-10 mx-auto rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 flex items-center justify-center text-white font-black shadow-lg shadow-indigo-500/20 text-sm hover:scale-105 transition-transform"
-                title="Rajtantra / INDATA Candidate War Room"
+                title="INDIATA Candidate War Room"
               >
                 IN
               </Link>
+              {onToggleCollapse && (
+                <button
+                  type="button"
+                  onClick={onToggleCollapse}
+                  className="absolute -right-2 top-1/2 -translate-y-1/2 p-1 rounded-md text-slate-400 hover:text-white hover:bg-slate-900 transition-colors hidden md:block"
+                  title="Expand Sidebar"
+                >
+                  <ChevronRight className="w-3.5 h-3.5" />
+                </button>
+              )}
             </div>
           ) : (
             <div className="flex items-center justify-between w-full">
               <Link
-                href="/dashboard"
+                href="/candidate"
                 onClick={onCloseMobile}
                 className="flex items-center gap-3 group"
               >
@@ -324,7 +341,7 @@ export function Sidebar({
         </div>
 
         {/* MIDDLE SCROLLABLE NAVIGATION LIST */}
-        <div className="flex-1 overflow-y-auto px-3 py-4 space-y-6 scrollbar-thin">
+        <div className="flex-1 overflow-y-auto px-3 py-4 space-y-5 scrollbar-thin">
           {NAV_GROUPS.map((group) => (
             <div key={group.groupTitle} className="space-y-1">
               {!collapsed && (
@@ -335,29 +352,55 @@ export function Sidebar({
 
               <nav className="space-y-1">
                 {group.items.map((item) => {
-                  const active = isItemActive(item.href);
+                  const active = !item.isAction && isItemActive(item.href);
                   const IconComp = item.icon;
 
+                  // -----------------------------------------------------
+                  // COLLAPSED STATE (w-20 RAIL WITH HOVER TOOLTIPS)
+                  // -----------------------------------------------------
                   if (collapsed && !mobileOpen) {
+                    if (item.isAction) {
+                      return (
+                        <div key={item.key} className="flex justify-center py-0.5">
+                          <button
+                            type="button"
+                            onClick={logout}
+                            className="w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-150 relative group text-rose-400 hover:text-rose-300 hover:bg-rose-950/30"
+                            title={item.label}
+                          >
+                            <IconComp className="w-4 h-4 shrink-0" />
+                            {/* Floating Tooltip */}
+                            <div
+                              role="tooltip"
+                              className="pointer-events-none absolute left-full top-1/2 -translate-y-1/2 ml-3.5 z-50 whitespace-nowrap rounded-xl bg-slate-900 border border-slate-800 text-rose-300 px-3 py-1.5 text-xs font-semibold shadow-xl opacity-0 transition-opacity duration-150 group-hover:opacity-100 flex items-center gap-2"
+                            >
+                              <span>{item.label}</span>
+                              <div className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-slate-900" />
+                            </div>
+                          </button>
+                        </div>
+                      );
+                    }
+
                     return (
                       <div key={item.key} className="flex justify-center py-0.5">
                         <Link
-                          href={item.href}
+                          href={item.href || "/candidate"}
                           className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-150 relative group ${
                             active
-                              ? "bg-brand-600 text-white shadow-md shadow-brand-600/30"
-                              : "text-slate-300 hover:text-white hover:bg-slate-800/80"
+                              ? "bg-[#2087FE] text-white shadow-md shadow-blue-500/30"
+                              : `${item.iconColor} hover:text-white hover:bg-slate-900/80`
                           }`}
                           title={item.label}
                         >
-                          <IconComp className="w-4 h-4 shrink-0" />
+                          <IconComp className={`w-4 h-4 shrink-0 ${active ? "text-white" : item.iconColor}`} />
 
                           {item.pulseDot && (
                             <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-cyan-400 ring-2 ring-slate-950 animate-pulse" />
                           )}
 
                           {item.badge && (
-                            <span className="absolute -top-1 -right-1 px-1.5 py-0.2 rounded-full text-[9px] font-bold bg-amber-500 text-slate-950">
+                            <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full text-[9px] font-bold bg-amber-400 text-slate-950 flex items-center justify-center">
                               {item.badge}
                             </span>
                           )}
@@ -369,7 +412,7 @@ export function Sidebar({
                           >
                             <span>{item.label}</span>
                             {item.badge && (
-                              <span className="text-[10px] px-1.5 py-0.5 rounded font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30">
+                              <span className="text-[10px] px-1.5 py-0.5 rounded-full font-bold bg-amber-400 text-slate-950">
                                 {item.badge}
                               </span>
                             )}
@@ -380,46 +423,57 @@ export function Sidebar({
                     );
                   }
 
+                  // -----------------------------------------------------
+                  // EXPANDED STATE (EXACT MATCH TO CLIENT REFERENCE)
+                  // -----------------------------------------------------
+                  if (item.isAction) {
+                    return (
+                      <button
+                        key={item.key}
+                        type="button"
+                        onClick={logout}
+                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all text-rose-400 hover:text-rose-300 hover:bg-rose-950/30 cursor-pointer"
+                      >
+                        <IconComp className="w-4 h-4 shrink-0 text-rose-400" />
+                        <span className="flex-1 text-left truncate">{item.label}</span>
+                      </button>
+                    );
+                  }
+
                   return (
                     <Link
                       key={item.key}
-                      href={item.href}
+                      href={item.href || "/candidate"}
                       onClick={onCloseMobile}
                       className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all ${
                         active
-                          ? "bg-brand-600 text-white shadow-md shadow-brand-600/30"
-                          : "text-slate-300 hover:text-white hover:bg-slate-800/80"
+                          ? "bg-[#2087FE] text-white shadow-md shadow-blue-500/25"
+                          : "text-slate-300 hover:text-white hover:bg-slate-900/80"
                       }`}
                     >
                       <IconComp
                         className={`w-4 h-4 shrink-0 ${
-                          active
-                            ? "text-white"
-                            : item.key === "dashboard"
-                            ? "text-brand-400"
-                            : item.key === "field-map" || item.key === "voters"
-                            ? "text-cyan-400"
-                            : item.key === "tickets"
-                            ? "text-amber-400"
-                            : "text-slate-400"
+                          active ? "text-white" : item.iconColor
                         }`}
                       />
                       <span className="flex-1 truncate">{item.label}</span>
 
+                      {/* Live Field Map Cyan Pulse Dot */}
                       {item.pulseDot && (
-                        <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
+                        <span className="w-2 h-2 rounded-full bg-cyan-400 ring-2 ring-slate-950 animate-pulse" />
                       )}
 
+                      {/* Users Amber Indicator Dot + Chevron */}
+                      {item.amberDot && (
+                        <span className="w-2 h-2 rounded-full bg-amber-400 shrink-0" />
+                      )}
+                      {item.hasChevron && (
+                        <ChevronDown className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                      )}
+
+                      {/* Office & Issues Circular Amber Badge */}
                       {item.badge && (
-                        <span
-                          className={`px-1.5 py-0.5 rounded-full text-[10px] font-bold ${
-                            item.badgeType === "warning"
-                              ? "bg-amber-500/20 text-amber-400 border border-amber-500/30"
-                              : item.badgeType === "violet"
-                              ? "bg-indigo-500/20 text-indigo-300 border border-indigo-500/30"
-                              : "bg-slate-800 text-slate-300"
-                          }`}
-                        >
+                        <span className="w-4 h-4 rounded-full bg-amber-400 text-slate-950 font-bold text-[10px] flex items-center justify-center shrink-0">
                           {item.badge}
                         </span>
                       )}
@@ -431,12 +485,12 @@ export function Sidebar({
           ))}
         </div>
 
-        {/* BOTTOM USER PROFILE & ECI STATUS */}
-        <div className="p-3 border-t border-slate-900 bg-slate-950/90 space-y-2">
+        {/* BOTTOM USER PROFILE CARD (EXACT CLIENT REFERENCE) */}
+        <div className="p-3 border-t border-slate-900 bg-slate-950/90 shrink-0">
           {collapsed && !mobileOpen ? (
             <div className="flex justify-center">
               <div
-                className="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-600 text-white flex items-center justify-center font-bold text-xs shadow-sm cursor-pointer relative group"
+                className="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 text-white flex items-center justify-center font-bold text-xs shadow-sm cursor-pointer relative group"
                 title={`${user?.name || "Adv. Vikram Patil"} - Candidate Admin`}
               >
                 {candidateInitials}
@@ -446,52 +500,25 @@ export function Sidebar({
                 >
                   <p className="font-bold text-slate-100">{user?.name || "Adv. Vikram Patil"}</p>
                   <p className="text-[11px] text-slate-400 font-normal">
-                    {user?.constituencyName || "34 - Pune Constituency"}
+                    {user?.constituencyName || "Pune Constituency"}
                   </p>
-                  <div className="mt-1 pt-1 border-t border-slate-800 text-[10px] text-emerald-400 flex items-center gap-1">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                    <span>ECI Roll Sync: Active</span>
-                  </div>
                   <div className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-slate-900" />
                 </div>
               </div>
             </div>
           ) : (
-            <div className="p-2.5 rounded-2xl bg-slate-900/90 border border-slate-800 flex items-center justify-between gap-2">
-              <div className="flex items-center gap-2.5 min-w-0">
-                <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-600 text-white font-bold flex items-center justify-center text-xs shadow-sm shrink-0">
-                  {candidateInitials}
+            <div className="p-2 rounded-xl flex items-center gap-3">
+              <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 text-white font-bold flex items-center justify-center text-xs shadow-sm shrink-0">
+                {candidateInitials}
+              </div>
+              <div className="min-w-0 leading-tight">
+                <div className="text-xs font-bold text-white truncate">
+                  {user?.name || "Adv. Vikram Patil"}
                 </div>
-                <div className="min-w-0 leading-tight">
-                  <div className="text-xs font-bold text-white truncate">
-                    {user?.name || "Adv. Vikram Patil"}
-                  </div>
-                  <div className="text-[10px] text-slate-400 truncate">
-                    {user?.constituencyName || "34 - Pune Constituency"}
-                  </div>
+                <div className="text-[11px] text-slate-400 truncate">
+                  {user?.constituencyName || "Pune Constituency"}
                 </div>
               </div>
-
-              <button
-                type="button"
-                onClick={logout}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-slate-800 transition-colors shrink-0"
-                title="Sign out of War Room"
-                aria-label="Sign out"
-              >
-                <LogOut className="w-4 h-4" />
-              </button>
-            </div>
-          )}
-
-          {/* ECI SYNC TELEMETRY */}
-          {!collapsed && (
-            <div className="px-2 pt-0.5 flex items-center justify-between text-[10px] text-slate-400">
-              <span className="flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                <span>ECI War Room Sync</span>
-              </span>
-              <span className="font-semibold text-emerald-400">Optimal</span>
             </div>
           )}
         </div>
