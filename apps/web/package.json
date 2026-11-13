@@ -16,6 +16,7 @@
     "@rajtantra/common-types": "workspace:*",
     "@rajtantra/rbac": "workspace:*",
     "@rajtantra/ui": "workspace:*",
+    "@rajtantra/validation": "workspace:*",
     "clsx": "^2.1.1",
     "lucide-react": "^1.16.0",
     "next": "^15.2.1",

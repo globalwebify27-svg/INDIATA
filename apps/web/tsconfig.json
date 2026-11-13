@@ -11,7 +11,9 @@
       "@rajtantra/rbac": ["../../packages/rbac/src"],
       "@rajtantra/rbac/*": ["../../packages/rbac/src/*"],
       "@rajtantra/ui": ["../../packages/ui/src"],
-      "@rajtantra/ui/*": ["../../packages/ui/src/*"]
+      "@rajtantra/ui/*": ["../../packages/ui/src/*"],
+      "@rajtantra/validation": ["../../packages/validation/src"],
+      "@rajtantra/validation/*": ["../../packages/validation/src/*"]
     },
     "plugins": [
       {

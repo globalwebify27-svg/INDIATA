@@ -22,6 +22,7 @@ import {
   Square,
   MinusSquare,
   ArrowUpDown,
+  UserPlus,
 } from "lucide-react";
 
 interface ResultantVoterListProps {
@@ -33,6 +34,7 @@ interface ResultantVoterListProps {
   onToggleImportant?: (voterId: string) => void;
   onBulkSurvey?: (selectedVoters: VoterRecord[]) => void;
   onBulkPrintSlips?: (selectedVoters: VoterRecord[]) => void;
+  onCreateNewVoter?: () => void;
   pageSizeDefault?: number;
   showBatchActions?: boolean;
 }
@@ -46,6 +48,7 @@ export function ResultantVoterList({
   onToggleImportant,
   onBulkSurvey,
   onBulkPrintSlips,
+  onCreateNewVoter,
   pageSizeDefault = 10,
   showBatchActions = true,
 }: ResultantVoterListProps) {
@@ -278,8 +281,18 @@ export function ResultantVoterList({
                     <User className="w-8 h-8 mx-auto mb-2 opacity-40" />
                     <p className="font-semibold text-xs">No matching voters in assigned booths.</p>
                     <p className="text-[11px] text-slate-400 mt-0.5">
-                      Try adjusting your search criteria or assigned booth scope.
+                      No elector found matching your search. You can create a new central voter record immediately.
                     </p>
+                    {onCreateNewVoter && (
+                      <button
+                        type="button"
+                        onClick={onCreateNewVoter}
+                        className="mt-3 inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs shadow-md transition-transform active:scale-95 cursor-pointer"
+                      >
+                        <UserPlus className="w-3.5 h-3.5" />
+                        <span>Create New Voter Profile</span>
+                      </button>
+                    )}
                   </td>
                 </tr>
               ) : (
@@ -466,9 +479,19 @@ export function ResultantVoterList({
       {/* ========================================================= */}
       <div className="md:hidden space-y-2.5">
         {paginatedVoters.length === 0 ? (
-          <div className="p-8 text-center bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 text-slate-400">
+          <div className="p-8 text-center bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 text-slate-400 space-y-2">
             <User className="w-8 h-8 mx-auto mb-2 opacity-40" />
-            <p className="font-semibold text-xs">No matching voters.</p>
+            <p className="font-semibold text-xs">No matching voters in assigned booths.</p>
+            {onCreateNewVoter && (
+              <button
+                type="button"
+                onClick={onCreateNewVoter}
+                className="mt-2 inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-xs shadow-md"
+              >
+                <UserPlus className="w-3.5 h-3.5" />
+                <span>Create New Voter Profile</span>
+              </button>
+            )}
           </div>
         ) : (
           paginatedVoters.map((voter) => {

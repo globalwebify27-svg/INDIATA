@@ -64,6 +64,11 @@ export interface VoterRecord {
   familyId: string;
   familyHead: boolean;
   familyMembersCount: number;
+  email?: string | null;
+  source?: "ECI_IMPORT" | "CANDIDATE_ADMIN" | "KARYAKARTA_CREATED" | "PUBLIC_ENQUIRY";
+  status?: "Verified" | "Correction Req" | "Quarantined" | "Pending Approval";
+  organizationId?: string;
+  createdById?: string;
 }
 
 export interface FamilyMemberSummary {
@@ -116,10 +121,14 @@ export interface IssueTicket {
   karyakartaId: string;
   karyakartaName: string;
   category: "Water Supply" | "Road Infrastructure" | "Sanitation" | "Pension / Scheme" | "Electricity" | "Other";
+  title?: string;
   description: string;
   priority: TicketPriority;
   status: TicketStatus;
+  location?: string;
   assignedTo: string;
+  organizationId?: string;
+  attachments?: string[];
   createdAt: string;
   updatedAt: string;
   resolutionNotes: string | null;

@@ -59,6 +59,8 @@ model Organization {
   distributorId    String?            @db.VarChar(36)
   distributor      Distributor?       @relation(fields: [distributorId], references: [id], onDelete: SetNull)
   users            User[]
+  voters           Voter[]
+  issueTickets     IssueTicket[]
   auditLogs        AuditLog[]
   createdAt        DateTime           @default(now())
   updatedAt        DateTime           @updatedAt
@@ -110,6 +112,9 @@ model User {
   portalAssignments  PortalAssignment[]
   sessions           UserSession[]
   auditLogs          AuditLog[]
+  assignedVoters     Voter[]            @relation("KaryakartaVoters")
+  createdVoters      Voter[]            @relation("CreatedVoters")
+  karyakartaTickets  IssueTicket[]      @relation("KaryakartaTickets")
   createdAt          DateTime           @default(now())
   updatedAt          DateTime           @updatedAt
 
@@ -300,4 +305,147 @@ model RegistrationEnquiry {
   @@index([mobile])
   @@index([status])
   @@map("registration_enquiries")
+}
+
+// -------------------------------------------------------------
+// CENTRAL ELECTORAL ROLL & CITIZEN INTELLIGENCE (MODULE 07 & 08)
+// -------------------------------------------------------------
+
+enum VoterStatus {
+  VERIFIED
+  CORRECTION_REQ
+  QUARANTINED
+  PENDING_APPROVAL
+}
+
+enum VoterRecordSource {
+  ECI_IMPORT
+  CANDIDATE_ADMIN
+  KARYAKARTA_CREATED
+  PUBLIC_ENQUIRY
+}
+
+enum VoterClassification {
+  SUPPORTER
+  OPPONENT
+  DOUBTFUL
+  NEUTRAL
+}
+
+enum TicketPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum TicketStatus {
+  NEW
+  ASSIGNED
+  IN_PROGRESS
+  FOLLOW_UP
+  RESOLVED
+  CLOSED
+}
+
+model Voter {
+  id                   String              @id @default(uuid()) @db.VarChar(36)
+  epicId               String?             @db.VarChar(20)
+  serialNumber         Int?
+  name                 String?             @db.VarChar(150)
+  marathiName          String?             @db.VarChar(150)
+  relativeName         String?             @db.VarChar(150)
+  relation             String?             @db.VarChar(20)
+  age                  Int?
+  gender               String?             @db.VarChar(10)
+  dob                  String?             @db.VarChar(20)
+  houseNo              String?             @db.VarChar(100)
+  address              String?             @db.Text
+  village              String?             @db.VarChar(100)
+  ward                 String?             @db.VarChar(50)
+  prabhaag             String?             @db.VarChar(50)
+  electoralPart        String?             @db.VarChar(50)
+  boothNumber          String?             @db.VarChar(50)
+  boothName            String?             @db.VarChar(200)
+  phone                String?             @db.VarChar(20)
+  email                String?             @db.VarChar(120)
+  hasPhoto             Boolean             @default(false)
+  caste                String?             @db.VarChar(100)
+  occupation           String?             @db.VarChar(100)
+  qualification        String?             @db.VarChar(100)
+  scheme               String?             @db.VarChar(200)
+  demand               String?             @db.Text
+  candidateHelp        String?             @db.Text
+  extraInfo            String?             @db.Text
+  remarks              String?             @db.Text
+  classification       VoterClassification @default(NEUTRAL)
+  status               VoterStatus         @default(VERIFIED)
+  source               VoterRecordSource   @default(KARYAKARTA_CREATED)
+  isImportant          Boolean             @default(false)
+  isFavourite          Boolean             @default(false)
+  isVisited            Boolean             @default(false)
+  isVoted              Boolean             @default(false)
+  isOutside            Boolean             @default(false)
+  isDeceased           Boolean             @default(false)
+  lastVisitDate        String?             @db.VarChar(50)
+  familyId             String?             @db.VarChar(50)
+  familyHead           Boolean             @default(false)
+  familyMembersCount   Int                 @default(1)
+  
+  organizationId       String?             @db.VarChar(36)
+  organization         Organization?       @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  assignedKaryakartaId String?             @db.VarChar(36)
+  assignedKaryakarta   User?               @relation("KaryakartaVoters", fields: [assignedKaryakartaId], references: [id], onDelete: SetNull)
+  createdById          String?             @db.VarChar(36)
+  createdBy            User?               @relation("CreatedVoters", fields: [createdById], references: [id], onDelete: SetNull)
+
+  tickets              IssueTicket[]
+
+  createdAt            DateTime            @default(now())
+  updatedAt            DateTime            @updatedAt
+
+  @@index([organizationId])
+  @@index([epicId])
+  @@index([phone])
+  @@index([boothNumber])
+  @@index([assignedKaryakartaId])
+  @@map("voters")
+}
+
+// -------------------------------------------------------------
+// CIVIC GRIEVANCES & ISSUE TICKETS (MODULE 12)
+// -------------------------------------------------------------
+
+model IssueTicket {
+  id              String         @id @default(uuid()) @db.VarChar(36)
+  ticketNumber    String         @unique @db.VarChar(32)
+  voterId         String?        @db.VarChar(36)
+  voter           Voter?         @relation(fields: [voterId], references: [id], onDelete: SetNull)
+  voterName       String?        @db.VarChar(150)
+  voterPhone      String?        @db.VarChar(20)
+  voterBooth      String?        @db.VarChar(50)
+  category        String         @db.VarChar(100)
+  title           String?        @db.VarChar(255)
+  description     String         @db.Text
+  priority        TicketPriority @default(MEDIUM)
+  status          TicketStatus   @default(NEW)
+  location        String?        @db.VarChar(255)
+  assignedTo      String?        @db.VarChar(150)
+  resolutionNotes String?        @db.Text
+  attachments     String?        @db.Text
+  
+  organizationId  String?        @db.VarChar(36)
+  organization    Organization?  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  karyakartaId    String?        @db.VarChar(36)
+  karyakarta      User?          @relation("KaryakartaTickets", fields: [karyakartaId], references: [id], onDelete: SetNull)
+  karyakartaName  String?        @db.VarChar(150)
+
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  @@index([organizationId])
+  @@index([voterId])
+  @@index([karyakartaId])
+  @@index([status])
+  @@map("issue_tickets")
 }

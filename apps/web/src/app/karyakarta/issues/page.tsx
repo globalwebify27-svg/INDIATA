@@ -42,27 +42,33 @@ export default function VoterIssuesPage() {
 
   const handleCreateIssue = (ticketData: Partial<IssueTicket>) => {
     const newTicket: IssueTicket = {
-      id: `iss-${Date.now().toString().slice(-4)}`,
-      ticketNumber: `TKT-2026-${Math.floor(100 + Math.random() * 900)}`,
-      voterId: ticketData.voterId || "v-01",
+      id: ticketData.id || `iss-${Date.now().toString().slice(-4)}`,
+      ticketNumber: ticketData.ticketNumber || `TKT-2026-${Math.floor(100 + Math.random() * 900)}`,
+      voterId: ticketData.voterId ?? null,
       voterName: ticketData.voterName || "Citizen",
       voterPhone: ticketData.voterPhone || "+91 98000 00000",
       voterBooth: ticketData.voterBooth || user?.assignedBooths?.[0] || "#101",
-      karyakartaId: user?.id || "KAR-2026-001",
-      karyakartaName: user?.name || "Sachin D. Mane",
+      karyakartaId: ticketData.karyakartaId || user?.id || "KAR-2026-001",
+      karyakartaName: ticketData.karyakartaName || user?.name || "Sachin D. Mane",
       category: ticketData.category || "Other",
+      title: ticketData.title || `${ticketData.category || "Field"} Grievance`,
       description: ticketData.description || "",
       priority: ticketData.priority || "MEDIUM",
-      status: "NEW",
+      status: ticketData.status || "NEW",
       assignedTo: ticketData.assignedTo || "Ward Quick Response Team",
-      createdAt: "Just now",
-      updatedAt: "Just now",
+      organizationId: ticketData.organizationId || user?.organizationId || "org-kasba-peth-2026",
+      attachments: ticketData.attachments || [],
+      location: ticketData.location || "",
+      createdAt: ticketData.createdAt || "Just now",
+      updatedAt: ticketData.updatedAt || "Just now",
       resolutionNotes: null,
-      followUps: [],
+      followUps: ticketData.followUps || [],
     };
 
     setTickets((prev) => [newTicket, ...prev]);
-    setSuccessToast(`Ticket ${newTicket.ticketNumber} registered and dispatched to Candidate War Room!`);
+    setSuccessToast(
+      `Ticket ${newTicket.ticketNumber} registered successfully and linked to ${newTicket.voterName}${newTicket.voterId ? ` (ID: ${newTicket.voterId})` : ""}!`
+    );
     setTimeout(() => setSuccessToast(null), 4000);
   };
 

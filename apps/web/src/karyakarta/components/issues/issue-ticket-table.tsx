@@ -7,8 +7,11 @@ import {
   CheckCircle2,
   Send,
   X,
+  Eye,
 } from "lucide-react";
-import { IssueTicket, TicketPriority, TicketStatus } from "../../types/karyakarta.types";
+import { IssueTicket, TicketPriority, TicketStatus, VoterRecord } from "../../types/karyakarta.types";
+import { centralVoterStore } from "@/lib/voters/central-voter-store";
+import { CentralVoterProfile } from "../voters/central-voter-profile";
 
 interface IssueTicketTableProps {
   tickets: IssueTicket[];
@@ -25,6 +28,7 @@ export function IssueTicketTable({
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTicket, setSelectedTicket] = useState<IssueTicket | null>(null);
   const [followUpNote, setFollowUpNote] = useState("");
+  const [viewingVoter, setViewingVoter] = useState<VoterRecord | null>(null);
 
   const filteredTickets = tickets.filter((t) => {
     if (activeTab === "OPEN" && (t.status === "RESOLVED" || t.status === "CLOSED")) return false;
@@ -298,6 +302,50 @@ export function IssueTicketTable({
                 </div>
               </div>
 
+              {/* Linked Voter Info Summary */}
+              <div className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-blue-50/50 dark:bg-blue-950/20 flex items-center justify-between gap-3">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center font-bold text-xs">
+                    {selectedTicket.voterName.charAt(0)}
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="font-bold text-slate-900 dark:text-white">
+                        {selectedTicket.voterName}
+                      </span>
+                      {selectedTicket.voterBooth && (
+                        <span className="font-mono text-[10px] bg-white dark:bg-slate-800 px-1.5 py-0.2 rounded border border-slate-200 dark:border-slate-700">
+                          Booth {selectedTicket.voterBooth}
+                        </span>
+                      )}
+                    </div>
+                    <div className="text-[11px] text-slate-500 flex items-center gap-2 mt-0.5">
+                      <span className="font-mono">{selectedTicket.voterPhone}</span>
+                      {selectedTicket.voterId && (
+                        <>
+                          <span>•</span>
+                          <span>ID: <code className="font-mono">{selectedTicket.voterId}</code></span>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {selectedTicket.voterId && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const v = centralVoterStore.getVoterById(selectedTicket.voterId!);
+                      if (v) setViewingVoter(v);
+                    }}
+                    className="inline-flex items-center gap-1 px-2.5 py-1 text-[11px] font-bold rounded-lg border border-blue-200 dark:border-blue-800 text-blue-600 hover:bg-blue-100/60 dark:hover:bg-blue-950 cursor-pointer"
+                  >
+                    <Eye className="w-3 h-3" />
+                    <span>View 360° Profile</span>
+                  </button>
+                )}
+              </div>
+
               {/* Description Box */}
               <div>
                 <span className="font-bold text-slate-500 uppercase tracking-wider block mb-1">
@@ -363,6 +411,15 @@ export function IssueTicketTable({
             </div>
           </div>
         </div>
+      )}
+
+      {/* Linked Elector Central Voter Profile Modal */}
+      {viewingVoter && (
+        <CentralVoterProfile
+          voter={viewingVoter}
+          isOpen={!!viewingVoter}
+          onClose={() => setViewingVoter(null)}
+        />
       )}
     </div>
   );

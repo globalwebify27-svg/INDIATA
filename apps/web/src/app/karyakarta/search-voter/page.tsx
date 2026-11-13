@@ -22,6 +22,8 @@ import { IndividualSurveyModal } from "@/karyakarta/components/surveys/individua
 import { BulkSurveyModal } from "@/karyakarta/components/surveys/bulk-survey-modal";
 import { FamilyTreeModal } from "@/karyakarta/components/voters/family-tree-modal";
 import { VoterUpdateRequestModal } from "@/karyakarta/components/voters/voter-update-request-modal";
+import { CreateVoterProfileModal } from "@/karyakarta/components/voters/create-voter-profile-modal";
+import { UserPlus } from "lucide-react";
 
 export default function SearchVoterPage() {
   const { user, assignedBooths } = useKaryakartaAuth();
@@ -42,6 +44,7 @@ export default function SearchVoterPage() {
   const [bulkSurveyVoters, setBulkSurveyVoters] = useState<VoterRecord[]>([]);
   const [familyTreeId, setFamilyTreeId] = useState<string | null>(null);
   const [updateRequestVoter, setUpdateRequestVoter] = useState<VoterRecord | null>(null);
+  const [isCreateProfileOpen, setIsCreateProfileOpen] = useState(false);
 
   // Scoped base voters for this Karyakarta
   const scopedBaseVoters = useMemo(() => {
@@ -111,6 +114,11 @@ export default function SearchVoterPage() {
     setAllVoterRecords((prev) => prev.map((v) => (map.has(v.id) ? map.get(v.id)! : v)));
   };
 
+  const handleVoterCreated = (newVoter: VoterRecord) => {
+    setAllVoterRecords((prev) => [newVoter, ...prev]);
+    setActiveProfileVoter(newVoter);
+  };
+
   const handleToggleImportant = (voterId: string) => {
     setAllVoterRecords((prev) =>
       prev.map((v) => (v.id === voterId ? { ...v, isImportant: !v.isImportant } : v))
@@ -169,6 +177,14 @@ export default function SearchVoterPage() {
           >
             <Download className="w-3.5 h-3.5 text-slate-500" />
             <span>Export CSV</span>
+          </button>
+
+          <button
+            onClick={() => setIsCreateProfileOpen(true)}
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs shadow-xs transition-colors cursor-pointer"
+          >
+            <UserPlus className="w-3.5 h-3.5" />
+            <span>Create Voter</span>
           </button>
 
           <Link
@@ -261,6 +277,7 @@ export default function SearchVoterPage() {
         onRaiseIssue={(v) => setActiveProfileVoter(v)}
         onToggleImportant={handleToggleImportant}
         onBulkSurvey={(selected) => setBulkSurveyVoters(selected)}
+        onCreateNewVoter={() => setIsCreateProfileOpen(true)}
         pageSizeDefault={10}
         showBatchActions={true}
       />
@@ -315,6 +332,15 @@ export default function SearchVoterPage() {
         onSubmit={(req) => {
           console.log("Quarantine request submitted from search-voter:", req);
         }}
+      />
+
+      {/* Create New Central Voter Profile Modal */}
+      <CreateVoterProfileModal
+        isOpen={isCreateProfileOpen}
+        onClose={() => setIsCreateProfileOpen(false)}
+        onVoterCreated={handleVoterCreated}
+        initialQuery={searchQuery}
+        defaultBooth={selectedBooth !== "all" ? selectedBooth : undefined}
       />
     </div>
   );
