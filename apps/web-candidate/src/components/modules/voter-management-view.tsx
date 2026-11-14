@@ -24,6 +24,10 @@ import {
   CheckSquare,
   Square,
   SlidersHorizontal,
+  Building2,
+  Users,
+  FileText,
+  AlertCircle,
 } from "lucide-react";
 import { useToast } from "@/context/toast-context";
 import { Badge } from "@/components/ui/badge";
@@ -207,7 +211,6 @@ export function VoterManagementView() {
   // Modals & Dossier State
   const [showDataEnquiryModal, setShowDataEnquiryModal] = useState(false);
   const [selectedProfileVoter, setSelectedProfileVoter] = useState<VoterRecord | null>(null);
-  const [profileActiveTab, setProfileActiveTab] = useState<"basic" | "address" | "election" | "family" | "survey" | "office" | "tickets" | "comms">("basic");
   const [showHouseAddressModal, setShowHouseAddressModal] = useState(false);
   const [isStarred, setIsStarred] = useState(false);
   const [voterNotes, setVoterNotes] = useState("");
@@ -752,7 +755,6 @@ export function VoterManagementView() {
                           size="sm"
                           onClick={() => {
                             setSelectedProfileVoter(voter);
-                            setProfileActiveTab("basic");
                           }}
                           className="cursor-pointer text-brand-600 border-brand-200 hover:bg-brand-50"
                         >
@@ -815,7 +817,6 @@ export function VoterManagementView() {
                   size="sm"
                   onClick={() => {
                     setSelectedProfileVoter(voter);
-                    setProfileActiveTab("basic");
                   }}
                   className="cursor-pointer text-brand-600"
                 >
@@ -1046,246 +1047,266 @@ export function VoterManagementView() {
               </div>
             </div>
 
-            {/* 2. PROFILE SECTION TABS */}
-            <div className="flex items-center gap-1 px-5 pt-3 border-b border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900 overflow-x-auto text-xs font-semibold shrink-0">
-              <button
-                type="button"
-                onClick={() => setProfileActiveTab("basic")}
-                className={`pb-2.5 px-3 border-b-2 transition-all cursor-pointer whitespace-nowrap ${
-                  profileActiveTab === "basic" ? "border-[#6256D9] text-[#6256D9]" : "border-transparent text-slate-500 hover:text-slate-800"
-                }`}
-              >
-                Attributes &amp; Demographics
-              </button>
-              <button
-                type="button"
-                onClick={() => setProfileActiveTab("family")}
-                className={`pb-2.5 px-3 border-b-2 transition-all cursor-pointer whitespace-nowrap ${
-                  profileActiveTab === "family" ? "border-[#6256D9] text-[#6256D9]" : "border-transparent text-slate-500 hover:text-slate-800"
-                }`}
-              >
-                Household &amp; Family ({selectedProfileVoter.familyMembersCount})
-              </button>
-              <button
-                type="button"
-                onClick={() => setProfileActiveTab("survey")}
-                className={`pb-2.5 px-3 border-b-2 transition-all cursor-pointer whitespace-nowrap ${
-                  profileActiveTab === "survey" ? "border-[#6256D9] text-[#6256D9]" : "border-transparent text-slate-500 hover:text-slate-800"
-                }`}
-              >
-                Field Survey &amp; Notes
-              </button>
-              <button
-                type="button"
-                onClick={() => setProfileActiveTab("office")}
-                className={`pb-2.5 px-3 border-b-2 transition-all cursor-pointer whitespace-nowrap ${
-                  profileActiveTab === "office" ? "border-[#6256D9] text-[#6256D9]" : "border-transparent text-slate-500 hover:text-slate-800"
-                }`}
-              >
-                Internal Org Sync
-              </button>
-              <button
-                type="button"
-                onClick={() => setProfileActiveTab("tickets")}
-                className={`pb-2.5 px-3 border-b-2 transition-all cursor-pointer whitespace-nowrap ${
-                  profileActiveTab === "tickets" ? "border-[#6256D9] text-[#6256D9]" : "border-transparent text-slate-500 hover:text-slate-800"
-                }`}
-              >
-                Grievances &amp; Tickets
-              </button>
-            </div>
-
-            {/* 3. PROFILE TAB CONTENT (SCROLLABLE) */}
-            <div className="p-5 overflow-y-auto space-y-4 text-xs">
-              {profileActiveTab === "basic" && (
-                <div className="space-y-4">
-                  {/* Detailed Demographics Block */}
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                    <div className="p-3 bg-slate-50 dark:bg-slate-800/40 rounded-xl border border-slate-200/80 dark:border-slate-800">
-                      <span className="text-[10px] text-slate-400 block font-bold">Caste / Community</span>
-                      <span className="font-bold text-slate-900 dark:text-white mt-0.5 block">{selectedProfileVoter.caste}</span>
+            {/* 2. CONTINUOUS PROFILE DOSSIER (ALL SUBSECTIONS DISPLAYED AT ONCE) */}
+            <div className="p-5 sm:p-6 overflow-y-auto space-y-6 text-xs max-h-[calc(92vh-220px)]">
+              {/* SUBSECTION 1: ATTRIBUTES & ECI DEMOGRAPHICS */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between pb-2 border-b border-slate-200/80 dark:border-slate-800">
+                  <div className="flex items-center gap-2">
+                    <div className="w-6 h-6 rounded-lg bg-violet-100 text-[#6256D9] dark:bg-violet-950/60 flex items-center justify-center font-bold">
+                      <Building2 className="w-3.5 h-3.5" />
                     </div>
-                    <div className="p-3 bg-slate-50 dark:bg-slate-800/40 rounded-xl border border-slate-200/80 dark:border-slate-800">
-                      <span className="text-[10px] text-slate-400 block font-bold">Occupation</span>
-                      <span className="font-bold text-slate-900 dark:text-white mt-0.5 block">{selectedProfileVoter.occupation}</span>
-                    </div>
-                    <div className="p-3 bg-slate-50 dark:bg-slate-800/40 rounded-xl border border-slate-200/80 dark:border-slate-800">
-                      <span className="text-[10px] text-slate-400 block font-bold">Beneficiary Scheme</span>
-                      <span className="font-bold text-slate-900 dark:text-white mt-0.5 block">{selectedProfileVoter.scheme}</span>
-                    </div>
-                    <div className="p-3 bg-slate-50 dark:bg-slate-800/40 rounded-xl border border-slate-200/80 dark:border-slate-800">
-                      <span className="text-[10px] text-slate-400 block font-bold">House Number</span>
-                      <span className="font-bold text-slate-900 dark:text-white mt-0.5 block">{selectedProfileVoter.houseNo}</span>
+                    <div>
+                      <h3 className="font-bold text-sm text-slate-900 dark:text-white">
+                        1. Attributes &amp; Demographics
+                      </h3>
+                      <p className="text-[11px] text-slate-500">ECI verified electoral attributes and booth geometry</p>
                     </div>
                   </div>
+                  <span className="text-[10px] font-bold text-brand-600 bg-brand-50 dark:bg-brand-950/40 px-2 py-0.5 rounded border border-brand-200 dark:border-brand-800">
+                    ECI Official Record
+                  </span>
+                </div>
 
-                  {/* Polling Station & Geometry */}
-                  <div className="p-4 bg-slate-50 dark:bg-slate-800/40 rounded-xl border border-slate-200/80 dark:border-slate-800 space-y-2">
-                    <h4 className="font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
-                      <MapPin className="w-3.5 h-3.5 text-[#6256D9]" />
-                      <span>Polling Station Structural Details</span>
-                    </h4>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-slate-600 dark:text-slate-300">
-                      <div>Station Name: <strong>{selectedProfileVoter.boothNumber} - {selectedProfileVoter.boothName}</strong></div>
-                      <div>Assembly Segment: <strong>215 - Kasba Peth (Pune City)</strong></div>
-                      <div>Municipal Ward: <strong>{selectedProfileVoter.ward} (Kothrud Depot Prabhag)</strong></div>
-                      <div>ECI Building Code: <strong>MH-215-PS101-ROOM1</strong></div>
-                    </div>
+                {/* Detailed Demographics Block */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  <div className="p-3 bg-slate-50 dark:bg-slate-800/40 rounded-xl border border-slate-200/80 dark:border-slate-800">
+                    <span className="text-[10px] text-slate-400 block font-bold">Caste / Community</span>
+                    <span className="font-bold text-slate-900 dark:text-white mt-0.5 block">{selectedProfileVoter.caste}</span>
+                  </div>
+                  <div className="p-3 bg-slate-50 dark:bg-slate-800/40 rounded-xl border border-slate-200/80 dark:border-slate-800">
+                    <span className="text-[10px] text-slate-400 block font-bold">Occupation</span>
+                    <span className="font-bold text-slate-900 dark:text-white mt-0.5 block">{selectedProfileVoter.occupation}</span>
+                  </div>
+                  <div className="p-3 bg-slate-50 dark:bg-slate-800/40 rounded-xl border border-slate-200/80 dark:border-slate-800">
+                    <span className="text-[10px] text-slate-400 block font-bold">Beneficiary Scheme</span>
+                    <span className="font-bold text-slate-900 dark:text-white mt-0.5 block">{selectedProfileVoter.scheme}</span>
+                  </div>
+                  <div className="p-3 bg-slate-50 dark:bg-slate-800/40 rounded-xl border border-slate-200/80 dark:border-slate-800">
+                    <span className="text-[10px] text-slate-400 block font-bold">House Number</span>
+                    <span className="font-bold text-slate-900 dark:text-white mt-0.5 block">{selectedProfileVoter.houseNo}</span>
                   </div>
                 </div>
-              )}
 
-              {profileActiveTab === "family" && (
-                <div className="space-y-3">
-                  <p className="text-slate-500">
-                    Electors residing in <strong>{selectedProfileVoter.houseNo}</strong> grouped into a unified household card:
-                  </p>
-                  <div className="space-y-2">
-                    <div className="p-3 bg-violet-50/50 dark:bg-violet-950/20 rounded-xl border border-violet-200 dark:border-violet-900/40 flex items-center justify-between">
-                      <div>
-                        <span className="font-bold text-violet-900 dark:text-violet-200">{selectedProfileVoter.name}</span>
-                        <span className="text-[10px] bg-[#6256D9] text-white font-bold px-1.5 py-0.2 rounded ml-2">Head of Family</span>
-                        <div className="text-[11px] text-slate-500 mt-0.5">Age {selectedProfileVoter.age} • EPIC: {selectedProfileVoter.epicId}</div>
-                      </div>
-                      <span className="font-mono text-xs">{selectedProfileVoter.phone}</span>
-                    </div>
-
-                    <div className="p-3 bg-slate-50 dark:bg-slate-800/40 rounded-xl border border-slate-100 dark:border-slate-800 flex items-center justify-between">
-                      <div>
-                        <span className="font-bold text-slate-800 dark:text-white">Sunita Rajesh Verma</span>
-                        <span className="text-[10px] text-slate-400 ml-2">(Wife)</span>
-                        <div className="text-[11px] text-slate-500 mt-0.5">Age 38 • EPIC: WXE9821443</div>
-                      </div>
-                      <span className="font-mono text-xs">+91 98221 44002</span>
-                    </div>
+                {/* Polling Station & Structural Details */}
+                <div className="p-4 bg-slate-50 dark:bg-slate-800/40 rounded-xl border border-slate-200/80 dark:border-slate-800 space-y-2">
+                  <h4 className="font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                    <MapPin className="w-3.5 h-3.5 text-[#6256D9]" />
+                    <span>Polling Station Structural Details</span>
+                  </h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-slate-600 dark:text-slate-300">
+                    <div>Station Name: <strong>{selectedProfileVoter.boothNumber} - {selectedProfileVoter.boothName}</strong></div>
+                    <div>Assembly Segment: <strong>215 - Kasba Peth (Pune City)</strong></div>
+                    <div>Municipal Ward: <strong>{selectedProfileVoter.ward} (Kothrud Depot Prabhag)</strong></div>
+                    <div>ECI Building Code: <strong>MH-215-PS101-ROOM1</strong></div>
                   </div>
                 </div>
-              )}
+              </div>
 
-              {/* SECTION 3: NOTES & REAL-TIME APPEND AREA */}
-              {profileActiveTab === "survey" && (
-                <div className="space-y-4">
-                  {/* Append Real-Time Note Input */}
-                  <div className="p-4 bg-slate-50 dark:bg-slate-800/40 rounded-2xl border border-slate-200/80 dark:border-slate-800 space-y-2.5">
-                    <label className="block font-bold text-slate-800 dark:text-white">
-                      Append On-Ground Field Agent Note
-                    </label>
-                    <textarea
-                      rows={2}
-                      value={voterNotes}
-                      onChange={(e) => setVoterNotes(e.target.value)}
-                      placeholder="Type voter interaction notes, local requests, or visit observations..."
-                      className="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100"
-                    />
-                    <div className="flex justify-end">
-                      <button
-                        type="button"
-                        onClick={handleAppendNote}
-                        className="px-4 py-1.5 rounded-xl bg-[#6256D9] hover:bg-[#5044BF] text-white font-bold text-xs flex items-center gap-1.5 cursor-pointer shadow-xs"
+              {/* SUBSECTION 2: HOUSEHOLD & FAMILY NETWORK */}
+              <div className="space-y-3 pt-3">
+                <div className="flex items-center justify-between pb-2 border-b border-slate-200/80 dark:border-slate-800">
+                  <div className="flex items-center gap-2">
+                    <div className="w-6 h-6 rounded-lg bg-indigo-100 text-indigo-600 dark:bg-indigo-950/60 flex items-center justify-center font-bold">
+                      <Users className="w-3.5 h-3.5" />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-sm text-slate-900 dark:text-white">
+                        2. Household &amp; Family Members ({selectedProfileVoter.familyMembersCount} Electors)
+                      </h3>
+                      <p className="text-[11px] text-slate-500">
+                        Electors residing in <strong>{selectedProfileVoter.houseNo}</strong> grouped into a unified household card
+                      </p>
+                    </div>
+                  </div>
+                  <span className="text-[10px] font-bold text-indigo-600 bg-indigo-50 dark:bg-indigo-950/40 px-2 py-0.5 rounded border border-indigo-200 dark:border-indigo-800">
+                    Family Unit
+                  </span>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="p-3 bg-violet-50/50 dark:bg-violet-950/20 rounded-xl border border-violet-200 dark:border-violet-900/40 flex items-center justify-between">
+                    <div>
+                      <span className="font-bold text-violet-900 dark:text-violet-200">{selectedProfileVoter.name}</span>
+                      <span className="text-[10px] bg-[#6256D9] text-white font-bold px-1.5 py-0.2 rounded ml-2">Head of Family</span>
+                      <div className="text-[11px] text-slate-500 mt-0.5">Age {selectedProfileVoter.age} • EPIC: {selectedProfileVoter.epicId}</div>
+                    </div>
+                    <span className="font-mono text-xs">{selectedProfileVoter.phone}</span>
+                  </div>
+
+                  <div className="p-3 bg-slate-50 dark:bg-slate-800/40 rounded-xl border border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                    <div>
+                      <span className="font-bold text-slate-800 dark:text-white">Sunita Rajesh Verma</span>
+                      <span className="text-[10px] text-slate-400 ml-2">(Wife)</span>
+                      <div className="text-[11px] text-slate-500 mt-0.5">Age 38 • EPIC: WXE9821443</div>
+                    </div>
+                    <span className="font-mono text-xs">+91 98221 44002</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* SUBSECTION 3: FIELD SURVEY & NOTES */}
+              <div className="space-y-3 pt-3">
+                <div className="flex items-center justify-between pb-2 border-b border-slate-200/80 dark:border-slate-800">
+                  <div className="flex items-center gap-2">
+                    <div className="w-6 h-6 rounded-lg bg-emerald-100 text-emerald-600 dark:bg-emerald-950/60 flex items-center justify-center font-bold">
+                      <FileText className="w-3.5 h-3.5" />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-sm text-slate-900 dark:text-white">
+                        3. Field Survey &amp; Real-Time Notes
+                      </h3>
+                      <p className="text-[11px] text-slate-500">Live field cadre observations, canvassing updates, and door-to-door logs</p>
+                    </div>
+                  </div>
+                  <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded border border-emerald-200 dark:border-emerald-800">
+                    Live Field Feed
+                  </span>
+                </div>
+
+                {/* Append Real-Time Note Input */}
+                <div className="p-4 bg-slate-50 dark:bg-slate-800/40 rounded-2xl border border-slate-200/80 dark:border-slate-800 space-y-2.5">
+                  <label className="block font-bold text-slate-800 dark:text-white">
+                    Append On-Ground Field Agent Note
+                  </label>
+                  <textarea
+                    rows={2}
+                    value={voterNotes}
+                    onChange={(e) => setVoterNotes(e.target.value)}
+                    placeholder="Type voter interaction notes, local requests, or visit observations..."
+                    className="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100"
+                  />
+                  <div className="flex justify-end">
+                    <button
+                      type="button"
+                      onClick={handleAppendNote}
+                      className="px-4 py-1.5 rounded-xl bg-[#6256D9] hover:bg-[#5044BF] text-white font-bold text-xs flex items-center gap-1.5 cursor-pointer shadow-xs"
+                    >
+                      <Save className="w-3.5 h-3.5" />
+                      <span>Save Real-Time Note</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Chronological Notes History */}
+                <div className="space-y-2">
+                  <span className="font-bold text-slate-800 dark:text-slate-200 block">Notes History:</span>
+                  {savedNotes.map((note, idx) => (
+                    <div key={idx} className="p-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-200/80 dark:border-slate-800 space-y-1">
+                      <p className="text-slate-700 dark:text-slate-300">{note}</p>
+                      <span className="text-[10px] text-slate-400 block font-medium">Logged by Active Field Cadre • Auto-synced to Cloud</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* SUBSECTION 4: INTERNAL ORGANIZATIONAL METRICS & DATABASE SYNC */}
+              <div className="space-y-3 pt-3">
+                <div className="flex items-center justify-between pb-2 border-b border-slate-200/80 dark:border-slate-800">
+                  <div className="flex items-center gap-2">
+                    <div className="w-6 h-6 rounded-lg bg-violet-100 text-[#6256D9] dark:bg-violet-950/60 flex items-center justify-center font-bold">
+                      <RefreshCw className="w-3.5 h-3.5" />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-sm text-slate-900 dark:text-white">
+                        4. Internal Organizational Metrics &amp; DB Mapping
+                      </h3>
+                      <p className="text-[11px] text-slate-500">Campaign cadre assignments, mobilization grading, and master registry mapping</p>
+                    </div>
+                  </div>
+                  <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded border border-emerald-200 dark:border-emerald-800">
+                    Live Master DB Sync Active
+                  </span>
+                </div>
+
+                <div className="p-4 bg-violet-50/50 dark:bg-violet-950/20 rounded-2xl border border-violet-200 dark:border-violet-800/60 space-y-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                    <div>
+                      <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
+                        Assigned Karyakarta / Worker
+                      </label>
+                      <input
+                        type="text"
+                        value={assignedWorker}
+                        onChange={(e) => setAssignedWorker(e.target.value)}
+                        className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
+                        Priority Mobilization Grade
+                      </label>
+                      <select
+                        value={priorityGrade}
+                        onChange={(e) => setPriorityGrade(e.target.value as any)}
+                        className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100"
                       >
-                        <Save className="w-3.5 h-3.5" />
-                        <span>Save Real-Time Note</span>
-                      </button>
+                        <option value="Grade A - Must Mobilize">Grade A - Must Mobilize</option>
+                        <option value="Grade B - Follow-up">Grade B - Follow-up</option>
+                        <option value="Grade C - Neutral">Grade C - Neutral</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
+                        Custom Campaign Tag
+                      </label>
+                      <input
+                        type="text"
+                        value={customTagInput}
+                        onChange={(e) => setCustomTagInput(e.target.value)}
+                        className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100"
+                      />
+                    </div>
+
+                    <div className="flex items-center pt-5">
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={isFamilyHeadState}
+                          onChange={(e) => setIsFamilyHeadState(e.target.checked)}
+                          className="w-4 h-4 rounded text-[#6256D9] focus:ring-[#6256D9]"
+                        />
+                        <span className="font-bold text-slate-800 dark:text-slate-200">
+                          Recognized Household Head (Decision Maker)
+                        </span>
+                      </label>
                     </div>
                   </div>
 
-                  {/* Chronological Notes History */}
-                  <div className="space-y-2">
-                    <span className="font-bold text-slate-800 dark:text-slate-200 block">Notes History:</span>
-                    {savedNotes.map((note, idx) => (
-                      <div key={idx} className="p-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-200/80 dark:border-slate-800 space-y-1">
-                        <p className="text-slate-700 dark:text-slate-300">{note}</p>
-                        <span className="text-[10px] text-slate-400 block font-medium">Logged by Active Field Cadre • Auto-synced to Cloud</span>
-                      </div>
-                    ))}
+                  <div className="pt-2 flex justify-end">
+                    <button
+                      type="button"
+                      onClick={handleSyncOrgData}
+                      className="px-5 py-2 rounded-xl bg-[#6256D9] hover:bg-[#5044BF] text-white font-bold text-xs flex items-center gap-1.5 shadow-md shadow-[#6256D9]/20 cursor-pointer"
+                    >
+                      <RefreshCw className="w-3.5 h-3.5" />
+                      <span>Sync with Master Database</span>
+                    </button>
                   </div>
                 </div>
-              )}
+              </div>
 
-              {/* SECTION 3: INTERNAL ORGANIZATIONAL METRICS & DATABASE SYNC */}
-              {profileActiveTab === "office" && (
-                <div className="space-y-4">
-                  <div className="p-4 bg-violet-50/50 dark:bg-violet-950/20 rounded-2xl border border-violet-200 dark:border-violet-800/60 space-y-3">
-                    <div className="flex items-center justify-between">
-                      <h4 className="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
-                        <RefreshCw className="w-4 h-4 text-[#6256D9]" />
-                        <span>Internal Organizational Metrics Sync</span>
-                      </h4>
-                      <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded">
-                        Live Master DB Sync Active
-                      </span>
+              {/* SUBSECTION 5: GRIEVANCES & CIVIC TICKETS */}
+              <div className="space-y-3 pt-3">
+                <div className="flex items-center justify-between pb-2 border-b border-slate-200/80 dark:border-slate-800">
+                  <div className="flex items-center gap-2">
+                    <div className="w-6 h-6 rounded-lg bg-amber-100 text-amber-600 dark:bg-amber-950/60 flex items-center justify-center font-bold">
+                      <AlertCircle className="w-3.5 h-3.5" />
                     </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                      <div>
-                        <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
-                          Assigned Karyakarta / Worker
-                        </label>
-                        <input
-                          type="text"
-                          value={assignedWorker}
-                          onChange={(e) => setAssignedWorker(e.target.value)}
-                          className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
-                          Priority Mobilization Grade
-                        </label>
-                        <select
-                          value={priorityGrade}
-                          onChange={(e) => setPriorityGrade(e.target.value as any)}
-                          className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100"
-                        >
-                          <option value="Grade A - Must Mobilize">Grade A - Must Mobilize</option>
-                          <option value="Grade B - Follow-up">Grade B - Follow-up</option>
-                          <option value="Grade C - Neutral">Grade C - Neutral</option>
-                        </select>
-                      </div>
-
-                      <div>
-                        <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
-                          Custom Campaign Tag
-                        </label>
-                        <input
-                          type="text"
-                          value={customTagInput}
-                          onChange={(e) => setCustomTagInput(e.target.value)}
-                          className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100"
-                        />
-                      </div>
-
-                      <div className="flex items-center pt-5">
-                        <label className="flex items-center gap-2 cursor-pointer">
-                          <input
-                            type="checkbox"
-                            checked={isFamilyHeadState}
-                            onChange={(e) => setIsFamilyHeadState(e.target.checked)}
-                            className="w-4 h-4 rounded text-[#6256D9] focus:ring-[#6256D9]"
-                          />
-                          <span className="font-bold text-slate-800 dark:text-slate-200">
-                            Recognized Household Head (Decision Maker)
-                          </span>
-                        </label>
-                      </div>
-                    </div>
-
-                    <div className="pt-2 flex justify-end">
-                      <button
-                        type="button"
-                        onClick={handleSyncOrgData}
-                        className="px-5 py-2 rounded-xl bg-[#6256D9] hover:bg-[#5044BF] text-white font-bold text-xs flex items-center gap-1.5 shadow-md shadow-[#6256D9]/20 cursor-pointer"
-                      >
-                        <RefreshCw className="w-3.5 h-3.5" />
-                        <span>Sync with Master Database</span>
-                      </button>
+                    <div>
+                      <h3 className="font-bold text-sm text-slate-900 dark:text-white">
+                        5. Grievances &amp; Civic Tickets
+                      </h3>
+                      <p className="text-[11px] text-slate-500">Constituency issues, infrastructure complaints, and citizen requests</p>
                     </div>
                   </div>
+                  <span className="text-[10px] font-bold text-amber-600 bg-amber-50 dark:bg-amber-950/40 px-2 py-0.5 rounded border border-amber-200 dark:border-amber-800">
+                    1 Active Ticket
+                  </span>
                 </div>
-              )}
 
-              {profileActiveTab === "tickets" && (
                 <div className="space-y-2">
                   <div className="p-3 bg-amber-50/60 dark:bg-amber-950/20 rounded-xl border border-amber-200 dark:border-amber-900/40">
                     <div className="flex items-center justify-between font-bold">
@@ -1295,7 +1316,7 @@ export function VoterManagementView() {
                     <p className="text-slate-600 dark:text-slate-300 mt-1">Dahanukar Colony Lane 3 municipal pipeline pressure low for 5 straight days.</p>
                   </div>
                 </div>
-              )}
+              </div>
             </div>
 
             {/* Modal Footer */}
