@@ -48,8 +48,8 @@ class _CampaignWizardSheetState extends State<CampaignWizardSheet> {
     text: "नमस्कार {{voter_name}} जी, ॲड. विक्रम पाटील यांच्याकडून मनःपूर्वक शुभेच्छा. कसबा पेठेच्या विकासासाठी आम्ही कटिबद्ध आहोत. आपले मतदान केंद्र: बूथ क्र. {{booth_number}}.",
   );
 
-  // Step 5: Media Attachment
-  String _attachmentType = "image"; // none, image, pdf, audio
+  // Step 5: Media Attachment (Strictly Image / Document / None - Audio/Video Blocked)
+  String _attachmentType = "image"; // none, image, pdf
 
   // Step 6: Scheduling & Throttling
   bool _sendImmediately = true;
@@ -77,6 +77,16 @@ class _CampaignWizardSheetState extends State<CampaignWizardSheet> {
   }
 
   void _launchCampaign() {
+    if (_attachmentType == "audio" || _attachmentType == "video") {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          backgroundColor: Color(0xFFEF4444),
+          content: Text("Validation Error: Video (.mp4, .mov) and audio (.mp3, .wav) attachments are strictly prohibited."),
+        ),
+      );
+      return;
+    }
+
     final newCamp = CampaignModel(
       id: "CMP-2026-${DateTime.now().millisecondsSinceEpoch.toString().substring(8)}",
       title: _titleController.text.trim().isNotEmpty ? _titleController.text.trim() : "Multi-Channel Broadcast",
@@ -470,20 +480,82 @@ class _CampaignWizardSheetState extends State<CampaignWizardSheet> {
     );
   }
 
-  // Step 5: Media Attachment
+  // Step 5: Media Attachment (Strict Multimedia Security Policy)
   Widget _buildStep5(CandidateColors c) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _mediaOption("image", "Campaign Poster (HD JPEG)", Icons.image_rounded, c),
-        _mediaOption("audio", "Candidate Voice Note (MP3)", Icons.mic_rounded, c),
-        _mediaOption("pdf", "Kasba Vision Manifesto (PDF)", Icons.picture_as_pdf_rounded, c),
-        _mediaOption("none", "Text Only (No Media)", Icons.text_fields_rounded, c),
+        // Compliance & Restriction Security Banner
+        Container(
+          margin: const EdgeInsets.only(bottom: 14),
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: const Color(0xFFEF4444).withOpacity(0.08),
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: const Color(0xFFEF4444).withOpacity(0.35)),
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Icon(Icons.shield_outlined, size: 20, color: Color(0xFFEF4444)),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      "MULTIMEDIA COMPLIANCE RESTRICTION",
+                      style: TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w900,
+                        color: Color(0xFFEF4444),
+                        letterSpacing: 0.8,
+                      ),
+                    ),
+                    const SizedBox(height: 3),
+                    Text(
+                      "Only image attachments (.jpg, .png, .webp ≤ 5MB) and certified PDF documents are permitted. Video (.mp4, .mov) and audio (.mp3, .wav) attachments are strictly blocked across all channels.",
+                      style: TextStyle(fontSize: 11, height: 1.35, color: c.textSecondary),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+
+        _mediaOption(
+          "image",
+          "Campaign Graphic / Poster (HD Image)",
+          Icons.image_rounded,
+          c,
+          subtitle: "Permitted formats: .jpg, .png, .webp up to 5MB",
+        ),
+        _mediaOption(
+          "pdf",
+          "Official Election Document (PDF Manifesto)",
+          Icons.picture_as_pdf_rounded,
+          c,
+          subtitle: "Party manifestos, circulars, and resolution sheets",
+        ),
+        _mediaOption(
+          "none",
+          "Text Only (No Media Attachment)",
+          Icons.text_fields_rounded,
+          c,
+          subtitle: "Fastest gateway dispatch with lowest credit consumption",
+        ),
       ],
     );
   }
 
-  Widget _mediaOption(String type, String title, IconData icon, CandidateColors c) {
+  Widget _mediaOption(
+    String type,
+    String title,
+    IconData icon,
+    CandidateColors c, {
+    String? subtitle,
+  }) {
     final isSel = _attachmentType == type;
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
@@ -493,18 +565,40 @@ class _CampaignWizardSheetState extends State<CampaignWizardSheet> {
         child: Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: isSel ? const Color(0xFF4F46E5).withOpacity(0.1) : c.cardBg,
+            color: isSel ? c.primary.withOpacity(0.1) : c.cardBg,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: isSel ? const Color(0xFF4F46E5) : c.cardBorder, width: isSel ? 2 : 1),
+            border: Border.all(
+              color: isSel ? c.primary : c.cardBorder,
+              width: isSel ? 2 : 1,
+            ),
           ),
           child: Row(
             children: [
-              Icon(icon, size: 22, color: const Color(0xFF4F46E5)),
+              Icon(icon, size: 24, color: isSel ? c.primary : c.textSecondary),
               const SizedBox(width: 12),
               Expanded(
-                child: Text(title, style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: c.textPrimary)),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: TextStyle(
+                        fontSize: 12.5,
+                        fontWeight: FontWeight.bold,
+                        color: c.textPrimary,
+                      ),
+                    ),
+                    if (subtitle != null) ...[
+                      const SizedBox(height: 2),
+                      Text(
+                        subtitle,
+                        style: TextStyle(fontSize: 10.5, color: c.textMuted),
+                      ),
+                    ],
+                  ],
+                ),
               ),
-              if (isSel) const Icon(Icons.check_circle_rounded, color: Color(0xFF4F46E5), size: 18),
+              if (isSel) Icon(Icons.check_circle_rounded, color: c.primary, size: 18),
             ],
           ),
         ),

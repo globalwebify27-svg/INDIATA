@@ -27,7 +27,7 @@ interface BoothReadinessRow {
   stationName: string;
   locality: string;
   voters: number;
-  grade: "Grade A" | "Grade B - Swing" | "Grade D - Swing";
+  grade: "Grade A" | "Grade B - Focus" | "Grade D - Focus";
   bloName: string;
   bloPhone: string;
   karyakartasAssigned: number;
@@ -68,7 +68,7 @@ const BOOTH_DATA: BoothReadinessRow[] = [
     stationName: "Dr. Babasaheb Ambedkar Samaj Mandir",
     locality: "Paud Phata",
     voters: 980,
-    grade: "Grade B - Swing",
+    grade: "Grade B - Focus",
     bloName: "Rameshwar P. Mane",
     bloPhone: "+91 94220 98765",
     karyakartasAssigned: 3,
@@ -81,7 +81,7 @@ const BOOTH_DATA: BoothReadinessRow[] = [
     stationName: "Pune Municipal Primary School No. 18",
     locality: "Erandwane",
     voters: 1350,
-    grade: "Grade B - Swing",
+    grade: "Grade B - Focus",
     bloName: "Geeta N. Salunkhe",
     bloPhone: "+91 98901 23456",
     karyakartasAssigned: 6,
@@ -107,7 +107,7 @@ const BOOTH_DATA: BoothReadinessRow[] = [
     stationName: "Gokhale Memorial Community Hall",
     locality: "Deccan Gymkhana",
     voters: 890,
-    grade: "Grade D - Swing",
+    grade: "Grade D - Focus",
     bloName: "Pravin S. Gaikwad",
     bloPhone: "+91 99224 88321",
     karyakartasAssigned: 2,
@@ -146,7 +146,7 @@ export default function CandidateWarRoomDashboard() {
 
     const matchesGrade =
       selectedGrade === "all" ||
-      (selectedGrade === "swing" && b.grade.includes("Swing")) ||
+      (selectedGrade === "focus" && b.grade.includes("Focus")) ||
       (selectedGrade === "grade-a" && b.grade === "Grade A");
 
     return matchesSearch && matchesGrade;
@@ -250,7 +250,7 @@ export default function CandidateWarRoomDashboard() {
           </div>
           <div>
             <h4 className="text-xs font-bold text-amber-900 dark:text-amber-200">
-              3 High-Priority Swing Booths Require Slip Distribution Surge
+              3 High-Priority Focus Booths Require Slip Distribution Surge
             </h4>
             <p className="text-xs text-amber-700 dark:text-amber-400 mt-0.5">
               Booth #103 (Paud Phata) &amp; Booth #108 (Deccan) are currently under 50% voter slip distribution threshold.
@@ -464,16 +464,28 @@ export default function CandidateWarRoomDashboard() {
               </div>
 
               <Link
-                href="/field-map"
-                className="text-xs font-semibold text-brand-600 hover:text-brand-700 flex items-center gap-1 shrink-0 self-start sm:self-center"
+                href="/candidate/field-map"
+                className="text-xs font-semibold text-[#6256D9] hover:text-[#5044BF] flex items-center gap-1 shrink-0 self-start sm:self-center"
               >
                 <span>Expand Interactive Full Map</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </Link>
             </div>
 
-            {/* Visual Canvas Area with Subtle Dotted Grid and Smooth Wave */}
-            <div className="relative h-64 sm:h-72 my-4 rounded-xl bg-slate-50/70 dark:bg-slate-950/60 border border-slate-200/70 dark:border-slate-800 overflow-hidden">
+            {/* Visual Canvas Area with Subtle Dotted Grid and Geodetic Coordinates - Clickable */}
+            <Link
+              href="/candidate/field-map"
+              className="block relative h-64 sm:h-72 my-4 rounded-xl bg-slate-50/70 dark:bg-slate-950/60 border border-slate-200/70 dark:border-slate-800 overflow-hidden group cursor-pointer"
+              title="Click anywhere to open Live Field Map"
+            >
+              {/* Geodetic Grid Lat/Long Coordinates Markers */}
+              <div className="absolute top-2 left-2 z-10 px-2 py-0.5 rounded bg-black/60 backdrop-blur-xs font-mono text-[9px] text-violet-300 font-bold border border-violet-500/30">
+                18.5220° N, 73.8540° E
+              </div>
+              <div className="absolute bottom-8 right-2 z-10 px-2 py-0.5 rounded bg-black/60 backdrop-blur-xs font-mono text-[9px] text-violet-300 font-bold border border-violet-500/30">
+                AC-215 (BOOTHS 1-215)
+              </div>
+
               {/* Subtle Dot Matrix Pattern */}
               <div
                 className="absolute inset-0 opacity-40 dark:opacity-20 pointer-events-none"
@@ -560,10 +572,18 @@ export default function CandidateWarRoomDashboard() {
                 </div>
                 <div className="flex items-center gap-1.5">
                   <span className="w-3.5 h-2 rounded bg-violet-200 dark:bg-violet-900/60 border border-violet-300 dark:border-violet-700" />
-                  <span>Swing Zone</span>
+                  <span>Active Survey Area</span>
                 </div>
               </div>
-            </div>
+
+              {/* Hover overlay hint */}
+              <div className="absolute inset-0 bg-violet-900/10 dark:bg-violet-950/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
+                <span className="px-3 py-1.5 rounded-xl bg-black/80 text-white font-bold text-xs backdrop-blur-xs flex items-center gap-1.5 shadow-lg">
+                  <MapPin className="w-3.5 h-3.5 text-violet-400" />
+                  <span>Tap to Launch Live Field Map &amp; Telemetry</span>
+                </span>
+              </div>
+            </Link>
           </div>
 
           {/* Lower Telemetry Strip */}
@@ -605,7 +625,7 @@ export default function CandidateWarRoomDashboard() {
               </div>
 
               <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-                Survey data indicates an 18.4% favorable sentiment swing among women voters in Wards 12 &amp; 13 following direct benefit disbursements.
+                Survey data indicates an 18.4% favorable sentiment surge among women voters in Wards 12 &amp; 13 following direct benefit disbursements.
               </p>
 
               {/* Three Metric Gauges */}
@@ -636,7 +656,7 @@ export default function CandidateWarRoomDashboard() {
                     18.5%
                   </div>
                   <div className="text-[10px] text-amber-600 font-medium mt-0.5">
-                    Swing Target
+                    Undecided Pool
                   </div>
                 </div>
               </div>
@@ -688,7 +708,7 @@ export default function CandidateWarRoomDashboard() {
             >
               <option value="all">All Grades</option>
               <option value="grade-a">Grade A Only</option>
-              <option value="swing">Swing Booths</option>
+              <option value="focus">Focus Booths</option>
             </select>
 
             <Link
@@ -742,7 +762,7 @@ export default function CandidateWarRoomDashboard() {
                       className={`px-2 py-0.5 rounded text-[10.5px] font-bold ${
                         row.grade === "Grade A"
                           ? "bg-blue-50 text-blue-700 border border-blue-200"
-                          : row.grade === "Grade B - Swing"
+                          : row.grade === "Grade B - Focus"
                           ? "bg-amber-50 text-amber-700 border border-amber-200"
                           : "bg-rose-50 text-rose-700 border border-rose-200"
                       }`}

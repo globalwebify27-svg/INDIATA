@@ -34,6 +34,10 @@ class MapPinDetailSheet extends StatelessWidget {
         return _buildBoothSheet(context);
       case MapPinType.grievance:
         return _buildGrievanceSheet(context);
+      case MapPinType.slipDelivered:
+        return _buildSlipDeliveredSheet(context);
+      case MapPinType.whatsAppSlip:
+        return _buildWhatsAppSlipSheet(context);
       case MapPinType.voterCluster:
         return _buildClusterSheet(context);
     }
@@ -285,6 +289,154 @@ class MapPinDetailSheet extends StatelessWidget {
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
               ),
               child: const Text("View Ticket in Office Hub"),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSlipDeliveredSheet(BuildContext context) {
+    final meta = (pin.metadata as Map<String, dynamic>?) ?? {};
+    return Padding(
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF2563EB).withOpacity(0.12),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(Icons.print_rounded, color: Color(0xFF2563EB), size: 24),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      pin.title,
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: c.textPrimary),
+                    ),
+                    Text(
+                      pin.subtitle,
+                      style: TextStyle(fontSize: 11, color: c.textSecondary),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF2563EB).withOpacity(0.12),
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: const Text(
+                  "DELIVERED",
+                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xFF2563EB)),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 14),
+          const Divider(height: 1),
+          const SizedBox(height: 12),
+          _sheetRow("Distribution Channel", meta["channel"] ?? "Thermal Bluetooth Print"),
+          _sheetRow("Slips Printed & Handed", "${meta["count"] ?? 185} Doorstep Slips"),
+          _sheetRow("Field Karyakarta", meta["karyakarta"] ?? "Mahesh Deshmukh"),
+          _sheetRow("GPS Locus", "${pin.latitude}° N, ${pin.longitude}° E", isMono: true),
+          const SizedBox(height: 16),
+          SizedBox(
+            width: double.infinity,
+            height: 44,
+            child: ElevatedButton.icon(
+              onPressed: () => Navigator.pop(context),
+              icon: const Icon(Icons.check_circle_outline_rounded, size: 18),
+              label: const Text("Dismiss Verification"),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF2563EB),
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildWhatsAppSlipSheet(BuildContext context) {
+    final meta = (pin.metadata as Map<String, dynamic>?) ?? {};
+    return Padding(
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF10B981).withOpacity(0.12),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(Icons.chat_bubble_rounded, color: Color(0xFF10B981), size: 24),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      pin.title,
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: c.textPrimary),
+                    ),
+                    Text(
+                      pin.subtitle,
+                      style: TextStyle(fontSize: 11, color: c.textSecondary),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF10B981).withOpacity(0.12),
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: const Text(
+                  "DIGITAL SLIP",
+                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xFF10B981)),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 14),
+          const Divider(height: 1),
+          const SizedBox(height: 12),
+          _sheetRow("Delivery Provider", meta["channel"] ?? "WhatsApp Cloud API"),
+          _sheetRow("PDF Slips Sent", "${meta["count"] ?? 320} Mobile Slips"),
+          _sheetRow("Verified Read Rate", meta["readRate"] ?? "94% Read"),
+          _sheetRow("Cluster Coordinates", "${pin.latitude}° N, ${pin.longitude}° E", isMono: true),
+          const SizedBox(height: 16),
+          SizedBox(
+            width: double.infinity,
+            height: 44,
+            child: ElevatedButton.icon(
+              onPressed: () => Navigator.pop(context),
+              icon: const Icon(Icons.mark_chat_read_rounded, size: 18),
+              label: const Text("Acknowledge Delivery"),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF10B981),
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              ),
             ),
           ),
         ],

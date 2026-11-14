@@ -10,6 +10,7 @@ import { OfficeTicketsView } from "@/components/modules/office-tickets-view";
 import { CampaignControlView } from "@/components/modules/campaign-control-view";
 import { SubscriptionPlansView } from "@/components/modules/subscription-plans-view";
 import { ReportsAnalyticsView } from "@/components/modules/reports-analytics-view";
+import { PreviousElectionStrategyView } from "@/components/modules/previous-election-strategy-view";
 import { PortalSettingsView } from "@/components/modules/portal-settings-view";
 
 export default function CandidateDynamicModulePage() {
@@ -54,6 +55,15 @@ export default function CandidateDynamicModulePage() {
   // Subscription Licensure & Recharge
   if (pathname.startsWith("/subscriptions")) {
     return <SubscriptionPlansView />;
+  }
+
+  // Strategic Intelligence & Previous Election Analysis
+  if (
+    pathname.startsWith("/strategy") ||
+    pathname.startsWith("/previous-election") ||
+    pathname.startsWith("/ai-strategy")
+  ) {
+    return <PreviousElectionStrategyView />;
   }
 
   // Reports, Analytics & Surveys

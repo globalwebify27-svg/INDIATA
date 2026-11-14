@@ -54,3 +54,47 @@ class BillingInvoice {
     required this.status,
   });
 }
+
+class SubscriptionTier {
+  final String id;
+  final String name;
+  final String tag;
+  final String description;
+  final List<String> features;
+  final bool isCurrent;
+  final bool isPopular;
+  final Color accentColor;
+  final IconData icon;
+
+  const SubscriptionTier({
+    required this.id,
+    required this.name,
+    required this.tag,
+    required this.description,
+    required this.features,
+    this.isCurrent = false,
+    this.isPopular = false,
+    required this.accentColor,
+    required this.icon,
+  });
+}
+
+class ExtraServiceItem {
+  final String id;
+  final String title;
+  final String subtitle;
+  final String priceRange;
+  final String storeUrl;
+  final IconData icon;
+  final Color color;
+
+  const ExtraServiceItem({
+    required this.id,
+    required this.title,
+    required this.subtitle,
+    required this.priceRange,
+    required this.storeUrl,
+    required this.icon,
+    required this.color,
+  });
+}

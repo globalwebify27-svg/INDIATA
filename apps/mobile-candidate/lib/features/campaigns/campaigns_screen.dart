@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../core/theme/candidate_theme.dart';
 import '../../core/components/status_pill.dart';
 import '../../core/components/section_header.dart';
+import '../../subscriptions/screens/subscriptions_screen.dart';
 import 'models/campaign_model.dart';
 import 'data/campaign_mock_data.dart';
 import 'widgets/campaign_card.dart';
@@ -132,7 +133,59 @@ class _CampaignsScreenState extends State<CampaignsScreen> {
               ],
             ),
           ),
-          const SizedBox(height: 14),
+          const SizedBox(height: 12),
+
+          // URGENT LOW BALANCE THRESHOLD WARNING BANNER (< 5% Threshold)
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            decoration: BoxDecoration(
+              color: const Color(0xFFEF4444).withOpacity(0.12),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: const Color(0xFFEF4444).withOpacity(0.4)),
+            ),
+            child: Row(
+              children: [
+                const Icon(Icons.warning_amber_rounded, color: Color(0xFFEF4444), size: 20),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        "Low Broadcast Balance (< 5% Reserve)",
+                        style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.bold, color: Color(0xFFEF4444)),
+                      ),
+                      Text(
+                        "WhatsApp credit reserves at 4.2%. Top-up now to ensure scheduled dispatches run uninterrupted.",
+                        style: TextStyle(fontSize: 10, color: c.textSecondary),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 8),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => SubscriptionsScreen(c: c, isDark: isDark),
+                      ),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFFEF4444),
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                    minimumSize: Size.zero,
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  ),
+                  child: const Text("Recharge Quota ↗", style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 12),
 
           // 2. "+ Compose & Schedule Broadcast" Button
           SizedBox(
@@ -152,7 +205,7 @@ class _CampaignsScreenState extends State<CampaignsScreen> {
                 style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13),
               ),
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF4F46E5),
+                backgroundColor: const Color(0xFF6256D9),
                 elevation: 2,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               ),

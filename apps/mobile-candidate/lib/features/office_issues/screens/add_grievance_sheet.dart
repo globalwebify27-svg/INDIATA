@@ -5,11 +5,19 @@ import '../models/office_issue_model.dart';
 class AddGrievanceSheet extends StatefulWidget {
   final CandidateColors c;
   final Function(GrievanceTicket) onTicketCreated;
+  final String? initialCitizenName;
+  final String? initialPhone;
+  final String? initialBooth;
+  final String? initialPeth;
 
   const AddGrievanceSheet({
     super.key,
     required this.c,
     required this.onTicketCreated,
+    this.initialCitizenName,
+    this.initialPhone,
+    this.initialBooth,
+    this.initialPeth,
   });
 
   @override
@@ -17,12 +25,32 @@ class AddGrievanceSheet extends StatefulWidget {
 }
 
 class _AddGrievanceSheetState extends State<AddGrievanceSheet> {
-  final _nameController = TextEditingController();
-  final _phoneController = TextEditingController();
-  final _pethController = TextEditingController(text: "Kasba Peth");
-  final _boothController = TextEditingController(text: "42");
+  late final TextEditingController _nameController;
+  late final TextEditingController _phoneController;
+  late final TextEditingController _pethController;
+  late final TextEditingController _boothController;
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _nameController = TextEditingController(text: widget.initialCitizenName ?? "");
+    _phoneController = TextEditingController(text: widget.initialPhone ?? "");
+    _pethController = TextEditingController(text: widget.initialPeth ?? "Kasba Peth");
+    _boothController = TextEditingController(text: widget.initialBooth ?? "42");
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _phoneController.dispose();
+    _pethController.dispose();
+    _boothController.dispose();
+    _titleController.dispose();
+    _descriptionController.dispose();
+    super.dispose();
+  }
 
   GrievanceCategory _category = GrievanceCategory.waterSupply;
   GrievancePriority _priority = GrievancePriority.high;

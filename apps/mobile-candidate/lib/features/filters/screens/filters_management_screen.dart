@@ -73,7 +73,7 @@ class _FiltersManagementScreenState extends State<FiltersManagementScreen> {
   ];
 
   void _applyFilter(SavedFilterPreset preset) {
-    widget.onNavigateTab(1); // Jump to Voters Tab
+    widget.onNavigateTab(0); // Jump to Voters Tab (Slot 1, Index 0)
     Navigator.pop(context);
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(

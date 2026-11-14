@@ -301,7 +301,75 @@ class BloMockData {
       },
     ),
 
-    // 4. Voter Density Clusters
+    // 4. Slips Printed & Delivered
+    const MapPinModel(
+      id: "PIN-SLIP-01",
+      title: "Printed Thermal Slips (Cluster 14)",
+      subtitle: "185 Slips Distributed at Doorstep • Booth #42",
+      type: MapPinType.slipDelivered,
+      xPct: 0.32,
+      yPct: 0.30,
+      latitude: 18.5198,
+      longitude: 73.8556,
+      status: "DELIVERED",
+      metadata: {
+        "channel": "Thermal Bluetooth Print",
+        "count": 185,
+        "karyakarta": "Mahesh Deshmukh",
+      },
+    ),
+    const MapPinModel(
+      id: "PIN-SLIP-02",
+      title: "Printed Thermal Slips (Lane 2)",
+      subtitle: "240 Slips Distributed at Doorstep • Booth #104",
+      type: MapPinType.slipDelivered,
+      xPct: 0.58,
+      yPct: 0.42,
+      latitude: 18.5210,
+      longitude: 73.8580,
+      status: "DELIVERED",
+      metadata: {
+        "channel": "Thermal Bluetooth Print",
+        "count": 240,
+        "karyakarta": "Suresh Gaikwad",
+      },
+    ),
+
+    // 5. WhatsApp Slips Dispatched
+    const MapPinModel(
+      id: "PIN-WA-01",
+      title: "WhatsApp Digital Slips (Ward 12)",
+      subtitle: "320 Digital PDF Slips Dispatched & Read",
+      type: MapPinType.whatsAppSlip,
+      xPct: 0.40,
+      yPct: 0.55,
+      latitude: 18.5188,
+      longitude: 73.8570,
+      status: "DELIVERED",
+      metadata: {
+        "channel": "WhatsApp Cloud API",
+        "count": 320,
+        "readRate": "94%",
+      },
+    ),
+    const MapPinModel(
+      id: "PIN-WA-02",
+      title: "WhatsApp Digital Slips (Raviwar Peth)",
+      subtitle: "410 Digital PDF Slips Dispatched",
+      type: MapPinType.whatsAppSlip,
+      xPct: 0.62,
+      yPct: 0.48,
+      latitude: 18.5192,
+      longitude: 73.8590,
+      status: "DELIVERED",
+      metadata: {
+        "channel": "WhatsApp Cloud API",
+        "count": 410,
+        "readRate": "91%",
+      },
+    ),
+
+    // 6. Voter Density Clusters
     const MapPinModel(
       id: "PIN-C-01",
       title: "Kasba Ganpati Core Cluster",

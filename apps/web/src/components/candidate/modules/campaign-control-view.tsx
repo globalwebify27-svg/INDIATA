@@ -1,17 +1,23 @@
 "use client";
 
 import React, { useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import {
   Plus,
   MessageSquare,
   PhoneCall,
   Send,
   CreditCard,
-  CheckCircle2,
   ArrowRight,
   X,
   Gift,
   Check,
+  AlertTriangle,
+  UploadCloud,
+  ImageIcon,
+  FileWarning,
+  Trash2,
 } from "lucide-react";
 import { useToast } from "@/context/toast-context";
 import { Badge } from "@/components/ui/badge";
@@ -77,6 +83,10 @@ const SAMPLE_CAMPAIGNS: CampaignItem[] = [
 ];
 
 export function CampaignControlView() {
+  const pathname = usePathname();
+  const basePath = pathname.startsWith("/candidate") ? "/candidate" : "";
+  const subscriptionsUrl = `${basePath}/subscriptions`;
+
   const { showToast } = useToast();
   const [activeTab, setActiveTab] = useState<"all" | "whatsapp" | "sms" | "voice" | "wallet">("all");
   const [campaigns, setCampaigns] = useState<CampaignItem[]>(SAMPLE_CAMPAIGNS);
@@ -94,6 +104,10 @@ export function CampaignControlView() {
   const [wizardTemplateMessage, setWizardTemplateMessage] = useState(
     "Namaskar {{voter_name}} ji! Adv. Vikram Patil requests your valuable vote in the upcoming Assembly election. Your polling station is {{booth_name}} (Booth #{{booth_number}}). Download your official digital voter slip here: {{slip_link}}"
   );
+  const [attachedCreative, setAttachedCreative] = useState<{ name: string; size: string } | null>(null);
+  const [showRestrictionModal, setShowRestrictionModal] = useState(false);
+  const [restrictionErrorMsg, setRestrictionErrorMsg] = useState("");
+
   const [wizardScheduleType, setWizardScheduleType] = useState<"immediate" | "scheduled" | "birthday">("immediate");
   const [wizardScheduleTime, setWizardScheduleTime] = useState("2026-11-08T10:00");
 
@@ -113,6 +127,70 @@ export function CampaignControlView() {
       nextState
         ? "Automated Marathi greetings will dispatch daily at 08:00 AM to registered birthday voters."
         : "Automated daily birthday greetings paused."
+    );
+  };
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Reset native input so change event triggers reliably
+    e.target.value = "";
+
+    const lowerName = file.name.toLowerCase();
+    const isVideoOrAudio =
+      file.type.startsWith("video/") ||
+      file.type.startsWith("audio/") ||
+      lowerName.endsWith(".mp4") ||
+      lowerName.endsWith(".mov") ||
+      lowerName.endsWith(".avi") ||
+      lowerName.endsWith(".mkv") ||
+      lowerName.endsWith(".mp3") ||
+      lowerName.endsWith(".wav") ||
+      lowerName.endsWith(".aac") ||
+      lowerName.endsWith(".m4a");
+
+    if (isVideoOrAudio) {
+      setRestrictionErrorMsg(
+        "Video & Audio files are restricted to prevent high data load. Please select an image (JPG, PNG, WebP) under 5MB."
+      );
+      setShowRestrictionModal(true);
+      return;
+    }
+
+    const isImage =
+      file.type.startsWith("image/") ||
+      lowerName.endsWith(".jpg") ||
+      lowerName.endsWith(".jpeg") ||
+      lowerName.endsWith(".png") ||
+      lowerName.endsWith(".webp");
+
+    if (!isImage) {
+      setRestrictionErrorMsg(
+        "Unsupported file format. Please select an image (JPG, PNG, WebP) under 5MB."
+      );
+      setShowRestrictionModal(true);
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      setRestrictionErrorMsg(
+        "File size exceeds 5MB limit. Please compress your image (JPG, PNG, WebP) under 5MB."
+      );
+      setShowRestrictionModal(true);
+      return;
+    }
+
+    // Valid Image File
+    setAttachedCreative({
+      name: file.name,
+      size: `${(file.size / (1024 * 1024)).toFixed(2)} MB`,
+    });
+
+    showToast(
+      "success",
+      "Campaign Creative Attached",
+      `Image ${file.name} (${(file.size / (1024 * 1024)).toFixed(2)} MB) verified and ready.`
     );
   };
 
@@ -138,6 +216,7 @@ export function CampaignControlView() {
     setShowWizard(false);
     setWizardStep(1);
     setWizardCampaignName("");
+    setAttachedCreative(null);
 
     showToast(
       "success",
@@ -148,21 +227,51 @@ export function CampaignControlView() {
 
   return (
     <div className="space-y-5">
+      {/* SECTION 5: CRITICAL LOW BROADCAST BALANCE QUOTA WARNING BANNER (< 5%) */}
+      <div className="bg-gradient-to-r from-rose-500/15 via-amber-500/10 to-rose-500/15 border-2 border-rose-500/60 dark:border-rose-600/70 rounded-2xl p-4 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-md">
+        <div className="flex items-start gap-3.5">
+          <div className="w-10 h-10 rounded-xl bg-rose-600 text-white flex items-center justify-center shrink-0 shadow-sm animate-pulse">
+            <AlertTriangle className="w-5 h-5" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2 flex-wrap">
+              <h3 className="font-bold text-sm text-rose-700 dark:text-rose-400 uppercase tracking-wide">
+                Quota Warning: Broadcast Balance &lt; 5% Remaining
+              </h3>
+              <span className="text-[10.5px] font-bold px-2 py-0.5 rounded-full bg-rose-100 dark:bg-rose-950 text-rose-700 dark:text-rose-300 border border-rose-300 dark:border-rose-800">
+                1,240 / 25,000 Credits Left
+              </span>
+            </div>
+            <p className="text-xs text-slate-700 dark:text-slate-300 mt-1">
+              Your remaining broadcast quota is below 5%. Recharging is required immediately to prevent scheduled campaign suspensions across WhatsApp and SMS channels.
+            </p>
+          </div>
+        </div>
+
+        <Link
+          href={subscriptionsUrl}
+          className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold bg-rose-600 hover:bg-rose-700 text-white shadow-sm transition-all whitespace-nowrap cursor-pointer shrink-0"
+        >
+          <CreditCard className="w-4 h-4" />
+          <span>Recharge Quota / Upgrade Plan</span>
+        </Link>
+      </div>
+
       {/* Module Title Header */}
       <section className="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-premium-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1.5 flex-wrap">
-            <span className="text-[11px] font-bold text-brand-600 uppercase tracking-wider bg-brand-50 px-2.5 py-0.5 rounded-full">
+            <span className="text-[11px] font-bold text-brand-600 uppercase tracking-wider bg-brand-50 dark:bg-brand-950/50 dark:text-brand-400 px-2.5 py-0.5 rounded-full">
               Module 13: Campaign Control
             </span>
             <Badge variant="teal">Meta Cloud API Live</Badge>
             <Badge variant="ai">AI Voice Bot Connected</Badge>
-            <Badge variant="neutral">Wallet Balance: ₹42,500</Badge>
+            <Badge variant="neutral">Quota Balance: 1,240 / 25,000</Badge>
           </div>
           <h1 className="text-[22px] font-bold text-slate-800 dark:text-white tracking-tight">
             Campaign Control &amp; Multi-Channel Outreach Hub
           </h1>
-          <p className="text-xs text-slate-500 dark:text-[#94A3B8] mt-0.5">
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
             Coordinate high-throughput WhatsApp voter slip delivery, DLT-registered SMS blasts, autonomous AI voice calls, and automated birthday greetings.
           </p>
         </div>
@@ -186,7 +295,7 @@ export function CampaignControlView() {
               <h3 className="font-bold text-sm text-slate-800 dark:text-white">
                 Automated Birthday Wishes Engine
               </h3>
-              <span className={`text-[10px] font-bold px-2 py-0.2 rounded-full ${
+              <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
                 birthdayAutoPilot ? "bg-emerald-100 text-emerald-700" : "bg-slate-200 text-slate-600"
               }`}>
                 {birthdayAutoPilot ? "AUTO-PILOT ACTIVE" : "PAUSED"}
@@ -249,7 +358,7 @@ export function CampaignControlView() {
             }`}
           >
             <Send className="w-3.5 h-3.5" />
-            <span>SMS Workspace ({campaigns.filter((c) => c.channel.includes("SMS")).length})</span>
+            <span>SMS Blasts ({campaigns.filter((c) => c.channel.includes("SMS")).length})</span>
           </button>
 
           <button
@@ -275,114 +384,111 @@ export function CampaignControlView() {
             }`}
           >
             <CreditCard className="w-3.5 h-3.5" />
-            <span>Recharge &amp; Quotas</span>
+            <span>Recharge &amp; Quota Warning</span>
           </button>
         </div>
 
+        {/* Tab Content Panels */}
         {activeTab !== "wallet" ? (
-          /* CAMPAIGNS LIST */
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {filtered.map((camp) => (
-              <div
-                key={camp.id}
-                className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xs space-y-3.5"
-              >
-                <div className="flex items-start justify-between gap-2">
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                        camp.channel.includes("WhatsApp")
-                          ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300"
-                          : camp.channel.includes("SMS")
-                          ? "bg-blue-50 text-blue-700 dark:bg-blue-950/40 dark:text-blue-300"
-                          : "bg-purple-50 text-purple-700 dark:bg-purple-950/40 dark:text-purple-300"
-                      }`}>
-                        {camp.channel}
-                      </span>
-                      <span className="font-mono text-xs text-slate-400">#{camp.id}</span>
+          <div className="space-y-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {filtered.map((camp) => (
+                <div
+                  key={camp.id}
+                  className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30 hover:border-brand-500/50 transition-all space-y-3"
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-mono text-xs font-bold text-brand-600 dark:text-brand-400">
+                          {camp.id}
+                        </span>
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300">
+                          {camp.channel}
+                        </span>
+                      </div>
+                      <h3 className="font-bold text-sm text-slate-800 dark:text-white mt-1">
+                        {camp.name}
+                      </h3>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                        Target: {camp.targetAudience}
+                      </p>
                     </div>
-                    <h3 className="font-bold text-sm text-slate-800 dark:text-white mt-1.5">
-                      {camp.name}
-                    </h3>
-                    <p className="text-xs text-slate-500 mt-0.5">{camp.targetAudience}</p>
-                  </div>
 
-                  <span className={`px-2 py-0.5 rounded text-[10px] font-bold shrink-0 ${
-                    camp.status === "Completed"
-                      ? "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300"
-                      : camp.status === "Active Dispatch"
-                      ? "bg-emerald-50 text-emerald-600 animate-pulse"
-                      : "bg-amber-50 text-amber-600"
-                  }`}>
-                    {camp.status}
-                  </span>
-                </div>
-
-                <div className="p-3 bg-slate-50 dark:bg-slate-800/40 rounded-xl space-y-1.5 text-xs">
-                  <div className="flex justify-between">
-                    <span className="text-slate-400">Delivered / Target:</span>
-                    <span className="font-bold text-slate-800 dark:text-white">
-                      {camp.sentCount.toLocaleString()} / {camp.totalTarget.toLocaleString()} Electors
+                    <span
+                      className={`text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0 ${
+                        camp.status === "Completed"
+                          ? "bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400"
+                          : camp.status === "Active Dispatch"
+                          ? "bg-brand-50 text-brand-600 dark:bg-brand-950/40 dark:text-brand-400"
+                          : "bg-amber-50 text-amber-600 dark:bg-amber-950/40 dark:text-amber-400"
+                      }`}
+                    >
+                      {camp.status}
                     </span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-slate-400">Delivery Rate:</span>
-                    <span className="font-mono font-bold text-brand-600">{camp.deliveryRate}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-slate-400">Timing:</span>
-                    <span>{camp.scheduledFor}</span>
-                  </div>
-                </div>
 
-                <div className="w-full bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden">
-                  <div
-                    className="bg-brand-600 h-full rounded-full transition-all"
-                    style={{
-                      width: `${camp.totalTarget > 0 ? (camp.sentCount / camp.totalTarget) * 100 : 0}%`,
-                    }}
-                  />
+                  <div className="grid grid-cols-3 gap-2 text-xs pt-2 border-t border-slate-200 dark:border-slate-800">
+                    <div>
+                      <span className="text-slate-400 block text-[10px]">Dispatched:</span>
+                      <span className="font-bold text-slate-700 dark:text-slate-200">
+                        {camp.sentCount.toLocaleString()} / {camp.totalTarget.toLocaleString()}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-slate-400 block text-[10px]">Delivery Rate:</span>
+                      <span className="font-bold text-emerald-600 dark:text-emerald-400">
+                        {camp.deliveryRate}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-slate-400 block text-[10px]">Timing:</span>
+                      <span className="font-semibold text-slate-600 dark:text-slate-400">
+                        {camp.scheduledFor}
+                      </span>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         ) : (
           /* WALLET & RECHARGE VIEW */
           <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800">
-                <span className="text-xs text-slate-500">Available Wallet Credits</span>
-                <div className="text-2xl font-bold text-slate-800 dark:text-white mt-1">₹42,500</div>
-                <span className="text-[11px] text-emerald-600 mt-1 block">Sufficient for ~68,000 WhatsApp messages</span>
+              <div className="p-4 rounded-xl bg-rose-50/50 dark:bg-rose-950/20 border border-rose-200 dark:border-rose-900/50">
+                <span className="text-xs text-rose-600 dark:text-rose-400 font-semibold">Remaining Broadcast Quota</span>
+                <div className="text-2xl font-bold text-rose-700 dark:text-rose-300 mt-1">1,240 Credits</div>
+                <span className="text-[11px] text-rose-600 font-semibold mt-1 block">CRITICAL: Below 5% threshold (25,000 package)</span>
               </div>
 
               <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800">
                 <span className="text-xs text-slate-500">AI Voice Minutes Remaining</span>
-                <div className="text-2xl font-bold text-indigo-600 mt-1">8,450 Mins</div>
+                <div className="text-2xl font-bold text-indigo-600 dark:text-indigo-400 mt-1">8,450 Mins</div>
                 <span className="text-[11px] text-slate-500 mt-1 block">Conversational Marathi Model</span>
               </div>
 
               <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800">
                 <span className="text-xs text-slate-500">DLT Verified SMS Balance</span>
-                <div className="text-2xl font-bold text-blue-600 mt-1">112,000 SMS</div>
+                <div className="text-2xl font-bold text-blue-600 dark:text-blue-400 mt-1">112,000 SMS</div>
                 <span className="text-[11px] text-slate-500 mt-1 block">TRAI Approved Header Active</span>
               </div>
             </div>
 
             <div className="p-4 bg-brand-50/50 dark:bg-brand-950/20 border border-brand-200 dark:border-brand-900/50 rounded-xl flex items-center justify-between">
               <div>
-                <h4 className="font-bold text-sm text-brand-900 dark:text-brand-200">Need Campaign Top-Up?</h4>
+                <h4 className="font-bold text-sm text-brand-900 dark:text-brand-200">Recharge Required Immediately</h4>
                 <p className="text-xs text-brand-700 dark:text-brand-300 mt-0.5">
-                  Submit a top-up enquiry to add bulk WhatsApp or AI Voice outreach quotas directly through your candidate account manager.
+                  Submit an instant top-up enquiry to add bulk WhatsApp or AI Voice outreach quotas directly through your candidate account manager.
                 </p>
               </div>
-              <Button
-                variant="primary"
-                size="sm"
-                onClick={() => showToast("success", "Recharge Enquiry Dispatched", "Candidate Secretariat manager notified for wallet top-up.")}
+              <Link
+                href={subscriptionsUrl}
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold bg-brand-600 hover:bg-brand-700 text-white transition-all cursor-pointer shadow-sm"
               >
-                Request Recharge
-              </Button>
+                <CreditCard className="w-3.5 h-3.5" />
+                <span>Go to Subscriptions</span>
+              </Link>
             </div>
           </div>
         )}
@@ -398,16 +504,16 @@ export function CampaignControlView() {
                   <h3 className="text-base font-bold text-slate-800 dark:text-white">
                     Campaign Creation Wizard
                   </h3>
-                  <span className="text-xs font-bold px-2 py-0.5 rounded bg-brand-50 text-brand-700">
+                  <span className="text-xs font-bold px-2 py-0.5 rounded bg-brand-50 dark:bg-brand-950/50 text-brand-700 dark:text-brand-300">
                     Step {wizardStep} of 5
                   </span>
                 </div>
-                <p className="text-xs text-slate-500">Targeted constituent broadcast builder</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400">Targeted constituent broadcast builder</p>
               </div>
               <button
                 type="button"
                 onClick={() => setShowWizard(false)}
-                className="p-1 rounded-lg text-slate-400 hover:text-slate-700 cursor-pointer"
+                className="p-1 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -468,7 +574,7 @@ export function CampaignControlView() {
                     value={wizardCampaignName}
                     onChange={(e) => setWizardCampaignName(e.target.value)}
                     placeholder="e.g. Ward 12 Morning Slip Delivery"
-                    className="w-full px-3 py-2 text-xs rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800"
+                    className="w-full px-3 py-2 text-xs rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-white"
                   />
                 </div>
               </div>
@@ -484,7 +590,7 @@ export function CampaignControlView() {
                     <select
                       value={wizardAudienceWard}
                       onChange={(e) => setWizardAudienceWard(e.target.value)}
-                      className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800"
+                      className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-white"
                     >
                       <option value="All Wards">All Wards (AC-215)</option>
                       <option value="Ward 12 (Kothrud)">Ward 12 (Kothrud)</option>
@@ -498,7 +604,7 @@ export function CampaignControlView() {
                     <select
                       value={wizardAudienceTarget}
                       onChange={(e) => setWizardAudienceTarget(e.target.value)}
-                      className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800"
+                      className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-white"
                     >
                       <option value="Verified Mobile Electors">All Verified Mobile Electors</option>
                       <option value="Ladki Bahin Beneficiaries">Ladki Bahin Beneficiaries</option>
@@ -512,30 +618,83 @@ export function CampaignControlView() {
                 <div className="p-3 bg-slate-50 dark:bg-slate-800/40 rounded-xl space-y-1">
                   <div className="flex justify-between font-semibold">
                     <span>Estimated Reachable Electors:</span>
-                    <span className="text-brand-600 font-bold">4,800 Electors</span>
+                    <span className="text-brand-600 dark:text-brand-400 font-bold">4,800 Electors</span>
                   </div>
-                  <p className="text-[11px] text-slate-500">Filters applied from Module 04 Master Taxonomy.</p>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400">Filters applied from Module 04 Master Taxonomy.</p>
                 </div>
               </div>
             )}
 
-            {/* Step 3: Template & Placeholders */}
+            {/* Step 3: Template & Creative (Section 5 Multimedia Validation) */}
             {wizardStep === 3 && (
               <div className="space-y-3 text-xs">
-                <span className="font-bold text-slate-800 dark:text-white block">Step 3: Message Template &amp; Placeholders</span>
+                <span className="font-bold text-slate-800 dark:text-white block">Step 3: Message Template &amp; Media Creative</span>
                 <div>
+                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Message Body</label>
                   <textarea
-                    rows={4}
+                    rows={3}
                     value={wizardTemplateMessage}
                     onChange={(e) => setWizardTemplateMessage(e.target.value)}
                     className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-white"
                   />
                   <div className="flex flex-wrap gap-1.5 mt-2">
-                    <span className="text-[10px] bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded font-mono text-brand-600">{`{{voter_name}}`}</span>
-                    <span className="text-[10px] bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded font-mono text-brand-600">{`{{booth_name}}`}</span>
-                    <span className="text-[10px] bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded font-mono text-brand-600">{`{{booth_number}}`}</span>
-                    <span className="text-[10px] bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded font-mono text-brand-600">{`{{slip_link}}`}</span>
+                    <span className="text-[10px] bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded font-mono text-brand-600 dark:text-brand-400">{`{{voter_name}}`}</span>
+                    <span className="text-[10px] bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded font-mono text-brand-600 dark:text-brand-400">{`{{booth_name}}`}</span>
+                    <span className="text-[10px] bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded font-mono text-brand-600 dark:text-brand-400">{`{{booth_number}}`}</span>
+                    <span className="text-[10px] bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded font-mono text-brand-600 dark:text-brand-400">{`{{slip_link}}`}</span>
                   </div>
+                </div>
+
+                {/* Section 5 File Upload Attachment with Image-Only Validation */}
+                <div className="pt-2">
+                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                    Multimedia Creative (Optional Attachment)
+                  </label>
+                  
+                  {attachedCreative ? (
+                    <div className="p-3 rounded-xl bg-brand-50/50 dark:bg-brand-950/30 border border-brand-200 dark:border-brand-800 flex items-center justify-between">
+                      <div className="flex items-center gap-2.5">
+                        <div className="p-2 rounded-lg bg-brand-600 text-white">
+                          <ImageIcon className="w-4 h-4" />
+                        </div>
+                        <div>
+                          <span className="font-semibold text-slate-800 dark:text-white block text-xs">
+                            {attachedCreative.name}
+                          </span>
+                          <span className="text-[10px] text-slate-500 dark:text-slate-400">
+                            Verified Image ({attachedCreative.size}) • JPG/PNG/WebP Validated
+                          </span>
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setAttachedCreative(null)}
+                        className="p-1.5 rounded-lg text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40 cursor-pointer transition-all"
+                        title="Remove Image"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="relative border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-xl p-4 text-center hover:border-brand-500 transition-all bg-slate-50/50 dark:bg-slate-800/40">
+                      <input
+                        type="file"
+                        id="creative-file-input"
+                        onChange={handleFileUpload}
+                        className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
+                        title="Upload Creative Image"
+                      />
+                      <div className="flex flex-col items-center justify-center gap-1.5 pointer-events-none">
+                        <UploadCloud className="w-6 h-6 text-brand-600 dark:text-brand-400" />
+                        <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+                          Click to upload campaign banner image
+                        </span>
+                        <span className="text-[10.5px] text-slate-500 dark:text-slate-400">
+                          Supports <strong>JPG, PNG, WebP</strong> up to 5MB. Video &amp; Audio restricted.
+                        </span>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             )}
@@ -571,7 +730,7 @@ export function CampaignControlView() {
                         type="datetime-local"
                         value={wizardScheduleTime}
                         onChange={(e) => setWizardScheduleTime(e.target.value)}
-                        className="mt-1 px-2 py-1 border border-slate-200 dark:border-slate-700 rounded text-xs bg-slate-50 dark:bg-slate-800"
+                        className="mt-1 px-2 py-1 border border-slate-200 dark:border-slate-700 rounded text-xs bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-white"
                       />
                     </div>
                   </label>
@@ -592,9 +751,17 @@ export function CampaignControlView() {
                     <span className="text-slate-400">Target Audience:</span>
                     <span className="font-bold">{wizardAudienceTarget} ({wizardAudienceWard})</span>
                   </div>
+                  {attachedCreative && (
+                    <div className="flex justify-between">
+                      <span className="text-slate-400">Attached Creative:</span>
+                      <span className="font-semibold text-emerald-600 dark:text-emerald-400">
+                        {attachedCreative.name} ({attachedCreative.size})
+                      </span>
+                    </div>
+                  )}
                   <div className="flex justify-between">
                     <span className="text-slate-400">Estimated Electors:</span>
-                    <span className="font-mono font-bold text-brand-600">4,800 Electors</span>
+                    <span className="font-mono font-bold text-brand-600 dark:text-brand-400">4,800 Electors</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-slate-400">Estimated Quota Deduction:</span>
@@ -602,9 +769,9 @@ export function CampaignControlView() {
                   </div>
                 </div>
 
-                <div className="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-900/40 text-emerald-900 dark:text-emerald-200 text-[11px] flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span>Sufficient wallet balance available (₹42,500). Ready for dispatch.</span>
+                <div className="p-3 rounded-xl bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/40 text-amber-900 dark:text-amber-200 text-[11px] flex items-center gap-2">
+                  <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0" />
+                  <span>Low quota warning: deduction will trigger urgent recharge notification.</span>
                 </div>
               </div>
             )}
@@ -635,6 +802,43 @@ export function CampaignControlView() {
                   <span>Confirm &amp; Dispatch</span>
                 </Button>
               )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* SECTION 5: STRICT MULTIMEDIA RESTRICTION MODAL */}
+      {showRestrictionModal && (
+        <div className="fixed inset-0 z-60 bg-slate-950/75 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-slate-900 border border-rose-200 dark:border-rose-900/50 rounded-2xl max-w-md w-full shadow-2xl p-5 space-y-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-rose-100 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0">
+                <FileWarning className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="font-bold text-base text-slate-900 dark:text-white">
+                  Multimedia Upload Restricted
+                </h3>
+                <span className="text-[11px] font-bold text-rose-600 dark:text-rose-400 uppercase tracking-wider">
+                  High Data Load Prevention Policy
+                </span>
+              </div>
+            </div>
+
+            <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed bg-slate-50 dark:bg-slate-800/50 p-3.5 rounded-xl border border-slate-200 dark:border-slate-800">
+              {restrictionErrorMsg ||
+                "Video & Audio files are restricted to prevent high data load. Please select an image (JPG, PNG, WebP) under 5MB."}
+            </p>
+
+            <div className="flex justify-end pt-2">
+              <Button
+                variant="primary"
+                size="sm"
+                onClick={() => setShowRestrictionModal(false)}
+                className="bg-slate-900 hover:bg-slate-800 dark:bg-white dark:text-slate-900"
+              >
+                Understood, Select Image
+              </Button>
             </div>
           </div>
         </div>

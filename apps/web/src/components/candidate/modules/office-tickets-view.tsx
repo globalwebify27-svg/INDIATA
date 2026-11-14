@@ -10,10 +10,82 @@ import {
   Eye,
   X,
   Sparkles,
+  UserCheck,
+  MapPin,
+  Phone,
 } from "lucide-react";
 import { useToast } from "@/context/toast-context";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+
+export interface MasterElector {
+  id: string;
+  epic: string;
+  name: string;
+  marathiName: string;
+  phone: string;
+  age: number;
+  gender: "Male" | "Female" | "Other";
+  ward: string;
+  booth: string;
+  boothName: string;
+  address: string;
+}
+
+const INITIAL_MASTER_ELECTORS: MasterElector[] = [
+  {
+    id: "el-1",
+    epic: "WXE4829102",
+    name: "Rahul Sharad Shinde",
+    marathiName: "राहुल शरद शिंदे",
+    phone: "+91 98220 11990",
+    age: 38,
+    gender: "Male",
+    ward: "Ward 12",
+    booth: "#101",
+    boothName: "Navbharat High School, Room 1",
+    address: "Flat 402, Shrikrupa Apts, Dahanukar Colony, Lane 3",
+  },
+  {
+    id: "el-2",
+    epic: "WXE3920194",
+    name: "Sunita Vilas Kulkarni",
+    marathiName: "सुनिता विलास कुलकर्णी",
+    phone: "+91 94223 88120",
+    age: 62,
+    gender: "Female",
+    ward: "Ward 12",
+    booth: "#101",
+    boothName: "Navbharat High School, Room 1",
+    address: "B-12, Mayur Colony, Kothrud",
+  },
+  {
+    id: "el-3",
+    epic: "WXE1029384",
+    name: "Amit Suresh Joshi",
+    marathiName: "अमित सुरेश जोशी",
+    phone: "+91 98900 77661",
+    age: 21,
+    gender: "Male",
+    ward: "Ward 14",
+    booth: "#108",
+    boothName: "Gokhale Memorial Hall",
+    address: "Plot 88, Near Shanipar Chowk, Kasba Peth",
+  },
+  {
+    id: "el-4",
+    epic: "WXE9821443",
+    name: "Sunita Verma",
+    marathiName: "सुनिता वर्मा",
+    phone: "+91 98221 44002",
+    age: 44,
+    gender: "Female",
+    ward: "Ward 9",
+    booth: "#88",
+    boothName: "Modern High School, Wing A",
+    address: "House 104, Gaothan Lane 2",
+  },
+];
 
 interface TicketItem {
   id: string;
@@ -28,6 +100,7 @@ interface TicketItem {
   status: "OPEN" | "IN PROGRESS" | "RESOLVED";
   createdDate: string;
   assignedStaff: string;
+  linkedEpic?: string;
 }
 
 interface VisitorItem {
@@ -55,6 +128,7 @@ const SAMPLE_TICKETS: TicketItem[] = [
     status: "OPEN",
     createdDate: "03 Nov 2026, 09:30 AM",
     assignedStaff: "Ashok Shinde (Office Lead)",
+    linkedEpic: "WXE4829102",
   },
   {
     id: "TKT-9208",
@@ -138,6 +212,10 @@ export function OfficeTicketsView() {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [priorityFilter, setPriorityFilter] = useState("all");
+
+  const [masterElectors, setMasterElectors] = useState<MasterElector[]>(INITIAL_MASTER_ELECTORS);
+  const [electorSearchQuery, setElectorSearchQuery] = useState("");
+
   const [tickets, setTickets] = useState<TicketItem[]>(SAMPLE_TICKETS);
   const [visitors, setVisitors] = useState<VisitorItem[]>(SAMPLE_VISITORS);
   const [selectedTicket, setSelectedTicket] = useState<TicketItem | null>(SAMPLE_TICKETS[0] ?? null);
@@ -145,6 +223,7 @@ export function OfficeTicketsView() {
   // Modals
   const [showCreateTicketModal, setShowCreateTicketModal] = useState(false);
   const [showRegisterVisitorModal, setShowRegisterVisitorModal] = useState(false);
+  const [showAddNewVoterModal, setShowAddNewVoterModal] = useState(false);
 
   // Create Ticket Form State
   const [newTitle, setNewTitle] = useState("");
@@ -155,6 +234,7 @@ export function OfficeTicketsView() {
   const [newWard, setNewWard] = useState("Ward 12");
   const [newBooth, setNewBooth] = useState("#101");
   const [newDescription, setNewDescription] = useState("");
+  const [newLinkedEpic, setNewLinkedEpic] = useState<string | undefined>(undefined);
 
   // Visitor Form & Fuzzy Match State
   const [visitorName, setVisitorName] = useState("");
@@ -162,9 +242,80 @@ export function OfficeTicketsView() {
   const [visitorPurpose, setVisitorPurpose] = useState("");
   const [visitorFollowUp, setVisitorFollowUp] = useState("");
 
+  // Add New Voter Onboarding Modal State (Section 9)
+  const [onboardName, setOnboardName] = useState("");
+  const [onboardMarathiName, setOnboardMarathiName] = useState("");
+  const [onboardEpic, setOnboardEpic] = useState("");
+  const [onboardPhone, setOnboardPhone] = useState("");
+  const [onboardAge, setOnboardAge] = useState("28");
+  const [onboardGender, setOnboardGender] = useState<"Male" | "Female" | "Other">("Male");
+  const [onboardWard, setOnboardWard] = useState("Ward 12");
+  const [onboardBooth, setOnboardBooth] = useState("#101");
+  const [onboardAddress, setOnboardAddress] = useState("");
+
   const fuzzyMatch = visitorName.length > 2 && (
     visitorName.toLowerCase().includes("rajesh") || visitorName.toLowerCase().includes("patil")
   );
+
+  // Elector Live Search Results
+  const matchedElectors = electorSearchQuery.trim()
+    ? masterElectors.filter(
+        (e) =>
+          e.name.toLowerCase().includes(electorSearchQuery.toLowerCase()) ||
+          e.marathiName.toLowerCase().includes(electorSearchQuery.toLowerCase()) ||
+          e.epic.toLowerCase().includes(electorSearchQuery.toLowerCase()) ||
+          e.phone.includes(electorSearchQuery)
+      )
+    : [];
+
+  const handleSelectElectorForTicket = (elector: MasterElector) => {
+    setNewReporter(elector.name);
+    setNewPhone(elector.phone);
+    setNewWard(elector.ward);
+    setNewBooth(elector.booth);
+    setNewLinkedEpic(elector.epic);
+    setNewTitle(`Civic Grievance from ${elector.name} (${elector.ward}, Booth ${elector.booth})`);
+    setShowCreateTicketModal(true);
+  };
+
+  const handleAddNewVoterSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!onboardName.trim() || !onboardEpic.trim() || !onboardPhone.trim()) {
+      showToast("error", "Validation Error", "Name, EPIC ID, and Phone Number are strictly required.");
+      return;
+    }
+
+    const newVoter: MasterElector = {
+      id: `el-${Date.now()}`,
+      epic: onboardEpic.trim().toUpperCase(),
+      name: onboardName.trim(),
+      marathiName: onboardMarathiName.trim() || onboardName.trim(),
+      phone: onboardPhone.trim(),
+      age: parseInt(onboardAge, 10) || 28,
+      gender: onboardGender,
+      ward: onboardWard,
+      booth: onboardBooth,
+      boothName: `${onboardBooth} - Navbharat High School Dispatch`,
+      address: onboardAddress.trim() || "Kasba Peth Constituency",
+    };
+
+    setMasterElectors((prev) => [newVoter, ...prev]);
+    setElectorSearchQuery(newVoter.name);
+    setShowAddNewVoterModal(false);
+
+    // Reset Form
+    setOnboardName("");
+    setOnboardMarathiName("");
+    setOnboardEpic("");
+    setOnboardPhone("");
+    setOnboardAddress("");
+
+    showToast(
+      "success",
+      "Voter Onboarded to Master Roll",
+      `${newVoter.name} (EPIC: ${newVoter.epic}) registered in constituency roll. Ready for issue registration.`
+    );
+  };
 
   const filteredTickets = tickets.filter((t) => {
     const matchSearch =
@@ -206,6 +357,7 @@ export function OfficeTicketsView() {
       status: "OPEN",
       createdDate: "Just now",
       assignedStaff: "Ashok Shinde (Office Lead)",
+      linkedEpic: newLinkedEpic,
     };
 
     setTickets((prev) => [newTicket, ...prev]);
@@ -213,6 +365,7 @@ export function OfficeTicketsView() {
     setShowCreateTicketModal(false);
     setNewTitle("");
     setNewDescription("");
+    setNewLinkedEpic(undefined);
 
     showToast(
       "success",
@@ -255,7 +408,7 @@ export function OfficeTicketsView() {
       <section className="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-premium-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1.5 flex-wrap">
-            <span className="text-[11px] font-bold text-brand-600 uppercase tracking-wider bg-brand-50 px-2.5 py-0.5 rounded-full">
+            <span className="text-[11px] font-bold text-brand-600 uppercase tracking-wider bg-brand-50 dark:bg-brand-950/50 dark:text-brand-400 px-2.5 py-0.5 rounded-full">
               Module 12: Office &amp; Issues
             </span>
             <Badge variant="teal">Civic Response Center</Badge>
@@ -264,14 +417,19 @@ export function OfficeTicketsView() {
           <h1 className="text-[22px] font-bold text-slate-800 dark:text-white tracking-tight">
             Office Helpdesk &amp; Civic Grievance Management
           </h1>
-          <p className="text-xs text-slate-500 dark:text-[#94A3B8] mt-0.5">
-            Log constituent office visits, identify voters via fuzzy matching, dispatch civic grievance tickets, and monitor resolution timelines.
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+            Search master electoral roll, register walk-in constituents, dispatch civic grievance tickets, and onboard unlisted voters.
           </p>
         </div>
 
-        <div className="flex items-center gap-2.5">
-          <Button variant="outline" size="md" onClick={() => setShowRegisterVisitorModal(true)}>
+        <div className="flex items-center gap-2.5 flex-wrap">
+          <Button variant="outline" size="md" onClick={() => setShowAddNewVoterModal(true)}>
             <UserPlus className="w-3.5 h-3.5" />
+            <span>+ Add New Voter</span>
+          </Button>
+
+          <Button variant="outline" size="md" onClick={() => setShowRegisterVisitorModal(true)}>
+            <Building className="w-3.5 h-3.5" />
             <span>Register Visitor</span>
           </Button>
 
@@ -281,6 +439,105 @@ export function OfficeTicketsView() {
           </Button>
         </div>
       </section>
+
+      {/* SECTION 9: PROMINENT MASTER ELECTOR ROLL SEARCH & ONBOARDING BAR */}
+      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-premium-xs space-y-3">
+        <div className="flex items-center justify-between gap-2 flex-wrap">
+          <div className="flex items-center gap-2">
+            <UserCheck className="w-5 h-5 text-brand-600" />
+            <h2 className="text-sm font-bold text-slate-800 dark:text-white">
+              Search Master Electoral Roll (Voter Identification &amp; Issue Pre-load)
+            </h2>
+          </div>
+          <span className="text-xs text-slate-500">
+            {masterElectors.length.toLocaleString()} Electors in Local Constituency Database
+          </span>
+        </div>
+
+        <div className="relative">
+          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+          <input
+            type="text"
+            value={electorSearchQuery}
+            onChange={(e) => setElectorSearchQuery(e.target.value)}
+            placeholder="Search elector by Name, Marathi Name, EPIC ID (e.g. 'Rahul Shinde', 'WXE4829102'), or Phone..."
+            className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60 text-xs text-slate-800 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-brand-500"
+          />
+        </div>
+
+        {/* Live Search Match Display */}
+        {electorSearchQuery.trim() !== "" && (
+          <div className="pt-2">
+            {matchedElectors.length > 0 ? (
+              <div className="space-y-2">
+                <span className="text-xs font-semibold text-slate-500 block">
+                  Found {matchedElectors.length} Matching Elector(s):
+                </span>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {matchedElectors.map((elector) => (
+                    <div
+                      key={elector.id}
+                      className="p-3.5 rounded-xl border border-brand-200 dark:border-brand-900/60 bg-brand-50/40 dark:bg-brand-950/20 flex flex-col justify-between gap-3 shadow-2xs"
+                    >
+                      <div className="space-y-1">
+                        <div className="flex items-center justify-between">
+                          <span className="font-mono text-xs font-bold text-brand-600 dark:text-brand-400 bg-white dark:bg-slate-900 px-2 py-0.5 rounded border border-brand-200 dark:border-brand-800">
+                            {elector.epic}
+                          </span>
+                          <span className="text-[11px] text-slate-500">
+                            {elector.gender}, {elector.age} yrs
+                          </span>
+                        </div>
+                        <div className="font-bold text-sm text-slate-800 dark:text-white">
+                          {elector.name}{" "}
+                          <span className="text-slate-500 font-normal">({elector.marathiName})</span>
+                        </div>
+                        <div className="text-xs text-slate-600 dark:text-slate-300 flex items-center gap-1.5">
+                          <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                          <span>{elector.ward} &bull; Booth {elector.booth} ({elector.boothName})</span>
+                        </div>
+                        <div className="text-xs text-slate-600 dark:text-slate-300 flex items-center gap-1.5">
+                          <Phone className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                          <span className="font-mono font-medium">{elector.phone}</span>
+                        </div>
+                      </div>
+
+                      {/* 1-Click Action: Log Grievance for this Elector */}
+                      <button
+                        type="button"
+                        onClick={() => handleSelectElectorForTicket(elector)}
+                        className="w-full py-2 px-3 rounded-lg bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-sm transition-all cursor-pointer"
+                      >
+                        <Plus className="w-3.5 h-3.5" />
+                        <span>Log Grievance / Register Issue for this Elector</span>
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              /* No Match Found -> Provide Onboarding Action */
+              <div className="p-4 rounded-xl border border-dashed border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/40 text-center space-y-2">
+                <span className="text-xs text-slate-500 block">
+                  No registered elector found matching &ldquo;{electorSearchQuery}&rdquo; in AC-215 roll.
+                </span>
+                <Button
+                  variant="primary"
+                  size="sm"
+                  onClick={() => {
+                    setOnboardName(electorSearchQuery);
+                    setShowAddNewVoterModal(true);
+                  }}
+                  className="bg-brand-600 hover:bg-brand-700"
+                >
+                  <UserPlus className="w-3.5 h-3.5" />
+                  <span>+ Onboard New Voter &ldquo;{electorSearchQuery}&rdquo;</span>
+                </Button>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
 
       {/* 4 Office Dashboard KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -399,7 +656,8 @@ export function OfficeTicketsView() {
                     <th className="py-3 px-3">Category</th>
                     <th className="py-3 px-3">Priority</th>
                     <th className="py-3 px-3">Status</th>
-                    <th className="py-3 px-3 text-right">Action</th>
+                    <th className="py-3 px-3">Reporter</th>
+                    <th className="py-3 px-3 text-right">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
@@ -407,41 +665,68 @@ export function OfficeTicketsView() {
                     <tr
                       key={t.id}
                       onClick={() => setSelectedTicket(t)}
-                      className={`cursor-pointer transition-colors ${
-                        selectedTicket?.id === t.id
-                          ? "bg-brand-50/60 dark:bg-brand-950/30"
-                          : "hover:bg-slate-50/50 dark:hover:bg-slate-800/40"
+                      className={`hover:bg-slate-50/50 dark:hover:bg-slate-800/40 cursor-pointer transition-colors ${
+                        selectedTicket?.id === t.id ? "bg-brand-50/40 dark:bg-brand-950/30" : ""
                       }`}
                     >
                       <td className="py-3 px-3">
+                        <div className="font-mono text-[11px] font-bold text-brand-600 dark:text-brand-400">
+                          {t.id}
+                        </div>
                         <div className="font-bold text-slate-800 dark:text-white line-clamp-1">{t.title}</div>
-                        <div className="text-[10px] text-slate-400 font-mono mt-0.5">{t.id} • {t.ward} ({t.booth})</div>
+                        <div className="text-[10px] text-slate-400">{t.ward} &bull; Booth {t.booth}</div>
                       </td>
 
-                      <td className="py-3 px-3 whitespace-nowrap">
-                        <span className="font-semibold text-slate-700 dark:text-slate-300">{t.category}</span>
+                      <td className="py-3 px-3">
+                        <span className="text-[10.5px] px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-medium">
+                          {t.category}
+                        </span>
                       </td>
 
-                      <td className="py-3 px-3 whitespace-nowrap">
-                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                          t.priority === "CRITICAL" ? "bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300" : t.priority === "HIGH" ? "bg-amber-100 text-amber-800" : "bg-slate-100 text-slate-700"
-                        }`}>
+                      <td className="py-3 px-3">
+                        <span
+                          className={`text-[10px] font-bold px-2 py-0.5 rounded ${
+                            t.priority === "CRITICAL"
+                              ? "bg-rose-100 text-rose-700 dark:bg-rose-950 dark:text-rose-300"
+                              : t.priority === "HIGH"
+                              ? "bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300"
+                              : "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300"
+                          }`}
+                        >
                           {t.priority}
                         </span>
                       </td>
 
-                      <td className="py-3 px-3 whitespace-nowrap">
-                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                          t.status === "OPEN" ? "bg-amber-50 text-amber-600" : t.status === "IN PROGRESS" ? "bg-indigo-50 text-indigo-600" : "bg-emerald-50 text-emerald-600"
-                        }`}>
+                      <td className="py-3 px-3">
+                        <span
+                          className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                            t.status === "OPEN"
+                              ? "bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300"
+                              : t.status === "IN PROGRESS"
+                              ? "bg-indigo-50 text-indigo-700 dark:bg-indigo-950/40 dark:text-indigo-300"
+                              : "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300"
+                          }`}
+                        >
                           {t.status}
                         </span>
                       </td>
 
+                      <td className="py-3 px-3">
+                        <div className="font-semibold text-slate-800 dark:text-white">{t.reporter}</div>
+                        <div className="text-[10px] text-slate-400 font-mono">{t.phone}</div>
+                      </td>
+
                       <td className="py-3 px-3 text-right">
-                        <Button variant="outline" size="sm" onClick={() => setSelectedTicket(t)}>
-                          <Eye className="w-3 h-3" />
-                        </Button>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelectedTicket(t);
+                          }}
+                          className="p-1 rounded text-slate-400 hover:text-brand-600 cursor-pointer"
+                        >
+                          <Eye className="w-3.5 h-3.5" />
+                        </button>
                       </td>
                     </tr>
                   ))}
@@ -449,46 +734,64 @@ export function OfficeTicketsView() {
               </table>
             </div>
 
-            {/* Right 1 Col: Selected Ticket Detail Inspector */}
+            {/* Right 1 Col: Detailed Inspection Card */}
             {selectedTicket && (
-              <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30 space-y-3.5 text-xs">
-                <div className="flex items-start justify-between gap-2 border-b border-slate-200 dark:border-slate-700 pb-2.5">
-                  <div>
+              <div className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-xl border border-slate-200 dark:border-slate-800 space-y-3 flex flex-col justify-between">
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between pb-2 border-b border-slate-200 dark:border-slate-700">
                     <span className="font-mono text-xs font-bold text-brand-600">{selectedTicket.id}</span>
-                    <h3 className="font-bold text-sm text-slate-800 dark:text-white mt-0.5">{selectedTicket.title}</h3>
+                    <span
+                      className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                        selectedTicket.status === "OPEN"
+                          ? "bg-amber-100 text-amber-800"
+                          : selectedTicket.status === "IN PROGRESS"
+                          ? "bg-indigo-100 text-indigo-800"
+                          : "bg-emerald-100 text-emerald-800"
+                      }`}
+                    >
+                      {selectedTicket.status}
+                    </span>
                   </div>
-                  <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                    selectedTicket.status === "OPEN" ? "bg-amber-50 text-amber-600" : selectedTicket.status === "IN PROGRESS" ? "bg-indigo-50 text-indigo-600" : "bg-emerald-50 text-emerald-600"
-                  }`}>
-                    {selectedTicket.status}
+
+                  <div>
+                    <h3 className="font-bold text-sm text-slate-800 dark:text-white">
+                      {selectedTicket.title}
+                    </h3>
+                    <p className="text-xs text-slate-600 dark:text-slate-300 mt-1 leading-relaxed">
+                      {selectedTicket.description}
+                    </p>
+                  </div>
+
+                  <div className="p-3 bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800 space-y-1.5 text-xs">
+                    <div className="flex justify-between">
+                      <span className="text-slate-400">Category:</span>
+                      <span className="font-semibold">{selectedTicket.category}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-slate-400">Location:</span>
+                      <span className="font-semibold">{selectedTicket.ward}, Booth {selectedTicket.booth}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-slate-400">Reporter:</span>
+                      <span className="font-semibold">{selectedTicket.reporter}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-slate-400">Contact:</span>
+                      <span className="font-mono">{selectedTicket.phone}</span>
+                    </div>
+                    {selectedTicket.linkedEpic && (
+                      <div className="flex justify-between pt-1 border-t border-slate-100 dark:border-slate-800">
+                        <span className="text-slate-400">EPIC Link:</span>
+                        <span className="font-mono font-bold text-brand-600">{selectedTicket.linkedEpic}</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div className="pt-3 border-t border-slate-200 dark:border-slate-700 space-y-2">
+                  <span className="text-xs font-semibold text-slate-700 dark:text-slate-300 block">
+                    Update Ticket Status:
                   </span>
-                </div>
-
-                <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
-                  {selectedTicket.description}
-                </p>
-
-                <div className="space-y-1.5 p-3 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700">
-                  <div className="flex justify-between">
-                    <span className="text-slate-400">Reporter:</span>
-                    <span className="font-bold text-slate-800 dark:text-white">{selectedTicket.reporter}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-slate-400">Contact:</span>
-                    <span className="font-mono">{selectedTicket.phone}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-slate-400">Location:</span>
-                    <span>{selectedTicket.ward} • {selectedTicket.booth}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-slate-400">Assigned To:</span>
-                    <span className="font-semibold text-brand-600">{selectedTicket.assignedStaff}</span>
-                  </div>
-                </div>
-
-                <div className="space-y-1.5 pt-2">
-                  <span className="text-[11px] font-bold text-slate-500 block">Update Ticket Status:</span>
                   <div className="grid grid-cols-3 gap-1.5">
                     <button
                       type="button"
@@ -568,6 +871,169 @@ export function OfficeTicketsView() {
         )}
       </div>
 
+      {/* SECTION 9: ONBOARD NEW VOTER MODAL (Full Name, Marathi Name, EPIC, Phone Validation) */}
+      {showAddNewVoterModal && (
+        <div className="fixed inset-0 z-50 bg-slate-950/75 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl max-w-lg w-full shadow-2xl p-5 space-y-4 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+              <div>
+                <h3 className="text-base font-bold text-slate-800 dark:text-white flex items-center gap-2">
+                  <UserPlus className="w-4 h-4 text-brand-600" />
+                  <span>Onboard New Voter to Constituency Roll</span>
+                </h3>
+                <p className="text-xs text-slate-500">ECI Kasba Peth (AC-215) Master Database Enrolment</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowAddNewVoterModal(false)}
+                className="p-1 rounded-lg text-slate-400 hover:text-slate-700 cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <form onSubmit={handleAddNewVoterSubmit} className="space-y-3.5 text-xs">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                    Full Name (English) *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={onboardName}
+                    onChange={(e) => setOnboardName(e.target.value)}
+                    placeholder="e.g. Ramesh Baburao Jadhav"
+                    className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-white"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                    नाव (मराठी) *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={onboardMarathiName}
+                    onChange={(e) => setOnboardMarathiName(e.target.value)}
+                    placeholder="उदा. रमेश बाबुराव जाधव"
+                    className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-white"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                    EPIC ID (Voter ID Number) *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={onboardEpic}
+                    onChange={(e) => setOnboardEpic(e.target.value)}
+                    placeholder="e.g. WXE5920194"
+                    className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-white uppercase font-mono"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                    Mobile Number (10 Digits) *
+                  </label>
+                  <input
+                    type="tel"
+                    required
+                    value={onboardPhone}
+                    onChange={(e) => setOnboardPhone(e.target.value)}
+                    placeholder="+91 98220 00000"
+                    className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-white font-mono"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <div>
+                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Age</label>
+                  <input
+                    type="number"
+                    min="18"
+                    max="110"
+                    value={onboardAge}
+                    onChange={(e) => setOnboardAge(e.target.value)}
+                    className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Gender</label>
+                  <select
+                    value={onboardGender}
+                    onChange={(e) => setOnboardGender(e.target.value as any)}
+                    className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800"
+                  >
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Ward</label>
+                  <select
+                    value={onboardWard}
+                    onChange={(e) => setOnboardWard(e.target.value)}
+                    className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800"
+                  >
+                    <option value="Ward 12">Ward 12 (Kothrud)</option>
+                    <option value="Ward 14">Ward 14 (Erandwane)</option>
+                    <option value="Ward 9">Ward 9 (Gaothan)</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Booth</label>
+                  <select
+                    value={onboardBooth}
+                    onChange={(e) => setOnboardBooth(e.target.value)}
+                    className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800"
+                  >
+                    <option value="#101">Booth #101</option>
+                    <option value="#106">Booth #106</option>
+                    <option value="#108">Booth #108</option>
+                    <option value="#88">Booth #88</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  Residential / House Address
+                </label>
+                <input
+                  type="text"
+                  value={onboardAddress}
+                  onChange={(e) => setOnboardAddress(e.target.value)}
+                  placeholder="e.g. Flat 12, Ganpati Chowk, Kasba Peth, Pune"
+                  className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-white"
+                />
+              </div>
+
+              <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
+                <Button type="button" variant="outline" size="sm" onClick={() => setShowAddNewVoterModal(false)}>
+                  Cancel
+                </Button>
+                <Button type="submit" variant="primary" size="sm" className="bg-brand-600 hover:bg-brand-700">
+                  <UserPlus className="w-3.5 h-3.5" />
+                  <span>Onboard Voter</span>
+                </Button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
       {/* REGISTER VISITOR WITH FUZZY MATCH MODAL */}
       {showRegisterVisitorModal && (
         <div className="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-4">
@@ -610,7 +1076,7 @@ export function OfficeTicketsView() {
                     <span>Fuzzy Match Found in Master Elector Roll</span>
                   </div>
                   <p className="text-[11px] text-emerald-700 dark:text-emerald-300">
-                    Matches <strong>Rajesh Kumar Verma / Suresh Patil</strong> (Plot 14, Lane 3 • Booth #101 • EPIC: WXE4829102). Visitor will be linked to this constituent profile.
+                    Matches <strong>Rahul Sharad Shinde / Suresh Patil</strong> (Booth #101 &bull; EPIC: WXE4829102). Visitor will be linked to this constituent profile.
                   </p>
                 </div>
               )}
@@ -684,6 +1150,16 @@ export function OfficeTicketsView() {
             </div>
 
             <form onSubmit={handleCreateTicketSubmit} className="space-y-3.5 text-xs">
+              {newLinkedEpic && (
+                <div className="p-2.5 rounded-lg bg-brand-50 dark:bg-brand-950/40 border border-brand-200 dark:border-brand-800 flex items-center justify-between text-brand-800 dark:text-brand-300">
+                  <span className="flex items-center gap-1.5 font-semibold">
+                    <UserCheck className="w-3.5 h-3.5 text-brand-600" />
+                    <span>Pre-loaded Elector: {newReporter}</span>
+                  </span>
+                  <span className="font-mono text-[10.5px] font-bold">{newLinkedEpic}</span>
+                </div>
+              )}
+
               <div>
                 <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Issue Headline *</label>
                 <input
@@ -702,7 +1178,7 @@ export function OfficeTicketsView() {
                   <select
                     value={newCategory}
                     onChange={(e) => setNewCategory(e.target.value as TicketItem["category"])}
-                    className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800"
+                    className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-white"
                   >
                     <option value="Water Supply">Water Supply</option>
                     <option value="Roads & Infra">Roads &amp; Infra</option>
@@ -717,7 +1193,7 @@ export function OfficeTicketsView() {
                   <select
                     value={newPriority}
                     onChange={(e) => setNewPriority(e.target.value as TicketItem["priority"])}
-                    className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800"
+                    className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-white"
                   >
                     <option value="CRITICAL">Critical</option>
                     <option value="HIGH">High</option>
@@ -734,7 +1210,7 @@ export function OfficeTicketsView() {
                     type="text"
                     value={newWard}
                     onChange={(e) => setNewWard(e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800"
+                    className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-white"
                   />
                 </div>
 
@@ -744,7 +1220,7 @@ export function OfficeTicketsView() {
                     type="text"
                     value={newBooth}
                     onChange={(e) => setNewBooth(e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800"
+                    className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-white"
                   />
                 </div>
               </div>
@@ -758,7 +1234,7 @@ export function OfficeTicketsView() {
                     value={newReporter}
                     onChange={(e) => setNewReporter(e.target.value)}
                     placeholder="Constituent Name"
-                    className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800"
+                    className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-white"
                   />
                 </div>
 
@@ -770,7 +1246,7 @@ export function OfficeTicketsView() {
                     value={newPhone}
                     onChange={(e) => setNewPhone(e.target.value)}
                     placeholder="+91 98220 00000"
-                    className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800"
+                    className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-white"
                   />
                 </div>
               </div>

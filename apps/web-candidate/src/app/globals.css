@@ -4,17 +4,17 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --color-brand-50: #f4f6fc;
-  --color-brand-100: #e8edf9;
-  --color-brand-200: #d1ddf4;
-  --color-brand-300: #a7bfea;
-  --color-brand-400: #759bdd;
-  --color-brand-500: #4e7acc;
-  --color-brand-600: #2554a8;
-  --color-brand-700: #1b4188;
-  --color-brand-800: #17366f;
-  --color-brand-900: #152e5a;
-  --color-brand-950: #0c1a34;
+  --color-brand-50: #f4f2fd;
+  --color-brand-100: #e9e5fb;
+  --color-brand-200: #d4cef8;
+  --color-brand-300: #b4a8f2;
+  --color-brand-400: #8e7beb;
+  --color-brand-500: #735ee4;
+  --color-brand-600: #6256d9;
+  --color-brand-700: #5044bf;
+  --color-brand-800: #42379e;
+  --color-brand-900: #382f81;
+  --color-brand-950: #211c54;
 
   --shadow-premium-xs: 0 1px 2px 0 rgba(15, 23, 42, 0.04);
   --shadow-premium-sm: 0 1px 3px 0 rgba(15, 23, 42, 0.06), 0 1px 2px -1px rgba(15, 23, 42, 0.04);
@@ -27,22 +27,22 @@
 
 :root {
   /* Layout Dimensions */
-  --header-height: 64px;
+  --header-height: 68px;
   --sidebar-width: 256px;
   --sidebar-collapsed-width: 80px;
 
-  /* Reference 2 Extracted Brand Scale */
-  --brand-50: #f4f6fc;
-  --brand-100: #e8edf9;
-  --brand-200: #d1ddf4;
-  --brand-300: #a7bfea;
-  --brand-400: #759bdd;
-  --brand-500: #4e7acc;
-  --brand-600: #2554a8;
-  --brand-700: #1b4188;
-  --brand-800: #17366f;
-  --brand-900: #152e5a;
-  --brand-950: #0c1a34;
+  /* Client Violet Palette */
+  --brand-50: #f4f2fd;
+  --brand-100: #e9e5fb;
+  --brand-200: #d4cef8;
+  --brand-300: #b4a8f2;
+  --brand-400: #8e7beb;
+  --brand-500: #735ee4;
+  --brand-600: #6256d9;
+  --brand-700: #5044bf;
+  --brand-800: #42379e;
+  --brand-900: #382f81;
+  --brand-950: #211c54;
 
   /* Surfaces & Backgrounds */
   --background: #f8fafc;
@@ -50,24 +50,24 @@
   --card: #ffffff;
   --card-foreground: #1e293b;
 
-  /* Sidebar Tokens (Dark Navy Slate) */
-  --sidebar-bg: #020617;
+  /* Sidebar Tokens */
+  --sidebar-bg: #090a0f;
   --sidebar-text: #94a3b8;
   --sidebar-text-hover: #ffffff;
-  --sidebar-active-bg: #2554a8;
+  --sidebar-active-bg: #6256d9;
   --sidebar-active-text: #ffffff;
-  --sidebar-border: #0f172a;
+  --sidebar-border: #1a1b23;
 
   /* Primary Brand Identity */
-  --primary: #2554a8;
-  --primary-hover: #1b4188;
-  --primary-container: #e8edf9;
-  --primary-light: #f4f6fc;
+  --primary: #6256d9;
+  --primary-hover: #5044bf;
+  --primary-container: #e9e5fb;
+  --primary-light: #f4f2fd;
   --on-primary: #ffffff;
 
   /* Secondary Accent */
-  --secondary: #4f46e5;
-  --secondary-hover: #4338ca;
+  --secondary: #7c3aed;
+  --secondary-hover: #6d28d9;
   --secondary-light: #eef2ff;
 
   /* Semantic Status Palette */
@@ -87,26 +87,26 @@
 }
 
 .dark {
-  --background: #020617;
+  --background: #090a0f;
   --foreground: #f8fafc;
-  --card: #0f172a;
+  --card: #12131a;
   --card-foreground: #f8fafc;
 
-  --sidebar-bg: #020617;
+  --sidebar-bg: #090a0f;
   --sidebar-text: #94a3b8;
   --sidebar-text-hover: #ffffff;
-  --sidebar-active-bg: #2554a8;
+  --sidebar-active-bg: #6256d9;
   --sidebar-active-text: #ffffff;
-  --sidebar-border: #0f172a;
+  --sidebar-border: #1a1b23;
 
-  --primary: #3b82f6;
-  --primary-hover: #2554a8;
-  --primary-container: #1e293b;
-  --primary-light: #0f172a;
+  --primary: #7c3aed;
+  --primary-hover: #6256d9;
+  --primary-container: #1a1b23;
+  --primary-light: #12131a;
   --on-primary: #ffffff;
 
-  --secondary: #6366f1;
-  --secondary-hover: #4f46e5;
+  --secondary: #8b5cf6;
+  --secondary-hover: #7c3aed;
   --secondary-light: #1e1b4b;
 
   --success: #10b981;
@@ -119,8 +119,8 @@
   --text-primary: #f8fafc;
   --text-secondary: #94a3b8;
   --text-muted: #64748b;
-  --border: #1e293b;
-  --border-subtle: #0f172a;
+  --border: #1a1b23;
+  --border-subtle: #12131a;
 }
 
 html, body {

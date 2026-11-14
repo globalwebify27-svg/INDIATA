@@ -2,6 +2,8 @@ enum MapPinType {
   worker,
   booth,
   grievance,
+  slipDelivered,
+  whatsAppSlip,
   voterCluster,
 }
 

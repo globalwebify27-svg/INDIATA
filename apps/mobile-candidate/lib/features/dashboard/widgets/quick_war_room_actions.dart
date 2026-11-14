@@ -5,7 +5,6 @@ class QuickWarRoomActions extends StatelessWidget {
   final CandidateColors c;
   final VoidCallback onOpenBroadcast;
   final VoidCallback onOpenFieldMap;
-  final VoidCallback onFilterSwingVoters;
   final VoidCallback onOpenIssues;
   final VoidCallback onOpenAiMode;
   final VoidCallback onExportReport;
@@ -15,7 +14,6 @@ class QuickWarRoomActions extends StatelessWidget {
     required this.c,
     required this.onOpenBroadcast,
     required this.onOpenFieldMap,
-    required this.onFilterSwingVoters,
     required this.onOpenIssues,
     required this.onOpenAiMode,
     required this.onExportReport,
@@ -30,7 +28,7 @@ class QuickWarRoomActions extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Row(
             children: [
-              const Icon(Icons.bolt_rounded, size: 18, color: Color(0xFFF59E0B)),
+              const Icon(Icons.bolt_rounded, size: 18, color: Color(0xFFA855F7)),
               const SizedBox(width: 8),
               Text(
                 "WAR ROOM QUICK COMMANDS",
@@ -54,7 +52,7 @@ class QuickWarRoomActions extends StatelessWidget {
               _commandButton(
                 icon: Icons.campaign_rounded,
                 label: "Broadcast Alert",
-                accent: const Color(0xFF6366F1),
+                accent: const Color(0xFF6256D9),
                 onTap: onOpenBroadcast,
               ),
               _commandButton(
@@ -64,15 +62,9 @@ class QuickWarRoomActions extends StatelessWidget {
                 onTap: onOpenFieldMap,
               ),
               _commandButton(
-                icon: Icons.shuffle_rounded,
-                label: "Swing Target List",
-                accent: const Color(0xFFF59E0B),
-                onTap: onFilterSwingVoters,
-              ),
-              _commandButton(
                 icon: Icons.smart_toy_rounded,
                 label: "AI Strategy Copilot",
-                accent: const Color(0xFF8B5CF6),
+                accent: const Color(0xFFA855F7),
                 onTap: onOpenAiMode,
               ),
               _commandButton(

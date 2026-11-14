@@ -21,11 +21,201 @@ class VoterProfileScreen extends StatefulWidget {
 
 class _VoterProfileScreenState extends State<VoterProfileScreen> {
   late VoterModel _voter;
+  late TextEditingController _notesController;
+  late TextEditingController _orgMetricController;
+  String _cadreInfluence = "High";
+  bool _isStarBookmarked = false;
+  bool _isSyncingDb = false;
 
   @override
   void initState() {
     super.initState();
     _voter = widget.voter;
+    _notesController = TextEditingController(text: _voter.strategyNotes);
+    _orgMetricController = TextEditingController(text: "ORG-AC215-${_voter.serialNumber}");
+    _isStarBookmarked = _voter.isStarVoter;
+  }
+
+  @override
+  void dispose() {
+    _notesController.dispose();
+    _orgMetricController.dispose();
+    super.dispose();
+  }
+
+  void _syncInternalOrgMetrics() {
+    setState(() => _isSyncingDb = true);
+    Future.delayed(const Duration(milliseconds: 600), () {
+      if (mounted) {
+        setState(() => _isSyncingDb = false);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            backgroundColor: Color(0xFF10B981),
+            content: Text("✓ Internal organization metrics synced to master database."),
+            duration: Duration(seconds: 2),
+          ),
+        );
+      }
+    });
+  }
+
+  void _openHouseAddressModal(CandidateColors c, bool isDark) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) {
+        return Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: c.cardBg,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+            border: Border.all(color: c.cardBorder),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: c.primary.withOpacity(0.12),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Icon(Icons.location_on_rounded, color: c.primary, size: 22),
+                      ),
+                      const SizedBox(width: 10),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "STRUCTURAL HOUSE ADDRESS",
+                            style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w900,
+                              letterSpacing: 1.0,
+                              color: c.primary,
+                            ),
+                          ),
+                          Text(
+                            "Voter Locus & Geolocation Coordinates",
+                            style: TextStyle(fontSize: 11, color: c.textSecondary),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.close),
+                    onPressed: () => Navigator.pop(ctx),
+                  ),
+                ],
+              ),
+              const Divider(height: 24),
+              _addressDetailRow("House / Flat No.", "#${_voter.houseNumber}", c),
+              _addressDetailRow("Building / Society", "Shree Ganesh Krupa Niwas, Lane 4", c),
+              _addressDetailRow("Street / Locality", "${_voter.address}, Near Shaniwar Wada", c),
+              _addressDetailRow("Ward / Prabhaag", "Ward 12 (Kasba Peth Center)", c),
+              _addressDetailRow("City & Pincode", "Pune, Maharashtra - 411030", c),
+              const SizedBox(height: 8),
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: isDark ? const Color(0xFF202026) : const Color(0xFFF5F3FF),
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: c.primary.withOpacity(0.2)),
+                ),
+                child: Row(
+                  children: [
+                    Icon(Icons.gps_fixed_rounded, size: 18, color: c.primary),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            "GPS Anti-Tamper Telemetry Coordinates:",
+                            style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.bold, color: Colors.grey),
+                          ),
+                          Text(
+                            "Lat: 18.52043° N  •  Long: 73.85674° E (Accuracy: ±2.4m)",
+                            style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w700,
+                              fontFamily: 'monospace',
+                              color: c.primary,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      onPressed: () {
+                        Navigator.pop(ctx);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text("Address copied to clipboard.")),
+                        );
+                      },
+                      icon: const Icon(Icons.copy_rounded, size: 16),
+                      label: const Text("Copy Address"),
+                      style: OutlinedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        side: BorderSide(color: c.borderColor),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed: () {
+                        Navigator.pop(ctx);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            backgroundColor: const Color(0xFF10B981),
+                            content: Text("Launching Google Maps navigation for ${_voter.name}..."),
+                          ),
+                        );
+                      },
+                      icon: const Icon(Icons.navigation_rounded, size: 16, color: Colors.white),
+                      label: const Text("Navigate (GPS)", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: c.primary,
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _addressDetailRow(String label, String value, CandidateColors c) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(label, style: TextStyle(fontSize: 11.5, color: c.textSecondary)),
+          Text(value, style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: c.textPrimary)),
+        ],
+      ),
+    );
   }
 
   void _updateSentiment(VoterSentiment newSentiment) {
@@ -383,7 +573,7 @@ class _VoterProfileScreenState extends State<VoterProfileScreen> {
 
             _buildSectionTile(
               sectionNum: "13",
-              title: "Candidate Private Strategy Notes & Tags",
+              title: "Candidate Private Strategy Notes & Internal Data Sync",
               icon: Icons.lock_outline_rounded,
               c: c,
               content: Column(
@@ -392,36 +582,156 @@ class _VoterProfileScreenState extends State<VoterProfileScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text("EXECUTIVE EYES ONLY", style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 1.1, color: const Color(0xFFEF4444))),
-                      TextButton.icon(
-                        onPressed: _editStrategyNotes,
-                        icon: const Icon(Icons.edit_outlined, size: 14),
-                        label: const Text("Edit Notes", style: TextStyle(fontSize: 11)),
+                      const Text(
+                        "REAL-TIME FIELD NOTES",
+                        style: TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 1.1,
+                          color: Color(0xFF6256D9),
+                        ),
+                      ),
+                      Text(
+                        "Auto-saves to Dossier",
+                        style: TextStyle(fontSize: 10, color: c.textMuted),
                       ),
                     ],
                   ),
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: c.scaffoldBg,
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: c.cardBorder),
+                  const SizedBox(height: 8),
+
+                  // Dynamic Inline Notes Text Area
+                  TextField(
+                    controller: _notesController,
+                    maxLines: 3,
+                    style: TextStyle(fontSize: 12.5, color: c.textPrimary),
+                    decoration: InputDecoration(
+                      hintText: "Enter real-time field notes, voter inclinations, or commitments...",
+                      hintStyle: TextStyle(fontSize: 11.5, color: c.textMuted),
+                      filled: true,
+                      fillColor: isDark ? const Color(0xFF1E1E24) : const Color(0xFFF8F7FF),
+                      contentPadding: const EdgeInsets.all(12),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(color: c.borderColor),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(color: c.borderColor),
+                      ),
                     ),
-                    child: Text(
-                      _voter.strategyNotes.isNotEmpty ? _voter.strategyNotes : "No candidate strategy notes entered. Tap 'Edit Notes' to add.",
-                      style: TextStyle(fontSize: 12, height: 1.4, color: c.textPrimary),
-                    ),
+                    onChanged: (val) {
+                      _voter = _voter.copyWith(strategyNotes: val);
+                      widget.onVoterUpdated?.call(_voter);
+                    },
+                  ),
+                  const SizedBox(height: 12),
+
+                  // INTERNAL DATABASE SYNC FIELDS
+                  const Divider(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(Icons.sync_alt_rounded, size: 16, color: c.primary),
+                          const SizedBox(width: 6),
+                          Text(
+                            "INTERNAL ORGANIZATIONAL METRICS",
+                            style: TextStyle(
+                              fontSize: 10.5,
+                              fontWeight: FontWeight.w900,
+                              letterSpacing: 0.8,
+                              color: c.textPrimary,
+                            ),
+                          ),
+                        ],
+                      ),
+                      if (_isSyncingDb)
+                        Row(
+                          children: [
+                            SizedBox(
+                              width: 12,
+                              height: 12,
+                              child: CircularProgressIndicator(strokeWidth: 2, color: c.primary),
+                            ),
+                            const SizedBox(width: 6),
+                            Text("Syncing...", style: TextStyle(fontSize: 10, color: c.primary)),
+                          ],
+                        ),
+                    ],
                   ),
                   const SizedBox(height: 10),
+
+                  // Custom Field: Cadre Influence
+                  Text("Cadre Influence Priority:", style: TextStyle(fontSize: 11, color: c.textSecondary)),
+                  const SizedBox(height: 6),
+                  Row(
+                    children: ["High Impact", "Key Influencer", "Core Supporter", "Swing"].map((tag) {
+                      final isSel = _cadreInfluence == tag;
+                      return Padding(
+                        padding: const EdgeInsets.only(right: 6),
+                        child: ChoiceChip(
+                          label: Text(tag),
+                          selected: isSel,
+                          selectedColor: c.primary,
+                          backgroundColor: isDark ? const Color(0xFF1E1E24) : const Color(0xFFF1EEFF),
+                          labelStyle: TextStyle(
+                            fontSize: 10,
+                            fontWeight: isSel ? FontWeight.bold : FontWeight.w500,
+                            color: isSel ? Colors.white : c.textSecondary,
+                          ),
+                          onSelected: (val) {
+                            if (val) {
+                              setState(() => _cadreInfluence = tag);
+                              _syncInternalOrgMetrics();
+                            }
+                          },
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                  const SizedBox(height: 10),
+
+                  // Custom Field: Organization Metric Code
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: _orgMetricController,
+                          style: TextStyle(fontSize: 11.5, fontFamily: 'monospace', color: c.textPrimary),
+                          decoration: InputDecoration(
+                            labelText: "Constituency Internal Code",
+                            labelStyle: TextStyle(fontSize: 11, color: c.textSecondary),
+                            filled: true,
+                            fillColor: isDark ? const Color(0xFF1E1E24) : const Color(0xFFF8F7FF),
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      ElevatedButton.icon(
+                        onPressed: _syncInternalOrgMetrics,
+                        icon: const Icon(Icons.cloud_upload_rounded, size: 14, color: Colors.white),
+                        label: const Text("Sync DB", style: TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold)),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: c.primary,
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 14),
                   Wrap(
                     spacing: 6,
                     runSpacing: 6,
                     children: _voter.tags.map((t) {
                       return Chip(
                         label: Text(t, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
-                        backgroundColor: const Color(0xFF4F46E5).withOpacity(0.12),
-                        side: const BorderSide(color: Color(0xFF6366F1)),
+                        backgroundColor: c.primary.withOpacity(0.12),
+                        side: BorderSide(color: c.primary.withOpacity(0.4)),
                         padding: EdgeInsets.zero,
                         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       );
@@ -442,34 +752,36 @@ class _VoterProfileScreenState extends State<VoterProfileScreen> {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: c.cardBg,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: c.cardBorder),
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: c.borderColor.withOpacity(isDark ? 0.6 : 0.9), width: 1.2),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(isDark ? 0.2 : 0.04),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
+            color: Colors.black.withOpacity(isDark ? 0.35 : 0.05),
+            blurRadius: 14,
+            offset: const Offset(0, 5),
           ),
         ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Row 1: Avatar, Name, Marathi Name, Bookmark Star
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Avatar with sentiment border
+              // Avatar with Sentiment Ring
               Container(
-                width: 60,
-                height: 60,
+                width: 62,
+                height: 62,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: sentimentColor.withOpacity(0.15),
-                  border: Border.all(color: sentimentColor, width: 2.5),
+                  border: Border.all(color: sentimentColor, width: 2.8),
                 ),
                 child: Center(
                   child: Text(
                     _voter.name.isNotEmpty ? _voter.name[0] : "V",
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: sentimentColor),
+                    style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: sentimentColor),
                   ),
                 ),
               ),
@@ -479,38 +791,174 @@ class _VoterProfileScreenState extends State<VoterProfileScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      _voter.name,
-                      style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: c.textPrimary),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            _voter.name,
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w900,
+                              color: c.textPrimary,
+                              letterSpacing: -0.3,
+                            ),
+                          ),
+                        ),
+                        // Star bookmark toggle
+                        IconButton(
+                          padding: EdgeInsets.zero,
+                          constraints: const BoxConstraints(),
+                          icon: Icon(
+                            _isStarBookmarked ? Icons.star_rounded : Icons.star_outline_rounded,
+                            color: _isStarBookmarked ? const Color(0xFFF59E0B) : c.textMuted,
+                            size: 24,
+                          ),
+                          onPressed: () {
+                            setState(() => _isStarBookmarked = !_isStarBookmarked);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(_isStarBookmarked ? "Voter added to VIP priority list." : "Voter removed from VIP priority."),
+                                duration: const Duration(seconds: 1),
+                              ),
+                            );
+                          },
+                        ),
+                      ],
                     ),
                     Text(
                       _voter.nameMr,
-                      style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: c.textSecondary),
+                      style: TextStyle(fontSize: 13.5, fontWeight: FontWeight.w600, color: c.textSecondary),
                     ),
-                    const SizedBox(height: 4),
-                    Text(
-                      "EPIC: ${_voter.epic}",
-                      style: TextStyle(fontSize: 11, fontFamily: 'monospace', fontWeight: FontWeight.bold, color: const Color(0xFF6366F1)),
+                    const SizedBox(height: 5),
+
+                    // Gender & Age Badge + EPIC Tag
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                          decoration: BoxDecoration(
+                            color: c.primary.withOpacity(0.12),
+                            borderRadius: BorderRadius.circular(6),
+                            border: Border.all(color: c.primary.withOpacity(0.4)),
+                          ),
+                          child: Text(
+                            "${_voter.gender == VoterGender.male ? 'Male' : 'Female'} • ${_voter.age} Yrs",
+                            style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: c.primary),
+                          ),
+                        ),
+                        const SizedBox(width: 6),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                          decoration: BoxDecoration(
+                            color: (isDark ? const Color(0xFF272732) : const Color(0xFFF1F5F9)),
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          child: Text(
+                            "EPIC: ${_voter.epic}",
+                            style: TextStyle(
+                              fontSize: 10.5,
+                              fontFamily: 'monospace',
+                              fontWeight: FontWeight.w800,
+                              color: c.textPrimary,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
               ),
             ],
           ),
+
           const SizedBox(height: 14),
-          const Divider(height: 1),
+          Divider(height: 1, color: c.borderColor.withOpacity(isDark ? 0.35 : 0.8)),
           const SizedBox(height: 10),
 
-          // Meta Row: Booth, Serial, Age, Gender
+          // Row 2: Demographic Attributes Strip
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _heroMeta("Booth", "Booth #${_voter.boothNumber}", c),
+              _heroMeta("Booth", "#${_voter.boothNumber}", c),
               _heroMeta("Serial", "#${_voter.serialNumber}", c),
-              _heroMeta("Age", "${_voter.age} Yrs", c),
-              _heroMeta("Gender", _voter.gender == VoterGender.male ? "Male" : "Female", c),
-              _heroMeta("House", "#${_voter.houseNumber}", c),
+              _heroMeta("Caste", _voter.caste.isNotEmpty ? _voter.caste : "General", c),
+              _heroMeta("Profession", _voter.occupation.isNotEmpty ? _voter.occupation.split(" ").first : "Retail", c),
+              _heroMeta("Household", "${_voter.familyMembers.length + 1} Mbrs", c),
             ],
+          ),
+
+          const SizedBox(height: 12),
+
+          // Row 3: Full Polling Booth Location & Voting Status
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: isDark ? const Color(0xFF1E1E24) : const Color(0xFFF8F7FF),
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: c.borderColor.withOpacity(0.6)),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(Icons.how_to_vote_rounded, size: 14, color: c.primary),
+                        const SizedBox(width: 5),
+                        Text(
+                          "POLLING STATION LOCATION",
+                          style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w900, color: c.primary),
+                        ),
+                      ],
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: _voter.isVoted ? const Color(0xFF10B981).withOpacity(0.15) : const Color(0xFFF59E0B).withOpacity(0.15),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(
+                        _voter.isVoted ? "VOTED ON POLL DAY" : "PENDING POLL DAY",
+                        style: TextStyle(
+                          fontSize: 8.5,
+                          fontWeight: FontWeight.bold,
+                          color: _voter.isVoted ? const Color(0xFF10B981) : const Color(0xFFD97706),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  "Navbharat High School, Room 1, Kothrud Depot Road, Pune - 411038",
+                  style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: c.textPrimary),
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 12),
+
+          // Row 4: Dedicated [ House Address ] High-Visibility CTA Button
+          SizedBox(
+            width: double.infinity,
+            height: 42,
+            child: ElevatedButton.icon(
+              onPressed: () => _openHouseAddressModal(c, isDark),
+              icon: const Icon(Icons.home_work_rounded, size: 18, color: Colors.white),
+              label: const Text(
+                "House Address (Geo-Coordinates & Locus)",
+                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12.5),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: c.primary,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                elevation: 1,
+              ),
+            ),
           ),
         ],
       ),
@@ -520,9 +968,12 @@ class _VoterProfileScreenState extends State<VoterProfileScreen> {
   Widget _heroMeta(String label, String value, CandidateColors c) {
     return Column(
       children: [
-        Text(label, style: TextStyle(fontSize: 10, color: c.textMuted)),
+        Text(label, style: TextStyle(fontSize: 9.5, color: c.textMuted)),
         const SizedBox(height: 2),
-        Text(value, style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: c.textPrimary)),
+        Text(
+          value,
+          style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.bold, color: c.textPrimary),
+        ),
       ],
     );
   }

@@ -92,7 +92,7 @@ class _BloDirectoryScreenState extends State<BloDirectoryScreen> {
                 const SnackBar(content: Text("Liaison note saved successfully.")),
               );
             },
-            style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF4F46E5)),
+            style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF6256D9)),
             child: const Text("Save Note", style: TextStyle(color: Colors.white)),
           ),
         ],
@@ -124,17 +124,56 @@ class _BloDirectoryScreenState extends State<BloDirectoryScreen> {
           // Search & Summary Header
           Container(
             padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
-            color: c.appBarBg,
+            color: c.cardBg,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // Dynamic Constituency Scoping Banner (Section 10 Requirement)
+                Container(
+                  margin: const EdgeInsets.only(bottom: 10),
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF6256D9).withOpacity(0.12),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: const Color(0xFF6256D9).withOpacity(0.3)),
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.verified_user_rounded, size: 14, color: Color(0xFF6256D9)),
+                      const SizedBox(width: 6),
+                      const Expanded(
+                        child: Text(
+                          "CONSTITUENCY SCOPE: 215 - KASBA PETH (BOOTHS 1-215)",
+                          style: TextStyle(
+                            fontSize: 9,
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: 0.6,
+                            color: Color(0xFF6256D9),
+                          ),
+                        ),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF10B981).withOpacity(0.18),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: const Text(
+                          "ECI VERIFIED",
+                          style: TextStyle(fontSize: 8, fontWeight: FontWeight.bold, color: Color(0xFF10B981)),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
                 TextField(
                   controller: _searchController,
                   style: TextStyle(color: c.textPrimary, fontSize: 13),
                   decoration: InputDecoration(
                     hintText: "Search BLO Name, Booth #, Phone...",
                     hintStyle: TextStyle(fontSize: 12, color: c.textMuted),
-                    prefixIcon: const Icon(Icons.search_rounded, size: 20, color: Color(0xFF6366F1)),
+                    prefixIcon: const Icon(Icons.search_rounded, size: 20, color: Color(0xFF6256D9)),
                     suffixIcon: _searchController.text.isNotEmpty
                         ? IconButton(
                             icon: const Icon(Icons.clear_rounded, size: 18),
@@ -145,7 +184,7 @@ class _BloDirectoryScreenState extends State<BloDirectoryScreen> {
                           )
                         : null,
                     filled: true,
-                    fillColor: c.cardBg,
+                    fillColor: c.scaffoldBg,
                     contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),

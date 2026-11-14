@@ -109,17 +109,37 @@ class _VotersScreenState extends State<VotersScreen> {
         if (_activeQuickFilter.startsWith("Open Grievance") && v.grievances.isEmpty) return false;
       }
 
-      // 3. Advanced Sheet Filter
+      // 3. Advanced Sheet Filter (Multi-Select Accordions Support)
       if (!_filterState.isDefault) {
-        if (_filterState.sentiment == "Supporter" && v.sentiment != VoterSentiment.favorable) return false;
-        if (_filterState.sentiment == "Swing Voter" && v.sentiment != VoterSentiment.swing) return false;
-        if (_filterState.sentiment == "Opposition" && v.sentiment != VoterSentiment.opposition) return false;
+        // Sentiment multi-select
+        if (_filterState.sentiments.isNotEmpty) {
+          final voterStance = v.sentiment == VoterSentiment.favorable
+              ? "Supporter"
+              : (v.sentiment == VoterSentiment.swing ? "Swing Voter" : "Opposition");
+          if (!_filterState.sentiments.contains(voterStance)) return false;
+        }
 
-        if (_filterState.community != "All" && v.communityGroup != _filterState.community) return false;
+        // Community multi-select
+        if (_filterState.communities.isNotEmpty && !_filterState.communities.contains(v.communityGroup)) {
+          return false;
+        }
 
-        if (_filterState.ageBracket == "Youth (<30)" && v.age >= 30) return false;
-        if (_filterState.ageBracket == "Middle Aged (30-59)" && (v.age < 30 || v.age >= 60)) return false;
-        if (_filterState.ageBracket == "Senior (60+)" && v.age < 60) return false;
+        // Booths multi-select
+        if (_filterState.booths.isNotEmpty && !_filterState.booths.contains(v.boothNumber)) {
+          return false;
+        }
+
+        // Age brackets multi-select
+        if (_filterState.ageBrackets.isNotEmpty) {
+          bool ageMatch = false;
+          for (final b in _filterState.ageBrackets) {
+            if (b.startsWith("18-25") && v.age >= 18 && v.age <= 25) ageMatch = true;
+            if (b.startsWith("26-40") && v.age >= 26 && v.age <= 40) ageMatch = true;
+            if (b.startsWith("41-60") && v.age >= 41 && v.age <= 60) ageMatch = true;
+            if (b.startsWith("60+") && v.age >= 60) ageMatch = true;
+          }
+          if (!ageMatch) return false;
+        }
 
         if (_filterState.gender == "Male" && v.gender != VoterGender.male) return false;
         if (_filterState.gender == "Female" && v.gender != VoterGender.female) return false;

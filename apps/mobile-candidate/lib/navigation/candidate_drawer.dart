@@ -91,19 +91,19 @@ class CandidateDrawer extends StatelessWidget {
             _drawerHeader("WAR ROOM CORE"),
             _drawerTile(Icons.dashboard_rounded, "Main Dashboard", () {
               Navigator.pop(context);
-              onNavigateTab(0);
+              onNavigateTab(2); // Slot 3 (Center Anchor): Home Dashboard
             }),
             _drawerTile(Icons.how_to_reg_rounded, "Total Voters Directory", () {
               Navigator.pop(context);
-              onNavigateTab(1);
+              onNavigateTab(0); // Slot 1: Voter Directory
             }),
             _drawerTile(Icons.map_rounded, "Live Field Map & Booths", () {
               Navigator.pop(context);
-              onNavigateTab(2);
+              onNavigateTab(1); // Slot 2: Field Tracking
             }),
             _drawerTile(Icons.campaign_rounded, "Campaign Broadcasts", () {
               Navigator.pop(context);
-              onNavigateTab(3);
+              onNavigateTab(3); // Slot 4: Broadcasts
             }),
 
             _drawerHeader("INTELLIGENCE & STRATEGY"),

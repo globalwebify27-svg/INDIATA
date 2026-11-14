@@ -3,11 +3,11 @@ import '../../../core/theme/candidate_theme.dart';
 import '../models/voter_model.dart';
 
 class VoterFilterState {
-  String sentiment;
-  String community;
-  String ageBracket;
+  Set<String> sentiments;
+  Set<String> communities;
+  Set<String> ageBrackets;
+  Set<int> booths;
   String gender;
-  int? boothNumber;
   String surveyStatus;
   String slipStatus;
   bool onlyInfluencers;
@@ -15,24 +15,33 @@ class VoterFilterState {
   bool onlyWelfareBeneficiaries;
 
   VoterFilterState({
-    this.sentiment = "All",
-    this.community = "All",
-    this.ageBracket = "All",
+    Set<String>? sentiments,
+    Set<String>? communities,
+    Set<String>? ageBrackets,
+    Set<int>? booths,
     this.gender = "All",
-    this.boothNumber,
     this.surveyStatus = "All",
     this.slipStatus = "All",
     this.onlyInfluencers = false,
     this.onlyFamilyHeads = false,
     this.onlyWelfareBeneficiaries = false,
-  });
+  })  : sentiments = sentiments ?? {},
+        communities = communities ?? {},
+        ageBrackets = ageBrackets ?? {},
+        booths = booths ?? {};
+
+  // Backward compatibility getters
+  String get sentiment => sentiments.isEmpty ? "All" : sentiments.first;
+  String get community => communities.isEmpty ? "All" : communities.first;
+  String get ageBracket => ageBrackets.isEmpty ? "All" : ageBrackets.first;
+  int? get boothNumber => booths.isEmpty ? null : booths.first;
 
   bool get isDefault =>
-      sentiment == "All" &&
-      community == "All" &&
-      ageBracket == "All" &&
+      sentiments.isEmpty &&
+      communities.isEmpty &&
+      ageBrackets.isEmpty &&
+      booths.isEmpty &&
       gender == "All" &&
-      boothNumber == null &&
       surveyStatus == "All" &&
       slipStatus == "All" &&
       !onlyInfluencers &&
@@ -40,11 +49,11 @@ class VoterFilterState {
       !onlyWelfareBeneficiaries;
 
   void reset() {
-    sentiment = "All";
-    community = "All";
-    ageBracket = "All";
+    sentiments.clear();
+    communities.clear();
+    ageBrackets.clear();
+    booths.clear();
     gender = "All";
-    boothNumber = null;
     surveyStatus = "All";
     slipStatus = "All";
     onlyInfluencers = false;
@@ -96,13 +105,13 @@ class _VoterFilterSheetState extends State<VoterFilterSheet> {
   @override
   void initState() {
     super.initState();
-    // Copy state
+    // Clone state
     _state = VoterFilterState(
-      sentiment: widget.initialFilter.sentiment,
-      community: widget.initialFilter.community,
-      ageBracket: widget.initialFilter.ageBracket,
+      sentiments: Set.from(widget.initialFilter.sentiments),
+      communities: Set.from(widget.initialFilter.communities),
+      ageBrackets: Set.from(widget.initialFilter.ageBrackets),
+      booths: Set.from(widget.initialFilter.booths),
       gender: widget.initialFilter.gender,
-      boothNumber: widget.initialFilter.boothNumber,
       surveyStatus: widget.initialFilter.surveyStatus,
       slipStatus: widget.initialFilter.slipStatus,
       onlyInfluencers: widget.initialFilter.onlyInfluencers,
@@ -111,13 +120,28 @@ class _VoterFilterSheetState extends State<VoterFilterSheet> {
     );
   }
 
+  int get _activeCount {
+    int cnt = 0;
+    cnt += _state.sentiments.length;
+    cnt += _state.communities.length;
+    cnt += _state.ageBrackets.length;
+    cnt += _state.booths.length;
+    if (_state.gender != "All") cnt++;
+    if (_state.surveyStatus != "All") cnt++;
+    if (_state.slipStatus != "All") cnt++;
+    if (_state.onlyInfluencers) cnt++;
+    if (_state.onlyFamilyHeads) cnt++;
+    if (_state.onlyWelfareBeneficiaries) cnt++;
+    return cnt;
+  }
+
   @override
   Widget build(BuildContext context) {
     final c = widget.c;
 
     return Container(
       padding: const EdgeInsets.all(20),
-      height: MediaQuery.of(context).size.height * 0.85,
+      height: MediaQuery.of(context).size.height * 0.88,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -127,115 +151,178 @@ class _VoterFilterSheetState extends State<VoterFilterSheet> {
             children: [
               Row(
                 children: [
-                  const Icon(Icons.tune_rounded, color: Color(0xFF4F46E5), size: 22),
-                  const SizedBox(width: 8),
-                  Text(
-                    "Advanced Voter Filters",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: c.textPrimary),
+                  Container(
+                    padding: const EdgeInsets.all(7),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF6256D9).withOpacity(0.12),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(Icons.tune_rounded, color: Color(0xFF6256D9), size: 20),
+                  ),
+                  const SizedBox(width: 10),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Advanced Voter Filters",
+                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: c.textPrimary),
+                      ),
+                      Text(
+                        "$_activeCount filters currently active",
+                        style: TextStyle(fontSize: 10, color: c.textSecondary),
+                      ),
+                    ],
                   ),
                 ],
               ),
-              TextButton(
+              TextButton.icon(
                 onPressed: () {
                   setState(() => _state.reset());
                 },
-                child: const Text("Reset All", style: TextStyle(color: Color(0xFFEF4444), fontSize: 12)),
+                icon: const Icon(Icons.restart_alt_rounded, size: 14, color: Color(0xFFEF4444)),
+                label: const Text("Reset All", style: TextStyle(color: Color(0xFFEF4444), fontSize: 12)),
               ),
             ],
           ),
-          const Divider(height: 16),
+          const SizedBox(height: 8),
+          const Divider(height: 1),
+          const SizedBox(height: 10),
 
-          // Scrollable Filter Sections
+          // Scrollable Multi-Select Accordions (Legacy Election Software Layout)
           Expanded(
             child: ListView(
               children: [
-                _buildFilterGroup(
-                  title: "POLITICAL SENTIMENT STANCE",
-                  options: ["All", "Supporter", "Swing Voter", "Opposition"],
-                  selected: _state.sentiment,
-                  onSelect: (val) => setState(() => _state.sentiment = val),
-                  c: c,
+                // Accordion 1: Community / Caste Multi-Select
+                _buildMultiSelectAccordion(
+                  title: "CASTE / COMMUNITY GROUP",
+                  subtitle: _state.communities.isEmpty ? "All Communities" : "${_state.communities.length} Selected",
+                  icon: Icons.groups_rounded,
+                  options: ["Maratha", "Brahmin", "OBC", "SC", "Minority", "Vyapari / Jain", "Other"],
+                  selectedItems: _state.communities,
+                  onToggle: (item) {
+                    setState(() {
+                      if (_state.communities.contains(item)) {
+                        _state.communities.remove(item);
+                      } else {
+                        _state.communities.add(item);
+                      }
+                    });
+                  },
                 ),
-                const SizedBox(height: 14),
 
-                _buildFilterGroup(
-                  title: "COMMUNITY / CASTE GROUP",
-                  options: ["All", "Maratha", "Brahmin", "OBC", "SC", "Minority"],
-                  selected: _state.community,
-                  onSelect: (val) => setState(() => _state.community = val),
-                  c: c,
+                // Accordion 2: Polling Station & Booths Multi-Select
+                _buildMultiSelectAccordion(
+                  title: "POLLING STATION & BOOTHS",
+                  subtitle: _state.booths.isEmpty ? "All 215 Polling Booths" : "${_state.booths.length} Booths Selected",
+                  icon: Icons.how_to_vote_rounded,
+                  options: ["Booth #42", "Booth #104", "Booth #78", "Booth #15", "Booth #162", "Booth #198"],
+                  selectedItems: _state.booths.map((b) => "Booth #$b").toSet(),
+                  onToggle: (item) {
+                    final bNum = int.tryParse(item.replaceAll("Booth #", "")) ?? 42;
+                    setState(() {
+                      if (_state.booths.contains(bNum)) {
+                        _state.booths.remove(bNum);
+                      } else {
+                        _state.booths.add(bNum);
+                      }
+                    });
+                  },
                 ),
-                const SizedBox(height: 14),
 
-                _buildFilterGroup(
-                  title: "AGE DEMOGRAPHIC",
-                  options: ["All", "Youth (<30)", "Middle Aged (30-59)", "Senior (60+)"],
-                  selected: _state.ageBracket,
-                  onSelect: (val) => setState(() => _state.ageBracket = val),
-                  c: c,
+                // Accordion 3: Voting Stance / Inclination Multi-Select
+                _buildMultiSelectAccordion(
+                  title: "VOTING STANCE / INCLINATION",
+                  subtitle: _state.sentiments.isEmpty ? "All Stances" : "${_state.sentiments.length} Selected",
+                  icon: Icons.thumbs_up_down_rounded,
+                  options: ["Supporter", "Swing Voter", "Opposition"],
+                  selectedItems: _state.sentiments,
+                  onToggle: (item) {
+                    setState(() {
+                      if (_state.sentiments.contains(item)) {
+                        _state.sentiments.remove(item);
+                      } else {
+                        _state.sentiments.add(item);
+                      }
+                    });
+                  },
                 ),
-                const SizedBox(height: 14),
 
-                _buildFilterGroup(
-                  title: "GENDER",
-                  options: ["All", "Male", "Female"],
-                  selected: _state.gender,
-                  onSelect: (val) => setState(() => _state.gender = val),
-                  c: c,
+                // Accordion 4: Age Demographic Brackets Multi-Select
+                _buildMultiSelectAccordion(
+                  title: "AGE DEMOGRAPHIC BRACKETS",
+                  subtitle: _state.ageBrackets.isEmpty ? "All Age Groups" : "${_state.ageBrackets.length} Selected",
+                  icon: Icons.cake_rounded,
+                  options: ["18-25 (Youth First-Time)", "26-40 (Working Professionals)", "41-60 (Middle-Aged)", "60+ (Senior Citizens)"],
+                  selectedItems: _state.ageBrackets,
+                  onToggle: (item) {
+                    setState(() {
+                      if (_state.ageBrackets.contains(item)) {
+                        _state.ageBrackets.remove(item);
+                      } else {
+                        _state.ageBrackets.add(item);
+                      }
+                    });
+                  },
                 ),
-                const SizedBox(height: 14),
 
-                _buildFilterGroup(
-                  title: "DOORSTEP SURVEY STATUS",
-                  options: ["All", "Survey Completed", "Unvisited Doorstep"],
-                  selected: _state.surveyStatus,
-                  onSelect: (val) => setState(() => _state.surveyStatus = val),
-                  c: c,
-                ),
-                const SizedBox(height: 14),
-
-                _buildFilterGroup(
-                  title: "VOTER SLIP DELIVERY",
-                  options: ["All", "Delivered", "Pending Delivery"],
-                  selected: _state.slipStatus,
-                  onSelect: (val) => setState(() => _state.slipStatus = val),
-                  c: c,
-                ),
-                const SizedBox(height: 16),
-
-                // Special Toggles
-                Text(
-                  "SPECIAL STRATEGIC TAGS",
-                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 1.1, color: c.textMuted),
-                ),
-                const SizedBox(height: 8),
-
-                SwitchListTile(
-                  contentPadding: EdgeInsets.zero,
-                  dense: true,
-                  title: const Text("Key Opinion Leaders (Influencers)", style: TextStyle(fontSize: 13)),
-                  subtitle: const Text("Influences society or mandal voting blocks", style: TextStyle(fontSize: 10)),
-                  value: _state.onlyInfluencers,
-                  activeColor: const Color(0xFF4F46E5),
-                  onChanged: (v) => setState(() => _state.onlyInfluencers = v),
-                ),
-                SwitchListTile(
-                  contentPadding: EdgeInsets.zero,
-                  dense: true,
-                  title: const Text("Head of Family Only", style: TextStyle(fontSize: 13)),
-                  subtitle: const Text("Primary household decision maker", style: TextStyle(fontSize: 10)),
-                  value: _state.onlyFamilyHeads,
-                  activeColor: const Color(0xFF4F46E5),
-                  onChanged: (v) => setState(() => _state.onlyFamilyHeads = v),
-                ),
-                SwitchListTile(
-                  contentPadding: EdgeInsets.zero,
-                  dense: true,
-                  title: const Text("Welfare Beneficiaries (Ladki Bahin, PM Awas)", style: TextStyle(fontSize: 13)),
-                  subtitle: const Text("Enrolled in state or central welfare schemes", style: TextStyle(fontSize: 10)),
-                  value: _state.onlyWelfareBeneficiaries,
-                  activeColor: const Color(0xFF4F46E5),
-                  onChanged: (v) => setState(() => _state.onlyWelfareBeneficiaries = v),
+                // Accordion 5: Special Tactical Tags & Household Toggles
+                Theme(
+                  data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+                  child: Container(
+                    margin: const EdgeInsets.only(bottom: 8),
+                    decoration: BoxDecoration(
+                      color: widget.c.scaffoldBg,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: widget.c.cardBorder),
+                    ),
+                    child: ExpansionTile(
+                      leading: const Icon(Icons.star_rounded, color: Color(0xFF6256D9), size: 20),
+                      title: Text(
+                        "SPECIAL TACTICAL TAGS",
+                        style: TextStyle(fontSize: 11, fontWeight: FontWeight.w900, letterSpacing: 0.8, color: widget.c.textPrimary),
+                      ),
+                      subtitle: Text(
+                        "Influencers, Family Heads & Schemes",
+                        style: TextStyle(fontSize: 9.5, color: widget.c.textSecondary),
+                      ),
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(14, 0, 14, 12),
+                          child: Column(
+                            children: [
+                              SwitchListTile(
+                                contentPadding: EdgeInsets.zero,
+                                dense: true,
+                                title: const Text("Key Opinion Leaders (Influencers)", style: TextStyle(fontSize: 12)),
+                                subtitle: const Text("Society / mandal decision makers", style: TextStyle(fontSize: 9.5)),
+                                value: _state.onlyInfluencers,
+                                activeColor: const Color(0xFF6256D9),
+                                onChanged: (v) => setState(() => _state.onlyInfluencers = v),
+                              ),
+                              SwitchListTile(
+                                contentPadding: EdgeInsets.zero,
+                                dense: true,
+                                title: const Text("Head of Family Only", style: TextStyle(fontSize: 12)),
+                                subtitle: const Text("Primary household voter", style: TextStyle(fontSize: 9.5)),
+                                value: _state.onlyFamilyHeads,
+                                activeColor: const Color(0xFF6256D9),
+                                onChanged: (v) => setState(() => _state.onlyFamilyHeads = v),
+                              ),
+                              SwitchListTile(
+                                contentPadding: EdgeInsets.zero,
+                                dense: true,
+                                title: const Text("Welfare Beneficiaries (Ladki Bahin, PM Awas)", style: TextStyle(fontSize: 12)),
+                                subtitle: const Text("Enrolled in state or central welfare DBT", style: TextStyle(fontSize: 9.5)),
+                                value: _state.onlyWelfareBeneficiaries,
+                                activeColor: const Color(0xFF6256D9),
+                                onChanged: (v) => setState(() => _state.onlyWelfareBeneficiaries = v),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -244,18 +331,19 @@ class _VoterFilterSheetState extends State<VoterFilterSheet> {
           // Apply Button
           SizedBox(
             width: double.infinity,
-            height: 48,
-            child: ElevatedButton(
+            height: 46,
+            child: ElevatedButton.icon(
               onPressed: () {
                 widget.onApply(_state);
                 Navigator.pop(context);
               },
+              icon: const Icon(Icons.check_rounded, size: 18),
+              label: Text("Apply Filters ($_activeCount Active)", style: const TextStyle(fontWeight: FontWeight.bold)),
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF4F46E5),
+                backgroundColor: const Color(0xFF6256D9),
                 foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
               ),
-              child: const Text("Apply Segmented Filters", style: TextStyle(fontWeight: FontWeight.bold)),
             ),
           ),
         ],
@@ -263,44 +351,75 @@ class _VoterFilterSheetState extends State<VoterFilterSheet> {
     );
   }
 
-  Widget _buildFilterGroup({
+  Widget _buildMultiSelectAccordion({
     required String title,
+    required String subtitle,
+    required IconData icon,
     required List<String> options,
-    required String selected,
-    required Function(String) onSelect,
-    required CandidateColors c,
+    required Set<String> selectedItems,
+    required Function(String) onToggle,
   }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          title,
-          style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 1.1, color: c.textMuted),
+    final c = widget.c;
+    return Theme(
+      data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 8),
+        decoration: BoxDecoration(
+          color: c.scaffoldBg,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: selectedItems.isNotEmpty ? const Color(0xFF6256D9).withOpacity(0.5) : c.cardBorder,
+          ),
         ),
-        const SizedBox(height: 8),
-        Wrap(
-          spacing: 6,
-          runSpacing: 6,
-          children: options.map((opt) {
-            final isSel = selected == opt;
-            return ChoiceChip(
-              label: Text(opt),
-              selected: isSel,
-              selectedColor: const Color(0xFF4F46E5),
-              backgroundColor: c.scaffoldBg,
-              labelStyle: TextStyle(
-                fontSize: 11,
-                fontWeight: isSel ? FontWeight.bold : FontWeight.w500,
-                color: isSel ? Colors.white : c.textSecondary,
+        child: ExpansionTile(
+          leading: Icon(icon, color: selectedItems.isNotEmpty ? const Color(0xFF6256D9) : c.textSecondary, size: 20),
+          title: Text(
+            title,
+            style: TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w900,
+              letterSpacing: 0.8,
+              color: c.textPrimary,
+            ),
+          ),
+          subtitle: Text(
+            subtitle,
+            style: TextStyle(
+              fontSize: 9.5,
+              fontWeight: selectedItems.isNotEmpty ? FontWeight.bold : FontWeight.normal,
+              color: selectedItems.isNotEmpty ? const Color(0xFF6256D9) : c.textSecondary,
+            ),
+          ),
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(14, 0, 14, 12),
+              child: Wrap(
+                spacing: 6,
+                runSpacing: 6,
+                children: options.map((opt) {
+                  final isSel = selectedItems.contains(opt);
+                  return FilterChip(
+                    label: Text(opt),
+                    selected: isSel,
+                    selectedColor: const Color(0xFF6256D9).withOpacity(0.18),
+                    backgroundColor: c.cardBg,
+                    checkmarkColor: const Color(0xFF6256D9),
+                    labelStyle: TextStyle(
+                      fontSize: 10.5,
+                      fontWeight: isSel ? FontWeight.bold : FontWeight.w500,
+                      color: isSel ? const Color(0xFF6256D9) : c.textPrimary,
+                    ),
+                    side: BorderSide(
+                      color: isSel ? const Color(0xFF6256D9) : c.cardBorder,
+                    ),
+                    onSelected: (_) => onToggle(opt),
+                  );
+                }).toList(),
               ),
-              side: BorderSide(color: isSel ? const Color(0xFF4F46E5) : c.cardBorder),
-              onSelected: (val) {
-                if (val) onSelect(opt);
-              },
-            );
-          }).toList(),
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }

@@ -7,7 +7,7 @@ import 'models/telemetry_kpi.dart';
 import 'data/dashboard_mock_data.dart';
 import 'widgets/kpi_matrix_section.dart';
 import 'widgets/sentiment_distribution_card.dart';
-import 'widgets/turnout_forecast_card.dart';
+import 'widgets/live_field_map_preview_card.dart';
 import 'widgets/booth_readiness_section.dart';
 import 'widgets/quick_war_room_actions.dart';
 
@@ -216,9 +216,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
           // 2. Quick War Room Action Buttons
           QuickWarRoomActions(
             c: c,
-            onOpenBroadcast: () => widget.onNavigateTab(3), // Campaign tab
-            onOpenFieldMap: () => widget.onNavigateTab(2),   // Field tab
-            onFilterSwingVoters: () => widget.onNavigateTab(1), // Voters tab
+            onOpenBroadcast: () => widget.onNavigateTab(3), // Slot 4: Broadcasts
+            onOpenFieldMap: () => widget.onNavigateTab(1),   // Slot 2: Field Tracking
             onOpenIssues: () => widget.onOpenModule("Office & Grievances"),
             onOpenAiMode: () => widget.onOpenModule("AI Strategic Copilot"),
             onExportReport: _exportBriefingReport,
@@ -230,17 +229,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
             kpis: _kpis,
             c: c,
             onSelectSentiment: (type) {
-              widget.onNavigateTab(1); // Jump to voters with that filter
+              widget.onNavigateTab(0); // Slot 1: Voter Directory
             },
           ),
           const SizedBox(height: 16),
 
-          // 4. Projected Voter Turnout Trajectory Forecast
-          TurnoutForecastCard(
+          // 4. Live Field Map Preview Widget (Navigates to Field Tracking)
+          LiveFieldMapPreviewCard(
             c: c,
-            projectedPct: _kpis.projectedTurnoutPct,
+            isDark: isDark,
+            onTap: () => widget.onNavigateTab(1), // Slot 2: Field Tracking
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 18),
 
           // 5. Section Header for the 22 KPIs
           Padding(

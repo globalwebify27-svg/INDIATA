@@ -20,58 +20,106 @@ class CandidateAppBar extends StatelessWidget implements PreferredSizeWidget {
   });
 
   @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+  Size get preferredSize => const Size.fromHeight(68);
+
+  Widget _buildTranslucentDivider(CandidateColors c, bool isDark) {
+    return Container(
+      width: 1,
+      height: 24,
+      margin: const EdgeInsets.symmetric(horizontal: 4),
+      color: (isDark ? Colors.white : Colors.black).withOpacity(0.08),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
       elevation: 0,
       backgroundColor: c.cardBg,
+      toolbarHeight: 68,
       leading: IconButton(
-        icon: Icon(Icons.menu_rounded, color: c.textPrimary),
+        icon: Icon(Icons.menu_rounded, color: c.textPrimary, size: 22),
         tooltip: "Open Command Drawer",
         onPressed: onOpenDrawer,
+      ),
+      bottom: PreferredSize(
+        preferredSize: const Size.fromHeight(1.0),
+        child: Container(
+          color: c.borderColor.withOpacity(isDark ? 0.4 : 0.9),
+          height: 1.0,
+        ),
       ),
       title: Row(
         children: [
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3.5),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [Color(0xFF0F2744), Color(0xFF2087FE)],
+              gradient: LinearGradient(
+                colors: isDark
+                    ? const [Color(0xFF6256D9), Color(0xFFA855F7)]
+                    : const [Color(0xFF4F46E5), Color(0xFF7C3AED)],
               ),
-              borderRadius: BorderRadius.circular(6),
+              borderRadius: BorderRadius.circular(7),
+              boxShadow: [
+                BoxShadow(
+                  color: const Color(0xFF6256D9).withOpacity(0.3),
+                  blurRadius: 6,
+                  offset: const Offset(0, 2),
+                ),
+              ],
             ),
             child: const Text(
               "RAJTANTRA",
               style: TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.w900,
-                fontSize: 10,
-                letterSpacing: 1.1,
+                fontSize: 10.5,
+                letterSpacing: 1.2,
               ),
             ),
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: 10),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
-                  "War Room",
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.bold,
-                    color: c.textPrimary,
-                  ),
+                Row(
+                  children: [
+                    Text(
+                      "War Room",
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: c.textPrimary,
+                        letterSpacing: -0.2,
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
+                      decoration: BoxDecoration(
+                        color: c.primary.withOpacity(0.12),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: Text(
+                        "PRO",
+                        style: TextStyle(
+                          fontSize: 8.5,
+                          fontWeight: FontWeight.w900,
+                          color: c.primary,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
                 Text(
                   "${CandidateAuthService().currentUser?.name ?? AppConstants.defaultCandidateName} • ${CandidateAuthService().currentUser?.constituencyCode ?? '215'}",
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
-                    fontSize: 9.5,
+                    fontSize: 10,
+                    fontWeight: FontWeight.w500,
                     color: c.textSecondary,
                   ),
                 ),
@@ -83,12 +131,12 @@ class CandidateAppBar extends StatelessWidget implements PreferredSizeWidget {
       actions: [
         // Live Telemetry Indicator
         Container(
-          margin: const EdgeInsets.symmetric(vertical: 14),
-          padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+          margin: const EdgeInsets.symmetric(vertical: 20),
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
           decoration: BoxDecoration(
-            color: c.green.withOpacity(0.15),
+            color: c.green.withOpacity(0.12),
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: c.green, width: 0.8),
+            border: Border.all(color: c.green.withOpacity(0.6), width: 0.8),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
@@ -101,11 +149,11 @@ class CandidateAppBar extends StatelessWidget implements PreferredSizeWidget {
                   shape: BoxShape.circle,
                 ),
               ),
-              const SizedBox(width: 4),
+              const SizedBox(width: 5),
               Text(
                 "LIVE",
                 style: TextStyle(
-                  fontSize: 8.5,
+                  fontSize: 9,
                   fontWeight: FontWeight.w900,
                   color: c.green,
                   letterSpacing: 0.8,
@@ -115,31 +163,36 @@ class CandidateAppBar extends StatelessWidget implements PreferredSizeWidget {
           ),
         ),
 
+        _buildTranslucentDivider(c, isDark),
+
         // Dark / Light Theme Toggle
         IconButton(
           icon: Icon(
             isDark ? Icons.light_mode_outlined : Icons.dark_mode_outlined,
             color: isDark ? Colors.amberAccent : c.textPrimary,
-            size: 19,
+            size: 20,
           ),
           tooltip: isDark ? "Switch to Daylight Mode" : "Switch to Obsidian Mode",
           onPressed: onToggleTheme,
         ),
+
+        _buildTranslucentDivider(c, isDark),
 
         // Notifications Bell
         IconButton(
           icon: Stack(
             clipBehavior: Clip.none,
             children: [
-              Icon(Icons.notifications_none_rounded, color: c.textPrimary, size: 20),
+              Icon(Icons.notifications_none_rounded, color: c.textPrimary, size: 21),
               Positioned(
                 right: -2,
                 top: -2,
                 child: Container(
-                  padding: const EdgeInsets.all(3),
+                  padding: const EdgeInsets.all(3.5),
                   decoration: BoxDecoration(
                     color: c.red,
                     shape: BoxShape.circle,
+                    border: Border.all(color: c.cardBg, width: 1.5),
                   ),
                   child: const Text(
                     "4",
@@ -155,6 +208,7 @@ class CandidateAppBar extends StatelessWidget implements PreferredSizeWidget {
           ),
           onPressed: onNotificationsTap,
         ),
+        const SizedBox(width: 4),
       ],
     );
   }

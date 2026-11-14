@@ -160,6 +160,39 @@ export function BloDirectoryView() {
 
   return (
     <div className="space-y-5">
+      {/* SECTION 10: CONSTITUENCY SCOPE BANNER */}
+      <div className="bg-gradient-to-r from-brand-500/10 via-indigo-500/10 to-brand-500/10 border-2 border-brand-500/40 dark:border-brand-600/50 rounded-2xl p-4 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-2xs">
+        <div className="flex items-start gap-3.5">
+          <div className="w-10 h-10 rounded-xl bg-brand-600 text-white flex items-center justify-center shrink-0 shadow-sm">
+            <Shield className="w-5 h-5" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2 flex-wrap">
+              <h3 className="font-bold text-sm text-slate-900 dark:text-white uppercase tracking-wide">
+                CONSTITUENCY SCOPE: 215 - KASBA PETH (BOOTHS 1-215)
+              </h3>
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800">
+                ECI AUDIT VERIFIED
+              </span>
+            </div>
+            <p className="text-xs text-slate-600 dark:text-slate-300 mt-1">
+              Directory is strictly isolated to Assembly Constituency 215 based on candidate subscription profile. Cross-constituency queries are blocked by ECI tenant policy.
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-3 shrink-0">
+          <div className="text-right">
+            <span className="text-[11px] text-slate-500 dark:text-slate-400 block">Assigned / Total</span>
+            <span className="font-mono font-bold text-sm text-slate-800 dark:text-white">208 / 215 BLOs</span>
+          </div>
+          <div className="text-right pl-3 border-l border-slate-200 dark:border-slate-700">
+            <span className="text-[11px] text-amber-600 dark:text-amber-400 font-semibold block">Vacant Posts</span>
+            <span className="font-mono font-bold text-sm text-amber-600 dark:text-amber-400">7 Posts</span>
+          </div>
+        </div>
+      </div>
+
       {/* Module Title Header */}
       <section className="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-premium-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>

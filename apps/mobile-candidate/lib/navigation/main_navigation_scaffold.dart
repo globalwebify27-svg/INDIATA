@@ -41,7 +41,8 @@ class MainNavigationScaffold extends StatefulWidget {
 }
 
 class _MainNavigationScaffoldState extends State<MainNavigationScaffold> {
-  int _currentTab = 0;
+  // Slot 3 (Center Anchor): Home Dashboard (Index 2)
+  int _currentTab = 2;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   void _navigateToTab(int index) {
@@ -314,25 +315,30 @@ class _MainNavigationScaffoldState extends State<MainNavigationScaffold> {
       body: IndexedStack(
         index: _currentTab,
         children: [
+          // Slot 1: Voter Directory (Index 0)
+          VotersScreen(
+            c: c,
+            isDark: widget.isDark,
+            onOpenVoterDossier: _handleOpenVoterDossier,
+          ),
+          // Slot 2: Field Tracking (Index 1)
+          FieldOperationsScreen(
+            c: c,
+            isDark: widget.isDark,
+          ),
+          // Slot 3 (Center Anchor): Home Dashboard (Index 2)
           DashboardScreen(
             c: c,
             isDark: widget.isDark,
             onNavigateTab: _navigateToTab,
             onOpenModule: _handleOpenModule,
           ),
-          VotersScreen(
-            c: c,
-            isDark: widget.isDark,
-            onOpenVoterDossier: _handleOpenVoterDossier,
-          ),
-          FieldOperationsScreen(
-            c: c,
-            isDark: widget.isDark,
-          ),
+          // Slot 4: Broadcasts (Index 3)
           CampaignsScreen(
             c: c,
             isDark: widget.isDark,
           ),
+          // Slot 5: Office / Profile (Index 4)
           MoreMenuScreen(
             c: c,
             isDark: widget.isDark,
@@ -343,44 +349,209 @@ class _MainNavigationScaffoldState extends State<MainNavigationScaffold> {
         ],
       ),
       bottomNavigationBar: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
         decoration: BoxDecoration(
           color: c.cardBg,
-          border: Border(top: BorderSide(color: c.borderColor, width: 1)),
-        ),
-        child: BottomNavigationBar(
-          currentIndex: _currentTab,
-          onTap: _navigateToTab,
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          type: BottomNavigationBarType.fixed,
-          selectedItemColor: c.primary,
-          unselectedItemColor: c.textSecondary,
-          selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 10),
-          unselectedLabelStyle: const TextStyle(fontSize: 10),
-          items: const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.dashboard_rounded),
-              label: "Home",
+          border: Border(
+            top: BorderSide(
+              color: c.borderColor.withOpacity(widget.isDark ? 0.4 : 0.8),
+              width: 1.2,
             ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.people_alt_rounded),
-              label: "Voters",
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.map_rounded),
-              label: "Field",
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.campaign_rounded),
-              label: "Campaign",
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.menu_rounded),
-              label: "More",
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(widget.isDark ? 0.35 : 0.05),
+              blurRadius: 10,
+              offset: const Offset(0, -3),
             ),
           ],
         ),
+        child: SafeArea(
+          top: false,
+          child: Row(
+            children: [
+              _buildNavTab(
+                index: 0,
+                label: "Voters",
+                sublabel: "Directory",
+                icon: Icons.how_to_reg_rounded,
+                isCenter: false,
+                c: c,
+              ),
+              _buildNavDivider(c),
+              _buildNavTab(
+                index: 1,
+                label: "Field",
+                sublabel: "Tracking",
+                icon: Icons.map_rounded,
+                isCenter: false,
+                c: c,
+              ),
+              _buildNavDivider(c),
+              _buildNavTab(
+                index: 2,
+                label: "Home",
+                sublabel: "Dashboard",
+                icon: Icons.dashboard_rounded,
+                isCenter: true,
+                c: c,
+              ),
+              _buildNavDivider(c),
+              _buildNavTab(
+                index: 3,
+                label: "Broadcasts",
+                sublabel: "Campaign",
+                icon: Icons.campaign_rounded,
+                isCenter: false,
+                c: c,
+              ),
+              _buildNavDivider(c),
+              _buildNavTab(
+                index: 4,
+                label: "Office",
+                sublabel: "Profile",
+                icon: Icons.account_circle_rounded,
+                isCenter: false,
+                c: c,
+              ),
+            ],
+          ),
+        ),
       ),
+    );
+  }
+
+  Widget _buildNavTab({
+    required int index,
+    required String label,
+    required String sublabel,
+    required IconData icon,
+    required bool isCenter,
+    required CandidateColors c,
+  }) {
+    final isSelected = _currentTab == index;
+    final isDark = widget.isDark;
+
+    if (isCenter) {
+      return Expanded(
+        flex: 12,
+        child: InkWell(
+          onTap: () => _navigateToTab(index),
+          borderRadius: BorderRadius.circular(12),
+          child: Container(
+            padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 4),
+            decoration: BoxDecoration(
+              gradient: isSelected
+                  ? LinearGradient(
+                      colors: isDark
+                          ? const [Color(0xFF6256D9), Color(0xFFA855F7)]
+                          : const [Color(0xFF4F46E5), Color(0xFF7C3AED)],
+                    )
+                  : null,
+              color: isSelected
+                  ? null
+                  : (isDark ? const Color(0xFF202026) : const Color(0xFFEDE9FE)),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: isSelected
+                    ? c.primary
+                    : (isDark ? const Color(0xFF272732) : const Color(0xFFE5E1F8)),
+                width: 1.2,
+              ),
+              boxShadow: isSelected
+                  ? [
+                      BoxShadow(
+                        color: const Color(0xFF6256D9).withOpacity(0.35),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ]
+                  : null,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  icon,
+                  size: 21,
+                  color: isSelected
+                      ? Colors.white
+                      : (isDark ? const Color(0xFFA855F7) : const Color(0xFF6256D9)),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  label,
+                  maxLines: 1,
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w900,
+                    color: isSelected
+                        ? Colors.white
+                        : (isDark ? const Color(0xFFA855F7) : const Color(0xFF6256D9)),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
+    return Expanded(
+      flex: 11,
+      child: InkWell(
+        onTap: () => _navigateToTab(index),
+        borderRadius: BorderRadius.circular(10),
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 2),
+          decoration: BoxDecoration(
+            color: isSelected
+                ? (isDark ? const Color(0xFF272732) : const Color(0xFFEDE9FE))
+                : Colors.transparent,
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(
+              color: isSelected
+                  ? (isDark
+                      ? const Color(0xFFA855F7).withOpacity(0.5)
+                      : const Color(0xFF6256D9).withOpacity(0.35))
+                  : Colors.transparent,
+              width: 1,
+            ),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                icon,
+                size: 20,
+                color: isSelected ? c.primary : c.textSecondary,
+              ),
+              const SizedBox(height: 2),
+              Text(
+                label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 9.5,
+                  fontWeight: isSelected ? FontWeight.w800 : FontWeight.w500,
+                  color: isSelected ? c.primary : c.textSecondary,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNavDivider(CandidateColors c) {
+    return Container(
+      width: 1,
+      height: 26,
+      margin: const EdgeInsets.symmetric(horizontal: 2),
+      color: (widget.isDark ? Colors.white : Colors.black).withOpacity(0.06),
+    );
+  }
     );
   }
 }
