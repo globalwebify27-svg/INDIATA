@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -114,15 +114,6 @@ export const NAV_GROUPS: NavGroupConfig[] = [
     groupTitle: "WORKFORCE & TEAM",
     items: [
       {
-        key: "users",
-        label: "Users",
-        href: "/candidate/users",
-        icon: Users,
-        iconColor: "text-emerald-400",
-        amberDot: true,
-        hasChevron: true,
-      },
-      {
         key: "blo",
         label: "BLO Information",
         href: "/candidate/blo",
@@ -206,6 +197,26 @@ export function Sidebar({
 }: SidebarProps) {
   const pathname = usePathname();
   const { user, logout } = useAuth();
+  const [usersExpanded, setUsersExpanded] = useState<boolean>(true);
+
+  useEffect(() => {
+    if (
+      pathname.includes("/users") ||
+      pathname.includes("/members") ||
+      pathname.includes("/update-requests") ||
+      pathname.includes("/requests")
+    ) {
+      setUsersExpanded(true);
+    }
+  }, [pathname]);
+
+  const isUsersActive =
+    pathname.includes("/candidate/users") ||
+    pathname.includes("/candidate/members") ||
+    pathname.includes("/candidate/update-requests") ||
+    pathname.includes("/candidate/requests") ||
+    pathname.startsWith("/users") ||
+    pathname.startsWith("/members");
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -351,6 +362,126 @@ export function Sidebar({
               )}
 
               <nav className="space-y-1">
+                {/* Workforce & Team: Users Accordion */}
+                {group.groupTitle === "WORKFORCE & TEAM" && (
+                  <div className="relative group/users">
+                    {collapsed && !mobileOpen ? (
+                      <div className="flex justify-center py-0.5">
+                        <Link
+                          href="/candidate/users"
+                          className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-150 relative group ${
+                            isUsersActive
+                              ? "bg-blue-900/50 text-white border border-blue-500 shadow-md shadow-blue-500/20"
+                              : "text-teal-400 hover:text-white hover:bg-slate-900/80"
+                          }`}
+                          title="Users & Karyakarta"
+                        >
+                          <Users className={`w-4 h-4 shrink-0 ${isUsersActive ? "text-white" : "text-teal-400"}`} />
+                          <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-amber-400" />
+                          <div
+                            role="tooltip"
+                            className="pointer-events-none absolute left-full top-1/2 -translate-y-1/2 ml-3.5 z-50 whitespace-nowrap rounded-xl bg-slate-900 border border-slate-800 text-white px-3 py-1.5 text-xs font-semibold shadow-xl opacity-0 transition-opacity duration-150 group-hover:opacity-100 flex items-center gap-2"
+                          >
+                            <span>Users & Karyakarta</span>
+                            <div className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-slate-900" />
+                          </div>
+                        </Link>
+                      </div>
+                    ) : (
+                      <>
+                        <button
+                          type="button"
+                          onClick={() => setUsersExpanded(!usersExpanded)}
+                          className={`relative w-full flex items-center justify-between py-2.5 px-3 rounded-2xl text-xs font-semibold transition-all select-none overflow-hidden cursor-pointer ${
+                            isUsersActive
+                              ? "bg-[#132347] text-white font-bold border border-blue-500/30"
+                              : "text-slate-300 hover:text-white hover:bg-slate-900/80 font-medium"
+                          }`}
+                        >
+                          {isUsersActive && (
+                            <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1.5 h-6 bg-blue-400 rounded-r-full" />
+                          )}
+                          <div className="flex items-center gap-3">
+                            <Users className="w-4 h-4 shrink-0 text-teal-400 ml-0.5" />
+                            <span>Users</span>
+                          </div>
+                          <div className="flex items-center gap-1.5">
+                            <span className="w-2.5 h-2.5 rounded-full bg-amber-400 shrink-0" />
+                            <ChevronDown
+                              className={`w-3.5 h-3.5 text-slate-300 transition-transform duration-200 ${
+                                usersExpanded ? "rotate-180" : ""
+                              }`}
+                            />
+                          </div>
+                        </button>
+
+                        {/* Submenu links */}
+                        {usersExpanded && (
+                          <div className="pl-6 pr-2 py-1.5 space-y-1.5 border-l border-slate-700/60 ml-5 my-1.5">
+                            <Link
+                              href="/candidate/users/dashboard"
+                              onClick={onCloseMobile}
+                              className={`w-full block py-1.5 px-3 rounded-xl text-xs transition-all ${
+                                pathname === "/candidate/users/dashboard" || pathname === "/candidate/users"
+                                  ? "border-2 border-white text-white font-bold bg-slate-900/80 shadow-xs"
+                                  : "text-slate-400 hover:text-white hover:bg-slate-800/40 font-medium"
+                              }`}
+                            >
+                              User Dashboard
+                            </Link>
+                            <Link
+                              href="/candidate/users/all"
+                              onClick={onCloseMobile}
+                              className={`w-full block py-1.5 px-3 rounded-xl text-xs transition-all ${
+                                pathname === "/candidate/users/all"
+                                  ? "border-2 border-white text-white font-bold bg-slate-900/80 shadow-xs"
+                                  : "text-slate-400 hover:text-white hover:bg-slate-800/40 font-medium"
+                              }`}
+                            >
+                              All Users
+                            </Link>
+                            <Link
+                              href="/candidate/users/add"
+                              onClick={onCloseMobile}
+                              className={`w-full block py-1.5 px-3 rounded-xl text-xs transition-all ${
+                                pathname === "/candidate/users/add"
+                                  ? "border-2 border-white text-white font-bold bg-slate-900/80 shadow-xs"
+                                  : "text-slate-400 hover:text-white hover:bg-slate-800/40 font-medium"
+                              }`}
+                            >
+                              + Add User
+                            </Link>
+                            <Link
+                              href="/candidate/members"
+                              onClick={onCloseMobile}
+                              className={`w-full block py-1.5 px-3 rounded-xl text-xs transition-all ${
+                                pathname === "/candidate/members" || pathname === "/candidate/users/members"
+                                  ? "border-2 border-white text-white font-bold bg-slate-900/80 shadow-xs"
+                                  : "text-slate-400 hover:text-white hover:bg-slate-800/40 font-medium"
+                              }`}
+                            >
+                              Members / Karyakartas
+                            </Link>
+                            <Link
+                              href="/candidate/update-requests"
+                              onClick={onCloseMobile}
+                              className={`w-full flex items-center justify-between py-1.5 px-3 rounded-xl text-xs transition-all ${
+                                pathname === "/candidate/update-requests" || pathname === "/candidate/requests"
+                                  ? "border-2 border-white text-white font-bold bg-slate-900/80 shadow-xs"
+                                  : "text-slate-400 hover:text-white hover:bg-slate-800/40 font-medium"
+                              }`}
+                            >
+                              <span>Update Requests</span>
+                              <span className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold bg-amber-500/20 text-amber-400 border border-amber-500/40">
+                                3
+                              </span>
+                            </Link>
+                          </div>
+                        )}
+                      </>
+                    )}
+                  </div>
+                )}
                 {group.items.map((item) => {
                   const active = !item.isAction && isItemActive(item.href);
                   const IconComp = item.icon;

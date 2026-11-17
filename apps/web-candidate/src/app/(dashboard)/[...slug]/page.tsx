@@ -28,6 +28,11 @@ export default function CandidateDynamicModulePage() {
     return <FiltersMasterView />;
   }
 
+  // Voter Update Requests (Checked before general /voters)
+  if (pathname.includes("/requests") || pathname.includes("/update-requests")) {
+    return <KaryakartaWorkforceView initialSubView="update-requests" />;
+  }
+
   // Voter Intelligence Modules
   if (pathname.startsWith("/voters")) {
     return <VoterManagementView />;

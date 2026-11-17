@@ -45,7 +45,7 @@ export default function CandidateDynamicModulePage() {
   }
 
   // Module 03: Workforce, Users, Members & Field Update Requests
-  if (pathname.includes("/users") || pathname.includes("/members") || pathname.includes("/update-requests")) {
+  if (pathname.includes("/users") || pathname.includes("/members") || pathname.includes("/update-requests") || pathname.includes("/requests")) {
     return <KaryakartaWorkforceView />;
   }
 

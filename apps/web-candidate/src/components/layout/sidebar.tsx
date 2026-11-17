@@ -205,6 +205,7 @@ export function Sidebar({
   const isUsersActive =
     pathname.startsWith("/users") ||
     pathname.startsWith("/members") ||
+    pathname.includes("/requests") ||
     pathname === "/voters/requests";
 
   return (
@@ -309,24 +310,27 @@ export function Sidebar({
                     <button
                       type="button"
                       onClick={() => setUsersExpanded(!usersExpanded)}
-                      className={`w-full flex items-center justify-between py-2.5 rounded-xl text-xs font-semibold transition-all btn-tactile ${
+                      className={`relative w-full flex items-center justify-between py-2.5 rounded-2xl text-xs font-semibold transition-all select-none overflow-hidden cursor-pointer ${
                         collapsed && !mobileOpen ? "justify-center px-0" : "px-3"
                       } ${
                         isUsersActive
-                          ? "text-white bg-slate-800 border-l-4 border-blue-400 font-bold"
+                          ? "bg-[#132347] text-white font-bold border border-blue-500/30"
                           : "text-slate-300 hover:text-white hover:bg-slate-800/80 font-medium"
                       }`}
                       title={collapsed && !mobileOpen ? "Users & Karyakarta" : undefined}
                     >
+                      {isUsersActive && (!collapsed || mobileOpen) && (
+                        <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1.5 h-6 bg-blue-400 rounded-r-full" />
+                      )}
                       <div className="flex items-center gap-3">
-                        <Users className="w-4 h-4 shrink-0 text-teal-400" />
+                        <Users className="w-4 h-4 shrink-0 text-teal-400 ml-0.5" />
                         {(!collapsed || mobileOpen) && <span>Users</span>}
                       </div>
                       {(!collapsed || mobileOpen) && (
                         <div className="flex items-center gap-1.5">
-                          <span className="w-2 h-2 rounded-full bg-amber-400" />
+                          <span className="w-2.5 h-2.5 rounded-full bg-amber-400 shrink-0" />
                           <ChevronDown
-                            className={`w-3.5 h-3.5 transition-transform duration-200 ${
+                            className={`w-3.5 h-3.5 text-slate-300 transition-transform duration-200 ${
                               usersExpanded ? "rotate-180" : ""
                             }`}
                           />
@@ -336,25 +340,25 @@ export function Sidebar({
 
                     {/* Submenu links */}
                     {(!collapsed || mobileOpen) && usersExpanded && (
-                      <div className="pl-9 pr-2 py-1 space-y-1 border-l border-slate-800 ml-4 my-1">
+                      <div className="pl-6 pr-2 py-1.5 space-y-1.5 border-l border-slate-700/60 ml-5 my-1.5">
                         <Link
                           href="/users/dashboard"
                           onClick={onCloseMobile}
-                          className={`w-full block py-1.5 px-2 rounded-lg text-xs btn-tactile ${
-                            pathname === "/users/dashboard"
-                              ? "text-white font-bold bg-slate-800"
-                              : "text-slate-400 hover:text-slate-200"
+                          className={`w-full block py-1.5 px-3 rounded-xl text-xs transition-all ${
+                            pathname === "/users/dashboard" || pathname === "/users"
+                              ? "border-2 border-white text-white font-bold bg-slate-900/80 shadow-xs"
+                              : "text-slate-400 hover:text-white hover:bg-slate-800/40 font-medium"
                           }`}
                         >
                           User Dashboard
                         </Link>
                         <Link
-                          href="/users"
+                          href="/users/all"
                           onClick={onCloseMobile}
-                          className={`w-full block py-1.5 px-2 rounded-lg text-xs btn-tactile ${
-                            pathname === "/users"
-                              ? "text-white font-bold bg-slate-800"
-                              : "text-slate-400 hover:text-slate-200"
+                          className={`w-full block py-1.5 px-3 rounded-xl text-xs transition-all ${
+                            pathname === "/users/all"
+                              ? "border-2 border-white text-white font-bold bg-slate-900/80 shadow-xs"
+                              : "text-slate-400 hover:text-white hover:bg-slate-800/40 font-medium"
                           }`}
                         >
                           All Users
@@ -362,10 +366,10 @@ export function Sidebar({
                         <Link
                           href="/users/add"
                           onClick={onCloseMobile}
-                          className={`w-full block py-1.5 px-2 rounded-lg text-xs btn-tactile ${
+                          className={`w-full block py-1.5 px-3 rounded-xl text-xs transition-all ${
                             pathname === "/users/add"
-                              ? "text-white font-bold bg-slate-800"
-                              : "text-slate-400 hover:text-slate-200"
+                              ? "border-2 border-white text-white font-bold bg-slate-900/80 shadow-xs"
+                              : "text-slate-400 hover:text-white hover:bg-slate-800/40 font-medium"
                           }`}
                         >
                           + Add User
@@ -373,10 +377,10 @@ export function Sidebar({
                         <Link
                           href="/members"
                           onClick={onCloseMobile}
-                          className={`w-full block py-1.5 px-2 rounded-lg text-xs btn-tactile ${
-                            pathname === "/members"
-                              ? "text-white font-bold bg-slate-800"
-                              : "text-slate-400 hover:text-slate-200"
+                          className={`w-full block py-1.5 px-3 rounded-xl text-xs transition-all ${
+                            pathname === "/members" || pathname === "/users/members"
+                              ? "border-2 border-white text-white font-bold bg-slate-900/80 shadow-xs"
+                              : "text-slate-400 hover:text-white hover:bg-slate-800/40 font-medium"
                           }`}
                         >
                           Members / Karyakartas
@@ -384,14 +388,14 @@ export function Sidebar({
                         <Link
                           href="/voters/requests"
                           onClick={onCloseMobile}
-                          className={`w-full flex items-center justify-between py-1.5 px-2 rounded-lg text-xs btn-tactile ${
-                            pathname === "/voters/requests"
-                              ? "text-white font-bold bg-slate-800"
-                              : "text-slate-400 hover:text-slate-200"
+                          className={`w-full flex items-center justify-between py-1.5 px-3 rounded-xl text-xs transition-all ${
+                            pathname === "/voters/requests" || pathname === "/update-requests" || pathname === "/requests"
+                              ? "border-2 border-white text-white font-bold bg-slate-900/80 shadow-xs"
+                              : "text-slate-400 hover:text-white hover:bg-slate-800/40 font-medium"
                           }`}
                         >
                           <span>Update Requests</span>
-                          <span className="px-1.5 py-0.2 rounded-full text-[9px] font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30">
+                          <span className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold bg-amber-500/20 text-amber-400 border border-amber-500/40">
                             3
                           </span>
                         </Link>
