@@ -19,8 +19,6 @@ import {
   History,
   Settings,
   LogOut,
-  ChevronLeft,
-  ChevronRight,
   ChevronDown,
   X,
 } from "lucide-react";
@@ -191,7 +189,7 @@ export const NAV_GROUPS: NavGroupConfig[] = [
 
 export function Sidebar({
   collapsed,
-  onToggleCollapse,
+  onToggleCollapse: _onToggleCollapse,
   mobileOpen,
   onCloseMobile,
 }: SidebarProps) {
@@ -290,16 +288,6 @@ export function Sidebar({
               >
                 IN
               </Link>
-              {onToggleCollapse && (
-                <button
-                  type="button"
-                  onClick={onToggleCollapse}
-                  className="absolute -right-2 top-1/2 -translate-y-1/2 p-1 rounded-md text-slate-400 hover:text-white hover:bg-slate-900 transition-colors hidden md:block"
-                  title="Expand Sidebar"
-                >
-                  <ChevronRight className="w-3.5 h-3.5" />
-                </button>
-              )}
             </div>
           ) : (
             <div className="flex items-center justify-between w-full">
@@ -323,21 +311,6 @@ export function Sidebar({
               </Link>
 
               <div className="flex items-center gap-1">
-                {onToggleCollapse && (
-                  <button
-                    type="button"
-                    onClick={onToggleCollapse}
-                    className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-900 transition-colors hidden md:block"
-                    title={collapsed ? "Expand Sidebar" : "Collapse Sidebar"}
-                  >
-                    {collapsed ? (
-                      <ChevronRight className="w-4 h-4" />
-                    ) : (
-                      <ChevronLeft className="w-4 h-4" />
-                    )}
-                  </button>
-                )}
-
                 <button
                   type="button"
                   onClick={onCloseMobile}

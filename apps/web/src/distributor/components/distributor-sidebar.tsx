@@ -12,8 +12,6 @@ import {
   Settings,
   LogOut,
   Sparkles,
-  ChevronLeft,
-  ChevronRight,
   X,
 } from "lucide-react";
 import { DistributorStatus } from "@rajtantra/common-types";
@@ -28,7 +26,7 @@ interface DistributorSidebarProps {
 
 export function DistributorSidebar({
   collapsed = false,
-  onToggleCollapse,
+  onToggleCollapse: _onToggleCollapse,
   onCloseMobile,
 }: DistributorSidebarProps) {
   const pathname = usePathname();
@@ -103,16 +101,6 @@ export function DistributorSidebar({
           >
             IN
           </Link>
-          {onToggleCollapse && (
-            <button
-              type="button"
-              onClick={onToggleCollapse}
-              className="mt-1 p-0.5 rounded-md text-slate-400 hover:text-white hover:bg-slate-900 transition-colors"
-              title="Expand Sidebar"
-            >
-              <ChevronRight className="w-3.5 h-3.5" />
-            </button>
-          )}
         </div>
       ) : (
         <div className="p-4 border-b border-slate-900/80 bg-slate-950">
@@ -142,16 +130,6 @@ export function DistributorSidebar({
             </Link>
 
             <div className="flex items-center gap-1">
-              {onToggleCollapse && (
-                <button
-                  type="button"
-                  onClick={onToggleCollapse}
-                  className="hidden md:block p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-900 transition-colors"
-                  title="Collapse Sidebar"
-                >
-                  <ChevronLeft className="w-4 h-4" />
-                </button>
-              )}
               {onCloseMobile && (
                 <button
                   type="button"
