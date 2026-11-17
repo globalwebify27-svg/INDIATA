@@ -1,363 +1,653 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import {
-  Filter,
-  Plus,
   Search,
+  Plus,
+  Edit2,
   Trash2,
-  Sparkles,
   X,
+  Filter,
 } from "lucide-react";
 import { useToast } from "@/context/toast-context";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 
-interface TaxonomyItem {
+// ============================================================================
+// DATA MODELS & 23 SEED FILTER OPTIONS (Matching Reference Exactly)
+// ============================================================================
+
+export type FilterCategory =
+  | "Caste"
+  | "Occupation"
+  | "Scheme"
+  | "Qualification"
+  | "Custom Values";
+
+export interface FilterOptionRecord {
   id: string;
+  category: FilterCategory;
   name: string;
-  marathiName: string;
-  category: "caste" | "occupation" | "scheme" | "qualification" | "custom";
-  voterCount: number;
-  percentage: string;
+  code: string;
+  usageCount: number;
   description: string;
-  status: "Active" | "Draft";
 }
 
-const INITIAL_TAXONOMY: TaxonomyItem[] = [
-  // Caste / Community
-  { id: "c-1", category: "caste", name: "Maratha", marathiName: "मराठा", voterCount: 68400, percentage: "27.5%", description: "General demographic cluster across Wards 9, 12, 14", status: "Active" },
-  { id: "c-2", category: "caste", name: "Brahmin", marathiName: "ब्राह्मण", voterCount: 42100, percentage: "16.9%", description: "Dense cluster in Sadashiv Peth, Shanipar, Deccan", status: "Active" },
-  { id: "c-3", category: "caste", name: "OBC - Mali", marathiName: "ओबीसी (माळी)", voterCount: 28900, percentage: "11.6%", description: "Traditional artisan and agrarian families in Gaothan", status: "Active" },
-  { id: "c-4", category: "caste", name: "OBC - Dhangar", marathiName: "ओबीसी (धनगर)", voterCount: 16500, percentage: "6.6%", description: "Community clusters in Kothrud Depot & Erandwane", status: "Active" },
-  { id: "c-5", category: "caste", name: "Scheduled Caste (SC)", marathiName: "अनुसूचित जाती", voterCount: 31200, percentage: "12.5%", description: "Dr. Ambedkar Nagar, Mangalwar Peth clusters", status: "Active" },
-  { id: "c-6", category: "caste", name: "Jain", marathiName: "जैन", voterCount: 18200, percentage: "7.3%", description: "Prominent mercantile and business community in Raviwar Peth", status: "Active" },
-  { id: "c-7", category: "caste", name: "Muslim", marathiName: "मुस्लिम", voterCount: 22800, percentage: "9.2%", description: "Bhavani Peth, Nana Peth constituent voters", status: "Active" },
-
-  // Occupation
-  { id: "o-1", category: "occupation", name: "Retail Trader / Merchant", marathiName: "व्यापारी / दुकानदार", voterCount: 45200, percentage: "18.2%", description: "Market stalls, grocery stores, textile shops in City core", status: "Active" },
-  { id: "o-2", category: "occupation", name: "IT & Software Engineer", marathiName: "आयटी / सॉफ्टवेअर व्यावसायिक", voterCount: 38400, percentage: "15.4%", description: "Hinjawadi/Magarpatta commuters residing in modern apartments", status: "Active" },
-  { id: "o-3", category: "occupation", name: "Government & Municipal Staff", marathiName: "शासकीय / महापालिका कर्मचारी", voterCount: 24600, percentage: "9.9%", description: "PMC staff, state administrative employees, teachers", status: "Active" },
-  { id: "o-4", category: "occupation", name: "Student & First-Time Voter", marathiName: "विद्यार्थी / नवमतदार", voterCount: 33100, percentage: "13.3%", description: "College students in Ferguson, SP College, Modern College", status: "Active" },
-  { id: "o-5", category: "occupation", name: "Homemaker", marathiName: "गृहिणी", voterCount: 54200, percentage: "21.8%", description: "Key demographic for welfare and Ladki Bahin outreach", status: "Active" },
-  { id: "o-6", category: "occupation", name: "Retired Senior Citizen", marathiName: "निवृत्त नागरिक", voterCount: 29800, percentage: "12.0%", description: "Pensioners, society committee members, morning walk clubs", status: "Active" },
-
-  // Government Schemes
-  { id: "s-1", category: "scheme", name: "Mukhyamantri Ladki Bahin Yojana", marathiName: "मुख्यमंत्री माझी लाडकी बहीण योजना", voterCount: 48900, percentage: "19.7%", description: "Monthly financial aid to eligible women beneficiaries", status: "Active" },
-  { id: "s-2", category: "scheme", name: "Pradhan Mantri Awas Yojana (PMAY)", marathiName: "प्रधानमंत्री आवास योजना", voterCount: 14200, percentage: "5.7%", description: "Subsidized housing beneficiaries in redevelopment zones", status: "Active" },
-  { id: "s-3", category: "scheme", name: "Ayushman Bharat - PMJAY", marathiName: "आयुष्मान भारत - पीएमजय", voterCount: 36700, percentage: "14.8%", description: "Free healthcare cashless coverage up to ₹5 Lakhs", status: "Active" },
-  { id: "s-4", category: "scheme", name: "Sanjay Gandhi Niradhar Yojana", marathiName: "संजय गांधी निराधार योजना", voterCount: 8900, percentage: "3.6%", description: "Special welfare pension for destitute elderly and widows", status: "Active" },
-
-  // Qualification
-  { id: "q-1", category: "qualification", name: "Graduate (Degree Holder)", marathiName: "पदवीधर", voterCount: 89000, percentage: "35.8%", description: "BA, BCom, BSc, Engineering degree holders", status: "Active" },
-  { id: "q-2", category: "qualification", name: "Post-Graduate / Professional", marathiName: "पदव्युत्तर / व्यावसायिक", voterCount: 41500, percentage: "16.7%", description: "Doctors, Lawyers, CAs, Masters degree holders", status: "Active" },
-  { id: "q-3", category: "qualification", name: "Higher Secondary (12th Passed)", marathiName: "इयत्ता १२ वी उत्तीर्ण", voterCount: 62400, percentage: "25.1%", description: "Intermediate diploma and 12th certificate holders", status: "Active" },
-
-  // Custom Segments
-  { id: "u-1", category: "custom", name: "Ganesh Mandal Office Bearer", marathiName: "गणेशोत्सव मंडळ पदाधिकारी", voterCount: 4200, percentage: "1.7%", description: "High-influence local youth leaders across 180 mandals", status: "Active" },
-  { id: "u-2", category: "custom", name: "Housing Society Chairman / Secretary", marathiName: "सोसायटी अध्यक्ष / सचिव", voterCount: 1850, percentage: "0.7%", description: "Gatekeepers for gated society slip distribution and meetings", status: "Active" },
-  { id: "u-3", category: "custom", name: "Senior Citizen Morning Club Member", marathiName: "ज्येष्ठ नागरिक संघ सदस्य", voterCount: 6800, percentage: "2.7%", description: "Active members of garden laughter clubs & pensioners bodies", status: "Active" },
+export const CATEGORIES_LIST: FilterCategory[] = [
+  "Caste",
+  "Occupation",
+  "Scheme",
+  "Qualification",
+  "Custom Values",
 ];
+
+export const INITIAL_FILTER_OPTIONS: FilterOptionRecord[] = [
+  // Caste (6)
+  {
+    id: "flt-c1",
+    category: "Caste",
+    name: "Maratha",
+    code: "CST_MRT",
+    usageCount: 48210,
+    description: "Major agrarian & urban community across western Maharashtra",
+  },
+  {
+    id: "flt-c2",
+    category: "Caste",
+    name: "Brahmin",
+    code: "CST_BRH",
+    usageCount: 22400,
+    description: "Predominant demographic in Kothrud, Deccan & Erandwane segments",
+  },
+  {
+    id: "flt-c3",
+    category: "Caste",
+    name: "OBC (Mali, Vanjari, Dhangar)",
+    code: "CST_OBC",
+    usageCount: 31200,
+    description: "Crucial artisan and backward class voter clusters",
+  },
+  {
+    id: "flt-c4",
+    category: "Caste",
+    name: "SC (Neo-Buddhist / Matang)",
+    code: "CST_SC",
+    usageCount: 19800,
+    description: "Urban pocket communities with strong grassroots mobilization",
+  },
+  {
+    id: "flt-c5",
+    category: "Caste",
+    name: "Muslim",
+    code: "CST_MSL",
+    usageCount: 14200,
+    description: "Concentrated in central cantonment and Shivaji Nagar wards",
+  },
+  {
+    id: "flt-c6",
+    category: "Caste",
+    name: "Jain / Marwari",
+    code: "CST_JIN",
+    usageCount: 9400,
+    description: "Trading & merchant communities in commercial hubs",
+  },
+
+  // Occupation (6)
+  {
+    id: "flt-o1",
+    category: "Occupation",
+    name: "IT & Software Professional",
+    code: "OCC_IT",
+    usageCount: 38400,
+    description: "Hinjawadi & Senapati Bapat Road tech workforce",
+  },
+  {
+    id: "flt-o2",
+    category: "Occupation",
+    name: "Govt / PSU Employee",
+    code: "OCC_GOV",
+    usageCount: 16700,
+    description: "Secretariat, Postal, Defense & Railway personnel",
+  },
+  {
+    id: "flt-o3",
+    category: "Occupation",
+    name: "Business / Shop Owner",
+    code: "OCC_BIZ",
+    usageCount: 24500,
+    description: "Retailers, small-scale enterprises & service providers",
+  },
+  {
+    id: "flt-o4",
+    category: "Occupation",
+    name: "College Student",
+    code: "OCC_STU",
+    usageCount: 42100,
+    description: "Youth voters across Pune's educational institutions",
+  },
+  {
+    id: "flt-o5",
+    category: "Occupation",
+    name: "Homemaker",
+    code: "OCC_HMK",
+    usageCount: 51200,
+    description: "Key demographic for family welfare schemes",
+  },
+  {
+    id: "flt-o6",
+    category: "Occupation",
+    name: "Retired / Senior Citizen",
+    code: "OCC_RET",
+    usageCount: 29000,
+    description: "High voter turnout demographic (>82% historical)",
+  },
+
+  // Scheme (4)
+  {
+    id: "flt-s1",
+    category: "Scheme",
+    name: "Mukhyamantri Majhi Ladki Bahin Yojana",
+    code: "SCH_LBY",
+    usageCount: 38900,
+    description: "Direct benefit transfer of ₹1,500/month to eligible women",
+  },
+  {
+    id: "flt-s2",
+    category: "Scheme",
+    name: "Mahatma Jyotirao Phule Jan Arogya Yojana",
+    code: "SCH_MJP",
+    usageCount: 29400,
+    description: "Cashless medical insurance coverage up to ₹5 Lakh",
+  },
+  {
+    id: "flt-s3",
+    category: "Scheme",
+    name: "PM Awas Yojana (Urban)",
+    code: "SCH_PMAY",
+    usageCount: 8200,
+    description: "Subsidized housing loans & slum rehabilitation units",
+  },
+  {
+    id: "flt-s4",
+    category: "Scheme",
+    name: "Sanjay Gandhi Niradhar Anudan",
+    code: "SCH_SGNA",
+    usageCount: 6500,
+    description: "Pension for destitute, widows and disabled individuals",
+  },
+
+  // Qualification (4)
+  {
+    id: "flt-q1",
+    category: "Qualification",
+    name: "Post Graduate / Doctorate",
+    code: "QLF_PG",
+    usageCount: 24100,
+    description: "Engineers, Doctors, MBAs, Academics",
+  },
+  {
+    id: "flt-q2",
+    category: "Qualification",
+    name: "Graduate (Degree Holder)",
+    code: "QLF_GRD",
+    usageCount: 58200,
+    description: "Bachelor degree holders in arts, commerce, sciences",
+  },
+  {
+    id: "flt-q3",
+    category: "Qualification",
+    name: "Higher Secondary (12th Pass)",
+    code: "QLF_HSC",
+    usageCount: 34900,
+    description: "Completed junior college",
+  },
+  {
+    id: "flt-q4",
+    category: "Qualification",
+    name: "Secondary (10th Pass)",
+    code: "QLF_SSC",
+    usageCount: 28400,
+    description: "Matriculation completed",
+  },
+
+  // Custom Values (3)
+  {
+    id: "flt-v1",
+    category: "Custom Values",
+    name: "Society Committee Member",
+    code: "CST_RWA",
+    usageCount: 4200,
+    description: "RWA chairpersons and apartment management council",
+  },
+  {
+    id: "flt-v2",
+    category: "Custom Values",
+    name: "Youth Club / Ganesh Mandal Worker",
+    code: "CST_MND",
+    usageCount: 8900,
+    description: "Grassroots community festival organizers",
+  },
+  {
+    id: "flt-v3",
+    category: "Custom Values",
+    name: "Senior Citizen Club Leader",
+    code: "CST_SCC",
+    usageCount: 2100,
+    description: "Park morning groups & pensioners welfare circles",
+  },
+];
+
+// ============================================================================
+// MAIN COMPONENT: FILTERS MASTER VIEW
+// ============================================================================
 
 export function FiltersMasterView() {
   const { showToast } = useToast();
-  const [activeTab, setActiveTab] = useState<"caste" | "occupation" | "scheme" | "qualification" | "custom">("caste");
-  const [searchTerm, setSearchTerm] = useState("");
-  const [items, setItems] = useState<TaxonomyItem[]>(INITIAL_TAXONOMY);
-  const [showAddModal, setShowAddModal] = useState(false);
 
-  // New Category State
-  const [newName, setNewName] = useState("");
-  const [newMarathiName, setNewMarathiName] = useState("");
-  const [newDescription, setNewDescription] = useState("");
+  const [options, setOptions] = useState<FilterOptionRecord[]>(INITIAL_FILTER_OPTIONS);
+  const [selectedCategory, setSelectedCategory] = useState<string>("ALL");
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
-  const filteredItems = items.filter(
-    (item) =>
-      item.category === activeTab &&
-      (item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.marathiName.includes(searchTerm) ||
-        item.description.toLowerCase().includes(searchTerm.toLowerCase()))
-  );
+  // Modal State
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [editingItem, setEditingItem] = useState<FilterOptionRecord | null>(null);
+  const [deleteCandidate, setDeleteCandidate] = useState<FilterOptionRecord | null>(null);
 
-  const handleAddItem = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newName.trim()) return;
+  // Form Fields
+  const [formCategory, setFormCategory] = useState<FilterCategory>("Caste");
+  const [formName, setFormName] = useState<string>("");
+  const [formCode, setFormCode] = useState<string>("");
+  const [formDescription, setFormDescription] = useState<string>("");
 
-    const newItem: TaxonomyItem = {
-      id: `custom-${Date.now()}`,
-      category: activeTab,
-      name: newName.trim(),
-      marathiName: newMarathiName.trim() || newName.trim(),
-      voterCount: 0,
-      percentage: "0.0%",
-      description: newDescription.trim() || "Configured master classification option",
-      status: "Active",
-    };
+  // Filtered List
+  const filteredOptions = useMemo(() => {
+    return options.filter((item) => {
+      const matchCat = selectedCategory === "ALL" || item.category === selectedCategory;
+      const q = searchQuery.toLowerCase().trim();
+      const matchQuery =
+        !q ||
+        item.name.toLowerCase().includes(q) ||
+        item.code.toLowerCase().includes(q) ||
+        item.description.toLowerCase().includes(q);
+      return matchCat && matchQuery;
+    });
+  }, [options, selectedCategory, searchQuery]);
 
-    setItems((prev) => [newItem, ...prev]);
-    setShowAddModal(false);
-    setNewName("");
-    setNewMarathiName("");
-    setNewDescription("");
-
-    showToast(
-      "success",
-      "Classification Option Added",
-      `"${newItem.name}" is now active and automatically available in Total Voters & Campaign Audience filters.`
-    );
+  // Open Create Modal
+  const handleOpenCreate = () => {
+    setEditingItem(null);
+    setFormCategory("Caste");
+    setFormName("");
+    setFormCode("");
+    setFormDescription("");
+    setIsModalOpen(true);
   };
 
-  const handleDeleteItem = (id: string, name: string) => {
-    setItems((prev) => prev.filter((item) => item.id !== id));
-    showToast("info", "Option Removed", `"${name}" removed from ${activeTab.toUpperCase()} master classification.`);
+  // Open Edit Modal
+  const handleOpenEdit = (item: FilterOptionRecord) => {
+    setEditingItem(item);
+    setFormCategory(item.category);
+    setFormName(item.name);
+    setFormCode(item.code);
+    setFormDescription(item.description);
+    setIsModalOpen(true);
+  };
+
+  // Save (Create or Update)
+  const handleSave = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formName.trim() || !formCode.trim()) {
+      showToast("error", "Validation Error", "Name and Code identifier are required.");
+      return;
+    }
+
+    if (editingItem) {
+      setOptions((prev) =>
+        prev.map((item) =>
+          item.id === editingItem.id
+            ? {
+                ...item,
+                category: formCategory,
+                name: formName.trim(),
+                code: formCode.trim().toUpperCase(),
+                description: formDescription.trim(),
+              }
+            : item
+        )
+      );
+      showToast("success", "Filter Updated", `Filter option "${formName}" updated successfully.`);
+    } else {
+      const newItem: FilterOptionRecord = {
+        id: `flt-custom-${Date.now()}`,
+        category: formCategory,
+        name: formName.trim(),
+        code: formCode.trim().toUpperCase(),
+        usageCount: 0,
+        description: formDescription.trim(),
+      };
+      setOptions((prev) => [newItem, ...prev]);
+      showToast("success", "Filter Created", `New filter option "${formName}" created.`);
+    }
+    setIsModalOpen(false);
+  };
+
+  // Delete Action
+  const handleDeleteConfirm = () => {
+    if (deleteCandidate) {
+      setOptions((prev) => prev.filter((item) => item.id !== deleteCandidate.id));
+      showToast("info", "Filter Removed", `Filter option "${deleteCandidate.name}" removed.`);
+      setDeleteCandidate(null);
+    }
   };
 
   return (
-    <div className="space-y-5">
-      {/* Module Title Header */}
-      <section className="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-premium-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div className="space-y-6 pb-12 animate-fade-in text-slate-800 dark:text-slate-100">
+      {/* ===================================================================== */}
+      {/* HEADER SECTION (Breadcrumb, Title, Subtitle, Add Button)              */}
+      {/* ===================================================================== */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs">
         <div>
-          <div className="flex items-center gap-2 mb-1.5 flex-wrap">
-            <span className="text-[11px] font-bold text-brand-600 uppercase tracking-wider bg-brand-50 px-2.5 py-0.5 rounded-full">
-              Module 04: Master Classification
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+              Classification Master
             </span>
-            <Badge variant="teal">Total Voters Synchronized</Badge>
-            <Badge variant="neutral">AC-215 Bound</Badge>
+            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-50 text-indigo-700 dark:bg-indigo-950/60 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">
+              Taxonomy Management
+            </span>
           </div>
-          <h1 className="text-[22px] font-bold text-slate-800 dark:text-white tracking-tight">
-            Filters &amp; Demographic Segmentation Master
+          <h1 className="text-xl md:text-2xl font-extrabold text-slate-900 dark:text-white mt-1">
+            Central Filter Management
           </h1>
-          <p className="text-xs text-slate-500 dark:text-[#94A3B8] mt-0.5">
-            Configure master classification options (Caste, Occupation, Schemes, Influencer Tags) that dynamically populate Total Voters and Campaign Audience filters.
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+            Configure Caste, Occupation, Welfare Schemes, Education Qualifications, and Custom tag values.
           </p>
         </div>
 
-        <div className="flex items-center gap-2.5">
-          <Button variant="primary" size="md" onClick={() => setShowAddModal(true)}>
-            <Plus className="w-3.5 h-3.5" />
-            <span>Add Classification Option</span>
-          </Button>
-        </div>
-      </section>
-
-      {/* Synchronized Notice Banner */}
-      <div className="bg-brand-50/70 dark:bg-brand-950/20 border border-brand-200 dark:border-brand-900/50 rounded-xl p-3.5 flex items-start gap-3">
-        <Sparkles className="w-4 h-4 text-brand-600 shrink-0 mt-0.5" />
-        <div className="text-xs text-brand-900 dark:text-brand-200">
-          <p className="font-semibold">Dynamic Elector Cross-Indexing Active</p>
-          <p className="text-[11px] text-brand-700 dark:text-brand-300 mt-0.5">
-            Any classification option created or updated here immediately populates the <strong>Advanced Filter Drawer</strong> in <strong>Total Voters (Module 07)</strong> and the <strong>Audience Segmentation Builder</strong> in <strong>Campaign Control (Module 13)</strong>.
-          </p>
-        </div>
+        <button
+          type="button"
+          onClick={handleOpenCreate}
+          className="flex items-center gap-2 px-4 py-2 bg-[#2563EB] hover:bg-blue-700 text-white font-bold rounded-xl text-xs transition-colors shadow-xs cursor-pointer shrink-0"
+        >
+          <Plus className="w-4 h-4" />
+          <span>+ + Add Filter Option</span>
+        </button>
       </div>
 
-      {/* Category Tabs & Search Bar */}
-      <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-premium-xs space-y-4">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-3">
-          {/* Category Tabs */}
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0">
-            <button
-              type="button"
-              onClick={() => setActiveTab("caste")}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap cursor-pointer transition-all ${
-                activeTab === "caste"
-                  ? "bg-brand-600 text-white shadow-premium-xs"
-                  : "text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
-              }`}
-            >
-              Caste &amp; Community ({items.filter((i) => i.category === "caste").length})
-            </button>
+      {/* ===================================================================== */}
+      {/* CATEGORY TABS & SEARCH BAR                                            */}
+      {/* ===================================================================== */}
+      <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs space-y-3">
+        {/* Category Pills Bar */}
+        <div className="flex flex-wrap items-center gap-2 border-b border-slate-100 dark:border-slate-800 pb-3">
+          <button
+            type="button"
+            onClick={() => setSelectedCategory("ALL")}
+            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+              selectedCategory === "ALL"
+                ? "bg-[#2563EB] text-white shadow-xs"
+                : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200"
+            }`}
+          >
+            All Categories ({options.length})
+          </button>
 
-            <button
-              type="button"
-              onClick={() => setActiveTab("occupation")}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap cursor-pointer transition-all ${
-                activeTab === "occupation"
-                  ? "bg-brand-600 text-white shadow-premium-xs"
-                  : "text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
-              }`}
-            >
-              Occupation &amp; Trade ({items.filter((i) => i.category === "occupation").length})
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setActiveTab("scheme")}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap cursor-pointer transition-all ${
-                activeTab === "scheme"
-                  ? "bg-brand-600 text-white shadow-premium-xs"
-                  : "text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
-              }`}
-            >
-              Govt Welfare Schemes ({items.filter((i) => i.category === "scheme").length})
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setActiveTab("qualification")}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap cursor-pointer transition-all ${
-                activeTab === "qualification"
-                  ? "bg-brand-600 text-white shadow-premium-xs"
-                  : "text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
-              }`}
-            >
-              Qualifications ({items.filter((i) => i.category === "qualification").length})
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setActiveTab("custom")}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap cursor-pointer transition-all ${
-                activeTab === "custom"
-                  ? "bg-brand-600 text-white shadow-premium-xs"
-                  : "text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
-              }`}
-            >
-              Custom Influencer Tags ({items.filter((i) => i.category === "custom").length})
-            </button>
-          </div>
-
-          {/* Search Input */}
-          <div className="relative w-full md:w-64">
-            <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
-            <input
-              type="text"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Search category values..."
-              className="w-full pl-8 pr-3 py-1.5 text-xs rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-brand-500"
-            />
-          </div>
+          {CATEGORIES_LIST.map((cat) => {
+            const count = options.filter((item) => item.category === cat).length;
+            const isSelected = selectedCategory === cat;
+            return (
+              <button
+                key={cat}
+                type="button"
+                onClick={() => setSelectedCategory(cat)}
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  isSelected
+                    ? "bg-[#2563EB] text-white shadow-xs"
+                    : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200"
+                }`}
+              >
+                {cat} ({count})
+              </button>
+            );
+          })}
         </div>
 
-        {/* Taxonomy Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
-          {filteredItems.map((item) => (
-            <div
-              key={item.id}
-              className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-brand-300 dark:hover:border-brand-700 transition-all flex flex-col justify-between gap-3 shadow-2xs"
+        {/* Search Input */}
+        <div className="relative">
+          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+          <input
+            type="text"
+            placeholder="Search filter name, code, or description..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full pl-10 pr-4 py-2 bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white dark:focus:bg-slate-800 transition-all"
+          />
+          {searchQuery && (
+            <button
+              onClick={() => setSearchQuery("")}
+              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
             >
-              <div>
-                <div className="flex items-start justify-between gap-2">
-                  <div>
-                    <h3 className="text-sm font-bold text-slate-800 dark:text-white flex items-center gap-1.5">
-                      <span>{item.name}</span>
-                      <span className="text-xs font-normal text-slate-500">({item.marathiName})</span>
-                    </h3>
-                    <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">
-                      {item.description}
-                    </p>
-                  </div>
-                  <span className="shrink-0 text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
-                    {item.status}
-                  </span>
-                </div>
-              </div>
-
-              <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs">
-                <div>
-                  <span className="font-bold text-slate-700 dark:text-slate-200">
-                    {item.voterCount.toLocaleString()} Electors
-                  </span>
-                  <span className="text-[10px] text-slate-400 ml-1.5 font-medium">({item.percentage})</span>
-                </div>
-
-                <div className="flex items-center gap-1">
-                  <button
-                    type="button"
-                    onClick={() => handleDeleteItem(item.id, item.name)}
-                    className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors"
-                    title="Remove classification"
-                  >
-                    <Trash2 className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))}
-
-          {filteredItems.length === 0 && (
-            <div className="col-span-full py-12 text-center text-slate-400">
-              <Filter className="w-8 h-8 mx-auto mb-2 opacity-40" />
-              <p className="text-xs font-semibold">No classification options matched your search.</p>
-              <p className="text-[11px] text-slate-500 mt-0.5">Click &quot;Add Classification Option&quot; above to create one.</p>
-            </div>
+              <X className="w-3.5 h-3.5" />
+            </button>
           )}
         </div>
       </div>
 
-      {/* Add Classification Item Modal */}
-      {showAddModal && (
-        <div className="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl max-w-md w-full shadow-2xl p-5 space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
-              <div>
-                <h3 className="text-base font-bold text-slate-800 dark:text-white">
-                  Add {activeTab.toUpperCase()} Classification
-                </h3>
-                <p className="text-xs text-slate-500">
-                  Option will be instantly available in Total Voters filter drawer.
-                </p>
-              </div>
+      {/* ===================================================================== */}
+      {/* FILTER OPTIONS TABLE (MATCHING SCREENSHOTS 1, 2, 3)                   */}
+      {/* ===================================================================== */}
+      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-xs border-collapse">
+            <thead>
+              <tr className="bg-slate-50 dark:bg-slate-800/60 text-slate-600 dark:text-slate-400 font-bold border-b border-slate-200 dark:border-slate-800 uppercase tracking-wider text-[11px]">
+                <th className="py-3 px-4">CATEGORY</th>
+                <th className="py-3 px-4">FILTER VALUE / NAME</th>
+                <th className="py-3 px-4">CODE IDENTIFIER</th>
+                <th className="py-3 px-4">ASSOCIATED VOTERS</th>
+                <th className="py-3 px-4">DESCRIPTION / NOTES</th>
+                <th className="py-3 px-4 text-right">ACTIONS</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100 dark:divide-slate-800/80 text-slate-700 dark:text-slate-200">
+              {filteredOptions.length > 0 ? (
+                filteredOptions.map((item) => (
+                  <tr
+                    key={item.id}
+                    className="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors"
+                  >
+                    {/* Category */}
+                    <td className="py-3 px-4 whitespace-nowrap">
+                      <span className="px-2 py-0.5 rounded font-bold text-[10px] bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
+                        {item.category}
+                      </span>
+                    </td>
+
+                    {/* Filter Value / Name */}
+                    <td className="py-3 px-4 font-bold text-slate-900 dark:text-white">
+                      {item.name}
+                    </td>
+
+                    {/* Code Identifier */}
+                    <td className="py-3 px-4 font-mono font-bold text-blue-600 dark:text-blue-400">
+                      {item.code}
+                    </td>
+
+                    {/* Associated Voters */}
+                    <td className="py-3 px-4 font-bold text-slate-800 dark:text-slate-200 whitespace-nowrap">
+                      {item.usageCount.toLocaleString()} Voters
+                    </td>
+
+                    {/* Description / Notes */}
+                    <td className="py-3 px-4 text-slate-500 dark:text-slate-400 text-[11px] max-w-xs truncate" title={item.description}>
+                      {item.description || "—"}
+                    </td>
+
+                    {/* Actions: Edit, Delete */}
+                    <td className="py-3 px-4 text-right whitespace-nowrap">
+                      <div className="flex items-center justify-end gap-1.5">
+                        <button
+                          type="button"
+                          onClick={() => handleOpenEdit(item)}
+                          className="p-1.5 text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
+                          title="Edit Filter Option"
+                        >
+                          <Edit2 className="w-4 h-4" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setDeleteCandidate(item)}
+                          className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/50 rounded-lg transition-colors cursor-pointer"
+                          title="Delete Filter Option"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={6} className="py-12 text-center text-slate-400">
+                    <Filter className="w-8 h-8 text-slate-300 dark:text-slate-600 mx-auto mb-2" />
+                    <p className="font-semibold text-xs text-slate-700 dark:text-slate-200">No filter options found</p>
+                    <p className="text-[11px] text-slate-400 mt-1">Try selecting another category or clearing search query.</p>
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* ===================================================================== */}
+      {/* ADD / EDIT FILTER OPTION MODAL                                        */}
+      {/* ===================================================================== */}
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-fade-in">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl max-w-md w-full border border-slate-200 dark:border-slate-800 overflow-hidden p-6 animate-scaleUp space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+              <h3 className="font-bold text-slate-900 dark:text-white text-base">
+                {editingItem ? "Edit Filter Option" : "Add New Filter Option"}
+              </h3>
               <button
                 type="button"
-                onClick={() => setShowAddModal(false)}
-                className="p-1 rounded-lg text-slate-400 hover:text-slate-700"
+                onClick={() => setIsModalOpen(false)}
+                className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded cursor-pointer"
               >
-                <X className="w-4 h-4" />
+                <X className="w-5 h-5" />
               </button>
             </div>
 
-            <form onSubmit={handleAddItem} className="space-y-3.5">
+            <form onSubmit={handleSave} className="space-y-4 text-xs">
+              {/* Target Category */}
               <div>
-                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-200 mb-1">
-                  Option Name (English) *
+                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  Target Category *
+                </label>
+                <select
+                  value={formCategory}
+                  onChange={(e) => setFormCategory(e.target.value as FilterCategory)}
+                  className="w-full p-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl font-medium focus:ring-2 focus:ring-blue-500 cursor-pointer"
+                >
+                  {CATEGORIES_LIST.map((cat) => (
+                    <option key={cat} value={cat}>
+                      {cat}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Display Name */}
+              <div>
+                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  Filter Display Name *
                 </label>
                 <input
                   type="text"
                   required
-                  value={newName}
-                  onChange={(e) => setNewName(e.target.value)}
-                  placeholder="e.g. Ladki Bahin Beneficiary, IT Professional"
-                  className="w-full px-3 py-2 text-xs rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-brand-500"
+                  placeholder="e.g. Maratha or IT Professional"
+                  value={formName}
+                  onChange={(e) => setFormName(e.target.value)}
+                  className="w-full p-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500"
                 />
               </div>
 
+              {/* Code Identifier */}
               <div>
-                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-200 mb-1">
-                  Marathi / Local Script Name
+                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  System Code Identifier *
                 </label>
                 <input
                   type="text"
-                  value={newMarathiName}
-                  onChange={(e) => setNewMarathiName(e.target.value)}
-                  placeholder="e.g. लाडकी बहीण लाभार्थी"
-                  className="w-full px-3 py-2 text-xs rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-brand-500"
+                  required
+                  placeholder="e.g. CST_MRT or OCC_IT"
+                  value={formCode}
+                  onChange={(e) => setFormCode(e.target.value.toUpperCase())}
+                  className="w-full p-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl font-mono focus:ring-2 focus:ring-blue-500 uppercase"
                 />
               </div>
 
+              {/* Description */}
               <div>
-                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-200 mb-1">
-                  Description / Outreach Purpose
+                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  Description / Notes
                 </label>
                 <textarea
                   rows={2}
-                  value={newDescription}
-                  onChange={(e) => setNewDescription(e.target.value)}
-                  placeholder="Describe which electors belong to this segment..."
-                  className="w-full px-3 py-2 text-xs rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-brand-500"
+                  placeholder="Electoral demographic relevance..."
+                  value={formDescription}
+                  onChange={(e) => setFormDescription(e.target.value)}
+                  className="w-full p-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500"
                 />
               </div>
 
+              {/* Actions */}
               <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
-                <Button type="button" variant="outline" size="sm" onClick={() => setShowAddModal(false)}>
+                <button
+                  type="button"
+                  onClick={() => setIsModalOpen(false)}
+                  className="px-4 py-2 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold cursor-pointer"
+                >
                   Cancel
-                </Button>
-                <Button type="submit" variant="primary" size="sm">
-                  Save &amp; Activate Option
-                </Button>
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2 bg-[#2563EB] hover:bg-blue-700 text-white font-bold rounded-xl transition-colors shadow-xs cursor-pointer"
+                >
+                  Save Filter
+                </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* ===================================================================== */}
+      {/* DELETE CONFIRMATION MODAL                                             */}
+      {/* ===================================================================== */}
+      {deleteCandidate && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-fade-in">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl max-w-sm w-full border border-slate-200 dark:border-slate-800 overflow-hidden p-6 text-center animate-scaleUp">
+            <h3 className="text-base font-bold text-slate-900 dark:text-white mb-2">
+              Delete Filter Option?
+            </h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mb-6">
+              Are you sure you want to delete <strong>{deleteCandidate.name}</strong> ({deleteCandidate.category})? This will untag associated voter demo records.
+            </p>
+            <div className="flex items-center justify-center gap-3 text-xs">
+              <button
+                type="button"
+                onClick={() => setDeleteCandidate(null)}
+                className="px-4 py-2 text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 font-bold rounded-xl cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleDeleteConfirm}
+                className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-xl shadow-xs cursor-pointer"
+              >
+                Delete Option
+              </button>
+            </div>
           </div>
         </div>
       )}
