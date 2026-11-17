@@ -14,7 +14,7 @@ import {
   ChevronDown,
   ShieldCheck,
   Activity,
-  Radio,
+  Megaphone,
   CreditCard,
   BarChart3,
   History,
@@ -124,7 +124,7 @@ export const NAV_GROUPS: NavGroupConfig[] = [
         key: "campaigns",
         label: "Campaign Control",
         href: "/campaigns",
-        icon: Radio,
+        icon: Megaphone,
       },
       {
         key: "subscriptions",
