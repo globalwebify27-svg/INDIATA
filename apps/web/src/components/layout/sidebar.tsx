@@ -576,14 +576,17 @@ export function Sidebar({
                       key={item.key}
                       href={item.href || "/candidate"}
                       onClick={onCloseMobile}
-                      className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all ${
+                      className={`relative w-full flex items-center gap-3 px-3 py-2.5 rounded-2xl text-xs font-semibold transition-all overflow-hidden ${
                         active
-                          ? "bg-blue-900/40 text-white border border-blue-500 shadow-sm shadow-blue-500/20 font-bold"
+                          ? "bg-[#132347] text-white font-bold border border-blue-500/30"
                           : "text-slate-300 hover:text-white hover:bg-slate-900/80"
                       }`}
                     >
+                      {active && (
+                        <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1.5 h-6 bg-blue-400 rounded-r-full" />
+                      )}
                       <IconComp
-                        className={`w-4 h-4 shrink-0 ${
+                        className={`w-4 h-4 shrink-0 ml-0.5 ${
                           active ? "text-white" : item.iconColor
                         }`}
                       />
