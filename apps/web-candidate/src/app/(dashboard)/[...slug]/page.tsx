@@ -3,6 +3,7 @@
 import React from "react";
 import { usePathname } from "next/navigation";
 import { VoterManagementView } from "@/components/modules/voter-management-view";
+import { PhoneBookView } from "@/components/modules/phone-book-view";
 import { KaryakartaWorkforceView } from "@/components/modules/karyakarta-workforce-view";
 import { BloDirectoryView } from "@/components/modules/blo-directory-view";
 import { LiveFieldMapView } from "@/components/modules/live-field-map-view";
@@ -15,6 +16,11 @@ import { PortalSettingsView } from "@/components/modules/portal-settings-view";
 
 export default function CandidateDynamicModulePage() {
   const pathname = usePathname();
+
+  // Phone Book Directory (Checked before general /voters)
+  if (pathname.includes("/phonebook")) {
+    return <PhoneBookView />;
+  }
 
   // Voter Intelligence Modules
   if (pathname.startsWith("/voters")) {

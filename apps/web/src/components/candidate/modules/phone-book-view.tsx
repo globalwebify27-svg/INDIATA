@@ -1,362 +1,537 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import {
   Phone,
   MessageSquare,
   Search,
-  Download,
   Users,
-  Shield,
-  BadgeCheck,
-  UserCheck,
+  ShieldCheck,
+  ExternalLink,
+  Eye,
+  X,
+  ArrowLeft,
+  BookUser,
+  Copy,
+  User,
 } from "lucide-react";
 import { useToast } from "@/context/toast-context";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { SEED_ELECTORS, ElectorRecord } from "./voter-management-view";
 
-interface ContactEntry {
+// ============================================================================
+// DATA MODELS
+// ============================================================================
+
+export interface CampaignTeamMember {
   id: string;
   name: string;
-  marathiName?: string;
+  email: string;
   phone: string;
-  category: "voter" | "workforce" | "member" | "blo";
-  subtitle: string;
-  ward: string;
-  booth: string;
-  meta: string;
+  role: "CANDIDATE_ADMIN" | "WAR_ROOM_HEAD" | "PRABHAAG_INCHARGE" | "KARYAKARTA" | "DATA_OPERATOR";
+  status: "ACTIVE" | "ON_LEAVE" | "OFFLINE";
+  prabhaag?: string;
+  assignedBooths: number[];
+  lastActive: string;
 }
 
-const SAMPLE_CONTACTS: ContactEntry[] = [
-  // Electors
+export const SEED_CAMPAIGN_TEAM: CampaignTeamMember[] = [
   {
-    id: "cnt-v1",
-    name: "Rajesh Kumar Verma",
-    marathiName: "राजेश कुमार वर्मा",
-    phone: "+91 98221 44001",
-    category: "voter",
-    subtitle: "EPIC: WXE4829102 • Family Head (3 Members)",
-    ward: "Ward 12 (Kothrud)",
-    booth: "Booth #101",
-    meta: "House 14, Lane 3",
+    id: "usr-01",
+    name: "Adv. Vikram Patil",
+    email: "vikram.patil@indata-election.in",
+    phone: "+91 98220 99000",
+    role: "CANDIDATE_ADMIN",
+    status: "ACTIVE",
+    assignedBooths: [101, 102, 103, 104, 105, 106, 107, 108],
+    lastActive: "Just now",
   },
   {
-    id: "cnt-v2",
-    name: "Sunita Rajesh Verma",
-    marathiName: "सुनिता राजेश वर्मा",
-    phone: "+91 98221 44002",
-    category: "voter",
-    subtitle: "EPIC: WXE9821443 • Ladki Bahin Beneficiary",
-    ward: "Ward 12 (Kothrud)",
-    booth: "Booth #101",
-    meta: "House 14, Lane 3",
+    id: "usr-02",
+    name: "Dr. Sameer Deshpande",
+    email: "sameer.d@indata-election.in",
+    phone: "+91 98221 44556",
+    role: "WAR_ROOM_HEAD",
+    status: "ACTIVE",
+    assignedBooths: [101, 102, 103, 104, 105, 106, 107, 108],
+    lastActive: "4 mins ago",
   },
   {
-    id: "cnt-v3",
-    name: "Pooja Santosh Deshmukh",
-    marathiName: "पूजा संतोष देशमुख",
-    phone: "+91 97654 32110",
-    category: "voter",
-    subtitle: "EPIC: WXE3109244 • Youth / First-Time Elector",
-    ward: "Ward 14 (Erandwane)",
-    booth: "Booth #107",
-    meta: "Flat 402, Shiv Plaza",
+    id: "usr-03",
+    name: "Sachin Babar",
+    email: "sachin.babar@indata-election.in",
+    phone: "+91 98500 12345",
+    role: "PRABHAAG_INCHARGE",
+    status: "ACTIVE",
+    prabhaag: "Prabhaag 12 - Kothrud West",
+    assignedBooths: [101, 102, 103],
+    lastActive: "18 mins ago",
   },
   {
-    id: "cnt-v4",
-    name: "Amit Baban Shinde",
-    marathiName: "अमित बबन शिंदे",
-    phone: "+91 98900 12345",
-    category: "voter",
-    subtitle: "EPIC: WXE1290384 • Trade Union Member",
-    ward: "Ward 9 (Gaothan)",
-    booth: "Booth #106",
-    meta: "House 88, Gaothan",
-  },
-
-  // Workforce
-  {
-    id: "cnt-w1",
-    name: "Vikas M. Jadhav",
-    phone: "+91 98224 55441",
-    category: "workforce",
-    subtitle: "Ward Coordinator • Ward 12 & 14",
-    ward: "Ward 12",
-    booth: "Booths #101-104",
-    meta: "Doorstep Target: 1040/1200 Completed",
+    id: "usr-04",
+    name: "Pooja Jadhav",
+    email: "pooja.j@indata-election.in",
+    phone: "+91 94230 78901",
+    role: "KARYAKARTA",
+    status: "ACTIVE",
+    prabhaag: "Prabhaag 12 - Kothrud West",
+    assignedBooths: [101],
+    lastActive: "1 hour ago",
   },
   {
-    id: "cnt-w2",
-    name: "Pooja Santosh Jagtap",
-    phone: "+91 98901 22334",
-    category: "workforce",
-    subtitle: "Booth Captain • Navbharat High School",
-    ward: "Ward 12",
-    booth: "Booth #101",
-    meta: "320 Slips Handed",
+    id: "usr-05",
+    name: "Ganesh Patil",
+    email: "ganesh.p@indata-election.in",
+    phone: "+91 98229 11450",
+    role: "KARYAKARTA",
+    status: "ACTIVE",
+    prabhaag: "Prabhaag 12 - Kothrud West",
+    assignedBooths: [102],
+    lastActive: "35 mins ago",
   },
   {
-    id: "cnt-w3",
-    name: "Ashok B. Shinde",
-    phone: "+91 98220 11990",
-    category: "workforce",
-    subtitle: "Central Candidate Office Lead",
-    ward: "Constituency HQ",
-    booth: "All Booths",
-    meta: "Desk Grievances & Visitor Liaison",
-  },
-
-  // Members / Volunteers
-  {
-    id: "cnt-m1",
-    name: "Nilesh Prabhakar Patil",
-    phone: "+91 98230 77665",
-    category: "member",
-    subtitle: "Ganesh Mandal Cadre Lead",
-    ward: "Ward 12",
-    booth: "Booth #102",
-    meta: "Active Volunteer • Reg #MEM-409",
-  },
-  {
-    id: "cnt-m2",
-    name: "Shrikant Anant Joshi",
-    phone: "+91 99220 33441",
-    category: "member",
-    subtitle: "Society Management Volunteer",
-    ward: "Ward 14",
-    booth: "Booth #108",
-    meta: "Active Volunteer • Reg #MEM-412",
-  },
-
-  // BLO Officers
-  {
-    id: "cnt-b1",
-    name: "Sanjay K. Kulkarni",
-    phone: "+91 98220 11234",
-    category: "blo",
-    subtitle: "Head Clerk • Revenue Dept Pune Tehsil",
-    ward: "Ward 12",
-    booth: "Booth #101 (Navbharat HS)",
-    meta: "SDM City Division 2 Jurisdiction",
-  },
-  {
-    id: "cnt-b2",
-    name: "Asha V. More",
-    phone: "+91 98220 54321",
-    category: "blo",
-    subtitle: "Primary Teacher • ZP Education Board",
-    ward: "Ward 12",
-    booth: "Booth #102 (Navbharat HS)",
-    meta: "SDM City Division 2 Jurisdiction",
+    id: "usr-06",
+    name: "Mahesh Thorat",
+    email: "mahesh.t@indata-election.in",
+    phone: "+91 98909 33221",
+    role: "DATA_OPERATOR",
+    status: "ACTIVE",
+    assignedBooths: [101, 102, 103, 104],
+    lastActive: "2 hours ago",
   },
 ];
 
-export function PhoneBookView() {
+// ============================================================================
+// CONTINUOUS SINGLE-PAGE PROFILE COMPONENT
+// ============================================================================
+
+function VoterQuickProfileView({
+  voter,
+  onBack,
+}: {
+  voter: ElectorRecord;
+  onBack: () => void;
+}) {
   const { showToast } = useToast();
-  const [activeTab, setActiveTab] = useState<"voter" | "workforce" | "member" | "blo">("voter");
-  const [searchTerm, setSearchTerm] = useState("");
 
-  const filtered = SAMPLE_CONTACTS.filter(
-    (c) =>
-      c.category === activeTab &&
-      (c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        c.phone.includes(searchTerm) ||
-        c.subtitle.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        c.booth.toLowerCase().includes(searchTerm.toLowerCase()))
-  );
-
-  const handleCall = (contact: ContactEntry) => {
-    showToast(
-      "info",
-      `Initiating Call to ${contact.name}`,
-      `Dialing ${contact.phone} for ${contact.subtitle}.`
-    );
-  };
-
-  const handleWhatsApp = (contact: ContactEntry) => {
-    showToast(
-      "success",
-      `WhatsApp Chat Opened`,
-      `Opening secure messaging session with ${contact.name} (${contact.phone}).`
-    );
-  };
-
-  const handleExport = () => {
-    showToast(
-      "success",
-      "Phone Book Exported",
-      `Exported ${filtered.length} contacts from ${activeTab.toUpperCase()} tab to CSV/Excel.`
-    );
+  const handleCopyEpic = () => {
+    if (navigator?.clipboard) {
+      navigator.clipboard.writeText(voter.epicNumber);
+      showToast("info", "EPIC Copied", `EPIC ID ${voter.epicNumber} copied to clipboard!`);
+    }
   };
 
   return (
-    <div className="space-y-5">
-      {/* Module Title Header */}
-      <section className="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-premium-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-2 mb-1.5 flex-wrap">
-            <span className="text-[11px] font-bold text-brand-600 uppercase tracking-wider bg-brand-50 px-2.5 py-0.5 rounded-full">
-              Module 09: Contact Registry
-            </span>
-            <Badge variant="teal">Meta Cloud API Connected</Badge>
-            <Badge variant="neutral">AC-215 Bound</Badge>
+    <div className="space-y-6 animate-fade-in pb-16">
+      <div className="sticky top-0 z-30 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 -mx-4 px-4 py-3 sm:-mx-6 sm:px-6 flex items-center justify-between gap-3 shadow-xs">
+        <button
+          onClick={onBack}
+          className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-bold transition-all shadow-xs cursor-pointer"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          <span>Back to Phone Book</span>
+        </button>
+
+        <div className="flex items-center gap-2">
+          {voter.mobile && (
+            <a
+              href={`tel:${voter.mobile}`}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-bold rounded-xl transition-colors"
+            >
+              <Phone className="w-3.5 h-3.5" />
+              <span>Call Elector</span>
+            </a>
+          )}
+          {voter.mobile && (
+            <a
+              href={`https://wa.me/${voter.mobile.replace(/\D/g, "")}`}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl transition-colors shadow-xs"
+            >
+              <MessageSquare className="w-3.5 h-3.5" />
+              <span>WhatsApp</span>
+            </a>
+          )}
+        </div>
+      </div>
+
+      {/* Hero Header */}
+      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-xs relative overflow-hidden">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
+          <div className="flex items-center gap-4">
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-700 text-white font-black text-2xl flex items-center justify-center shadow-md">
+              {voter.fullName.charAt(0)}
+            </div>
+            <div>
+              <div className="flex items-center gap-2 flex-wrap">
+                <h2 className="text-xl font-black text-slate-900 dark:text-white">{voter.fullName}</h2>
+                {voter.hindiName && (
+                  <span className="text-sm font-semibold text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-lg border border-slate-200 dark:border-slate-700">
+                    {voter.hindiName}
+                  </span>
+                )}
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 text-[10px] font-bold rounded-md border border-emerald-200 dark:border-emerald-800">
+                  <ShieldCheck className="w-3 h-3" />
+                  Verified Elector
+                </span>
+              </div>
+              <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 mt-1 flex-wrap">
+                <span>{voter.relationType}: {voter.relativeName}</span>
+                <span>•</span>
+                <span className="font-mono font-bold text-slate-700 dark:text-slate-300">{voter.epicNumber}</span>
+                <button onClick={handleCopyEpic} className="p-0.5 text-slate-400 hover:text-slate-600 cursor-pointer">
+                  <Copy className="w-3 h-3" />
+                </button>
+                <span>•</span>
+                <span>Booth #{voter.boothNumber}</span>
+                <span>•</span>
+                <span>Sr #{voter.serialNo}</span>
+              </div>
+            </div>
           </div>
-          <h1 className="text-[22px] font-bold text-slate-800 dark:text-white tracking-tight">
-            Phone Book Directory
+
+          <div>
+            <span className={`px-3 py-1 rounded-full text-xs font-bold ${
+              voter.politicalLeaning === "STRONG_SUPPORTER"
+                ? "bg-blue-100 text-blue-800 border border-blue-200"
+                : voter.politicalLeaning === "LEANING_SUPPORTER"
+                ? "bg-amber-100 text-amber-800 border border-amber-200"
+                : voter.politicalLeaning === "LEANING_OPPOSITION"
+                ? "bg-rose-100 text-rose-800 border border-rose-200"
+                : "bg-slate-100 text-slate-700"
+            }`}>
+              {voter.politicalLeaning.replace("_", " ")}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* Continuous Subsections */}
+      <div className="space-y-6">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-xs space-y-4">
+          <div className="flex items-center gap-2 border-b border-slate-100 dark:border-slate-800 pb-3">
+            <User className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+            <h3 className="font-bold text-slate-900 dark:text-white text-sm">Contact &amp; Demographics</h3>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
+            <div>
+              <span className="text-slate-400 block mb-0.5">Phone Contact</span>
+              <span className="font-bold text-blue-600 dark:text-blue-400 font-mono text-sm">{voter.mobile || "—"}</span>
+            </div>
+            <div>
+              <span className="text-slate-400 block mb-0.5">Age &amp; Gender</span>
+              <span className="font-bold text-slate-800 dark:text-slate-200">{voter.age} yrs / {voter.gender}</span>
+            </div>
+            <div>
+              <span className="text-slate-400 block mb-0.5">Assigned Polling Booth</span>
+              <span className="font-bold text-slate-800 dark:text-slate-200">Booth #{voter.boothNumber}</span>
+            </div>
+            <div>
+              <span className="text-slate-400 block mb-0.5">Ward / Prabhaag</span>
+              <span className="font-bold text-slate-800 dark:text-slate-200">{voter.ward || voter.prabhaag}</span>
+            </div>
+          </div>
+          <div className="pt-2 border-t border-slate-100 dark:border-slate-800 text-xs">
+            <span className="text-slate-400 block mb-0.5">Polling Station</span>
+            <span className="font-semibold text-slate-800 dark:text-slate-200">{voter.pollingStation}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ============================================================================
+// MAIN CONSTITUENCY PHONE BOOK COMPONENT
+// ============================================================================
+
+export function PhoneBookView() {
+  const { showToast } = useToast();
+
+  const [activeTab, setActiveTab] = useState<"voters" | "users">("voters");
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [selectedVoter, setSelectedVoter] = useState<ElectorRecord | null>(null);
+
+  // Filtered Voters
+  const filteredVoters = useMemo(() => {
+    if (!searchQuery.trim()) return SEED_ELECTORS;
+    const q = searchQuery.toLowerCase().trim();
+    return SEED_ELECTORS.filter((v) => {
+      const matchName = v.fullName.toLowerCase().includes(q);
+      const matchPhone = v.mobile ? v.mobile.includes(q) || v.mobile.replace(/\s+/g, "").includes(q.replace(/\s+/g, "")) : false;
+      const matchEpic = v.epicNumber.toLowerCase().includes(q);
+      return matchName || matchPhone || matchEpic;
+    });
+  }, [searchQuery]);
+
+  // Filtered Campaign Team
+  const filteredTeam = useMemo(() => {
+    if (!searchQuery.trim()) return SEED_CAMPAIGN_TEAM;
+    const q = searchQuery.toLowerCase().trim();
+    return SEED_CAMPAIGN_TEAM.filter((m) => {
+      const matchName = m.name.toLowerCase().includes(q);
+      const matchPhone = m.phone.includes(q) || m.phone.replace(/\s+/g, "").includes(q.replace(/\s+/g, ""));
+      const matchRole = m.role.toLowerCase().includes(q) || m.role.replace("_", " ").toLowerCase().includes(q);
+      return matchName || matchPhone || matchRole;
+    });
+  }, [searchQuery]);
+
+  // Click-to-Call Handler
+  const handleCall = (name: string, phone?: string) => {
+    if (!phone) {
+      showToast("warning", "No Phone Number", `No registered mobile number for ${name}.`);
+      return;
+    }
+    showToast("info", "Click-to-Call", `Dialing ${name} (${phone}) via tele-outreach gateway.`);
+    window.location.href = `tel:${phone.replace(/\s+/g, "")}`;
+  };
+
+  // WhatsApp Handler
+  const handleWhatsApp = (name: string, phone?: string) => {
+    if (!phone) {
+      showToast("warning", "No Phone Number", `No registered WhatsApp contact for ${name}.`);
+      return;
+    }
+    const cleanNumber = phone.replace(/\D/g, "");
+    showToast("info", "WhatsApp Outreach", `Opening WhatsApp chat with ${name} (${phone}).`);
+    window.open(`https://wa.me/${cleanNumber}`, "_blank");
+  };
+
+  if (selectedVoter) {
+    return <VoterQuickProfileView voter={selectedVoter} onBack={() => setSelectedVoter(null)} />;
+  }
+
+  return (
+    <div className="space-y-6 pb-12 animate-fade-in text-slate-800 dark:text-slate-100">
+      {/* ===================================================================== */}
+      {/* HEADER SECTION (Breadcrumb, Title, Subtitle, Tab Switcher)            */}
+      {/* ===================================================================== */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs">
+        <div>
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+              Communication Directory
+            </span>
+            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-50 text-purple-700 dark:bg-purple-950/60 dark:text-purple-300 border border-purple-200 dark:border-purple-800">
+              Verified Contacts
+            </span>
+          </div>
+          <h1 className="text-xl md:text-2xl font-extrabold text-slate-900 dark:text-white mt-1">
+            Constituency Phone Book
           </h1>
-          <p className="text-xs text-slate-500 dark:text-[#94A3B8] mt-0.5">
-            Unified contact directory across verified electors, field karyakartas, cadre members, and government BLOs with 1-click Call &amp; WhatsApp communication.
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+            Quick click-to-call and WhatsApp outreach for voters and campaign personnel.
           </p>
         </div>
 
-        <div className="flex items-center gap-2.5">
-          <Button variant="outline" size="md" onClick={handleExport}>
-            <Download className="w-3.5 h-3.5" />
-            <span>Export Phone Book</span>
-          </Button>
-        </div>
-      </section>
-
-      {/* Tabs & Search Controls */}
-      <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-premium-xs space-y-4">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-3">
-          {/* Tab Selector */}
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0">
-            <button
-              type="button"
-              onClick={() => setActiveTab("voter")}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap cursor-pointer transition-all ${
-                activeTab === "voter"
-                  ? "bg-brand-600 text-white shadow-premium-xs"
-                  : "text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
-              }`}
-            >
-              <Users className="w-3.5 h-3.5" />
-              <span>Voter Contacts ({SAMPLE_CONTACTS.filter((c) => c.category === "voter").length})</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setActiveTab("workforce")}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap cursor-pointer transition-all ${
-                activeTab === "workforce"
-                  ? "bg-brand-600 text-white shadow-premium-xs"
-                  : "text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
-              }`}
-            >
-              <UserCheck className="w-3.5 h-3.5" />
-              <span>Workforce &amp; Staff ({SAMPLE_CONTACTS.filter((c) => c.category === "workforce").length})</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setActiveTab("member")}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap cursor-pointer transition-all ${
-                activeTab === "member"
-                  ? "bg-brand-600 text-white shadow-premium-xs"
-                  : "text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
-              }`}
-            >
-              <BadgeCheck className="w-3.5 h-3.5" />
-              <span>Members &amp; Cadre ({SAMPLE_CONTACTS.filter((c) => c.category === "member").length})</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setActiveTab("blo")}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap cursor-pointer transition-all ${
-                activeTab === "blo"
-                  ? "bg-brand-600 text-white shadow-premium-xs"
-                  : "text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
-              }`}
-            >
-              <Shield className="w-3.5 h-3.5" />
-              <span>BLO Contacts ({SAMPLE_CONTACTS.filter((c) => c.category === "blo").length})</span>
-            </button>
-          </div>
-
-          {/* Search Bar */}
-          <div className="relative w-full md:w-72">
-            <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
-            <input
-              type="text"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Search by name, phone, booth..."
-              className="w-full pl-8 pr-3 py-1.5 text-xs rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-brand-500"
-            />
-          </div>
-        </div>
-
-        {/* Contacts Table */}
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-slate-50/75 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-800 text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                <th className="py-3 px-4">Contact Person</th>
-                <th className="py-3 px-4">Phone Number</th>
-                <th className="py-3 px-4">Jurisdiction &amp; Booth</th>
-                <th className="py-3 px-4">Classification / Role</th>
-                <th className="py-3 px-4 text-right">Instant Outreach</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60 text-xs">
-              {filtered.map((contact) => (
-                <tr key={contact.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/40 transition-colors">
-                  <td className="py-3 px-4">
-                    <div className="font-bold text-slate-800 dark:text-white flex items-center gap-1.5">
-                      <span>{contact.name}</span>
-                      {contact.marathiName && (
-                        <span className="text-[11px] font-normal text-slate-400">({contact.marathiName})</span>
-                      )}
-                    </div>
-                    <div className="text-[10px] text-slate-500">{contact.meta}</div>
-                  </td>
-
-                  <td className="py-3 px-4 font-mono font-semibold text-slate-700 dark:text-slate-300">
-                    {contact.phone}
-                  </td>
-
-                  <td className="py-3 px-4">
-                    <div className="font-medium text-slate-800 dark:text-white">{contact.booth}</div>
-                    <div className="text-[10px] text-slate-400">{contact.ward}</div>
-                  </td>
-
-                  <td className="py-3 px-4 text-slate-600 dark:text-slate-400">
-                    {contact.subtitle}
-                  </td>
-
-                  <td className="py-3 px-4 text-right">
-                    <div className="flex items-center justify-end gap-1.5">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleCall(contact)}
-                        className="cursor-pointer text-brand-600 border-brand-200 hover:bg-brand-50"
-                        title="Voice Call"
-                      >
-                        <Phone className="w-3 h-3" />
-                        <span>Call</span>
-                      </Button>
-
-                      <Button
-                        variant="primary"
-                        size="sm"
-                        onClick={() => handleWhatsApp(contact)}
-                        className="cursor-pointer bg-emerald-600 hover:bg-emerald-700 border-emerald-600"
-                        title="WhatsApp Chat"
-                      >
-                        <MessageSquare className="w-3 h-3" />
-                        <span>WhatsApp</span>
-                      </Button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        {/* Tab Switcher */}
+        <div className="flex items-center bg-slate-100 dark:bg-slate-800 p-1 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300">
+          <button
+            type="button"
+            onClick={() => setActiveTab("voters")}
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all cursor-pointer ${
+              activeTab === "voters"
+                ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs font-bold"
+                : "hover:text-slate-900 dark:hover:text-white"
+            }`}
+          >
+            <BookUser className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+            <span>Voter Contacts ({SEED_ELECTORS.length})</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab("users")}
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all cursor-pointer ${
+              activeTab === "users"
+                ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs font-bold"
+                : "hover:text-slate-900 dark:hover:text-white"
+            }`}
+          >
+            <Users className="w-4 h-4 text-teal-600 dark:text-teal-400" />
+            <span>Campaign Team ({SEED_CAMPAIGN_TEAM.length})</span>
+          </button>
         </div>
       </div>
+
+      {/* ===================================================================== */}
+      {/* SEARCH INPUT BAR                                                      */}
+      {/* ===================================================================== */}
+      <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs">
+        <div className="relative">
+          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+          <input
+            type="text"
+            placeholder={
+              activeTab === "voters"
+                ? "Search voter name, phone number, or EPIC ID..."
+                : "Search campaign staff, Karyakartas, or role..."
+            }
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full pl-10 pr-4 py-2.5 bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white dark:focus:bg-slate-800 transition-all"
+          />
+          {searchQuery && (
+            <button
+              onClick={() => setSearchQuery("")}
+              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* ===================================================================== */}
+      {/* CONTACTS CARD GRID (3 COLUMNS - MATCHING SCREENSHOTS EXACTLY)         */}
+      {/* ===================================================================== */}
+      {activeTab === "voters" ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {filteredVoters.map((voter) => (
+            <div
+              key={voter.id}
+              className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs hover:border-blue-300 dark:hover:border-slate-700 transition-all flex flex-col justify-between"
+            >
+              <div>
+                {/* Card Header: Name, Booth, Leaning Badge */}
+                <div className="flex items-start justify-between gap-2 mb-2">
+                  <div>
+                    <h3
+                      className="font-bold text-slate-900 dark:text-white text-sm hover:text-blue-600 dark:hover:text-blue-400 cursor-pointer transition-colors"
+                      onClick={() => setSelectedVoter(voter)}
+                    >
+                      {voter.fullName}
+                    </h3>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">
+                      Booth #{voter.boothNumber} • Sr {voter.serialNo}
+                    </p>
+                  </div>
+                  <span
+                    className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                      voter.politicalLeaning === "STRONG_SUPPORTER"
+                        ? "bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300"
+                        : voter.politicalLeaning === "LEANING_SUPPORTER"
+                        ? "bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300"
+                        : voter.politicalLeaning === "LEANING_OPPOSITION"
+                        ? "bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300"
+                        : "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300"
+                    }`}
+                  >
+                    {voter.politicalLeaning.replace("_", " ")}
+                  </span>
+                </div>
+
+                {/* Card Info Box */}
+                <div className="bg-slate-50 dark:bg-slate-800/60 p-2.5 rounded-xl border border-slate-100 dark:border-slate-700/60 text-xs space-y-1 mb-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-slate-400">Mobile Phone:</span>
+                    <span className="font-mono font-bold text-slate-800 dark:text-slate-200">
+                      {voter.mobile || "—"}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-slate-400">EPIC ID:</span>
+                    <span className="font-mono font-bold text-blue-600 dark:text-blue-400">
+                      {voter.epicNumber}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Bottom Action Buttons: Call, WhatsApp, View Profile */}
+              <div className="flex items-center gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
+                <button
+                  type="button"
+                  onClick={() => handleCall(voter.fullName, voter.mobile)}
+                  className="flex-1 py-1.5 px-3 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold rounded-lg text-xs transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+                >
+                  <Phone className="w-3.5 h-3.5 text-slate-600 dark:text-slate-300" />
+                  <span>Call</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleWhatsApp(voter.fullName, voter.mobile)}
+                  className="flex-1 py-1.5 px-3 bg-blue-50 hover:bg-blue-100 dark:bg-blue-950/60 dark:hover:bg-blue-900/60 text-blue-700 dark:text-blue-300 font-bold rounded-lg text-xs transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+                >
+                  <MessageSquare className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+                  <span>WhatsApp</span>
+                  <ExternalLink className="w-3 h-3 text-slate-400" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSelectedVoter(voter)}
+                  className="p-1.5 text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                  title="View Full Profile"
+                >
+                  <Eye className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {filteredTeam.map((member) => (
+            <div
+              key={member.id}
+              className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs hover:border-teal-300 dark:hover:border-slate-700 transition-all flex flex-col justify-between"
+            >
+              <div>
+                {/* Header */}
+                <div className="flex items-start justify-between gap-2 mb-2">
+                  <div>
+                    <h3 className="font-bold text-slate-900 dark:text-white text-sm hover:text-teal-600 cursor-pointer">
+                      {member.name}
+                    </h3>
+                    <p className="text-xs text-teal-700 dark:text-teal-400 font-semibold">
+                      {member.role.replace("_", " ")}
+                    </p>
+                  </div>
+                  <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-teal-100 dark:bg-teal-950 text-teal-800 dark:text-teal-300">
+                    {member.status}
+                  </span>
+                </div>
+
+                {/* Info Box */}
+                <div className="bg-slate-50 dark:bg-slate-800/60 p-2.5 rounded-xl border border-slate-100 dark:border-slate-700/60 text-xs space-y-1 mb-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-slate-400">Direct Contact:</span>
+                    <span className="font-mono font-bold text-slate-800 dark:text-slate-200">
+                      {member.phone}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-slate-400">Assigned Area:</span>
+                    <span className="text-slate-700 dark:text-slate-300 font-medium truncate max-w-[160px]">
+                      {member.prabhaag || "All Booths"}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Bottom Action Row */}
+              <div className="flex items-center gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
+                <button
+                  type="button"
+                  onClick={() => handleCall(member.name, member.phone)}
+                  className="flex-1 py-1.5 px-3 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold rounded-lg text-xs transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+                >
+                  <Phone className="w-3.5 h-3.5 text-slate-600 dark:text-slate-300" />
+                  <span>Call Team</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleWhatsApp(member.name, member.phone)}
+                  className="flex-1 py-1.5 px-3 bg-teal-50 hover:bg-teal-100 dark:bg-teal-950/60 dark:hover:bg-teal-900/60 text-teal-700 dark:text-teal-300 font-bold rounded-lg text-xs transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+                >
+                  <MessageSquare className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400" />
+                  <span>WhatsApp</span>
+                  <ExternalLink className="w-3 h-3 text-slate-400" />
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
