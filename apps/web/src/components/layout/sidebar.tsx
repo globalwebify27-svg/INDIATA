@@ -388,7 +388,7 @@ export function Sidebar({
                           href={item.href || "/candidate"}
                           className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-150 relative group ${
                             active
-                              ? "bg-[#2087FE] text-white shadow-md shadow-blue-500/30"
+                              ? "bg-blue-900/50 text-white border border-blue-500 shadow-md shadow-blue-500/20"
                               : `${item.iconColor} hover:text-white hover:bg-slate-900/80`
                           }`}
                           title={item.label}
@@ -447,7 +447,7 @@ export function Sidebar({
                       onClick={onCloseMobile}
                       className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all ${
                         active
-                          ? "bg-[#2087FE] text-white shadow-md shadow-blue-500/25"
+                          ? "bg-blue-900/40 text-white border border-blue-500 shadow-sm shadow-blue-500/20 font-bold"
                           : "text-slate-300 hover:text-white hover:bg-slate-900/80"
                       }`}
                     >
