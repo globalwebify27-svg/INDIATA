@@ -1,1399 +1,3353 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useMemo, useRef, useEffect } from "react";
 import {
   Search,
-  Download,
-  FileQuestion,
-  Send,
+  Users,
+  Building2,
+  Calendar,
   Phone,
-  MessageSquare,
-  Eye,
-  Filter,
-  LayoutList,
-  LayoutGrid,
+  
   MapPin,
-  X,
-  Share2,
-  Star,
-  ExternalLink,
-  Save,
-  RefreshCw,
   ChevronDown,
   ChevronUp,
-  CheckSquare,
-  Square,
+  ChevronLeft,
+  ChevronRight,
+  Filter,
+  X,
+  Check,
+  CheckCircle2,
+  XCircle,
   SlidersHorizontal,
-  Building2,
-  Users,
-  FileText,
+  Share2,
+  
+  Send,
+  RefreshCw,
+  Download,
+  Copy,
+  
+  Eye,
+  Layers,
+  UserCheck,
+  Heart,
+  Home,
+  Gift,
   AlertCircle,
+  Printer,
+  ArrowRight,
+  ArrowLeft,
+  Tag,
+  ShieldCheck,
+  
+  
+  
+  
+  Vote,
+  Clock,
+  User,
+  
+  
+  
 } from "lucide-react";
 import { useToast } from "@/context/toast-context";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 
-interface VoterRecord {
+// ============================================================================
+// DATA MODELS & TAXONOMY
+// ============================================================================
+
+export interface CommunityAllocation {
   id: string;
-  epicId: string;
-  name: string;
-  marathiName: string;
-  relativeName: string;
-  relation: "S/o" | "D/o" | "W/o";
-  age: number;
-  gender: "M" | "F" | "Other";
-  houseNo: string;
-  ward: string;
-  boothNumber: string;
-  boothName: string;
-  status: "Verified" | "Correction Req" | "Quarantined";
-  phone: string;
-  hasPhoto: boolean;
-  caste: string;
-  occupation: string;
-  scheme: string;
-  sentiment: "Strong Supporter" | "Lean Favorable" | "Neutral / Undecided" | "Opponent";
-  familyHead: boolean;
-  familyMembersCount: number;
+  electorId: string;
+  category: string;
+  groupName: string;
+  villageOrLocality: string;
+  designation: string;
+  allocationDate: string;
+  verificationStatus: "VERIFIED" | "UNVERIFIED";
+  notes?: string;
+  allocatedBy?: string;
 }
 
-const SAMPLE_VOTERS: VoterRecord[] = [
+export interface ElectorRecord {
+  id: string;
+  voterCode: string;
+  epicNumber: string;
+  partNo: number;
+  serialNo: number;
+  fullName: string;
+  hindiName?: string;
+  relativeName: string;
+  relativeHindiName?: string;
+  relationType: "Father" | "Husband" | "Mother" | "Other";
+  gender: "MALE" | "FEMALE" | "OTHER";
+  age: number;
+  dob: string;
+  mobile?: string;
+  email?: string;
+  address: string;
+  newAddress?: string;
+  houseNo: string;
+  constituency: string;
+  constituencyNo: string;
+  assemblySegment?: string;
+  prabhaag: string;
+  ward: string;
+  gan: string;
+  boothNumber: number;
+  pollingStation: string;
+  caste?: string;
+  occupation?: string;
+  qualification?: string;
+  bloodGroup?: string;
+  schemeBeneficiary?: string[];
+  politicalLeaning: "STRONG_SUPPORTER" | "LEANING_SUPPORTER" | "NEUTRAL" | "LEANING_OPPOSITION" | "STRONG_OPPOSITION";
+  isInfluencer?: boolean;
+  influencerScope?: string;
+  voterSlipStatus: "DELIVERED" | "PRINTED" | "GENERATED" | "NOT_GENERATED";
+  verified: boolean;
+  hasVoted: boolean;
+  isVisited: boolean;
+  isFavorite: boolean;
+  isHelped: boolean;
+  isDeceased: boolean;
+  isOutside: boolean;
+  karyakartaName?: string;
+  colorCode?: string;
+}
+
+export interface CommunityGroupItem {
+  id: string;
+  label: string;
+  shortLabel: string;
+}
+
+const COMMUNITY_GROUPS: CommunityGroupItem[] = [
+  { id: "Agriculture", label: "Farmers / Farmers' Associations", shortLabel: "Farmers" },
+  { id: "Sugar Industry", label: "Sugar Factory Workers / Sugar Cooperative Members", shortLabel: "Sugar Workers" },
+  { id: "Childcare & Community Services", label: "Anganwadi / Balwadi Workers", shortLabel: "Anganwadi" },
+  { id: "Village Community", label: "Village Community Members", shortLabel: "Village Community" },
+  { id: "Local Organisations", label: "Local Stakeholders / Association Members", shortLabel: "Local Stakeholders" },
+  { id: "Cooperatives", label: "Cooperative Society Members", shortLabel: "Cooperatives" },
+  { id: "Self-Help Groups", label: "Self-Help Group Members", shortLabel: "SHG Members" },
+  { id: "Other", label: "Other Community Groups", shortLabel: "Other Groups" },
+  { id: "NOT_ASSOCIATED", label: "Not Associated", shortLabel: "Not Associated" },
+  { id: "NOT_DISCLOSED", label: "Not Disclosed", shortLabel: "Not Disclosed" },
+];
+
+const COMMUNITY_META: Record<string, { dot: string; subtitle: string }> = {
+  Agriculture: { dot: "bg-emerald-500", subtitle: "Farmers, Krishi Vikas Sangh, irrigation & farm worker associations" },
+  "Sugar Industry": { dot: "bg-amber-500", subtitle: "Sugar mill staff, cane grower societies & seasonal factory personnel" },
+  "Childcare & Community Services": { dot: "bg-pink-500", subtitle: "Anganwadi sevikas, helpers, Balwadi teachers & community health volunteers" },
+  "Village Community": { dot: "bg-blue-500", subtitle: "Gram Sabha active community elders, youth mandals & village forums" },
+  "Local Organisations": { dot: "bg-purple-500", subtitle: "Vyapar mandals, trader guilds, market associations & RWA committees" },
+  Cooperatives: { dot: "bg-indigo-500", subtitle: "Patsanstha credit societies, milk dairies & housing cooperative members" },
+  "Self-Help Groups": { dot: "bg-teal-500", subtitle: "Mahila Bachat Gat members, women micro-enterprise & cluster networks" },
+  Other: { dot: "bg-slate-500", subtitle: "Special interest civic forums, transport unions & voluntary collectives" },
+  NOT_ASSOCIATED: { dot: "bg-slate-400", subtitle: "Explicitly audited and confirmed not associated with any group" },
+  NOT_DISCLOSED: { dot: "bg-slate-400", subtitle: "Information pending collection or voluntarily withheld" },
+};
+
+const SEED_COMMUNITY_ALLOCATIONS: CommunityAllocation[] = [
   {
-    id: "v-01",
-    epicId: "WXE4829102",
-    name: "Rajesh Kumar Verma",
-    marathiName: "राजेश कुमार वर्मा",
-    relativeName: "Ramesh Verma",
-    relation: "S/o",
-    age: 42,
-    gender: "M",
-    houseNo: "Plot 14, Lane 3",
-    ward: "Ward 12",
-    boothNumber: "#101",
-    boothName: "Navbharat High School",
-    status: "Verified",
-    phone: "+91 98221 44001",
-    hasPhoto: true,
-    caste: "Maratha",
-    occupation: "Retail Trader / Merchant",
-    scheme: "Pradhan Mantri Awas Yojana",
-    sentiment: "Strong Supporter",
-    familyHead: true,
-    familyMembersCount: 3,
+    id: "cga-001",
+    electorId: "46250582",
+    category: "Local Organisations",
+    groupName: "Local Stakeholders / Association Members",
+    villageOrLocality: "Kasba Peth, Pune",
+    designation: "Executive Committee Member, Vyapar Mandal",
+    allocationDate: "2024-01-15",
+    verificationStatus: "VERIFIED",
+    notes: "Voluntarily declared during trader forum registration. Holds voting rights in city market guild.",
+    allocatedBy: "Vikas M. Patil (Booth Incharge)",
   },
   {
-    id: "v-02",
-    epicId: "WXE9821443",
-    name: "Sunita Rajesh Verma",
-    marathiName: "सुनिता राजेश वर्मा",
-    relativeName: "Rajesh Verma",
-    relation: "W/o",
-    age: 38,
-    gender: "F",
-    houseNo: "Plot 14, Lane 3",
-    ward: "Ward 12",
-    boothNumber: "#101",
-    boothName: "Navbharat High School",
-    status: "Verified",
-    phone: "+91 98221 44002",
-    hasPhoto: true,
-    caste: "Maratha",
-    occupation: "Homemaker",
-    scheme: "Mukhyamantri Ladki Bahin Yojana",
-    sentiment: "Strong Supporter",
-    familyHead: false,
-    familyMembersCount: 3,
+    id: "cga-002",
+    electorId: "46250582",
+    category: "Cooperatives",
+    groupName: "Cooperative Society Members",
+    villageOrLocality: "Kasba Peth",
+    designation: "Shareholder Member",
+    allocationDate: "2024-02-10",
+    verificationStatus: "VERIFIED",
+    notes: "Member of Kasba Sahakari Patsanstha since 2012.",
+    allocatedBy: "Vikas M. Patil",
   },
   {
-    id: "v-03",
-    epicId: "WXE3109244",
-    name: "Pooja Santosh Deshmukh",
-    marathiName: "पूजा संतोष देशमुख",
-    relativeName: "Santosh Deshmukh",
-    relation: "D/o",
-    age: 21,
-    gender: "F",
-    houseNo: "Flat 402, Shiv Plaza",
-    ward: "Ward 14",
-    boothNumber: "#107",
-    boothName: "Ferguson Junior College",
-    status: "Verified",
-    phone: "+91 97654 32110",
-    hasPhoto: true,
-    caste: "Brahmin",
-    occupation: "Student & First-Time Voter",
-    scheme: "None",
-    sentiment: "Neutral / Undecided",
-    familyHead: false,
-    familyMembersCount: 4,
+    id: "cga-003",
+    electorId: "46251581",
+    category: "Self-Help Groups",
+    groupName: "SHG Members",
+    villageOrLocality: "Kasba Peth, Ward 12",
+    designation: "Treasurer, Janaki Mahila Bachat Gat",
+    allocationDate: "2024-02-05",
+    verificationStatus: "VERIFIED",
+    notes: "Active in monthly micro-savings and government scheme guidance.",
+    allocatedBy: "Pooja S. Jadhav (Karyakarta)",
   },
   {
-    id: "v-04",
-    epicId: "WXE1290384",
-    name: "Amit Baban Shinde",
-    marathiName: "अमित बबन शिंदे",
-    relativeName: "Baban Shinde",
-    relation: "S/o",
-    age: 29,
-    gender: "M",
-    houseNo: "House 88, Gaothan",
-    ward: "Ward 9",
-    boothNumber: "#106",
-    boothName: "Modern High School",
-    status: "Correction Req",
-    phone: "+91 98900 12345",
-    hasPhoto: false,
-    caste: "OBC - Mali",
-    occupation: "IT & Software Engineer",
-    scheme: "Ayushman Bharat - PMJAY",
-    sentiment: "Lean Favorable",
-    familyHead: true,
-    familyMembersCount: 2,
+    id: "cga-004",
+    electorId: "46251583",
+    category: "Sugar Industry",
+    groupName: "Sugar Factory Workers / Sugar Cooperative Members",
+    villageOrLocality: "Gaothan, Kasba Peth",
+    designation: "Maintenance Technician, Cooperative Sugar Mill",
+    allocationDate: "2024-03-12",
+    verificationStatus: "UNVERIFIED",
+    notes: "Self-declared union membership awaiting verification from mill worker registry.",
+    allocatedBy: "Self-Declared Field Survey",
   },
   {
-    id: "v-05",
-    epicId: "WXE7765109",
-    name: "Kavita Ashok Patil",
-    marathiName: "कविता अशोक पाटील",
-    relativeName: "Ashok Patil",
-    relation: "W/o",
-    age: 54,
-    gender: "F",
-    houseNo: "Bldg 3, Erandwane",
-    ward: "Ward 14",
-    boothNumber: "#108",
-    boothName: "Gokhale Memorial Hall",
-    status: "Verified",
-    phone: "+91 98230 99887",
-    hasPhoto: true,
-    caste: "Maratha",
-    occupation: "Government & Municipal Staff",
-    scheme: "Mukhyamantri Ladki Bahin Yojana",
-    sentiment: "Strong Supporter",
-    familyHead: false,
-    familyMembersCount: 3,
+    id: "cga-005",
+    electorId: "46251584",
+    category: "Childcare & Community Services",
+    groupName: "Anganwadi Workers / Balwadi Staff",
+    villageOrLocality: "Erandwane, Ward 14",
+    designation: "Anganwadi Supervisor (ICDS Cluster 4)",
+    allocationDate: "2023-11-20",
+    verificationStatus: "VERIFIED",
+    notes: "Coordinates 8 Balwadis in Erandwane and Deccan areas.",
+    allocatedBy: "Central Verification Desk",
   },
   {
-    id: "v-06",
-    epicId: "WXE5544321",
-    name: "Surendra Mohan Joshi",
-    marathiName: "सुरेंद्र मोहन जोशी",
-    relativeName: "Mohan Joshi",
-    relation: "S/o",
-    age: 67,
-    gender: "M",
-    houseNo: "Bungalow 7, Deccan",
-    ward: "Ward 14",
-    boothNumber: "#108",
-    boothName: "Gokhale Memorial Hall",
-    status: "Quarantined",
-    phone: "+91 99221 00998",
-    hasPhoto: true,
-    caste: "Brahmin",
-    occupation: "Retired Senior Citizen",
-    scheme: "Sanjay Gandhi Niradhar Yojana",
-    sentiment: "Lean Favorable",
-    familyHead: true,
-    familyMembersCount: 2,
+    id: "cga-006",
+    electorId: "46251584",
+    category: "Self-Help Groups",
+    groupName: "SHG Members",
+    villageOrLocality: "Erandwane",
+    designation: "Cluster Mentor",
+    allocationDate: "2024-01-08",
+    verificationStatus: "VERIFIED",
+    notes: "Mentors 3 local women self-help clusters under MAVIM.",
+    allocatedBy: "Central Verification Desk",
+  },
+  {
+    id: "cga-007",
+    electorId: "46251585",
+    category: "Local Organisations",
+    groupName: "Local Stakeholders / Association Members",
+    villageOrLocality: "Deccan Gymkhana, Ward 14",
+    designation: "President, Deccan Resident Welfare Association",
+    allocationDate: "2023-08-14",
+    verificationStatus: "VERIFIED",
+    notes: "Key community convener for civic issues, traffic, and municipal works.",
+    allocatedBy: "Asha V. More (BLO Coordinator)",
+  },
+  {
+    id: "cga-008",
+    electorId: "v-001",
+    category: "Village Community",
+    groupName: "Village Community Members",
+    villageOrLocality: "Kothrud West, Ward 12",
+    designation: "Community Welfare Council Member",
+    allocationDate: "2024-01-18",
+    verificationStatus: "VERIFIED",
+    notes: "Active in neighborhood sanitation and cultural festivals committee.",
+    allocatedBy: "Vikas M. Patil",
+  },
+  {
+    id: "cga-009",
+    electorId: "v-001",
+    category: "Self-Help Groups",
+    groupName: "SHG Members",
+    villageOrLocality: "Ideal Colony, Kothrud",
+    designation: "President, Ideal Mahila Mandal & Bachat Gat",
+    allocationDate: "2023-09-01",
+    verificationStatus: "VERIFIED",
+    notes: "Voluntarily leads 40 women members in micro-credit activities.",
+    allocatedBy: "Vikas M. Patil",
+  },
+  {
+    id: "cga-010",
+    electorId: "v-006",
+    category: "Agriculture",
+    groupName: "Farmers / Farmers' Associations",
+    villageOrLocality: "Paud Phata / Mulshi Border",
+    designation: "Family Farmland Co-holder",
+    allocationDate: "2024-02-18",
+    verificationStatus: "UNVERIFIED",
+    notes: "Self-reported ancestral agricultural plot association awaiting 7/12 sync.",
+    allocatedBy: "Field Survey Desk",
+  },
+  {
+    id: "cga-011",
+    electorId: "v-006",
+    category: "Other",
+    groupName: "Other Community Groups",
+    villageOrLocality: "Paud Road, Ward 12",
+    designation: "Representative, Paud Phata Auto Workers Union",
+    allocationDate: "2023-10-10",
+    verificationStatus: "VERIFIED",
+    notes: "Verified representative for informal transport workforce welfare.",
+    allocatedBy: "Ramesh M. More",
+  },
+  {
+    id: "cga-012",
+    electorId: "v-008",
+    category: "Cooperatives",
+    groupName: "Cooperative Society Members",
+    villageOrLocality: "Erandwane, Ward 13",
+    designation: "Active Member, Hardware Traders Credit Cooperative",
+    allocationDate: "2023-12-05",
+    verificationStatus: "VERIFIED",
+    notes: "Active member with verified passbook entry.",
+    allocatedBy: "Pooja S. Jadhav",
   },
 ];
 
-export function VoterManagementView() {
+const SEED_ELECTOR_STATUSES: Record<string, string> = {
+  "46251582": "NOT_DISCLOSED",
+  "v-002": "NOT_ASSOCIATED",
+};
+
+// ============================================================================
+// 11 SEED ELECTORS (Matching Reference Design Exactly)
+// ============================================================================
+
+export const SEED_ELECTORS: ElectorRecord[] = [
+  {
+    id: "46250582",
+    voterCode: "46250582",
+    epicNumber: "WXE4829102",
+    partNo: 325,
+    serialNo: 1,
+    fullName: "Rajesh Kumar Verma",
+    hindiName: "राजेश कुमार वर्मा",
+    relativeName: "Ramesh Verma",
+    relativeHindiName: "रमेश वर्मा",
+    relationType: "Father",
+    gender: "MALE",
+    age: 42,
+    dob: "1982-06-14",
+    mobile: "+91 98221 44001",
+    email: "rajesh.verma@example.com",
+    address: "Plot 14, Lane 3, Kasba Peth, Pune 411011",
+    houseNo: "Plot 14",
+    constituency: "34 - Pune",
+    constituencyNo: "215",
+    assemblySegment: "215 - Kasba Peth",
+    prabhaag: "Prabhaag 12",
+    ward: "Ward 12 (Kasba Peth)",
+    gan: "Gan 8",
+    boothNumber: 101,
+    pollingStation: "PMC School No. 12, Kasba Peth",
+    caste: "Maratha",
+    occupation: "Business",
+    qualification: "Graduate",
+    bloodGroup: "O+",
+    schemeBeneficiary: ["Ayushman Bharat", "PM Awas Yojana"],
+    politicalLeaning: "STRONG_SUPPORTER",
+    isInfluencer: true,
+    influencerScope: "Vyapar Mandal Committee Member",
+    voterSlipStatus: "DELIVERED",
+    verified: true,
+    hasVoted: true,
+    isVisited: true,
+    isFavorite: true,
+    isHelped: true,
+    isDeceased: false,
+    isOutside: false,
+    karyakartaName: "Vikas M. Patil",
+    colorCode: "Blue",
+  },
+  {
+    id: "46251581",
+    voterCode: "46251581",
+    epicNumber: "WXE0821443",
+    partNo: 325,
+    serialNo: 2,
+    fullName: "Sunita Rajesh Verma",
+    hindiName: "सुनीता राजेश वर्मा",
+    relativeName: "Rajesh Verma",
+    relativeHindiName: "राजेश वर्मा",
+    relationType: "Husband",
+    gender: "FEMALE",
+    age: 38,
+    dob: "1986-09-22",
+    mobile: "+91 98221 44002",
+    email: "sunita.verma@example.com",
+    address: "Plot 14, Lane 3, Kasba Peth, Pune 411011",
+    houseNo: "Plot 14",
+    constituency: "34 - Pune",
+    constituencyNo: "215",
+    assemblySegment: "215 - Kasba Peth",
+    prabhaag: "Prabhaag 12",
+    ward: "Ward 12 (Kasba Peth)",
+    gan: "Gan 8",
+    boothNumber: 101,
+    pollingStation: "PMC School No. 12, Kasba Peth",
+    caste: "Maratha",
+    occupation: "Homemaker",
+    qualification: "Post Graduate",
+    bloodGroup: "B+",
+    schemeBeneficiary: ["Majhi Ladki Bahin Yojana"],
+    politicalLeaning: "STRONG_SUPPORTER",
+    isInfluencer: false,
+    voterSlipStatus: "DELIVERED",
+    verified: true,
+    hasVoted: true,
+    isVisited: true,
+    isFavorite: false,
+    isHelped: true,
+    isDeceased: false,
+    isOutside: false,
+    karyakartaName: "Vikas M. Patil",
+    colorCode: "Blue",
+  },
+  {
+    id: "46251582",
+    voterCode: "46251582",
+    epicNumber: "WXE3109244",
+    partNo: 325,
+    serialNo: 3,
+    fullName: "Pooja Santosh Deshmukh",
+    hindiName: "पूजा संतोष देशमुख",
+    relativeName: "Santosh Deshmukh",
+    relativeHindiName: "संतोष देशमुख",
+    relationType: "Father",
+    gender: "FEMALE",
+    age: 21,
+    dob: "2003-03-11",
+    mobile: "+91 97654 32110",
+    address: "Flat 402, Shiv Plaza, Kasba Peth, Pune 411011",
+    houseNo: "Flat 402",
+    constituency: "34 - Pune",
+    constituencyNo: "215",
+    assemblySegment: "215 - Kasba Peth",
+    prabhaag: "Prabhaag 12",
+    ward: "Ward 12 (Kasba Peth)",
+    gan: "Gan 8",
+    boothNumber: 107,
+    pollingStation: "Navin Marathi Shala, Shanipar",
+    caste: "Maratha",
+    occupation: "Student",
+    qualification: "Undergraduate",
+    bloodGroup: "A+",
+    schemeBeneficiary: ["Youth Apprenticeship Scheme"],
+    politicalLeaning: "NEUTRAL",
+    isInfluencer: false,
+    voterSlipStatus: "PRINTED",
+    verified: true,
+    hasVoted: false,
+    isVisited: true,
+    isFavorite: false,
+    isHelped: false,
+    isDeceased: false,
+    isOutside: false,
+    karyakartaName: "Ramesh M. More",
+    colorCode: "Orange",
+  },
+  {
+    id: "46251583",
+    voterCode: "46251583",
+    epicNumber: "WXE1290384",
+    partNo: 325,
+    serialNo: 4,
+    fullName: "Amit Baban Shinde",
+    hindiName: "अमित बबन शिंदे",
+    relativeName: "Baban Shinde",
+    relativeHindiName: "बबन शिंदे",
+    relationType: "Father",
+    gender: "MALE",
+    age: 29,
+    dob: "1995-11-05",
+    mobile: "+91 99900 12345",
+    email: "amit.shinde95@gmail.com",
+    address: "House 88, Gaothan, Kasba Peth, Pune 411011",
+    newAddress: "Apt 902, Mont Vert, Baner, Pune 411045",
+    houseNo: "House 88",
+    constituency: "34 - Pune",
+    constituencyNo: "215",
+    assemblySegment: "215 - Kasba Peth",
+    prabhaag: "Prabhaag 12",
+    ward: "Ward 14 (Sadashiv Peth)",
+    gan: "Gan 8",
+    boothNumber: 106,
+    pollingStation: "Shri Shivaji Maratha High School",
+    caste: "OBC",
+    occupation: "Private Service",
+    qualification: "Graduate",
+    bloodGroup: "O-",
+    schemeBeneficiary: ["PM Mudra Loan"],
+    politicalLeaning: "LEANING_SUPPORTER",
+    isInfluencer: false,
+    voterSlipStatus: "GENERATED",
+    verified: true,
+    hasVoted: false,
+    isVisited: false,
+    isFavorite: true,
+    isHelped: false,
+    isDeceased: false,
+    isOutside: true,
+    karyakartaName: "Ganesh K. Kulkarni",
+    colorCode: "Yellow",
+  },
+  {
+    id: "46251584",
+    voterCode: "46251584",
+    epicNumber: "WXE7765109",
+    partNo: 325,
+    serialNo: 5,
+    fullName: "Kavita Ashok Patil",
+    hindiName: "कविता अशोक पाटील",
+    relativeName: "Ashok Patil",
+    relativeHindiName: "अशोक पाटील",
+    relationType: "Father",
+    gender: "FEMALE",
+    age: 54,
+    dob: "1970-08-19",
+    mobile: "+91 98230 99887",
+    email: "kavita.patil@edu-pune.gov.in",
+    address: "Bldg 3, Erandwane, Pune 411004",
+    houseNo: "Bldg 3",
+    constituency: "34 - Pune",
+    constituencyNo: "215",
+    assemblySegment: "215 - Kasba Peth",
+    prabhaag: "Prabhaag 14",
+    ward: "Ward 14 (Erandwane)",
+    gan: "Gan 4",
+    boothNumber: 108,
+    pollingStation: "Garware Commerce College",
+    caste: "Maratha",
+    occupation: "Teacher",
+    qualification: "Post Graduate",
+    bloodGroup: "AB+",
+    schemeBeneficiary: ["Jan Arogya Yojana", "Majhi Ladki Bahin Yojana"],
+    politicalLeaning: "STRONG_SUPPORTER",
+    isInfluencer: true,
+    influencerScope: "Anganwadi Supervisor",
+    voterSlipStatus: "DELIVERED",
+    verified: true,
+    hasVoted: true,
+    isVisited: true,
+    isFavorite: true,
+    isHelped: true,
+    isDeceased: false,
+    isOutside: false,
+    karyakartaName: "Pooja S. Jadhav",
+    colorCode: "Green",
+  },
+  {
+    id: "46251585",
+    voterCode: "46251585",
+    epicNumber: "WXE5544321",
+    partNo: 325,
+    serialNo: 6,
+    fullName: "Surendra Mohan Joshi",
+    hindiName: "सुरेंद्र मोहन जोशी",
+    relativeName: "Mohan Joshi",
+    relativeHindiName: "मोहन जोशी",
+    relationType: "Father",
+    gender: "MALE",
+    age: 67,
+    dob: "1957-01-30",
+    mobile: "+91 99221 00398",
+    email: "sm.joshi.ret@gmail.com",
+    address: "Bungalow 7, Deccan, Pune 411004",
+    houseNo: "Bungalow 7",
+    constituency: "34 - Pune",
+    constituencyNo: "215",
+    assemblySegment: "215 - Kasba Peth",
+    prabhaag: "Prabhaag 14",
+    ward: "Ward 14 (Deccan)",
+    gan: "Gan 4",
+    boothNumber: 108,
+    pollingStation: "Garware Commerce College",
+    caste: "Brahmin",
+    occupation: "Retired",
+    qualification: "Doctorate",
+    bloodGroup: "O+",
+    schemeBeneficiary: ["Senior Citizen Concession"],
+    politicalLeaning: "STRONG_SUPPORTER",
+    isInfluencer: true,
+    influencerScope: "Resident Welfare President",
+    voterSlipStatus: "DELIVERED",
+    verified: true,
+    hasVoted: true,
+    isVisited: true,
+    isFavorite: false,
+    isHelped: false,
+    isDeceased: false,
+    isOutside: false,
+    karyakartaName: "Asha V. More",
+    colorCode: "Purple",
+  },
+  {
+    id: "v-001",
+    voterCode: "46251586",
+    epicNumber: "MH34089211",
+    partNo: 101,
+    serialNo: 42,
+    fullName: "Sunita Ramesh Deshmukh",
+    hindiName: "सुनीता रमेश देशमुख",
+    relativeName: "Ramesh Deshmukh",
+    relativeHindiName: "रमेश देशमुख",
+    relationType: "Husband",
+    gender: "FEMALE",
+    age: 46,
+    dob: "1978-04-12",
+    mobile: "+91 98224 55102",
+    address: "Flat 402, Shivshankar Heights, Near Ideal Colony, Kothrud, Pune 411038",
+    houseNo: "Flat 402",
+    constituency: "34 - Pune",
+    constituencyNo: "214",
+    assemblySegment: "214 - Kothrud",
+    prabhaag: "Prabhaag 12 - Kothrud West",
+    ward: "Ward 12 (Kothrud West)",
+    gan: "Gan 8",
+    boothNumber: 101,
+    pollingStation: "Navbharat High School, Room 1",
+    caste: "Maratha",
+    occupation: "School Teacher",
+    qualification: "Post Graduate",
+    bloodGroup: "B+",
+    schemeBeneficiary: ["Majhi Ladki Bahin Yojana", "Mahatma Phule Jan Arogya"],
+    politicalLeaning: "STRONG_SUPPORTER",
+    isInfluencer: true,
+    influencerScope: "President, Ideal Colony Mahila Mandal",
+    voterSlipStatus: "DELIVERED",
+    verified: true,
+    hasVoted: true,
+    isVisited: true,
+    isFavorite: true,
+    isHelped: true,
+    isDeceased: false,
+    isOutside: false,
+    karyakartaName: "Vikas M. Patil",
+    colorCode: "Blue",
+  },
+  {
+    id: "v-002",
+    voterCode: "46251587",
+    epicNumber: "MH34089212",
+    partNo: 101,
+    serialNo: 43,
+    fullName: "Ramesh Vasantrao Deshmukh",
+    hindiName: "रमेश वसंतराव देशमुख",
+    relativeName: "Vasantrao Deshmukh",
+    relativeHindiName: "वसंतराव देशमुख",
+    relationType: "Father",
+    gender: "MALE",
+    age: 52,
+    dob: "1972-09-25",
+    mobile: "+91 98224 55101",
+    address: "Flat 402, Shivshankar Heights, Near Ideal Colony, Kothrud, Pune 411038",
+    houseNo: "Flat 402",
+    constituency: "34 - Pune",
+    constituencyNo: "214",
+    assemblySegment: "214 - Kothrud",
+    prabhaag: "Prabhaag 12 - Kothrud West",
+    ward: "Ward 12 (Kothrud West)",
+    gan: "Gan 8",
+    boothNumber: 101,
+    pollingStation: "Navbharat High School, Room 1",
+    caste: "Maratha",
+    occupation: "Senior Electrical Engineer, MSEDCL",
+    qualification: "Engineering Graduate",
+    bloodGroup: "O+",
+    schemeBeneficiary: [],
+    politicalLeaning: "STRONG_SUPPORTER",
+    isInfluencer: false,
+    voterSlipStatus: "DELIVERED",
+    verified: true,
+    hasVoted: true,
+    isVisited: true,
+    isFavorite: true,
+    isHelped: false,
+    isDeceased: false,
+    isOutside: false,
+    karyakartaName: "Vikas M. Patil",
+    colorCode: "Blue",
+  },
+  {
+    id: "v-006",
+    voterCode: "46251588",
+    epicNumber: "MH34015670",
+    partNo: 103,
+    serialNo: 112,
+    fullName: "Prashant Bhimrao Kamble",
+    hindiName: "प्रशांत भीमराव कांबळे",
+    relativeName: "Bhimrao Kamble",
+    relativeHindiName: "भीमराव कांबळे",
+    relationType: "Father",
+    gender: "MALE",
+    age: 38,
+    dob: "1986-03-10",
+    mobile: "+91 97645 22019",
+    address: "House 45, Paud Road Basti, Pune 411038",
+    houseNo: "House 45",
+    constituency: "34 - Pune",
+    constituencyNo: "214",
+    assemblySegment: "214 - Kothrud",
+    prabhaag: "Prabhaag 12 - Kothrud West",
+    ward: "Ward 12 (Paud Road)",
+    gan: "Gan 8",
+    boothNumber: 103,
+    pollingStation: "Dr. Babasaheb Ambedkar Samaj Mandir",
+    caste: "SC (Neo-Buddhist)",
+    occupation: "Auto Rickshaw Driver",
+    qualification: "Secondary (10th)",
+    bloodGroup: "AB+",
+    schemeBeneficiary: ["PM Awas Yojana", "Ayushman Bharat"],
+    politicalLeaning: "NEUTRAL",
+    isInfluencer: true,
+    influencerScope: "Paud Phata Rickshaw Union Rep",
+    voterSlipStatus: "GENERATED",
+    verified: true,
+    hasVoted: false,
+    isVisited: true,
+    isFavorite: false,
+    isHelped: true,
+    isDeceased: false,
+    isOutside: false,
+    karyakartaName: "Ramesh M. More",
+    colorCode: "Yellow",
+  },
+  {
+    id: "v-008",
+    voterCode: "46251589",
+    epicNumber: "MH34029810",
+    partNo: 104,
+    serialNo: 205,
+    fullName: "Mohammad Irfan Shaikh",
+    hindiName: "मोहम्मद इरफान शेख",
+    relativeName: "Abdul Ghaffar Shaikh",
+    relativeHindiName: "अब्दुल गफ्फार शेख",
+    relationType: "Father",
+    gender: "MALE",
+    age: 44,
+    dob: "1980-05-19",
+    mobile: "+91 99220 33451",
+    address: "Plot 12, Gulmohar Lane, Erandwane, Pune 411004",
+    newAddress: "Shop 4, Market Yard, Gultekdi, Pune 411037",
+    houseNo: "Plot 12",
+    constituency: "34 - Pune",
+    constituencyNo: "214",
+    assemblySegment: "214 - Kothrud",
+    prabhaag: "Prabhaag 13 - Erandwane",
+    ward: "Ward 13 (Erandwane)",
+    gan: "Gan 2",
+    boothNumber: 104,
+    pollingStation: "Pune Municipal Primary School No. 18",
+    caste: "Muslim (OBC)",
+    occupation: "Hardware Store Owner",
+    qualification: "Higher Secondary (12th)",
+    bloodGroup: "B-",
+    schemeBeneficiary: ["PM Mudra Loan"],
+    politicalLeaning: "LEANING_OPPOSITION",
+    isInfluencer: false,
+    voterSlipStatus: "NOT_GENERATED",
+    verified: true,
+    hasVoted: false,
+    isVisited: false,
+    isFavorite: false,
+    isHelped: false,
+    isDeceased: false,
+    isOutside: true,
+    karyakartaName: "Pooja S. Jadhav",
+    colorCode: "Red",
+  },
+  {
+    id: "46251590",
+    voterCode: "46251590",
+    epicNumber: "MH34098124",
+    partNo: 325,
+    serialNo: 15,
+    fullName: "Late Shantaram Govind Kulkarni",
+    hindiName: "कै. शांताराम गोविंद कुलकर्णी",
+    relativeName: "Govind Kulkarni",
+    relativeHindiName: "गोविंद कुलकर्णी",
+    relationType: "Father",
+    gender: "MALE",
+    age: 82,
+    dob: "1942-02-18",
+    mobile: "",
+    address: "Old Wada 4, Shanipar, Kasba Peth, Pune 411011",
+    houseNo: "Old Wada 4",
+    constituency: "34 - Pune",
+    constituencyNo: "215",
+    assemblySegment: "215 - Kasba Peth",
+    prabhaag: "Prabhaag 12",
+    ward: "Ward 12 (Kasba Peth)",
+    gan: "Gan 8",
+    boothNumber: 107,
+    pollingStation: "Navin Marathi Shala, Shanipar",
+    caste: "Brahmin",
+    occupation: "Retired",
+    qualification: "Undergraduate",
+    bloodGroup: "O+",
+    schemeBeneficiary: [],
+    politicalLeaning: "NEUTRAL",
+    isInfluencer: false,
+    voterSlipStatus: "NOT_GENERATED",
+    verified: false,
+    hasVoted: false,
+    isVisited: false,
+    isFavorite: false,
+    isHelped: false,
+    isDeceased: true,
+    isOutside: false,
+    karyakartaName: "Ramesh M. More",
+    colorCode: "Slate",
+  },
+];
+
+// ============================================================================
+// COMMUNITY MULTI-SELECT DROPDOWN COMPONENT
+// ============================================================================
+
+interface CommunitySelectProps {
+  selectedGroups: string[];
+  onToggleGroup: (groupId: string) => void;
+  onClearAll: () => void;
+  onSelectAll: () => void;
+  align?: "left" | "right" | "full";
+}
+
+function CommunityGroupDropdown({
+  selectedGroups,
+  onToggleGroup,
+  onClearAll,
+  onSelectAll,
+  align = "left",
+}: CommunitySelectProps) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const filteredGroups = useMemo(() => {
+    if (!searchQuery.trim()) return COMMUNITY_GROUPS;
+    const q = searchQuery.toLowerCase().trim();
+    return COMMUNITY_GROUPS.filter(
+      (g) => g.label.toLowerCase().includes(q) || g.shortLabel.toLowerCase().includes(q)
+    );
+  }, [searchQuery]);
+
+  return (
+    <div className={`relative ${isOpen ? "z-50" : "z-10"}`} ref={dropdownRef}>
+      <button
+        type="button"
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full flex items-center justify-between gap-2 px-3 py-2 bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-left cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+      >
+        <div className="flex items-center gap-2 min-w-0 flex-1">
+          <Users className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400 shrink-0" />
+          <span className="text-slate-700 dark:text-slate-300 font-medium truncate text-xs">
+            {selectedGroups.length === 0
+              ? "Select community / stakeholder groups..."
+              : selectedGroups
+                  .map((id) => COMMUNITY_GROUPS.find((g) => g.id === id)?.shortLabel || id)
+                  .join(", ")}
+          </span>
+        </div>
+        <div className="flex items-center gap-1 shrink-0">
+          {selectedGroups.length > 0 && (
+            <span
+              onClick={(e) => {
+                e.stopPropagation();
+                onClearAll();
+              }}
+              className="p-1 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-md text-slate-400 hover:text-red-500 cursor-pointer"
+              title="Clear all selected groups"
+            >
+              <X className="w-3 h-3" />
+            </span>
+          )}
+          <ChevronDown className={`w-4 h-4 text-slate-400 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`} />
+        </div>
+      </button>
+
+      {isOpen && (
+        <div
+          className={`absolute top-full mt-1.5 z-[100] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-2xl p-3.5 space-y-3 animate-fade-in ${
+            align === "right"
+              ? "right-0 w-[340px] sm:w-[460px] max-w-[calc(100vw-2rem)]"
+              : align === "full"
+              ? "left-0 right-0 w-full"
+              : "left-0 w-full sm:w-[480px] max-w-[calc(100vw-2rem)]"
+          }`}
+        >
+          {/* Search & Actions */}
+          <div className="flex items-center gap-2">
+            <div className="relative flex-1">
+              <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+              <input
+                type="text"
+                placeholder="Search community groups..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-8 pr-7 py-1.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-teal-500"
+                autoFocus
+              />
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery("")}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-0.5"
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              )}
+            </div>
+            <button
+              type="button"
+              onClick={onSelectAll}
+              className="px-2.5 py-1 text-[11px] font-bold text-teal-600 dark:text-teal-400 hover:bg-teal-50 dark:hover:bg-teal-950/60 rounded-lg transition-colors shrink-0 cursor-pointer"
+            >
+              Select All
+            </button>
+            <button
+              type="button"
+              onClick={onClearAll}
+              className="px-2 py-1 text-[11px] font-bold text-slate-500 hover:text-red-500 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg transition-colors shrink-0 cursor-pointer"
+            >
+              Clear
+            </button>
+          </div>
+
+          {/* Group Items List */}
+          <div className="max-h-64 overflow-y-auto space-y-1 pr-1 divide-y divide-slate-100 dark:divide-slate-800/80">
+            {filteredGroups.length === 0 ? (
+              <div className="py-6 text-center text-xs text-slate-400">No matching community groups found.</div>
+            ) : (
+              filteredGroups.map((group) => {
+                const isSelected = selectedGroups.includes(group.id);
+                const meta = COMMUNITY_META[group.id];
+                return (
+                  <div
+                    key={group.id}
+                    onClick={() => onToggleGroup(group.id)}
+                    className={`pt-1.5 first:pt-0 flex items-start justify-between gap-3 p-2 rounded-xl text-xs cursor-pointer transition-colors ${
+                      isSelected
+                        ? "bg-teal-50/80 dark:bg-teal-950/40 text-teal-950 dark:text-teal-100 font-medium"
+                        : "hover:bg-slate-50 dark:hover:bg-slate-800/50 text-slate-700 dark:text-slate-300"
+                    }`}
+                  >
+                    <div className="flex items-start gap-2.5 min-w-0 flex-1">
+                      <div
+                        className={`w-4 h-4 mt-0.5 rounded border flex items-center justify-center shrink-0 transition-colors ${
+                          isSelected
+                            ? "bg-teal-600 border-teal-600 text-white"
+                            : "border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800"
+                        }`}
+                      >
+                        {isSelected && <Check className="w-3 h-3 stroke-[2.5]" />}
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-1.5">
+                          <span className={`w-2 h-2 rounded-full shrink-0 ${meta?.dot || "bg-slate-400"}`} />
+                          <span className="font-semibold text-xs truncate">{group.label}</span>
+                        </div>
+                        {meta?.subtitle && (
+                          <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 leading-relaxed line-clamp-1">
+                            {meta.subtitle}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                    {isSelected && (
+                      <span className="text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-teal-100 dark:bg-teal-950 text-teal-700 dark:text-teal-300 shrink-0 mt-0.5">
+                        Selected
+                      </span>
+                    )}
+                  </div>
+                );
+              })
+            )}
+          </div>
+
+          {/* Footer */}
+          <div className="pt-2 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between gap-2">
+            <div className="text-[11px] text-slate-500 dark:text-slate-400">
+              <span className="font-bold text-slate-700 dark:text-slate-200">{selectedGroups.length}</span> of{" "}
+              {COMMUNITY_GROUPS.length} groups selected
+            </div>
+            <button
+              type="button"
+              onClick={() => setIsOpen(false)}
+              className="px-3.5 py-1.5 bg-teal-600 hover:bg-teal-700 text-white rounded-lg text-xs font-bold shrink-0 shadow-xs transition-colors cursor-pointer"
+            >
+              Done
+            </button>
+          </div>
+
+          {/* Selected Tags */}
+          {selectedGroups.length > 0 && (
+            <div className="flex items-center gap-1 flex-wrap max-h-16 overflow-y-auto pt-1">
+              {selectedGroups.map((id) => {
+                const grp = COMMUNITY_GROUPS.find((g) => g.id === id);
+                return (
+                  <span
+                    key={id}
+                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-teal-100 dark:bg-teal-950 text-teal-800 dark:text-teal-300 text-[10px] font-bold"
+                  >
+                    <span>{grp?.shortLabel || id}</span>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onToggleGroup(id);
+                      }}
+                      className="hover:text-red-500 ml-0.5 cursor-pointer"
+                    >
+                      <X className="w-2.5 h-2.5" />
+                    </button>
+                  </span>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ============================================================================
+// CONTINUOUS SINGLE-PAGE VOTER PROFILE COMPONENT
+// ============================================================================
+
+interface VoterProfileViewProps {
+  voter: ElectorRecord;
+  onBack: () => void;
+  communityAllocations: CommunityAllocation[];
+  electorStatus?: string;
+}
+
+function ContinuousVoterProfileView({
+  voter,
+  onBack,
+  communityAllocations,
+  electorStatus,
+}: VoterProfileViewProps) {
   const { showToast } = useToast();
-  const [searchTerm, setSearchTerm] = useState("");
-  const [genderFilter, setGenderFilter] = useState("all");
-  const [statusFilter, setStatusFilter] = useState("all");
-  const [viewMode, setViewMode] = useState<"table" | "cards">("table");
-  const [showFilterDrawer, setShowFilterDrawer] = useState(false);
-  const [selectedIds, setSelectedIds] = useState<string[]>([]);
-  const [activeTab, setActiveTab] = useState<"roll" | "requests">("roll");
 
-  // Modals & Dossier State
-  const [showDataEnquiryModal, setShowDataEnquiryModal] = useState(false);
-  const [selectedProfileVoter, setSelectedProfileVoter] = useState<VoterRecord | null>(null);
-  const [showHouseAddressModal, setShowHouseAddressModal] = useState(false);
-  const [isStarred, setIsStarred] = useState(false);
-  const [voterNotes, setVoterNotes] = useState("");
-  const [savedNotes, setSavedNotes] = useState<string[]>([
-    "Met during morning ward canvassing. Family leans positive towards our manifesto.",
-    "Requested voter slip delivery via WhatsApp on family head's phone number.",
-  ]);
-  const [assignedWorker, setAssignedWorker] = useState("Pooja Santosh Jagtap (Squad Alpha)");
-  const [priorityGrade, setPriorityGrade] = useState<"Grade A - Must Mobilize" | "Grade B - Follow-up" | "Grade C - Neutral">("Grade A - Must Mobilize");
-  const [isFamilyHeadState, setIsFamilyHeadState] = useState(true);
-  const [customTagInput, setCustomTagInput] = useState("Key Influencer");
-
-  // Advanced Multi-Select Filter Accordions State
-  const [filterAccordionOpen, setFilterAccordionOpen] = useState({
-    caste: true,
-    booth: true,
-    stance: true,
-    age: true,
-  });
-  const [selectedCastes, setSelectedCastes] = useState<string[]>([]);
-  const [selectedBooths, setSelectedBooths] = useState<string[]>([]);
-  const [selectedStances, setSelectedStances] = useState<string[]>([]);
-  const [selectedAgeBrackets, setSelectedAgeBrackets] = useState<string[]>([]);
-
-  // Data Enquiry Form State
-  const enquiryState = "Maharashtra";
-  const enquiryDistrict = "Pune";
-  const [enquiryVidhanSabha, setEnquiryVidhanSabha] = useState("215 - Kasba Peth");
-  const [enquiryDetails, setEnquiryDetails] = useState("");
-
-  const toggleArrayItem = (list: string[], setList: (val: string[]) => void, item: string) => {
-    setList(list.includes(item) ? list.filter((i) => i !== item) : [...list, item]);
-  };
-
-  const handleAppendNote = () => {
-    if (!voterNotes.trim()) return;
-    setSavedNotes((prev) => [voterNotes.trim(), ...prev]);
-    setVoterNotes("");
-    showToast("success", "Field Note Appended", "Real-time note saved to elector record.");
-  };
-
-  const handleSyncOrgData = () => {
-    showToast(
-      "success",
-      "Organization Metrics Synced",
-      "Internal metrics and worker assignment saved to master database."
-    );
-  };
-
-  const filteredVoters = SAMPLE_VOTERS.filter((v) => {
-    const matchesSearch =
-      v.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      v.marathiName.includes(searchTerm) ||
-      v.epicId.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      v.boothNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      v.phone.includes(searchTerm);
-
-    const matchesGender = genderFilter === "all" || v.gender === genderFilter;
-    const matchesStatus = statusFilter === "all" || v.status === statusFilter;
-    const matchesCaste = selectedCastes.length === 0 || selectedCastes.some((c) => v.caste.includes(c));
-    const matchesBooth = selectedBooths.length === 0 || selectedBooths.includes(v.boothNumber);
-    const matchesStance = selectedStances.length === 0 || selectedStances.includes(v.sentiment);
-    const matchesAge =
-      selectedAgeBrackets.length === 0 ||
-      selectedAgeBrackets.some((br) => {
-        if (br === "18-25") return v.age >= 18 && v.age <= 25;
-        if (br === "26-40") return v.age >= 26 && v.age <= 40;
-        if (br === "41-60") return v.age >= 41 && v.age <= 60;
-        if (br === "60+") return v.age > 60;
-        return true;
-      });
-
-    return matchesSearch && matchesGender && matchesStatus && matchesCaste && matchesBooth && matchesStance && matchesAge;
-  });
-
-  const toggleSelectAll = () => {
-    if (selectedIds.length === filteredVoters.length) {
-      setSelectedIds([]);
-    } else {
-      setSelectedIds(filteredVoters.map((v) => v.id));
+  const handleCopyEpic = () => {
+    if (navigator?.clipboard) {
+      navigator.clipboard.writeText(voter.epicNumber);
+      showToast("info", "EPIC Copied", `EPIC ID ${voter.epicNumber} copied to clipboard!`);
     }
-  };
-
-  const toggleSelectOne = (id: string) => {
-    setSelectedIds((prev) =>
-      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
-    );
-  };
-
-  const handleExport = () => {
-    showToast(
-      "success",
-      "Voter Roll Export Initiated",
-      `Exporting ${filteredVoters.length} elector records to CSV / Excel format.`
-    );
-  };
-
-  const handleQueueBroadcast = () => {
-    if (selectedIds.length === 0) {
-      showToast("warning", "No Electors Selected", "Please select at least one elector to dispatch voter slips.");
-      return;
-    }
-    showToast(
-      "info",
-      "Campaign Queue Updated",
-      `${selectedIds.length} electors queued for WhatsApp Voter Slip broadcast.`
-    );
-  };
-
-  const handleDataEnquirySubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setShowDataEnquiryModal(false);
-    showToast(
-      "success",
-      "Voter Data Enquiry Dispatched",
-      `Your request for additional voter data in ${enquiryVidhanSabha} has been submitted to the Indata Central Ops team. Reference: #ENQ-${Date.now().toString().slice(-5)}`
-    );
-    setEnquiryDetails("");
   };
 
   return (
-    <div className="space-y-5">
-      {/* Module Header Bar */}
-      <section className="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-premium-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-2 mb-1.5 flex-wrap">
-            <span className="text-[11px] font-bold text-brand-600 uppercase tracking-wider bg-brand-50 px-2.5 py-0.5 rounded-full">
-              Module 07: Total Voters
-            </span>
-            <Badge variant="teal">248,650 Electors Mapped</Badge>
-            <Badge variant="neutral">ECI Draft Roll #4029</Badge>
-          </div>
-          <h1 className="text-[22px] font-bold text-slate-800 dark:text-white tracking-tight">
-            Electoral Roll &amp; Central Voter Directory
-          </h1>
-          <p className="text-xs text-slate-500 dark:text-[#94A3B8] mt-0.5">
-            Search-first master voter registry with EPIC cross-indexing, booth mapping, household linkages, and Central Profile 360°.
-          </p>
-        </div>
+    <div className="space-y-6 animate-fade-in pb-16">
+      {/* Sticky Navigation & Top Action Bar */}
+      <div className="sticky top-0 z-30 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 -mx-4 px-4 py-3 sm:-mx-6 sm:px-6 flex items-center justify-between gap-3 shadow-xs">
+        <button
+          onClick={onBack}
+          className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-bold transition-all shadow-xs cursor-pointer"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          <span>Back to Elector Roll</span>
+        </button>
 
-        <div className="flex flex-wrap items-center gap-2.5">
-          <Button variant="outline" size="md" onClick={handleExport}>
-            <Download className="w-3.5 h-3.5" />
-            <span>Export Filtered Roll</span>
-          </Button>
-
-          {/* Compliant Action: Request Additional Voter Data (Replaces direct import/add per spec) */}
-          <Button
-            variant="primary"
-            size="md"
-            onClick={() => setShowDataEnquiryModal(true)}
-            className="cursor-pointer"
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => showToast("info", "Voter Slip", `Generating printable voter slip for ${voter.fullName}...`)}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold rounded-xl transition-colors cursor-pointer"
           >
-            <FileQuestion className="w-3.5 h-3.5" />
-            <span>Request Additional Voter Data</span>
-          </Button>
+            <Printer className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">Print Voter Slip</span>
+          </button>
+          <button
+            onClick={() => showToast("info", "SMS Composer", `Opening SMS composer for ${voter.fullName}...`)}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl transition-colors shadow-xs cursor-pointer"
+          >
+            <Send className="w-3.5 h-3.5" />
+            <span>Send Direct SMS</span>
+          </button>
         </div>
-      </section>
+      </div>
 
-      {/* Search & Advanced Filters Bar */}
-      <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-premium-xs space-y-3">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-3">
-          {/* Main Search Input */}
-          <div className="relative w-full md:max-w-md">
-            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
-            <input
-              type="text"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Search by voter name, EPIC ID, booth number, phone..."
-              className="w-full pl-9 pr-3 py-2 text-xs rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-brand-500"
-            />
+      {/* Profile Header Hero Card */}
+      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-xs relative overflow-hidden">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
+          <div className="flex items-center gap-4">
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-700 text-white font-black text-2xl flex items-center justify-center shadow-md">
+              {voter.fullName.charAt(0)}
+            </div>
+            <div>
+              <div className="flex items-center gap-2 flex-wrap">
+                <h2 className="text-xl font-black text-slate-900 dark:text-white">{voter.fullName}</h2>
+                {voter.hindiName && (
+                  <span className="text-sm font-semibold text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-lg border border-slate-200 dark:border-slate-700">
+                    {voter.hindiName}
+                  </span>
+                )}
+                {voter.verified && (
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 text-[10px] font-bold rounded-md border border-emerald-200 dark:border-emerald-800">
+                    <ShieldCheck className="w-3 h-3" />
+                    Verified ECI Record
+                  </span>
+                )}
+              </div>
+              <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 mt-1 flex-wrap">
+                <span>{voter.relationType}: {voter.relativeName} {voter.relativeHindiName ? `(${voter.relativeHindiName})` : ""}</span>
+                <span>•</span>
+                <span className="font-mono font-bold text-slate-700 dark:text-slate-300">{voter.epicNumber}</span>
+                <button onClick={handleCopyEpic} className="p-0.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer">
+                  <Copy className="w-3 h-3" />
+                </button>
+                <span>•</span>
+                <span>Booth #{voter.boothNumber}</span>
+                <span>•</span>
+                <span>AC-{voter.constituencyNo}</span>
+              </div>
+            </div>
           </div>
 
-          {/* Quick Controls & View Toggle */}
-          <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
-            {/* View Mode Toggle */}
-            <div className="flex items-center bg-slate-100 dark:bg-slate-800 p-0.5 rounded-lg border border-slate-200 dark:border-slate-700">
-              <button
-                type="button"
-                onClick={() => setViewMode("table")}
-                className={`p-1.5 rounded-md transition-all cursor-pointer ${
-                  viewMode === "table" ? "bg-white dark:bg-slate-900 text-brand-600 shadow-2xs" : "text-slate-500"
-                }`}
-                title="Table View"
-              >
-                <LayoutList className="w-4 h-4" />
-              </button>
-              <button
-                type="button"
-                onClick={() => setViewMode("cards")}
-                className={`p-1.5 rounded-md transition-all cursor-pointer ${
-                  viewMode === "cards" ? "bg-white dark:bg-slate-900 text-brand-600 shadow-2xs" : "text-slate-500"
-                }`}
-                title="Cards View"
-              >
-                <LayoutGrid className="w-4 h-4" />
-              </button>
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className={`px-3 py-1 rounded-full text-xs font-bold ${
+              voter.politicalLeaning === "STRONG_SUPPORTER"
+                ? "bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300 border border-blue-200"
+                : voter.politicalLeaning === "LEANING_SUPPORTER"
+                ? "bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 border border-amber-200"
+                : "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300"
+            }`}>
+              {voter.politicalLeaning.replace("_", " ")}
+            </span>
+            {voter.isInfluencer && (
+              <span className="px-3 py-1 rounded-full text-xs font-bold bg-purple-100 text-purple-800 dark:bg-purple-950 dark:text-purple-300 border border-purple-200">
+                Key Community Influencer
+              </span>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* CONTINUOUS SUBSECTIONS: All displayed at once */}
+      <div className="space-y-6">
+        {/* Subsection 1: Personal Demographics & Family */}
+        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-xs space-y-4">
+          <div className="flex items-center gap-2 border-b border-slate-100 dark:border-slate-800 pb-3">
+            <User className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+            <h3 className="font-bold text-slate-900 dark:text-white text-sm">1. Personal Demographics &amp; Contact</h3>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 text-xs">
+            <div>
+              <span className="text-slate-400 block mb-0.5">Age &amp; Gender</span>
+              <span className="font-bold text-slate-800 dark:text-slate-200">{voter.age} yrs / {voter.gender}</span>
             </div>
-
-            {/* Advanced Filters Button */}
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setShowFilterDrawer(!showFilterDrawer)}
-              className={`cursor-pointer ${showFilterDrawer ? "border-brand-500 text-brand-600 bg-brand-50" : ""}`}
-            >
-              <Filter className="w-3.5 h-3.5" />
-              <span>Advanced Filters</span>
-            </Button>
-
-            {/* Gender filter */}
-            <select
-              value={genderFilter}
-              onChange={(e) => setGenderFilter(e.target.value)}
-              className="py-1.5 pl-2.5 pr-7 text-xs rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-brand-500 cursor-pointer"
-            >
-              <option value="all">All Genders</option>
-              <option value="M">Male (M)</option>
-              <option value="F">Female (F)</option>
-              <option value="Other">Third Gender</option>
-            </select>
-
-            {/* Verification Status */}
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className="py-1.5 pl-2.5 pr-7 text-xs rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-brand-500 cursor-pointer"
-            >
-              <option value="all">All Statuses</option>
-              <option value="Verified">Verified Only</option>
-              <option value="Correction Req">Correction Pending</option>
-              <option value="Quarantined">Quarantined Form</option>
-            </select>
-
-            {/* Action on selected */}
-            {selectedIds.length > 0 && (
-              <Button variant="secondary" size="sm" onClick={handleQueueBroadcast}>
-                <Send className="w-3 h-3" />
-                <span>Broadcast Slips ({selectedIds.length})</span>
-              </Button>
+            <div>
+              <span className="text-slate-400 block mb-0.5">Date of Birth</span>
+              <span className="font-bold text-slate-800 dark:text-slate-200">{voter.dob}</span>
+            </div>
+            <div>
+              <span className="text-slate-400 block mb-0.5">Blood Group</span>
+              <span className="font-bold text-slate-800 dark:text-slate-200">{voter.bloodGroup || "Not Disclosed"}</span>
+            </div>
+            <div>
+              <span className="text-slate-400 block mb-0.5">Social Classification / Caste</span>
+              <span className="font-bold text-slate-800 dark:text-slate-200">{voter.caste || "General / Open"}</span>
+            </div>
+            <div>
+              <span className="text-slate-400 block mb-0.5">Occupation</span>
+              <span className="font-bold text-slate-800 dark:text-slate-200">{voter.occupation || "Self-Employed"}</span>
+            </div>
+            <div>
+              <span className="text-slate-400 block mb-0.5">Education / Qualification</span>
+              <span className="font-bold text-slate-800 dark:text-slate-200">{voter.qualification || "Graduate"}</span>
+            </div>
+            <div>
+              <span className="text-slate-400 block mb-0.5">Primary Phone</span>
+              <span className="font-bold text-blue-600 dark:text-blue-400 font-mono">{voter.mobile || "—"}</span>
+            </div>
+            <div>
+              <span className="text-slate-400 block mb-0.5">Email</span>
+              <span className="font-bold text-slate-800 dark:text-slate-200">{voter.email || "—"}</span>
+            </div>
+          </div>
+          <div className="pt-2 border-t border-slate-100 dark:border-slate-800">
+            <span className="text-slate-400 text-xs block mb-0.5">Residential Address on Electoral Roll</span>
+            <span className="font-medium text-slate-800 dark:text-slate-200 text-xs">{voter.address} (House: {voter.houseNo})</span>
+            {voter.newAddress && (
+              <div className="mt-1 p-2 rounded-lg bg-amber-50 dark:bg-amber-950/40 border border-amber-200 text-amber-900 dark:text-amber-300 text-xs">
+                <strong>Address Shift Reported:</strong> {voter.newAddress}
+              </div>
             )}
           </div>
         </div>
 
-        {/* Advanced Filters Drawer (Section 3: Multi-Select Accordions) */}
-        {showFilterDrawer && (
-          <div className="pt-4 border-t border-slate-200 dark:border-slate-800 space-y-3">
-            <div className="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-800">
-              <span className="text-xs font-bold text-slate-800 dark:text-slate-100 uppercase tracking-wider flex items-center gap-1.5">
-                <SlidersHorizontal className="w-3.5 h-3.5 text-[#6256D9]" />
-                <span>Multi-Select Voter Segmentation Accordions</span>
+        {/* Subsection 2: Electoral Station & Polling Booth Information */}
+        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-xs space-y-4">
+          <div className="flex items-center gap-2 border-b border-slate-100 dark:border-slate-800 pb-3">
+            <Building2 className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+            <h3 className="font-bold text-slate-900 dark:text-white text-sm">2. Electoral Location &amp; Polling Station</h3>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
+            <div>
+              <span className="text-slate-400 block mb-0.5">Assembly Constituency</span>
+              <span className="font-bold text-slate-800 dark:text-slate-200">AC-{voter.constituencyNo} ({voter.assemblySegment || voter.constituency})</span>
+            </div>
+            <div>
+              <span className="text-slate-400 block mb-0.5">Booth Number</span>
+              <span className="font-bold text-blue-600 dark:text-blue-400 font-mono">Booth #{voter.boothNumber}</span>
+            </div>
+            <div>
+              <span className="text-slate-400 block mb-0.5">Serial Number in Roll</span>
+              <span className="font-bold text-slate-800 dark:text-slate-200 font-mono">Sr. #{voter.serialNo} (Part #{voter.partNo})</span>
+            </div>
+            <div>
+              <span className="text-slate-400 block mb-0.5">Ward &amp; Prabhaag</span>
+              <span className="font-bold text-slate-800 dark:text-slate-200">{voter.ward} • {voter.prabhaag}</span>
+            </div>
+          </div>
+          <div className="pt-2 border-t border-slate-100 dark:border-slate-800 text-xs flex items-center justify-between">
+            <div>
+              <span className="text-slate-400 block mb-0.5">Assigned Polling Station Building</span>
+              <span className="font-bold text-slate-900 dark:text-white">{voter.pollingStation}</span>
+            </div>
+            <div className="text-right">
+              <span className="text-slate-400 block mb-0.5">Assigned Karyakarta / BLO</span>
+              <span className="font-bold text-slate-900 dark:text-white">{voter.karyakartaName || "Vikas M. Patil"}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Subsection 3: Political Leaning & Influencer Analysis */}
+        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-xs space-y-4">
+          <div className="flex items-center gap-2 border-b border-slate-100 dark:border-slate-800 pb-3">
+            <Vote className="w-4 h-4 text-purple-600 dark:text-purple-400" />
+            <h3 className="font-bold text-slate-900 dark:text-white text-sm">3. Political Leaning &amp; Community Influence</h3>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+            <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+              <span className="text-slate-400 block mb-1">Voter Sentiment Rating</span>
+              <span className="font-bold text-slate-900 dark:text-white text-sm">{voter.politicalLeaning.replace("_", " ")}</span>
+              <p className="text-[10px] text-slate-500 mt-1">Classified via ground door-to-door survey and community feedback.</p>
+            </div>
+            <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+              <span className="text-slate-400 block mb-1">Influencer Status</span>
+              <span className="font-bold text-slate-900 dark:text-white text-sm">
+                {voter.isInfluencer ? "Community Influencer (Active)" : "Standard Elector"}
               </span>
-              <button
-                type="button"
-                onClick={() => {
-                  setSelectedCastes([]);
-                  setSelectedBooths([]);
-                  setSelectedStances([]);
-                  setSelectedAgeBrackets([]);
-                  setGenderFilter("all");
-                  setStatusFilter("all");
-                  setSearchTerm("");
-                }}
-                className="text-xs font-semibold text-[#6256D9] hover:underline cursor-pointer"
-              >
-                Clear All Filters
-              </button>
+              {voter.influencerScope && (
+                <p className="text-[10px] text-purple-600 dark:text-purple-400 mt-1 font-semibold">{voter.influencerScope}</p>
+              )}
             </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
-              {/* Accordion 1: Caste & Community */}
-              <div className="p-3 bg-slate-50 dark:bg-slate-800/40 rounded-xl border border-slate-200/80 dark:border-slate-800 space-y-2">
-                <button
-                  type="button"
-                  onClick={() => setFilterAccordionOpen((p) => ({ ...p, caste: !p.caste }))}
-                  className="w-full flex items-center justify-between font-bold text-xs text-slate-800 dark:text-slate-100 cursor-pointer"
-                >
-                  <span>Caste &amp; Community ({selectedCastes.length})</span>
-                  {filterAccordionOpen.caste ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
-                </button>
-                {filterAccordionOpen.caste && (
-                  <div className="space-y-1.5 pt-1 text-xs">
-                    {["Maratha", "Brahmin", "OBC", "SC", "Jain", "Muslim"].map((c) => {
-                      const active = selectedCastes.includes(c);
-                      return (
-                        <button
-                          key={c}
-                          type="button"
-                          onClick={() => toggleArrayItem(selectedCastes, setSelectedCastes, c)}
-                          className="w-full flex items-center gap-2 text-left cursor-pointer hover:text-[#6256D9]"
-                        >
-                          {active ? (
-                            <CheckSquare className="w-3.5 h-3.5 text-[#6256D9] shrink-0" />
-                          ) : (
-                            <Square className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                          )}
-                          <span className={active ? "font-bold text-[#6256D9]" : "text-slate-600 dark:text-slate-300"}>{c}</span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
-
-              {/* Accordion 2: Polling Station / Booth */}
-              <div className="p-3 bg-slate-50 dark:bg-slate-800/40 rounded-xl border border-slate-200/80 dark:border-slate-800 space-y-2">
-                <button
-                  type="button"
-                  onClick={() => setFilterAccordionOpen((p) => ({ ...p, booth: !p.booth }))}
-                  className="w-full flex items-center justify-between font-bold text-xs text-slate-800 dark:text-slate-100 cursor-pointer"
-                >
-                  <span>Polling Stations ({selectedBooths.length})</span>
-                  {filterAccordionOpen.booth ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
-                </button>
-                {filterAccordionOpen.booth && (
-                  <div className="space-y-1.5 pt-1 text-xs">
-                    {["#101", "#102", "#103", "#104", "#105", "#108"].map((b) => {
-                      const active = selectedBooths.includes(b);
-                      return (
-                        <button
-                          key={b}
-                          type="button"
-                          onClick={() => toggleArrayItem(selectedBooths, setSelectedBooths, b)}
-                          className="w-full flex items-center gap-2 text-left cursor-pointer hover:text-[#6256D9]"
-                        >
-                          {active ? (
-                            <CheckSquare className="w-3.5 h-3.5 text-[#6256D9] shrink-0" />
-                          ) : (
-                            <Square className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                          )}
-                          <span className={active ? "font-bold text-[#6256D9]" : "text-slate-600 dark:text-slate-300"}>Booth {b}</span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
-
-              {/* Accordion 3: Voting Stance / Sentiment */}
-              <div className="p-3 bg-slate-50 dark:bg-slate-800/40 rounded-xl border border-slate-200/80 dark:border-slate-800 space-y-2">
-                <button
-                  type="button"
-                  onClick={() => setFilterAccordionOpen((p) => ({ ...p, stance: !p.stance }))}
-                  className="w-full flex items-center justify-between font-bold text-xs text-slate-800 dark:text-slate-100 cursor-pointer"
-                >
-                  <span>Voting Inclination ({selectedStances.length})</span>
-                  {filterAccordionOpen.stance ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
-                </button>
-                {filterAccordionOpen.stance && (
-                  <div className="space-y-1.5 pt-1 text-xs">
-                    {["Strong Supporter", "Lean Favorable", "Neutral / Undecided", "Opponent"].map((s) => {
-                      const active = selectedStances.includes(s);
-                      return (
-                        <button
-                          key={s}
-                          type="button"
-                          onClick={() => toggleArrayItem(selectedStances, setSelectedStances, s)}
-                          className="w-full flex items-center gap-2 text-left cursor-pointer hover:text-[#6256D9]"
-                        >
-                          {active ? (
-                            <CheckSquare className="w-3.5 h-3.5 text-[#6256D9] shrink-0" />
-                          ) : (
-                            <Square className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                          )}
-                          <span className={active ? "font-bold text-[#6256D9]" : "text-slate-600 dark:text-slate-300"}>{s}</span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
-
-              {/* Accordion 4: Age Brackets */}
-              <div className="p-3 bg-slate-50 dark:bg-slate-800/40 rounded-xl border border-slate-200/80 dark:border-slate-800 space-y-2">
-                <button
-                  type="button"
-                  onClick={() => setFilterAccordionOpen((p) => ({ ...p, age: !p.age }))}
-                  className="w-full flex items-center justify-between font-bold text-xs text-slate-800 dark:text-slate-100 cursor-pointer"
-                >
-                  <span>Age Brackets ({selectedAgeBrackets.length})</span>
-                  {filterAccordionOpen.age ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
-                </button>
-                {filterAccordionOpen.age && (
-                  <div className="space-y-1.5 pt-1 text-xs">
-                    {[
-                      { id: "18-25", label: "Youth (18 - 25 yrs)" },
-                      { id: "26-40", label: "Working Age (26 - 40 yrs)" },
-                      { id: "41-60", label: "Experienced (41 - 60 yrs)" },
-                      { id: "60+", label: "Senior Citizens (60+ yrs)" },
-                    ].map((a) => {
-                      const active = selectedAgeBrackets.includes(a.id);
-                      return (
-                        <button
-                          key={a.id}
-                          type="button"
-                          onClick={() => toggleArrayItem(selectedAgeBrackets, setSelectedAgeBrackets, a.id)}
-                          className="w-full flex items-center gap-2 text-left cursor-pointer hover:text-[#6256D9]"
-                        >
-                          {active ? (
-                            <CheckSquare className="w-3.5 h-3.5 text-[#6256D9] shrink-0" />
-                          ) : (
-                            <Square className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                          )}
-                          <span className={active ? "font-bold text-[#6256D9]" : "text-slate-600 dark:text-slate-300"}>{a.label}</span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
+            <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+              <span className="text-slate-400 block mb-1">Voter Information Slip (VIS)</span>
+              <span className="font-bold text-emerald-600 dark:text-emerald-400 text-sm">{voter.voterSlipStatus}</span>
+              <p className="text-[10px] text-slate-500 mt-1">Printed QR slip distributed by booth field volunteer.</p>
             </div>
           </div>
-        )}
+        </div>
 
-        {/* View Switcher Tabs */}
-        <div className="pt-2 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between text-xs">
-          <div className="flex items-center gap-3">
-            <button
-              type="button"
-              onClick={() => setActiveTab("roll")}
-              className={`pb-1 font-semibold border-b-2 transition-colors cursor-pointer ${
-                activeTab === "roll"
-                  ? "border-brand-500 text-brand-600"
-                  : "border-transparent text-slate-500 hover:text-slate-800"
-              }`}
-            >
-              Master Roll View
-            </button>
-            <button
-              type="button"
-              onClick={() => setActiveTab("requests")}
-              className={`pb-1 font-semibold border-b-2 transition-colors cursor-pointer ${
-                activeTab === "requests"
-                  ? "border-brand-500 text-brand-600"
-                  : "border-transparent text-slate-500 hover:text-slate-800"
-              }`}
-            >
-              Pending Form 6/7/8 Requests (14)
-            </button>
+        {/* Subsection 4: Community & Stakeholder Affiliations */}
+        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-xs space-y-4">
+          <div className="flex items-center gap-2 border-b border-slate-100 dark:border-slate-800 pb-3">
+            <Users className="w-4 h-4 text-teal-600 dark:text-teal-400" />
+            <h3 className="font-bold text-slate-900 dark:text-white text-sm">4. Community &amp; Stakeholder Affiliations</h3>
+          </div>
+          {communityAllocations.length === 0 ? (
+            <div className="py-4 text-center text-xs text-slate-400">
+              {electorStatus === "NOT_DISCLOSED"
+                ? "Information voluntarily withheld by elector or pending audit."
+                : electorStatus === "NOT_ASSOCIATED"
+                ? "Audited and confirmed not affiliated with specific community associations."
+                : "No specific stakeholder group associations recorded."}
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+              {communityAllocations.map((alloc) => (
+                <div key={alloc.id} className="p-3 rounded-xl bg-teal-50/60 dark:bg-teal-950/40 border border-teal-200 dark:border-teal-800 space-y-1">
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-teal-900 dark:text-teal-200 text-xs">{alloc.groupName}</span>
+                    <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-teal-200 text-teal-900 uppercase">
+                      {alloc.verificationStatus}
+                    </span>
+                  </div>
+                  <p className="text-slate-600 dark:text-slate-300 text-[11px]">{alloc.designation} • {alloc.villageOrLocality}</p>
+                  {alloc.notes && <p className="text-[10px] text-slate-400 italic mt-1">"{alloc.notes}"</p>}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Subsection 5: Government Welfare Scheme Beneficiary */}
+        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-xs space-y-4">
+          <div className="flex items-center gap-2 border-b border-slate-100 dark:border-slate-800 pb-3">
+            <Gift className="w-4 h-4 text-rose-600 dark:text-rose-400" />
+            <h3 className="font-bold text-slate-900 dark:text-white text-sm">5. Government Welfare Scheme Beneficiary Status</h3>
+          </div>
+          {!voter.schemeBeneficiary || voter.schemeBeneficiary.length === 0 ? (
+            <p className="text-xs text-slate-400">No active government welfare schemes currently recorded for this elector.</p>
+          ) : (
+            <div className="flex items-center gap-2 flex-wrap">
+              {voter.schemeBeneficiary.map((scheme, idx) => (
+                <div key={idx} className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-rose-50 dark:bg-rose-950 text-rose-800 dark:text-rose-300 border border-rose-200 dark:border-rose-800 text-xs font-bold">
+                  <Gift className="w-3.5 h-3.5" />
+                  <span>{scheme}</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Subsection 6: Field Operations & Ground Touchpoints */}
+        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-xs space-y-4">
+          <div className="flex items-center gap-2 border-b border-slate-100 dark:border-slate-800 pb-3">
+            <Clock className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+            <h3 className="font-bold text-slate-900 dark:text-white text-sm">6. Campaign Ground Touchpoints &amp; Field Audit</h3>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+            <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 text-center">
+              <span className="text-slate-400 block text-[10px] mb-0.5">Survey Visited</span>
+              <span className={`font-bold ${voter.isVisited ? "text-emerald-600" : "text-slate-400"}`}>
+                {voter.isVisited ? "Yes, Door-to-Door" : "Pending Visit"}
+              </span>
+            </div>
+            <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 text-center">
+              <span className="text-slate-400 block text-[10px] mb-0.5">Voter Slip Handed</span>
+              <span className="font-bold text-blue-600">{voter.voterSlipStatus}</span>
+            </div>
+            <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 text-center">
+              <span className="text-slate-400 block text-[10px] mb-0.5">Office Grievance</span>
+              <span className={`font-bold ${voter.isHelped ? "text-emerald-600" : "text-slate-400"}`}>
+                {voter.isHelped ? "Helped / Resolved" : "No Open Issues"}
+              </span>
+            </div>
+            <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 text-center">
+              <span className="text-slate-400 block text-[10px] mb-0.5">Polling Day Turnout</span>
+              <span className={`font-bold ${voter.hasVoted ? "text-emerald-600" : "text-amber-500"}`}>
+                {voter.hasVoted ? "Voted (Confirmed)" : "Turnout Pending"}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ============================================================================
+// MAIN VOTER MANAGEMENT VIEW COMPONENT
+// ============================================================================
+
+export function VoterManagementView() {
+  const { showToast } = useToast();
+
+  // Selected Voter for Profile View (Continuous full-page view)
+  const [selectedVoter, setSelectedVoter] = useState<ElectorRecord | null>(null);
+
+  // Quick Filters State
+  const [activeQuickFilter, setActiveQuickFilter] = useState<string>("total");
+
+  // Global Search State
+  const [globalSearch, setGlobalSearch] = useState<string>("");
+
+  // Advanced Filters State
+  const [isFilterPanelOpen, setIsFilterPanelOpen] = useState<boolean>(true);
+  const [filterMode, setFilterMode] = useState<"ADVANCED" | "LESS">("ADVANCED");
+
+  // Collapsible Categories
+  const [categoryCollapsed, setCategoryCollapsed] = useState<Record<string, boolean>>({
+    recordStatus: false,
+    personalInfo: false,
+    nameFilters: false,
+    locationIdentity: false,
+    communityRecords: false,
+  });
+
+  // Filter Form Values
+  const [filters, setFilters] = useState({
+    deceased: "ALL",
+    hasMobile: "ALL",
+    hasEmail: "ALL",
+    hasNewAddress: "ALL",
+    gender: "ALL",
+    ageMin: "",
+    ageMax: "",
+    agePreset: "ALL",
+    voterName: "",
+    constituencyNo: "ALL",
+    boothNo: "ALL",
+    serialNo: "",
+    houseNumber: "",
+    epicNumber: "",
+    boothStation: "ALL",
+    ward: "ALL",
+    communityGroups: [] as string[],
+  });
+
+  // Selection & Pagination
+  const [selectedElectors, setSelectedElectors] = useState<string[]>([]);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [rowsPerPage, setRowsPerPage] = useState<number>(6);
+
+  // Modals
+  const [isAddVoterOpen, setIsAddVoterOpen] = useState<boolean>(false);
+  const [isSmsModalOpen, setIsSmsModalOpen] = useState<boolean>(false);
+  const [smsTemplate, setSmsTemplate] = useState<string>(
+    "Namaskar, please cast your vote for Adv. Vikram Patil in the upcoming elections at your assigned booth."
+  );
+
+  // New Elector Form State
+  const [newElector, setNewElector] = useState({
+    fullName: "",
+    hindiName: "",
+    relativeName: "",
+    relativeHindiName: "",
+    relationType: "Father" as "Father" | "Husband" | "Mother" | "Other",
+    gender: "MALE" as "MALE" | "FEMALE" | "OTHER",
+    age: "",
+    epicNumber: "",
+    mobile: "",
+    constituencyNo: "215",
+    boothNumber: "101",
+    ward: "Ward 12 (Kasba Peth)",
+    pollingStation: "PMC School No. 12, Kasba Peth",
+    address: "",
+  });
+
+  // Community allocations helpers
+  const getAllocationsForElector = (electorId: string): CommunityAllocation[] => {
+    return SEED_COMMUNITY_ALLOCATIONS.filter((a) => a.electorId === electorId);
+  };
+
+  const getElectorCommunityStatus = (electorId: string): string | undefined => {
+    return SEED_ELECTOR_STATUSES[electorId];
+  };
+
+  // Toggle Category Accordion
+  const toggleCategory = (key: string) => {
+    setCategoryCollapsed((prev) => ({ ...prev, [key]: !prev[key] }));
+  };
+
+  const expandAllCategories = () => {
+    setCategoryCollapsed({
+      recordStatus: false,
+      personalInfo: false,
+      nameFilters: false,
+      locationIdentity: false,
+      communityRecords: false,
+    });
+  };
+
+  const collapseAllCategories = () => {
+    setCategoryCollapsed({
+      recordStatus: true,
+      personalInfo: true,
+      nameFilters: true,
+      locationIdentity: true,
+      communityRecords: true,
+    });
+  };
+
+  // Community Group Multi-Select Handlers
+  const handleToggleCommunityGroup = (groupId: string) => {
+    setFilters((prev) => {
+      const exists = prev.communityGroups.includes(groupId);
+      const next = exists
+        ? prev.communityGroups.filter((g) => g !== groupId)
+        : [...prev.communityGroups, groupId];
+      return { ...prev, communityGroups: next };
+    });
+    setCurrentPage(1);
+  };
+
+  const handleSelectAllCommunityGroups = () => {
+    setFilters((prev) => ({ ...prev, communityGroups: COMMUNITY_GROUPS.map((g) => g.id) }));
+    setCurrentPage(1);
+  };
+
+  const handleClearCommunityGroups = () => {
+    setFilters((prev) => ({ ...prev, communityGroups: [] }));
+    setCurrentPage(1);
+  };
+
+  // Reset All Filters
+  const handleResetAll = () => {
+    setFilters({
+      deceased: "ALL",
+      hasMobile: "ALL",
+      hasEmail: "ALL",
+      hasNewAddress: "ALL",
+      gender: "ALL",
+      ageMin: "",
+      ageMax: "",
+      agePreset: "ALL",
+      voterName: "",
+      constituencyNo: "ALL",
+      boothNo: "ALL",
+      serialNo: "",
+      houseNumber: "",
+      epicNumber: "",
+      boothStation: "ALL",
+      ward: "ALL",
+      communityGroups: [],
+    });
+    setGlobalSearch("");
+    setActiveQuickFilter("total");
+    setCurrentPage(1);
+    showToast("info", "Filters Reset", "All voter filters and search queries have been reset.");
+  };
+
+  // Apply Filters CTA
+  const handleApplyFilters = () => {
+    setCurrentPage(1);
+    showToast("success", "Filters Applied", `Showing ${filteredElectors.length} matching electors.`);
+  };
+
+  // Sync Roll CTA
+  const handleSyncRoll = () => {
+    showToast("info", "Electoral Roll", "Electoral roll synchronized with central server.");
+  };
+
+  // Copy EPIC ID
+  const handleCopyEpic = (epic: string) => {
+    if (navigator?.clipboard) {
+      navigator.clipboard.writeText(epic);
+      showToast("info", "EPIC Copied", `EPIC ID ${epic} copied to clipboard!`);
+    }
+  };
+
+  // Select All Checkbox
+  const handleSelectAll = () => {
+    if (selectedElectors.length === paginatedElectors.length && paginatedElectors.length > 0) {
+      setSelectedElectors([]);
+    } else {
+      setSelectedElectors(paginatedElectors.map((e) => e.id));
+    }
+  };
+
+  const handleToggleElector = (id: string) => {
+    setSelectedElectors((prev) =>
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+    );
+  };
+
+  // Export CSV
+  const handleExportCSV = () => {
+    const listToExport = selectedElectors.length > 0
+      ? filteredElectors.filter((e) => selectedElectors.includes(e.id))
+      : filteredElectors;
+
+    const headers = [
+      "Constituency No",
+      "Booth No",
+      "Sr No",
+      "Elector Name",
+      "Hindi Name",
+      "Relative Name",
+      "Relative Hindi Name",
+      "EPIC ID",
+      "Age",
+      "Sex",
+      "Deceased",
+      "Has Mobile",
+      "Has Email",
+      "Has New Address",
+      "House No",
+      "Booth Station",
+      "Ward",
+      "Community Groups",
+      "Contact",
+    ];
+
+    const rows = listToExport.map((e) => {
+      const allocs = getAllocationsForElector(e.id || e.voterCode);
+      const status = getElectorCommunityStatus(e.id || e.voterCode);
+      const communityStr =
+        allocs.length > 0
+          ? allocs.map((a) => `${a.category}: ${a.groupName} (${a.verificationStatus})`).join("; ")
+          : status === "NOT_ASSOCIATED"
+          ? "Not Associated"
+          : status === "NOT_DISCLOSED"
+          ? "Not Disclosed"
+          : "None";
+
+      return [
+        `"${e.constituencyNo || "215"}"`,
+        e.boothNumber,
+        e.serialNo,
+        `"${e.fullName}"`,
+        `"${e.hindiName || ""}"`,
+        `"${e.relativeName}"`,
+        `"${e.relativeHindiName || ""}"`,
+        `"${e.epicNumber}"`,
+        e.age,
+        e.gender,
+        e.isDeceased ? '"Yes"' : '"No"',
+        e.mobile && e.mobile.trim() !== "" ? '"Yes"' : '"No"',
+        e.email && e.email.trim() !== "" ? '"Yes"' : '"No"',
+        e.newAddress && e.newAddress.trim() !== "" ? '"Yes"' : '"No"',
+        `"${e.houseNo || ""}"`,
+        `"${e.pollingStation}"`,
+        `"${e.ward || e.prabhaag || ""}"`,
+        `"${communityStr}"`,
+        `"${e.mobile || ""}"`,
+      ];
+    });
+
+    const csvContent =
+      "data:text/csv;charset=utf-8," +
+      [headers.join(","), ...rows.map((r) => r.join(","))].join("\n");
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `Total_Voters_Export_${new Date().toISOString().slice(0, 10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    showToast("success", "Export Complete", `Exported ${listToExport.length} voters to CSV successfully.`);
+  };
+
+  // 23 Quick Filter Cards (Matching Screenshot 1)
+  const quickFilterCards = [
+    { id: "total", label: "Total Voters", count: "2,48,650", icon: Users, iconBg: "bg-blue-50 dark:bg-blue-950/50", iconColor: "text-blue-600 dark:text-blue-400" },
+    { id: "male", label: "Male", count: "1,27,560", icon: Users, iconBg: "bg-indigo-50 dark:bg-indigo-950/50", iconColor: "text-indigo-600 dark:text-indigo-400" },
+    { id: "female", label: "Female", count: "1,21,090", icon: Users, iconBg: "bg-pink-50 dark:bg-pink-950/50", iconColor: "text-pink-600 dark:text-pink-400" },
+    { id: "alphabets", label: "Name Alphabet", count: "26", icon: Tag, iconBg: "bg-purple-50 dark:bg-purple-950/50", iconColor: "text-purple-600 dark:text-purple-400" },
+    { id: "prabhaag", label: "Prabhaag", count: "12", icon: Building2, iconBg: "bg-cyan-50 dark:bg-cyan-950/50", iconColor: "text-cyan-600 dark:text-cyan-400" },
+    { id: "gan", label: "Gan", count: "8", icon: Layers, iconBg: "bg-amber-50 dark:bg-amber-950/50", iconColor: "text-amber-600 dark:text-amber-400" },
+    { id: "parts", label: "Electoral Part", count: "325", icon: Layers, iconBg: "bg-blue-50 dark:bg-blue-950/50", iconColor: "text-blue-600 dark:text-blue-400" },
+    { id: "karyakarta", label: "Karyakarta", count: "4,850", icon: UserCheck, iconBg: "bg-purple-50 dark:bg-purple-950/50", iconColor: "text-purple-600 dark:text-purple-400" },
+    { id: "booth", label: "Booth No", count: "2,045", icon: Building2, iconBg: "bg-blue-50 dark:bg-blue-950/50", iconColor: "text-blue-600 dark:text-blue-400" },
+    { id: "mobile", label: "Mobile", count: "1,86,430", icon: Phone, iconBg: "bg-cyan-50 dark:bg-cyan-950/50", iconColor: "text-cyan-600 dark:text-cyan-400" },
+    { id: "dob", label: "DOB / Month", count: "2,48,650", icon: Calendar, iconBg: "bg-rose-50 dark:bg-rose-950/50", iconColor: "text-rose-600 dark:text-rose-400" },
+    { id: "surname", label: "Surname", count: "89,540", icon: Users, iconBg: "bg-indigo-50 dark:bg-indigo-950/50", iconColor: "text-indigo-600 dark:text-indigo-400" },
+    { id: "voted", label: "Voted", count: "1,40,320", icon: CheckCircle2, iconBg: "bg-blue-50 dark:bg-blue-950/50", iconColor: "text-blue-600 dark:text-blue-400" },
+    { id: "non_voted", label: "Non Voted", count: "1,08,330", icon: XCircle, iconBg: "bg-rose-50 dark:bg-rose-950/50", iconColor: "text-rose-600 dark:text-rose-400" },
+    { id: "visited", label: "Visited", count: "72,450", icon: Eye, iconBg: "bg-cyan-50 dark:bg-cyan-950/50", iconColor: "text-cyan-600 dark:text-cyan-400" },
+    { id: "favorites", label: "Favorites", count: "12,680", icon: Heart, iconBg: "bg-rose-50 dark:bg-rose-950/50", iconColor: "text-rose-600 dark:text-rose-400" },
+    { id: "helped", label: "Helped", count: "6,240", icon: Heart, iconBg: "bg-amber-50 dark:bg-amber-950/50", iconColor: "text-amber-600 dark:text-amber-400" },
+    { id: "address", label: "Address", count: "2,48,650", icon: MapPin, iconBg: "bg-cyan-50 dark:bg-cyan-950/50", iconColor: "text-cyan-600 dark:text-cyan-400" },
+    { id: "outside", label: "Outside", count: "1,860", icon: Share2, iconBg: "bg-amber-50 dark:bg-amber-950/50", iconColor: "text-amber-600 dark:text-amber-400" },
+    { id: "printed", label: "Printed", count: "1,92,430", icon: CheckCircle2, iconBg: "bg-purple-50 dark:bg-purple-950/50", iconColor: "text-purple-600 dark:text-purple-400" },
+    { id: "deceased", label: "Deceased", count: "320", icon: AlertCircle, iconBg: "bg-slate-100 dark:bg-slate-800", iconColor: "text-slate-600 dark:text-slate-400" },
+    { id: "house", label: "House No", count: "2,48,650", icon: Home, iconBg: "bg-amber-50 dark:bg-amber-950/50", iconColor: "text-amber-600 dark:text-amber-400" },
+    { id: "schemes", label: "Schemes", count: "98,760", icon: Gift, iconBg: "bg-blue-50 dark:bg-blue-950/50", iconColor: "text-blue-600 dark:text-blue-400" },
+  ];
+
+  // Distinct Filter Option Sets
+  const uniqueConstituencies = useMemo(() => {
+    const s = new Set<string>();
+    SEED_ELECTORS.forEach((e) => {
+      if (e.constituencyNo) s.add(e.constituencyNo);
+    });
+    return Array.from(s).sort();
+  }, []);
+
+  const uniqueBooths = useMemo(() => {
+    const s = new Set<number>();
+    SEED_ELECTORS.forEach((e) => {
+      if (e.boothNumber) s.add(e.boothNumber);
+    });
+    return Array.from(s).sort((a, b) => a - b);
+  }, []);
+
+  const uniqueStations = useMemo(() => {
+    const s = new Set<string>();
+    SEED_ELECTORS.forEach((e) => {
+      if (e.pollingStation) s.add(e.pollingStation);
+    });
+    return Array.from(s).sort();
+  }, []);
+
+  const uniqueWards = useMemo(() => {
+    const s = new Set<string>();
+    SEED_ELECTORS.forEach((e) => {
+      if (e.ward) s.add(e.ward);
+      else if (e.prabhaag) s.add(e.prabhaag);
+    });
+    return Array.from(s).sort();
+  }, []);
+
+  // Filter Electors
+  const filteredElectors = useMemo(() => {
+    return SEED_ELECTORS.filter((e) => {
+      // 1. Quick Filters
+      if (activeQuickFilter === "male" && e.gender !== "MALE") return false;
+      if (activeQuickFilter === "female" && e.gender !== "FEMALE") return false;
+      if (activeQuickFilter === "mobile" && (!e.mobile || e.mobile.trim() === "")) return false;
+      if (activeQuickFilter === "voted" && !e.hasVoted) return false;
+      if (activeQuickFilter === "non_voted" && e.hasVoted) return false;
+      if (activeQuickFilter === "visited" && !e.isVisited) return false;
+      if (activeQuickFilter === "favorites" && !e.isFavorite) return false;
+      if (activeQuickFilter === "helped" && !e.isHelped) return false;
+      if (activeQuickFilter === "deceased" && !e.isDeceased) return false;
+      if (activeQuickFilter === "outside" && !e.isOutside) return false;
+      if (activeQuickFilter === "printed" && e.voterSlipStatus !== "PRINTED" && e.voterSlipStatus !== "DELIVERED") return false;
+      if (activeQuickFilter === "schemes" && (!e.schemeBeneficiary || e.schemeBeneficiary.length === 0)) return false;
+
+      // 2. Global Search
+      if (globalSearch.trim() !== "") {
+        const q = globalSearch.toLowerCase().trim();
+        const matchesName = e.fullName.toLowerCase().includes(q);
+        const matchesHindi = e.hindiName?.toLowerCase().includes(q);
+        const matchesRelative = e.relativeName.toLowerCase().includes(q);
+        const matchesRelativeHindi = e.relativeHindiName?.toLowerCase().includes(q);
+        const matchesEpic = e.epicNumber.toLowerCase().includes(q);
+        const matchesPhone = e.mobile?.replace(/\s+/g, "").includes(q.replace(/\s+/g, ""));
+        const matchesBooth = e.boothNumber.toString().includes(q);
+        const matchesSr = e.serialNo.toString().includes(q);
+        const matchesConstituency = e.constituencyNo.includes(q) || e.assemblySegment?.toLowerCase().includes(q);
+        const matchesStation = e.pollingStation.toLowerCase().includes(q);
+        const matchesWard = (e.ward || e.prabhaag || "").toLowerCase().includes(q);
+        const matchesAddress = (e.houseNo || e.address || "").toLowerCase().includes(q);
+
+        if (
+          !matchesName &&
+          !matchesHindi &&
+          !matchesRelative &&
+          !matchesRelativeHindi &&
+          !matchesEpic &&
+          !matchesPhone &&
+          !matchesBooth &&
+          !matchesSr &&
+          !matchesConstituency &&
+          !matchesStation &&
+          !matchesWard &&
+          !matchesAddress
+        ) {
+          return false;
+        }
+      }
+
+      // 3. Category 1: Record Status
+      if (filters.deceased === "YES" && !e.isDeceased) return false;
+      if (filters.deceased === "NO" && e.isDeceased) return false;
+      if (filters.hasMobile === "YES" && (!e.mobile || e.mobile.trim() === "")) return false;
+      if (filters.hasMobile === "NO" && e.mobile && e.mobile.trim() !== "") return false;
+      if (filters.hasEmail === "YES" && (!e.email || e.email.trim() === "")) return false;
+      if (filters.hasEmail === "NO" && e.email && e.email.trim() !== "") return false;
+      if (filters.hasNewAddress === "YES" && (!e.newAddress || e.newAddress.trim() === "")) return false;
+      if (filters.hasNewAddress === "NO" && e.newAddress && e.newAddress.trim() !== "") return false;
+
+      // 4. Category 2: Personal Information
+      if (filters.gender !== "ALL" && e.gender !== filters.gender) return false;
+      if (filters.ageMin !== "") {
+        const min = parseInt(filters.ageMin, 10);
+        if (!isNaN(min) && e.age < min) return false;
+      }
+      if (filters.ageMax !== "") {
+        const max = parseInt(filters.ageMax, 10);
+        if (!isNaN(max) && e.age > max) return false;
+      }
+      if (filters.agePreset !== "ALL") {
+        if (filters.agePreset === "18-25" && (e.age < 18 || e.age > 25)) return false;
+        if (filters.agePreset === "26-40" && (e.age < 26 || e.age > 40)) return false;
+        if (filters.agePreset === "41-60" && (e.age < 41 || e.age > 60)) return false;
+        if (filters.agePreset === "60+" && e.age < 60) return false;
+      }
+
+      // 5. Category 3: Name Filters
+      if (filters.voterName.trim() !== "") {
+        const nq = filters.voterName.toLowerCase().trim();
+        const m1 = e.fullName.toLowerCase().includes(nq);
+        const m2 = e.hindiName?.toLowerCase().includes(nq);
+        const m3 = e.relativeName.toLowerCase().includes(nq);
+        const m4 = e.relativeHindiName?.toLowerCase().includes(nq);
+        if (!m1 && !m2 && !m3 && !m4) return false;
+      }
+
+      // 6. Category 4: Location & Identity
+      if (filters.constituencyNo !== "ALL" && e.constituencyNo !== filters.constituencyNo) return false;
+      if (filters.boothNo !== "ALL" && e.boothNumber.toString() !== filters.boothNo) return false;
+      if (filters.serialNo.trim() !== "" && !e.serialNo.toString().includes(filters.serialNo.trim())) return false;
+      if (filters.houseNumber.trim() !== "") {
+        const hq = filters.houseNumber.toLowerCase().trim();
+        const mh = e.houseNo.toLowerCase().includes(hq) || e.address.toLowerCase().includes(hq);
+        if (!mh) return false;
+      }
+      if (filters.epicNumber.trim() !== "" && !e.epicNumber.toLowerCase().includes(filters.epicNumber.toLowerCase().trim())) return false;
+      if (filters.boothStation !== "ALL" && e.pollingStation !== filters.boothStation) return false;
+      if (filters.ward !== "ALL" && (e.ward || e.prabhaag || "") !== filters.ward) return false;
+
+      // 7. Category 5: Community Groups
+      if (filters.communityGroups.length > 0) {
+        const allocs = getAllocationsForElector(e.id || e.voterCode);
+        const st = getElectorCommunityStatus(e.id || e.voterCode);
+        const hasMatch = filters.communityGroups.some((gid) => {
+          if (gid === "NOT_ASSOCIATED") return st === "NOT_ASSOCIATED";
+          if (gid === "NOT_DISCLOSED") return st === "NOT_DISCLOSED";
+          return allocs.some((a) => a.category === gid);
+        });
+        if (!hasMatch) return false;
+      }
+
+      return true;
+    });
+  }, [activeQuickFilter, globalSearch, filters]);
+
+  // Total pages and Paginated Slice
+  const totalPages = Math.ceil(filteredElectors.length / rowsPerPage) || 1;
+  const paginatedElectors = useMemo(() => {
+    const start = (currentPage - 1) * rowsPerPage;
+    return filteredElectors.slice(start, start + rowsPerPage);
+  }, [filteredElectors, currentPage, rowsPerPage]);
+
+  // Active Filter Chips List
+  const activeChips = useMemo(() => {
+    const chips: { id: string; category: string; label: string; value: string; onClear: () => void }[] = [];
+
+    if (globalSearch.trim() !== "") {
+      chips.push({
+        id: "globalSearch",
+        category: "Search",
+        label: "Global Search",
+        value: `"${globalSearch}"`,
+        onClear: () => setGlobalSearch(""),
+      });
+    }
+
+    if (filters.deceased !== "ALL") {
+      chips.push({
+        id: "deceased",
+        category: "Record Status",
+        label: "Deceased",
+        value: filters.deceased === "YES" ? "Yes (Deceased)" : "No (Active/Alive)",
+        onClear: () => setFilters((prev) => ({ ...prev, deceased: "ALL" })),
+      });
+    }
+
+    if (filters.hasMobile !== "ALL") {
+      chips.push({
+        id: "hasMobile",
+        category: "Record Status",
+        label: "Has Mobile",
+        value: filters.hasMobile === "YES" ? "Yes (Phone Available)" : "No (No Phone)",
+        onClear: () => setFilters((prev) => ({ ...prev, hasMobile: "ALL" })),
+      });
+    }
+
+    if (filters.hasEmail !== "ALL") {
+      chips.push({
+        id: "hasEmail",
+        category: "Record Status",
+        label: "Has Email",
+        value: filters.hasEmail === "YES" ? "Yes (Email Available)" : "No (No Email)",
+        onClear: () => setFilters((prev) => ({ ...prev, hasEmail: "ALL" })),
+      });
+    }
+
+    if (filters.hasNewAddress !== "ALL") {
+      chips.push({
+        id: "hasNewAddress",
+        category: "Record Status",
+        label: "Has New Address",
+        value: filters.hasNewAddress === "YES" ? "Yes (Shifted)" : "No (Standard)",
+        onClear: () => setFilters((prev) => ({ ...prev, hasNewAddress: "ALL" })),
+      });
+    }
+
+    if (filters.gender !== "ALL") {
+      chips.push({
+        id: "gender",
+        category: "Demographics",
+        label: "Gender",
+        value: filters.gender,
+        onClear: () => setFilters((prev) => ({ ...prev, gender: "ALL" })),
+      });
+    }
+
+    if (filters.agePreset !== "ALL") {
+      chips.push({
+        id: "agePreset",
+        category: "Demographics",
+        label: "Age Group",
+        value: filters.agePreset,
+        onClear: () => setFilters((prev) => ({ ...prev, agePreset: "ALL" })),
+      });
+    }
+
+    if (filters.voterName.trim() !== "") {
+      chips.push({
+        id: "voterName",
+        category: "Name",
+        label: "Voter Name",
+        value: `"${filters.voterName}"`,
+        onClear: () => setFilters((prev) => ({ ...prev, voterName: "" })),
+      });
+    }
+
+    if (filters.boothNo !== "ALL") {
+      chips.push({
+        id: "boothNo",
+        category: "Location",
+        label: "Booth",
+        value: `#${filters.boothNo}`,
+        onClear: () => setFilters((prev) => ({ ...prev, boothNo: "ALL" })),
+      });
+    }
+
+    if (filters.serialNo.trim() !== "") {
+      chips.push({
+        id: "serialNo",
+        category: "Location",
+        label: "Sr. No.",
+        value: filters.serialNo,
+        onClear: () => setFilters((prev) => ({ ...prev, serialNo: "" })),
+      });
+    }
+
+    if (filters.houseNumber.trim() !== "") {
+      chips.push({
+        id: "houseNumber",
+        category: "Location",
+        label: "House No.",
+        value: `"${filters.houseNumber}"`,
+        onClear: () => setFilters((prev) => ({ ...prev, houseNumber: "" })),
+      });
+    }
+
+    if (filters.epicNumber.trim() !== "") {
+      chips.push({
+        id: "epicNumber",
+        category: "Identity",
+        label: "EPIC ID",
+        value: filters.epicNumber.toUpperCase(),
+        onClear: () => setFilters((prev) => ({ ...prev, epicNumber: "" })),
+      });
+    }
+
+    filters.communityGroups.forEach((gid) => {
+      const g = COMMUNITY_GROUPS.find((cg) => cg.id === gid);
+      chips.push({
+        id: `comm_${gid}`,
+        category: "Community Groups",
+        label: "Group",
+        value: g?.shortLabel || gid,
+        onClear: () => handleToggleCommunityGroup(gid),
+      });
+    });
+
+    return chips;
+  }, [filters, globalSearch]);
+
+  const activeFiltersCount = activeChips.length;
+
+  // Render continuous profile if an elector is selected
+  if (selectedVoter) {
+    return (
+      <ContinuousVoterProfileView
+        voter={selectedVoter}
+        onBack={() => setSelectedVoter(null)}
+        communityAllocations={getAllocationsForElector(selectedVoter.id || selectedVoter.voterCode)}
+        electorStatus={getElectorCommunityStatus(selectedVoter.id || selectedVoter.voterCode)}
+      />
+    );
+  }
+
+  return (
+    <div className="space-y-4 pb-12 animate-fade-in text-slate-800 dark:text-slate-100">
+      {/* ===================================================================== */}
+      {/* HEADER SECTION (Breadcrumb, Title, KPI, Actions)                      */}
+      {/* ===================================================================== */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div>
+          <div className="flex items-center gap-2 mb-1">
+            <span className="text-[10px] font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/60 px-2 py-0.5 rounded uppercase tracking-wider border border-blue-200 dark:border-blue-900/40">
+              Voter Intelligence
+            </span>
+            <span className="text-slate-400 text-xs">/</span>
+            <span className="text-xs font-semibold text-slate-600 dark:text-slate-400">Total Voters</span>
+          </div>
+          <h1 className="text-xl md:text-2xl font-black text-slate-900 dark:text-white tracking-tight">Total Voters</h1>
+          <p className="text-xs text-slate-500 dark:text-slate-400">
+            Electoral roll records with multi-attribute filtering, polling station locators, and unified profiles.
+          </p>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-2">
+          {/* Total Voters Pill */}
+          <div className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-50/80 dark:bg-blue-950/50 border border-blue-200 dark:border-blue-900/60 rounded-xl text-xs font-bold text-blue-700 dark:text-blue-400 shadow-xs">
+            <Users className="w-3.5 h-3.5" />
+            <span>2,48,650 Total Voters</span>
           </div>
 
-          <span className="text-slate-500 text-[11px]">
-            Showing <strong>{filteredVoters.length}</strong> of 248,650 registered electors
-          </span>
+          {/* Refresh Button */}
+          <button
+            onClick={handleSyncRoll}
+            className="flex items-center gap-1 px-3 py-1.5 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 font-semibold rounded-xl text-xs border border-slate-200 dark:border-slate-800 transition-colors shadow-xs cursor-pointer"
+          >
+            <RefreshCw className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" />
+            <span>Refresh</span>
+          </button>
+
+          {/* Send SMS Button */}
+          <button
+            onClick={() => setIsSmsModalOpen(true)}
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 font-semibold rounded-xl text-xs border border-slate-200 dark:border-slate-800 transition-colors shadow-xs cursor-pointer"
+          >
+            <Send className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+            <span>Send SMS</span>
+          </button>
+
+          {/* Export CSV Button */}
+          <button
+            onClick={handleExportCSV}
+            className="flex items-center gap-1 px-3 py-1.5 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 font-semibold rounded-xl text-xs border border-slate-200 dark:border-slate-800 transition-colors shadow-xs cursor-pointer"
+          >
+            <Download className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" />
+            <span>Export CSV</span>
+          </button>
+
+          {/* Add Voter Button */}
+          <button
+            onClick={() => setIsAddVoterOpen(true)}
+            className="flex items-center gap-1.5 px-3.5 py-1.5 bg-[#2563EB] hover:bg-blue-700 active:scale-95 text-white font-bold rounded-xl text-xs transition-all shadow-xs cursor-pointer"
+          >
+            <span>+ + Add Voter</span>
+          </button>
         </div>
       </div>
 
-      {/* View Mode: Tabular Roll */}
-      {viewMode === "table" ? (
-        <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-premium-xs overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse text-xs">
-              <thead>
-                <tr className="bg-slate-50 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-800 text-[11px] font-bold text-slate-500 dark:text-[#94A3B8] uppercase tracking-wider">
-                  <th className="py-3 px-3 w-10 text-center">
-                    <input
-                      type="checkbox"
-                      checked={
-                        selectedIds.length === filteredVoters.length &&
-                        filteredVoters.length > 0
-                      }
-                      onChange={toggleSelectAll}
-                      className="rounded border-slate-200 text-brand-600 focus:ring-brand-500 cursor-pointer"
-                    />
-                  </th>
-                  <th className="py-3 px-4">Elector Name &amp; Relative</th>
-                  <th className="py-3 px-4">EPIC ID</th>
-                  <th className="py-3 px-3">Age / Sex</th>
-                  <th className="py-3 px-4">Booth Station &amp; Ward</th>
-                  <th className="py-3 px-3">Contact</th>
-                  <th className="py-3 px-3">Status</th>
-                  <th className="py-3 px-4 text-right">Central Profile</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-[#DCE2EC]/60 dark:divide-[#22324F]/60 text-slate-800 dark:text-white">
-                {filteredVoters.map((voter) => {
-                  const isSelected = selectedIds.includes(voter.id);
-                  return (
-                    <tr
-                      key={voter.id}
-                      className={`transition-colors ${
-                        isSelected
-                          ? "bg-brand-50/50 dark:bg-[#1E1B4B]/30"
-                          : "hover:bg-slate-50/70 dark:hover:bg-[#1E293B]/50"
-                      }`}
-                    >
-                      <td className="py-3 px-3 text-center">
-                        <input
-                          type="checkbox"
-                          checked={isSelected}
-                          onChange={() => toggleSelectOne(voter.id)}
-                          className="rounded border-slate-200 text-brand-600 focus:ring-brand-500 cursor-pointer"
-                        />
-                      </td>
-                      <td className="py-3 px-4">
-                        <div className="font-bold text-slate-800 dark:text-white flex items-center gap-1.5">
-                          <span>{voter.name}</span>
-                          <span className="text-[11px] font-normal text-slate-400">({voter.marathiName})</span>
-                          {voter.hasPhoto && (
-                            <span
-                              className="w-1.5 h-1.5 rounded-full bg-[#0DAD9B]"
-                              title="Verified ECI Portrait"
-                            />
-                          )}
-                        </div>
-                        <div className="text-[11px] text-slate-500 mt-0.5">
-                          {voter.relation} {voter.relativeName} &bull; {voter.houseNo}
-                        </div>
-                      </td>
-                      <td className="py-3 px-4">
-                        <span className="font-mono font-bold text-brand-600 bg-brand-50 px-2 py-0.5 rounded text-[11px]">
-                          {voter.epicId}
-                        </span>
-                      </td>
-                      <td className="py-3 px-3 tabular-nums font-medium">
-                        {voter.age} Yrs &bull; {voter.gender}
-                      </td>
-                      <td className="py-3 px-4">
-                        <div className="font-semibold">{voter.boothNumber} - {voter.boothName}</div>
-                        <div className="text-[11px] text-slate-500">{voter.ward}</div>
-                      </td>
-                      <td className="py-3 px-3 font-mono text-[11px]">
-                        {voter.phone}
-                      </td>
-                      <td className="py-3 px-3">
-                        <span
-                          className={`px-2 py-0.5 rounded text-[10.5px] font-bold ${
-                            voter.status === "Verified"
-                              ? "bg-emerald-50 text-emerald-600 border border-[#0DAD9B]/20"
-                              : voter.status === "Correction Req"
-                              ? "bg-amber-50 text-amber-600 border border-[#F2A93B]/20"
-                              : "bg-rose-50 text-rose-600 border border-[#E06068]/20"
-                          }`}
-                        >
-                          {voter.status}
-                        </span>
-                      </td>
-                      <td className="py-3 px-4 text-right">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => {
-                            setSelectedProfileVoter(voter);
-                          }}
-                          className="cursor-pointer text-brand-600 border-brand-200 hover:bg-brand-50"
-                        >
-                          <Eye className="w-3 h-3" />
-                          <span>View 360°</span>
-                        </Button>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+      {/* ===================================================================== */}
+      {/* SECTION 1: QUICK FILTERS (23 CARDS - MATCHING SCREENSHOT 1)           */}
+      {/* ===================================================================== */}
+      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-4 shadow-xs">
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2">
+            <Filter className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+            <h2 className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">Quick Filters</h2>
+            <span className="text-[11px] text-slate-400 hidden sm:inline">Click any card to instantly segment voters.</span>
           </div>
-        </div>
-      ) : (
-        /* View Mode: Cards Grid */
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filteredVoters.map((voter) => (
-            <div
-              key={voter.id}
-              className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xs space-y-3"
+
+          {activeQuickFilter !== "total" && (
+            <button
+              onClick={() => {
+                setActiveQuickFilter("total");
+                setCurrentPage(1);
+              }}
+              className="text-[11px] text-blue-600 dark:text-blue-400 font-bold hover:underline flex items-center gap-1 cursor-pointer"
             >
-              <div className="flex items-start justify-between gap-2">
-                <div>
-                  <h3 className="font-bold text-sm text-slate-800 dark:text-white flex items-center gap-1.5">
-                    <span>{voter.name}</span>
-                    {voter.hasPhoto && <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />}
+              <RefreshCw className="w-3 h-3" />
+              <span>Reset Quick Filter</span>
+            </button>
+          )}
+        </div>
+
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-2.5">
+          {quickFilterCards.map((card) => {
+            const Icon = card.icon;
+            const isActive = activeQuickFilter === card.id;
+            return (
+              <button
+                key={card.id}
+                onClick={() => {
+                  setActiveQuickFilter(card.id);
+                  setCurrentPage(1);
+                  showToast("info", "Quick Filter", `Filtered by ${card.label}.`);
+                }}
+                className={`flex items-start gap-2.5 p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
+                  isActive
+                    ? "border-blue-600 bg-blue-50/80 dark:bg-blue-950/50 shadow-xs ring-2 ring-blue-500/30"
+                    : "border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-blue-300 dark:hover:border-slate-700 hover:bg-slate-50/80"
+                }`}
+              >
+                <div className={`w-8 h-8 rounded-lg ${card.iconBg} ${card.iconColor} flex items-center justify-center shrink-0`}>
+                  <Icon className="w-4 h-4" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <span className="text-[11px] text-slate-500 dark:text-slate-400 font-semibold block truncate leading-tight">
+                    {card.label}
+                  </span>
+                  <span className="text-sm font-black text-slate-900 dark:text-white block leading-tight font-tabular mt-0.5">
+                    {card.count}
+                  </span>
+                  {isActive && (
+                    <span className="inline-flex items-center gap-0.5 text-[10px] font-bold text-blue-600 dark:text-blue-400 mt-1 leading-none">
+                      <Check className="w-2.5 h-2.5 stroke-[3]" /> Active
+                    </span>
+                  )}
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* ===================================================================== */}
+      {/* SECTION 2: SEARCH & FILTER CONTROLS BAR                              */}
+      {/* ===================================================================== */}
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
+        {/* Global Search Input */}
+        <div className="relative flex-1">
+          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+          <input
+            type="text"
+            placeholder="Global Search: Elector Name, Hindi Name, EPIC ID, Contact, Booth No., or Sr. No..."
+            value={globalSearch}
+            onChange={(e) => {
+              setGlobalSearch(e.target.value);
+              setCurrentPage(1);
+            }}
+            className="w-full pl-10 pr-9 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-xs placeholder:text-slate-400 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-xs"
+          />
+          {globalSearch && (
+            <button
+              onClick={() => {
+                setGlobalSearch("");
+                setCurrentPage(1);
+              }}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-0.5 cursor-pointer"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          )}
+        </div>
+
+        {/* Advanced vs Less Filters Switcher */}
+        <div className="flex items-center p-0.5 bg-slate-100 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shrink-0">
+          <button
+            type="button"
+            onClick={() => {
+              setFilterMode("ADVANCED");
+              if (!isFilterPanelOpen) setIsFilterPanelOpen(true);
+            }}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+              isFilterPanelOpen && filterMode === "ADVANCED"
+                ? "bg-[#2563EB] text-white shadow-xs"
+                : "text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white"
+            }`}
+          >
+            <SlidersHorizontal className="w-3.5 h-3.5" />
+            <span>Advanced Filters</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setFilterMode("LESS");
+              if (!isFilterPanelOpen) setIsFilterPanelOpen(true);
+            }}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+              isFilterPanelOpen && filterMode === "LESS"
+                ? "bg-[#2563EB] text-white shadow-xs"
+                : "text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white"
+            }`}
+          >
+            <Filter className="w-3.5 h-3.5" />
+            <span>Less Filters</span>
+          </button>
+        </div>
+
+        {/* Expand / Collapse Filters Button */}
+        <button
+          onClick={() => setIsFilterPanelOpen(!isFilterPanelOpen)}
+          className={`flex items-center gap-1.5 px-3.5 py-2 border rounded-xl text-xs font-semibold shadow-xs transition-colors shrink-0 cursor-pointer ${
+            isFilterPanelOpen
+              ? "bg-blue-50 dark:bg-blue-950/60 border-blue-200 dark:border-blue-900/60 text-blue-700 dark:text-blue-300"
+              : "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50"
+          }`}
+        >
+          <SlidersHorizontal className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+          <span>{isFilterPanelOpen ? "Collapse Filters" : "Expand Filters"}</span>
+          <span className="w-4 h-4 rounded-full bg-blue-600 text-white font-bold text-[10px] flex items-center justify-center">
+            {activeFiltersCount}
+          </span>
+        </button>
+      </div>
+
+      {/* ===================================================================== */}
+      {/* SECTION 3: ADVANCED VOTER FILTERS (5 CATEGORIES)                      */}
+      {/* ===================================================================== */}
+      {isFilterPanelOpen && (
+        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-4 shadow-xs space-y-4 animate-fade-in">
+          {/* Header */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800/80 pb-3">
+            <div className="flex items-center gap-2.5">
+              <div className="w-7 h-7 rounded-lg bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
+                <SlidersHorizontal className="w-4 h-4" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <h3 className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">
+                    {filterMode === "ADVANCED"
+                      ? "ADVANCED VOTER FILTERS (5 CATEGORIES)"
+                      : "COMMONLY USED FILTERS (LESS FILTERS)"}
                   </h3>
-                  <div className="text-xs text-slate-400 font-normal">{voter.marathiName}</div>
-                  <div className="text-[11px] text-slate-500 mt-1">
-                    {voter.relation} {voter.relativeName} • Age {voter.age} ({voter.gender})
-                  </div>
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-400 border border-blue-200 dark:border-blue-900/40">
+                    {activeFiltersCount} Active
+                  </span>
                 </div>
-                <span className="font-mono text-xs font-bold text-brand-600 bg-brand-50 px-2 py-0.5 rounded">
-                  {voter.epicId}
-                </span>
-              </div>
-
-              <div className="p-2.5 rounded-lg bg-slate-50 dark:bg-slate-800/50 text-xs space-y-1 text-slate-600 dark:text-slate-300">
-                <div className="flex justify-between">
-                  <span className="text-slate-400">Booth:</span>
-                  <span className="font-semibold">{voter.boothNumber} - {voter.boothName}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-slate-400">Address:</span>
-                  <span>{voter.houseNo}, {voter.ward}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-slate-400">Mobile:</span>
-                  <span className="font-mono">{voter.phone}</span>
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between pt-2 border-t border-slate-100 dark:border-slate-800">
-                <span className="text-[11px] font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">
-                  {voter.status}
-                </span>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => {
-                    setSelectedProfileVoter(voter);
-                  }}
-                  className="cursor-pointer text-brand-600"
-                >
-                  <Eye className="w-3 h-3" />
-                  <span>Central Profile</span>
-                </Button>
+                <p className="text-[11px] text-slate-400">
+                  {filterMode === "ADVANCED"
+                    ? "Record Status, Demographics, Name, Electoral Roll Location & Identity, and Community Stakeholder Groups."
+                    : "Displaying only commonly used filters for rapid verification."}
+                </p>
               </div>
             </div>
-          ))}
+
+            <div className="flex flex-wrap items-center gap-2">
+              {filterMode === "ADVANCED" && (
+                <div className="flex items-center gap-1 mr-1">
+                  <button
+                    type="button"
+                    onClick={expandAllCategories}
+                    className="px-2 py-1 text-[11px] font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                  >
+                    Expand All
+                  </button>
+                  <span className="text-slate-300 dark:text-slate-700 text-xs">|</span>
+                  <button
+                    type="button"
+                    onClick={collapseAllCategories}
+                    className="px-2 py-1 text-[11px] font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                  >
+                    Collapse All
+                  </button>
+                </div>
+              )}
+
+              <button
+                type="button"
+                onClick={handleResetAll}
+                className="flex items-center gap-1 px-2.5 py-1 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white text-xs font-semibold rounded-lg border border-slate-200 dark:border-slate-800 hover:bg-slate-50 transition-colors cursor-pointer"
+              >
+                <RefreshCw className="w-3 h-3 text-slate-400" />
+                <span>Reset All</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={handleApplyFilters}
+                className="flex items-center gap-1 px-3 py-1 bg-[#2563EB] hover:bg-blue-700 text-white text-xs font-bold rounded-lg shadow-xs transition-colors cursor-pointer"
+              >
+                <Check className="w-3 h-3" />
+                <span>Apply Filters ({filteredElectors.length})</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Active Chips Row */}
+          {activeChips.length > 0 && (
+            <div className="pt-1 pb-2 border-b border-slate-100 dark:border-slate-800/80 flex items-center gap-1.5 flex-wrap text-xs">
+              <span className="text-[11px] font-bold text-slate-400 mr-1">
+                Active Filter Chips ({activeChips.length}):
+              </span>
+              {activeChips.map((chip) => (
+                <span
+                  key={chip.id}
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-[11px] font-medium shadow-2xs"
+                >
+                  <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">{chip.category}:</span>
+                  <span className="font-semibold text-slate-700 dark:text-slate-300">{chip.label}</span>
+                  <span className="font-bold text-blue-600 dark:text-blue-400">{chip.value}</span>
+                  <button
+                    type="button"
+                    onClick={chip.onClear}
+                    className="p-0.5 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-full text-slate-400 hover:text-red-500 transition-colors ml-0.5 cursor-pointer"
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                </span>
+              ))}
+              <button
+                type="button"
+                onClick={handleResetAll}
+                className="text-[11px] font-bold text-red-600 dark:text-red-400 hover:underline px-2 py-0.5 ml-1 cursor-pointer"
+              >
+                Clear All ({activeChips.length})
+              </button>
+            </div>
+          )}
+
+          {/* Category Accordions */}
+          <div className="space-y-3.5 text-xs">
+            {/* CATEGORY 1: RECORD STATUS FILTERS */}
+            <div className="border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden bg-slate-50/40 dark:bg-slate-900/40">
+              <button
+                type="button"
+                onClick={() => toggleCategory("recordStatus")}
+                className="w-full flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-800/60 hover:bg-slate-100 dark:hover:bg-slate-800 text-left transition-colors cursor-pointer"
+              >
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+                  <span className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">
+                    1. RECORD STATUS FILTERS
+                  </span>
+                  <span className="text-[10px] text-slate-400 hidden sm:inline">
+                    (Deceased verification, contact availability &amp; address shifts)
+                  </span>
+                </div>
+                {categoryCollapsed.recordStatus ? <ChevronDown className="w-4 h-4 text-slate-400" /> : <ChevronUp className="w-4 h-4 text-slate-400" />}
+              </button>
+
+              {!categoryCollapsed.recordStatus && (
+                <div className="p-3.5 border-t border-slate-200 dark:border-slate-800/80 bg-white dark:bg-slate-900 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 animate-fade-in">
+                  {/* Deceased Status */}
+                  <div>
+                    <div className="flex items-center justify-between mb-1">
+                      <label className="text-[11px] font-semibold text-slate-700 dark:text-slate-300">Deceased Status</label>
+                      <span className="text-[10px] text-slate-400 font-mono">
+                        {filters.deceased === "ALL" ? "All Records" : filters.deceased === "YES" ? "Deceased Only" : "Active Only"}
+                      </span>
+                    </div>
+                    <div className="grid grid-cols-3 gap-1 p-1 bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-lg text-center text-xs">
+                      {(["ALL", "YES", "NO"] as const).map((opt) => (
+                        <button
+                          key={opt}
+                          type="button"
+                          onClick={() => {
+                            setFilters((prev) => ({ ...prev, deceased: opt }));
+                            setCurrentPage(1);
+                          }}
+                          className={`py-1 rounded-md text-xs font-semibold transition-all cursor-pointer ${
+                            filters.deceased === opt
+                              ? "bg-white dark:bg-slate-900 text-blue-600 dark:text-blue-400 font-bold shadow-2xs"
+                              : "text-slate-500 hover:text-slate-900"
+                          }`}
+                        >
+                          {opt === "ALL" ? "All" : opt === "YES" ? "Yes" : "No"}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Has Mobile */}
+                  <div>
+                    <div className="flex items-center justify-between mb-1">
+                      <label className="text-[11px] font-semibold text-slate-700 dark:text-slate-300">Has Mobile</label>
+                      <span className="text-[10px] text-slate-400 font-mono">
+                        {filters.hasMobile === "ALL" ? "All Records" : filters.hasMobile === "YES" ? "With Phone" : "No Phone"}
+                      </span>
+                    </div>
+                    <div className="grid grid-cols-3 gap-1 p-1 bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-lg text-center text-xs">
+                      {(["ALL", "YES", "NO"] as const).map((opt) => (
+                        <button
+                          key={opt}
+                          type="button"
+                          onClick={() => {
+                            setFilters((prev) => ({ ...prev, hasMobile: opt }));
+                            setCurrentPage(1);
+                          }}
+                          className={`py-1 rounded-md text-xs font-semibold transition-all cursor-pointer ${
+                            filters.hasMobile === opt
+                              ? "bg-white dark:bg-slate-900 text-blue-600 dark:text-blue-400 font-bold shadow-2xs"
+                              : "text-slate-500 hover:text-slate-900"
+                          }`}
+                        >
+                          {opt === "ALL" ? "All" : opt === "YES" ? "Yes" : "No"}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Has Email */}
+                  <div>
+                    <div className="flex items-center justify-between mb-1">
+                      <label className="text-[11px] font-semibold text-slate-700 dark:text-slate-300">Has Email</label>
+                      <span className="text-[10px] text-slate-400 font-mono">
+                        {filters.hasEmail === "ALL" ? "All Records" : filters.hasEmail === "YES" ? "With Email" : "No Email"}
+                      </span>
+                    </div>
+                    <div className="grid grid-cols-3 gap-1 p-1 bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-lg text-center text-xs">
+                      {(["ALL", "YES", "NO"] as const).map((opt) => (
+                        <button
+                          key={opt}
+                          type="button"
+                          onClick={() => {
+                            setFilters((prev) => ({ ...prev, hasEmail: opt }));
+                            setCurrentPage(1);
+                          }}
+                          className={`py-1 rounded-md text-xs font-semibold transition-all cursor-pointer ${
+                            filters.hasEmail === opt
+                              ? "bg-white dark:bg-slate-900 text-blue-600 dark:text-blue-400 font-bold shadow-2xs"
+                              : "text-slate-500 hover:text-slate-900"
+                          }`}
+                        >
+                          {opt === "ALL" ? "All" : opt === "YES" ? "Yes" : "No"}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Has New Address */}
+                  <div>
+                    <div className="flex items-center justify-between mb-1">
+                      <label className="text-[11px] font-semibold text-slate-700 dark:text-slate-300">Has New Address</label>
+                      <span className="text-[10px] text-slate-400 font-mono">
+                        {filters.hasNewAddress === "ALL" ? "All Records" : filters.hasNewAddress === "YES" ? "Shifted" : "Standard"}
+                      </span>
+                    </div>
+                    <div className="grid grid-cols-3 gap-1 p-1 bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-lg text-center text-xs">
+                      {(["ALL", "YES", "NO"] as const).map((opt) => (
+                        <button
+                          key={opt}
+                          type="button"
+                          onClick={() => {
+                            setFilters((prev) => ({ ...prev, hasNewAddress: opt }));
+                            setCurrentPage(1);
+                          }}
+                          className={`py-1 rounded-md text-xs font-semibold transition-all cursor-pointer ${
+                            filters.hasNewAddress === opt
+                              ? "bg-white dark:bg-slate-900 text-blue-600 dark:text-blue-400 font-bold shadow-2xs"
+                              : "text-slate-500 hover:text-slate-900"
+                          }`}
+                        >
+                          {opt === "ALL" ? "All" : opt === "YES" ? "Yes" : "No"}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* CATEGORY 2: PERSONAL INFORMATION */}
+            <div className="border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden bg-slate-50/40 dark:bg-slate-900/40">
+              <button
+                type="button"
+                onClick={() => toggleCategory("personalInfo")}
+                className="w-full flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-800/60 hover:bg-slate-100 dark:hover:bg-slate-800 text-left transition-colors cursor-pointer"
+              >
+                <div className="flex items-center gap-2">
+                  <Users className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+                  <span className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">
+                    2. PERSONAL INFORMATION
+                  </span>
+                  <span className="text-[10px] text-slate-400 hidden sm:inline">
+                    (Gender selection, numeric age bounds &amp; age presets)
+                  </span>
+                </div>
+                {categoryCollapsed.personalInfo ? <ChevronDown className="w-4 h-4 text-slate-400" /> : <ChevronUp className="w-4 h-4 text-slate-400" />}
+              </button>
+
+              {!categoryCollapsed.personalInfo && (
+                <div className="p-3.5 border-t border-slate-200 dark:border-slate-800/80 bg-white dark:bg-slate-900 space-y-3 animate-fade-in">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                    {/* Gender */}
+                    <div>
+                      <label className="text-[11px] font-semibold text-slate-700 dark:text-slate-300 block mb-1">Gender</label>
+                      <select
+                        value={filters.gender}
+                        onChange={(e) => {
+                          setFilters((prev) => ({ ...prev, gender: e.target.value }));
+                          setCurrentPage(1);
+                        }}
+                        className="w-full px-2.5 py-1.5 bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-lg text-xs text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer"
+                      >
+                        <option value="ALL">All Genders</option>
+                        <option value="MALE">Male</option>
+                        <option value="FEMALE">Female</option>
+                        <option value="OTHER">Other / As Recorded</option>
+                      </select>
+                    </div>
+
+                    {/* Age Range */}
+                    <div>
+                      <label className="text-[11px] font-semibold text-slate-700 dark:text-slate-300 block mb-1">Age Range (Years)</label>
+                      <div className="flex items-center gap-1.5">
+                        <input
+                          type="number"
+                          placeholder="Min Age (e.g. 18)"
+                          value={filters.ageMin}
+                          onChange={(e) => {
+                            setFilters((prev) => ({ ...prev, ageMin: e.target.value }));
+                            setCurrentPage(1);
+                          }}
+                          className="w-1/2 px-2.5 py-1.5 bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-lg text-xs text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                        />
+                        <span className="text-slate-400 text-xs font-bold">-</span>
+                        <input
+                          type="number"
+                          placeholder="Max Age (e.g. 100)"
+                          value={filters.ageMax}
+                          onChange={(e) => {
+                            setFilters((prev) => ({ ...prev, ageMax: e.target.value }));
+                            setCurrentPage(1);
+                          }}
+                          className="w-1/2 px-2.5 py-1.5 bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-lg text-xs text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Age Group Preset */}
+                    <div>
+                      <label className="text-[11px] font-semibold text-slate-700 dark:text-slate-300 block mb-1">Age Group Preset</label>
+                      <select
+                        value={filters.agePreset}
+                        onChange={(e) => {
+                          setFilters((prev) => ({ ...prev, agePreset: e.target.value }));
+                          setCurrentPage(1);
+                        }}
+                        className="w-full px-2.5 py-1.5 bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-lg text-xs text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer"
+                      >
+                        <option value="ALL">All Age Groups</option>
+                        <option value="18-25">18 - 25 yrs (Youth)</option>
+                        <option value="26-40">26 - 40 yrs (Working)</option>
+                        <option value="41-60">41 - 60 yrs (Middle Age)</option>
+                        <option value="60+">60+ yrs (Senior Citizen)</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* CATEGORY 3: NAME FILTERS */}
+            <div className="border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden bg-slate-50/40 dark:bg-slate-900/40">
+              <button
+                type="button"
+                onClick={() => toggleCategory("nameFilters")}
+                className="w-full flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-800/60 hover:bg-slate-100 dark:hover:bg-slate-800 text-left transition-colors cursor-pointer"
+              >
+                <div className="flex items-center gap-2">
+                  <Tag className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+                  <span className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">
+                    3. NAME FILTERS
+                  </span>
+                  <span className="text-[10px] text-slate-400 hidden sm:inline">
+                    (Search voter name in English or Hindi, partial matching &amp; case-insensitive)
+                  </span>
+                </div>
+                {categoryCollapsed.nameFilters ? <ChevronDown className="w-4 h-4 text-slate-400" /> : <ChevronUp className="w-4 h-4 text-slate-400" />}
+              </button>
+
+              {!categoryCollapsed.nameFilters && (
+                <div className="p-3.5 border-t border-slate-200 dark:border-slate-800/80 bg-white dark:bg-slate-900 animate-fade-in">
+                  <div>
+                    <label className="text-[11px] font-semibold text-slate-700 dark:text-slate-300 block mb-1">
+                      Search Voter Name (English or Hindi / Marathi)
+                    </label>
+                    <div className="relative">
+                      <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                      <input
+                        type="text"
+                        placeholder="Search voter name..."
+                        value={filters.voterName}
+                        onChange={(e) => {
+                          setFilters((prev) => ({ ...prev, voterName: e.target.value }));
+                          setCurrentPage(1);
+                        }}
+                        className="w-full pl-9 pr-8 py-1.5 bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-lg text-xs text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-blue-500 placeholder:text-slate-400"
+                      />
+                      {filters.voterName && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setFilters((prev) => ({ ...prev, voterName: "" }));
+                            setCurrentPage(1);
+                          }}
+                          className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer"
+                        >
+                          <X className="w-3.5 h-3.5" />
+                        </button>
+                      )}
+                    </div>
+                    <span className="text-[10px] text-slate-400 mt-1 block">
+                      Matches against elector full name, Hindi name (e.g. राजेश), relative name, or relative Hindi name with partial substring support.
+                    </span>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* CATEGORY 4: LOCATION & IDENTITY */}
+            <div className="border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden bg-slate-50/40 dark:bg-slate-900/40">
+              <button
+                type="button"
+                onClick={() => toggleCategory("locationIdentity")}
+                className="w-full flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-800/60 hover:bg-slate-100 dark:hover:bg-slate-800 text-left transition-colors cursor-pointer"
+              >
+                <div className="flex items-center gap-2">
+                  <MapPin className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+                  <span className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">
+                    4. LOCATION &amp; IDENTITY
+                  </span>
+                  <span className="text-[10px] text-slate-400 hidden sm:inline">
+                    (Constituency, Booth, Sr. No., House No., EPIC ID, Polling Station, Ward)
+                  </span>
+                </div>
+                {categoryCollapsed.locationIdentity ? <ChevronDown className="w-4 h-4 text-slate-400" /> : <ChevronUp className="w-4 h-4 text-slate-400" />}
+              </button>
+
+              {!categoryCollapsed.locationIdentity && (
+                <div className="p-3.5 border-t border-slate-200 dark:border-slate-800/80 bg-white dark:bg-slate-900 space-y-3 animate-fade-in">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2.5">
+                    {/* Constituency Number */}
+                    <div>
+                      <label className="text-[11px] font-semibold text-slate-700 dark:text-slate-300 block mb-1">Constituency Number</label>
+                      <select
+                        value={filters.constituencyNo}
+                        onChange={(e) => {
+                          setFilters((prev) => ({ ...prev, constituencyNo: e.target.value }));
+                          setCurrentPage(1);
+                        }}
+                        className="w-full px-2.5 py-1.5 bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-lg text-xs text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer"
+                      >
+                        <option value="ALL">All Constituencies</option>
+                        {uniqueConstituencies.map((c) => (
+                          <option key={c} value={c}>Constituency #{c}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {/* Booth Number */}
+                    <div>
+                      <label className="text-[11px] font-semibold text-slate-700 dark:text-slate-300 block mb-1">Booth Number</label>
+                      <select
+                        value={filters.boothNo}
+                        onChange={(e) => {
+                          setFilters((prev) => ({ ...prev, boothNo: e.target.value }));
+                          setCurrentPage(1);
+                        }}
+                        className="w-full px-2.5 py-1.5 bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-lg text-xs text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer"
+                      >
+                        <option value="ALL">All Booths</option>
+                        {uniqueBooths.map((b) => (
+                          <option key={b} value={b.toString()}>Booth #{b}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {/* Serial Number */}
+                    <div>
+                      <label className="text-[11px] font-semibold text-slate-700 dark:text-slate-300 block mb-1">Serial Number (Sr. No.)</label>
+                      <input
+                        type="text"
+                        placeholder="e.g. 1, 42, 105"
+                        value={filters.serialNo}
+                        onChange={(e) => {
+                          setFilters((prev) => ({ ...prev, serialNo: e.target.value }));
+                          setCurrentPage(1);
+                        }}
+                        className="w-full px-2.5 py-1.5 bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-lg text-xs text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                      />
+                    </div>
+
+                    {/* House Number */}
+                    <div>
+                      <label className="text-[11px] font-semibold text-slate-700 dark:text-slate-300 block mb-1">House Number</label>
+                      <input
+                        type="text"
+                        placeholder="Enter house number..."
+                        value={filters.houseNumber}
+                        onChange={(e) => {
+                          setFilters((prev) => ({ ...prev, houseNumber: e.target.value }));
+                          setCurrentPage(1);
+                        }}
+                        className="w-full px-2.5 py-1.5 bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-lg text-xs text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1">
+                    {/* EPIC Number */}
+                    <div>
+                      <label className="text-[11px] font-semibold text-slate-700 dark:text-slate-300 block mb-1">EPIC Number</label>
+                      <input
+                        type="text"
+                        placeholder="ENTER EPIC NUMBER..."
+                        value={filters.epicNumber}
+                        onChange={(e) => {
+                          setFilters((prev) => ({ ...prev, epicNumber: e.target.value }));
+                          setCurrentPage(1);
+                        }}
+                        className="w-full px-2.5 py-1.5 bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-lg text-xs text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-blue-500 uppercase font-mono"
+                      />
+                    </div>
+
+                    {/* Booth Station */}
+                    <div>
+                      <label className="text-[11px] font-semibold text-slate-700 dark:text-slate-300 block mb-1">Booth Station</label>
+                      <select
+                        value={filters.boothStation}
+                        onChange={(e) => {
+                          setFilters((prev) => ({ ...prev, boothStation: e.target.value }));
+                          setCurrentPage(1);
+                        }}
+                        className="w-full px-2.5 py-1.5 bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-lg text-xs text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-blue-500 truncate cursor-pointer"
+                      >
+                        <option value="ALL">All Polling Stations</option>
+                        {uniqueStations.map((s) => (
+                          <option key={s} value={s}>{s}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {/* Ward */}
+                    <div>
+                      <label className="text-[11px] font-semibold text-slate-700 dark:text-slate-300 block mb-1">Ward</label>
+                      <select
+                        value={filters.ward}
+                        onChange={(e) => {
+                          setFilters((prev) => ({ ...prev, ward: e.target.value }));
+                          setCurrentPage(1);
+                        }}
+                        className="w-full px-2.5 py-1.5 bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-lg text-xs text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-blue-500 truncate cursor-pointer"
+                      >
+                        <option value="ALL">All Wards</option>
+                        {uniqueWards.map((w) => (
+                          <option key={w} value={w}>{w}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* CATEGORY 5: COMMUNITY / STAKEHOLDER GROUPS */}
+            <div className="border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50/40 dark:bg-slate-900/40">
+              <button
+                type="button"
+                onClick={() => toggleCategory("communityRecords")}
+                className="w-full flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-800/60 hover:bg-slate-100 dark:hover:bg-slate-800 text-left transition-colors rounded-t-xl cursor-pointer"
+              >
+                <div className="flex items-center gap-2">
+                  <Building2 className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400" />
+                  <span className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">
+                    5. COMMUNITY / STAKEHOLDER GROUPS
+                  </span>
+                  <span className="text-[10px] text-slate-400 hidden sm:inline">
+                    (Searchable Multi Select Dropdown for Farmers, Sugar Workers, Anganwadi, SHGs &amp; Co-ops)
+                  </span>
+                </div>
+                {categoryCollapsed.communityRecords ? <ChevronDown className="w-4 h-4 text-slate-400" /> : <ChevronUp className="w-4 h-4 text-slate-400" />}
+              </button>
+
+              {!categoryCollapsed.communityRecords && (
+                <div className="p-3.5 border-t border-slate-200 dark:border-slate-800/80 bg-white dark:bg-slate-900 space-y-3 animate-fade-in rounded-b-xl">
+                  <div>
+                    <label className="text-[11px] font-semibold text-slate-700 dark:text-slate-300 block mb-1">
+                      Community / Stakeholder Groups
+                    </label>
+                    <CommunityGroupDropdown
+                      selectedGroups={filters.communityGroups}
+                      onToggleGroup={handleToggleCommunityGroup}
+                      onClearAll={handleClearCommunityGroups}
+                      onSelectAll={handleSelectAllCommunityGroups}
+                    />
+                  </div>
+
+                  {/* Privacy & Compliance Safeguard Notice */}
+                  <div className="p-3 rounded-xl bg-teal-50/50 dark:bg-teal-950/30 border border-teal-200 dark:border-teal-800/60 flex items-start gap-2.5">
+                    <ShieldCheck className="w-4 h-4 text-teal-600 dark:text-teal-400 shrink-0 mt-0.5" />
+                    <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed">
+                      <strong className="text-teal-900 dark:text-teal-200">Privacy &amp; Compliance Safeguard:</strong>{" "}
+                      Community group records are sourced strictly from voluntary disclosure in the Elector Central Profile or verified field audits. Group affiliations are never inferred from caste, religion, name, or address.
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       )}
 
-      {/* REQUEST ADDITIONAL VOTER DATA ENQUIRY MODAL (SPEC COMPLIANT) */}
-      {showDataEnquiryModal && (
-        <div className="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl max-w-lg w-full shadow-2xl p-5 space-y-4">
+      {/* ===================================================================== */}
+      {/* SECTION 4: TABLE HEADER & TOOLBAR                                    */}
+      {/* ===================================================================== */}
+      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs overflow-hidden">
+        <div className="p-3.5 border-b border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3 bg-slate-50/50 dark:bg-slate-900/50">
+          <div className="flex items-center gap-3">
+            <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
+              Showing {filteredElectors.length > 0 ? (currentPage - 1) * rowsPerPage + 1 : 0} to{" "}
+              {Math.min(currentPage * rowsPerPage, filteredElectors.length)} of {filteredElectors.length.toLocaleString()} matching electors
+            </span>
+            {selectedElectors.length > 0 && (
+              <span className="px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 text-[11px] font-bold">
+                {selectedElectors.length} selected
+              </span>
+            )}
+          </div>
+
+          <div className="flex items-center gap-2">
+            {/* Rows Selector */}
+            <div className="flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400">
+              <span>Rows:</span>
+              <select
+                value={rowsPerPage}
+                onChange={(e) => {
+                  setRowsPerPage(Number(e.target.value));
+                  setCurrentPage(1);
+                }}
+                className="px-2 py-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-semibold text-slate-700 dark:text-slate-300 focus:outline-none cursor-pointer"
+              >
+                <option value={6}>6</option>
+                <option value={10}>10</option>
+                <option value={20}>20</option>
+                <option value={50}>50</option>
+              </select>
+            </div>
+
+            {/* Sync Button */}
+            <button
+              onClick={handleSyncRoll}
+              className="flex items-center gap-1 px-2.5 py-1 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white text-xs font-semibold rounded-lg border border-slate-200 dark:border-slate-800 transition-colors cursor-pointer"
+            >
+              <RefreshCw className="w-3 h-3 text-slate-400" />
+              <span>Sync</span>
+            </button>
+
+            {/* SMS Button */}
+            <button
+              onClick={() => setIsSmsModalOpen(true)}
+              className="flex items-center gap-1 px-2.5 py-1 bg-amber-50 dark:bg-amber-950/50 hover:bg-amber-100 text-amber-800 dark:text-amber-300 text-xs font-bold rounded-lg border border-amber-200 dark:border-amber-800 transition-colors cursor-pointer"
+            >
+              <Send className="w-3 h-3 text-amber-600 dark:text-amber-400" />
+              <span>SMS {selectedElectors.length > 0 ? `(${selectedElectors.length})` : ""}</span>
+            </button>
+
+            {/* Export Button */}
+            <button
+              onClick={handleExportCSV}
+              className="flex items-center gap-1 px-2.5 py-1 bg-slate-900 dark:bg-slate-800 hover:bg-slate-800 text-white text-xs font-bold rounded-lg transition-colors cursor-pointer"
+            >
+              <Download className="w-3 h-3 text-slate-300" />
+              <span>Export</span>
+            </button>
+          </div>
+        </div>
+
+        {/* ===================================================================== */}
+        {/* SECTION 5: ELECTORS DATA TABLE (MATCHING SCREENSHOTS 3, 4, 5)        */}
+        {/* ===================================================================== */}
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse text-xs">
+            <thead>
+              <tr className="bg-slate-50/80 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider text-[10px]">
+                <th className="py-3 px-3 w-8 text-center">
+                  <input
+                    type="checkbox"
+                    checked={selectedElectors.length === paginatedElectors.length && paginatedElectors.length > 0}
+                    onChange={handleSelectAll}
+                    className="w-3.5 h-3.5 rounded border-slate-300 dark:border-slate-700 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                  />
+                </th>
+                <th className="py-3 px-3 w-28 whitespace-nowrap">1. CONSTITUENCY NO.</th>
+                <th className="py-3 px-3 w-24 whitespace-nowrap">2. BOOTH NO.</th>
+                <th className="py-3 px-3 w-20 whitespace-nowrap">3. SR. NO.</th>
+                <th className="py-3 px-3 min-w-[220px]">4. ELECTOR NAME &amp; RELATIVE</th>
+                <th className="py-3 px-3 w-32 whitespace-nowrap">5. EPIC ID</th>
+                <th className="py-3 px-3 w-28 whitespace-nowrap">6. AGE / SEX</th>
+                <th className="py-3 px-3 min-w-[200px]">7. BOOTH STATION &amp; WARD</th>
+                <th className="py-3 px-3 w-32 whitespace-nowrap">8. CONTACT</th>
+                <th className="py-3 px-3 text-right w-28 whitespace-nowrap">9. VIEW PROFILE</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100 dark:divide-slate-800/80 font-medium">
+              {paginatedElectors.length > 0 ? (
+                paginatedElectors.map((elector) => {
+                  const isChecked = selectedElectors.includes(elector.id);
+                  const allocs = getAllocationsForElector(elector.id || elector.voterCode);
+                  const commStatus = getElectorCommunityStatus(elector.id || elector.voterCode);
+
+                  return (
+                    <tr
+                      key={elector.id}
+                      className={`hover:bg-blue-50/30 dark:hover:bg-slate-800/40 transition-colors ${
+                        isChecked ? "bg-blue-50/40 dark:bg-blue-950/30" : ""
+                      }`}
+                    >
+                      {/* Checkbox */}
+                      <td className="py-3 px-3 text-center">
+                        <input
+                          type="checkbox"
+                          checked={isChecked}
+                          onChange={() => handleToggleElector(elector.id)}
+                          className="w-3.5 h-3.5 rounded border-slate-300 dark:border-slate-700 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                        />
+                      </td>
+
+                      {/* 1. Constituency No */}
+                      <td className="py-3 px-3 whitespace-nowrap">
+                        <span className="inline-flex items-center gap-1 font-mono font-tabular text-xs font-bold text-slate-800 dark:text-slate-200 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-2 py-0.5 rounded">
+                          AC-{elector.constituencyNo}
+                        </span>
+                      </td>
+
+                      {/* 2. Booth No */}
+                      <td className="py-3 px-3 whitespace-nowrap">
+                        <span className="inline-flex items-center gap-1 font-mono font-tabular text-xs font-bold text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-900/50 px-2 py-0.5 rounded">
+                          #{elector.boothNumber}
+                        </span>
+                      </td>
+
+                      {/* 3. Sr. No */}
+                      <td className="py-3 px-3 whitespace-nowrap">
+                        <span className="font-mono font-tabular text-xs font-bold text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 px-1.5 py-0.5 rounded">
+                          #{elector.serialNo}
+                        </span>
+                      </td>
+
+                      {/* 4. Elector Name & Relative */}
+                      <td className="py-3 px-3">
+                        <div className="space-y-0.5">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <button
+                              onClick={() => setSelectedVoter(elector)}
+                              className="font-bold text-slate-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 text-left transition-colors cursor-pointer"
+                              title="Click to view complete voter profile"
+                            >
+                              {elector.fullName}
+                            </button>
+                            {elector.hindiName && (
+                              <span className="text-[11px] font-medium text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded border border-slate-200 dark:border-slate-700">
+                                {elector.hindiName}
+                              </span>
+                            )}
+                          </div>
+
+                          {/* Relative Info */}
+                          <div className="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1 flex-wrap">
+                            <span>
+                              {elector.relationType === "Father"
+                                ? "S/o"
+                                : elector.relationType === "Husband"
+                                ? "W/o"
+                                : elector.relationType === "Mother"
+                                ? "D/o"
+                                : "R/o"}{" "}
+                              {elector.relativeName}
+                            </span>
+                            {elector.relativeHindiName && (
+                              <span className="text-slate-400">({elector.relativeHindiName})</span>
+                            )}
+                          </div>
+
+                          {/* Community Groups Badges */}
+                          {allocs.length > 0 ? (
+                            <div className="flex items-center gap-1 flex-wrap pt-0.5">
+                              {allocs.map((a) => (
+                                <span
+                                  key={a.id}
+                                  className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold bg-teal-50 dark:bg-teal-950/60 text-teal-700 dark:text-teal-300 border border-teal-200 dark:border-teal-800"
+                                >
+                                  <Users className="w-2.5 h-2.5" />
+                                  <span>{a.groupName.split("/")[0]?.trim()}</span>
+                                  {a.verificationStatus === "VERIFIED" && (
+                                    <Check className="w-2.5 h-2.5 text-emerald-600 dark:text-emerald-400 stroke-[3]" />
+                                  )}
+                                </span>
+                              ))}
+                            </div>
+                          ) : commStatus === "NOT_ASSOCIATED" ? (
+                            <div className="pt-0.5">
+                              <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-semibold text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/50 border border-amber-200 dark:border-amber-800">
+                                Not Associated
+                              </span>
+                            </div>
+                          ) : commStatus === "NOT_DISCLOSED" ? (
+                            <div className="pt-0.5">
+                              <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-medium text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                                Not Disclosed
+                              </span>
+                            </div>
+                          ) : null}
+                        </div>
+                      </td>
+
+                      {/* 5. EPIC ID */}
+                      <td className="py-3 px-3 whitespace-nowrap">
+                        <div className="inline-flex items-center gap-1">
+                          <span className="font-mono font-tabular text-[11px] font-bold text-slate-800 dark:text-slate-200 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-2 py-0.5 rounded tracking-wide">
+                            {elector.epicNumber}
+                          </span>
+                          <button
+                            onClick={() => handleCopyEpic(elector.epicNumber)}
+                            className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded transition-colors cursor-pointer"
+                            title="Copy EPIC ID"
+                          >
+                            <Copy className="w-3 h-3" />
+                          </button>
+                        </div>
+                      </td>
+
+                      {/* 6. Age / Sex */}
+                      <td className="py-3 px-3 whitespace-nowrap">
+                        <div className="inline-flex items-center gap-1.5 text-xs">
+                          <span className="font-mono font-tabular font-bold text-slate-800 dark:text-slate-200">
+                            {elector.age} yrs
+                          </span>
+                          <span className="text-slate-400">/</span>
+                          <span
+                            className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${
+                              elector.gender === "MALE"
+                                ? "bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-400 border border-blue-200 dark:border-blue-900/50"
+                                : elector.gender === "FEMALE"
+                                ? "bg-pink-50 dark:bg-pink-950/60 text-pink-700 dark:text-pink-400 border border-pink-200 dark:border-pink-900/50"
+                                : "bg-purple-50 dark:bg-purple-950/60 text-purple-700 dark:text-purple-400 border border-purple-200 dark:border-purple-900/50"
+                            }`}
+                          >
+                            {elector.gender === "MALE" ? "Male" : elector.gender === "FEMALE" ? "Female" : "Other"}
+                          </span>
+                        </div>
+                      </td>
+
+                      {/* 7. Booth Station & Ward */}
+                      <td className="py-3 px-3">
+                        <div className="max-w-[240px]">
+                          <span className="font-semibold text-xs text-slate-900 dark:text-slate-100 block truncate" title={elector.pollingStation}>
+                            {elector.pollingStation}
+                          </span>
+                          <span className="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1 mt-0.5">
+                            <MapPin className="w-3 h-3 text-slate-400 shrink-0" />
+                            <span className="truncate">{elector.ward || elector.prabhaag}</span>
+                          </span>
+                        </div>
+                      </td>
+
+                      {/* 8. Contact */}
+                      <td className="py-3 px-3 whitespace-nowrap">
+                        {elector.mobile ? (
+                          <a
+                            href={`tel:${elector.mobile}`}
+                            className="inline-flex items-center gap-1 font-mono font-tabular text-[11px] text-blue-600 dark:text-blue-400 hover:underline"
+                            title="Call elector"
+                          >
+                            <Phone className="w-3 h-3 text-slate-400 shrink-0" />
+                            <span>{elector.mobile}</span>
+                          </a>
+                        ) : (
+                          <span className="text-slate-400 text-xs font-mono font-tabular">—</span>
+                        )}
+                      </td>
+
+                      {/* 9. View Profile */}
+                      <td className="py-3 px-3 text-right whitespace-nowrap">
+                        <button
+                          onClick={() => setSelectedVoter(elector)}
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#2563EB] hover:bg-blue-700 text-white font-bold rounded-xl text-xs transition-all shadow-xs shrink-0 cursor-pointer group"
+                          title="Open Central Voter Profile"
+                        >
+                          <Eye className="w-3.5 h-3.5" />
+                          <span>View Profile</span>
+                          <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })
+              ) : (
+                <tr>
+                  <td colSpan={10} className="py-12 text-center text-slate-500 dark:text-slate-400">
+                    <Users className="w-8 h-8 text-slate-300 dark:text-slate-600 mx-auto mb-2" />
+                    <p className="font-semibold text-xs text-slate-700 dark:text-slate-200">No electors found matching criteria</p>
+                    <p className="text-[11px] text-slate-400 mt-1">Try clearing filters or adjusting your global search query.</p>
+                    <button
+                      onClick={handleResetAll}
+                      className="mt-3 px-3 py-1 bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800 rounded-lg text-xs font-bold hover:bg-blue-100 transition-colors cursor-pointer"
+                    >
+                      Clear All Filters
+                    </button>
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        {/* ===================================================================== */}
+        {/* SECTION 6: PAGINATION BAR                                            */}
+        {/* ===================================================================== */}
+        <div className="p-3 bg-slate-50/70 dark:bg-slate-900/70 border-t border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500 dark:text-slate-400">
+          <div>
+            Showing {filteredElectors.length > 0 ? (currentPage - 1) * rowsPerPage + 1 : 0} to{" "}
+            {Math.min(currentPage * rowsPerPage, filteredElectors.length)} of {filteredElectors.length.toLocaleString()} entries
+          </div>
+
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+              disabled={currentPage === 1}
+              className="p-1 rounded border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800 hover:bg-slate-50 disabled:opacity-40 transition-colors cursor-pointer"
+              title="Previous Page"
+            >
+              <ChevronLeft className="w-4 h-4 text-slate-600 dark:text-slate-300" />
+            </button>
+
+            {Array.from({ length: Math.min(3, totalPages) }, (_, i) => i + 1).map((pg) => (
+              <button
+                key={pg}
+                onClick={() => setCurrentPage(pg)}
+                className={`w-7 h-7 rounded text-xs font-bold transition-all cursor-pointer ${
+                  currentPage === pg
+                    ? "bg-[#2563EB] text-white"
+                    : "bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-50"
+                }`}
+              >
+                {pg}
+              </button>
+            ))}
+
+            {totalPages > 4 && <span className="px-1 text-slate-400">...</span>}
+
+            {totalPages > 3 && (
+              <button
+                onClick={() => setCurrentPage(totalPages)}
+                className={`w-7 h-7 rounded text-xs font-bold transition-all cursor-pointer ${
+                  currentPage === totalPages
+                    ? "bg-[#2563EB] text-white"
+                    : "bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-50"
+                }`}
+              >
+                {totalPages.toLocaleString()}
+              </button>
+            )}
+
+            <button
+              onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
+              disabled={currentPage === totalPages}
+              className="p-1 rounded border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800 hover:bg-slate-50 disabled:opacity-40 transition-colors cursor-pointer"
+              title="Next Page"
+            >
+              <ChevronRight className="w-4 h-4 text-slate-600 dark:text-slate-300" />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* ===================================================================== */}
+      {/* ADD VOTER MODAL                                                       */}
+      {/* ===================================================================== */}
+      {isAddVoterOpen && (
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 max-w-lg w-full p-6 shadow-2xl space-y-4 animate-scaleUp">
             <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
               <div>
-                <h3 className="text-base font-bold text-slate-800 dark:text-white flex items-center gap-2">
-                  <FileQuestion className="w-4 h-4 text-brand-600" />
-                  <span>Request Additional Voter Data</span>
-                </h3>
-                <p className="text-xs text-slate-500">
-                  Submit an official inquiry to the Indata team for electoral roll augmentation.
+                <h3 className="font-extrabold text-slate-900 dark:text-white text-base">Register New Elector</h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400">
+                  Add verified voter information into the electoral roll register.
                 </p>
               </div>
               <button
-                type="button"
-                onClick={() => setShowDataEnquiryModal(false)}
-                className="p-1 rounded-lg text-slate-400 hover:text-slate-700"
+                onClick={() => setIsAddVoterOpen(false)}
+                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
-            <div className="p-3 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/40 rounded-xl text-xs text-amber-900 dark:text-amber-300">
-              Per standard security policy, voter rolls cannot be imported directly. The Indata operations team reviews your specification, validates assembly boundaries, and activates the dataset upon confirmation.
-            </div>
-
-            <form onSubmit={handleDataEnquirySubmit} className="space-y-3.5 text-xs">
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                setIsAddVoterOpen(false);
+                showToast("success", "Elector Registered", `New elector ${newElector.fullName} registered into Booth #${newElector.boothNumber}.`);
+              }}
+              className="space-y-3 text-xs"
+            >
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">State</label>
+                  <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">Full Name (English) *</label>
                   <input
                     type="text"
-                    disabled
-                    value={enquiryState}
-                    className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-800 text-slate-500 cursor-not-allowed"
+                    required
+                    placeholder="e.g. Ramesh Narayan Joshi"
+                    value={newElector.fullName}
+                    onChange={(e) => setNewElector({ ...newElector, fullName: e.target.value })}
+                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white"
                   />
                 </div>
-
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">District</label>
+                  <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">Hindi / Local Name</label>
                   <input
                     type="text"
-                    disabled
-                    value={enquiryDistrict}
-                    className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-800 text-slate-500 cursor-not-allowed"
+                    placeholder="e.g. रमेश नारायण जोशी"
+                    value={newElector.hindiName}
+                    onChange={(e) => setNewElector({ ...newElector, hindiName: e.target.value })}
+                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">Relative Name *</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="Father / Husband Name"
+                    value={newElector.relativeName}
+                    onChange={(e) => setNewElector({ ...newElector, relativeName: e.target.value })}
+                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white"
+                  />
+                </div>
+                <div>
+                  <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">Relation Type</label>
+                  <select
+                    value={newElector.relationType}
+                    onChange={(e) => setNewElector({ ...newElector, relationType: e.target.value as any })}
+                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white cursor-pointer"
+                  >
+                    <option value="Father">Father (S/o)</option>
+                    <option value="Husband">Husband (W/o)</option>
+                    <option value="Mother">Mother (D/o)</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-3 gap-3">
+                <div>
+                  <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">Sex / Gender</label>
+                  <select
+                    value={newElector.gender}
+                    onChange={(e) => setNewElector({ ...newElector, gender: e.target.value as any })}
+                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white cursor-pointer"
+                  >
+                    <option value="MALE">Male</option>
+                    <option value="FEMALE">Female</option>
+                    <option value="OTHER">Other</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">Age *</label>
+                  <input
+                    type="number"
+                    required
+                    placeholder="e.g. 35"
+                    value={newElector.age}
+                    onChange={(e) => setNewElector({ ...newElector, age: e.target.value })}
+                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white"
+                  />
+                </div>
+                <div>
+                  <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">EPIC Number *</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. WXE8921029"
+                    value={newElector.epicNumber}
+                    onChange={(e) => setNewElector({ ...newElector, epicNumber: e.target.value })}
+                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white uppercase"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-3 gap-3">
+                <div>
+                  <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">Constituency No.</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. 215"
+                    value={newElector.constituencyNo}
+                    onChange={(e) => setNewElector({ ...newElector, constituencyNo: e.target.value })}
+                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white"
+                  />
+                </div>
+                <div>
+                  <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">Assigned Booth</label>
+                  <select
+                    value={newElector.boothNumber}
+                    onChange={(e) => setNewElector({ ...newElector, boothNumber: e.target.value })}
+                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white cursor-pointer"
+                  >
+                    {uniqueBooths.map((b) => (
+                      <option key={b} value={b.toString()}>Booth #{b}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">Contact Phone</label>
+                  <input
+                    type="text"
+                    placeholder="+91 98220 00000"
+                    value={newElector.mobile}
+                    onChange={(e) => setNewElector({ ...newElector, mobile: e.target.value })}
+                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Vidhan Sabha Constituency *</label>
-                <input
-                  type="text"
-                  required
-                  value={enquiryVidhanSabha}
-                  onChange={(e) => setEnquiryVidhanSabha(e.target.value)}
-                  className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-brand-500"
-                />
-              </div>
-
-              <div>
-                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Details of Required Voter Data *</label>
+                <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">Residential Address</label>
                 <textarea
-                  required
-                  rows={3}
-                  value={enquiryDetails}
-                  onChange={(e) => setEnquiryDetails(e.target.value)}
-                  placeholder="Specify particular polling stations, additional draft rolls, mobile contact verification requirements, or newly registered Form 6 electors..."
-                  className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-brand-500"
+                  rows={2}
+                  placeholder="Plot/Flat no, Lane, Locality, Area"
+                  value={newElector.address}
+                  onChange={(e) => setNewElector({ ...newElector, address: e.target.value })}
+                  className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white"
                 />
               </div>
 
-              <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
-                <Button type="button" variant="outline" size="sm" onClick={() => setShowDataEnquiryModal(false)}>
+              <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-100 dark:border-slate-800">
+                <button
+                  type="button"
+                  onClick={() => setIsAddVoterOpen(false)}
+                  className="px-4 py-2 text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-800 cursor-pointer"
+                >
                   Cancel
-                </Button>
-                <Button type="submit" variant="primary" size="sm">
-                  Submit Data Enquiry
-                </Button>
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-[#2563EB] hover:bg-blue-700 text-white font-bold rounded-xl text-xs shadow-xs cursor-pointer"
+                >
+                  Save Elector
+                </button>
               </div>
             </form>
           </div>
         </div>
       )}
 
-      {/* CENTRAL VOTER PROFILE 360° DOSSIER MODAL (SECTION 3 SPEC COMPLIANT) */}
-      {selectedProfileVoter && (
-        <div className="fixed inset-0 z-50 bg-slate-950/75 backdrop-blur-xs flex items-center justify-center p-3 sm:p-5">
-          <div className="bg-white dark:bg-[#12131A] border border-slate-200 dark:border-slate-800 rounded-3xl max-w-4xl w-full shadow-2xl flex flex-col max-h-[92vh] overflow-hidden animate-scale-up">
-            {/* 1. SECTION 3 HERO HEADER EXPANSION (OCCUPIES 40-50% UPPER VIEWPORT ON DESKTOP) */}
-            <div className="p-5 sm:p-6 bg-gradient-to-b from-violet-50/70 via-white to-white dark:from-[#1A1B23] dark:via-[#12131A] dark:to-[#12131A] border-b border-slate-200/80 dark:border-slate-800 shrink-0">
-              <div className="flex items-start justify-between gap-4">
-                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                  {/* Photo / Avatar */}
-                  <div className="relative">
-                    <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-tr from-[#6256D9] to-indigo-600 text-white flex items-center justify-center font-black text-2xl shadow-lg shadow-[#6256D9]/20 shrink-0">
-                      {selectedProfileVoter.name.slice(0, 2).toUpperCase()}
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => setIsStarred(!isStarred)}
-                      className={`absolute -bottom-1 -right-1 p-1 rounded-full border shadow-xs cursor-pointer ${
-                        isStarred
-                          ? "bg-amber-400 text-white border-amber-300"
-                          : "bg-white dark:bg-slate-800 text-slate-400 border-slate-200 dark:border-slate-700"
-                      }`}
-                      title={isStarred ? "Starred / Bookmarked" : "Click to bookmark"}
-                    >
-                      <Star className="w-3.5 h-3.5 fill-current" />
-                    </button>
-                  </div>
-
-                  {/* Header Identification & Badges */}
-                  <div className="space-y-1">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
-                        {selectedProfileVoter.name}
-                      </h2>
-                      <span className="font-mono text-xs font-black text-[#6256D9] bg-violet-50 dark:bg-violet-950/50 px-2.5 py-0.5 rounded-lg border border-violet-200 dark:border-violet-800">
-                        {selectedProfileVoter.epicId}
-                      </span>
-                      <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
-                        {selectedProfileVoter.gender} • Age {selectedProfileVoter.age}
-                      </span>
-                    </div>
-
-                    <p className="text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400">
-                      {selectedProfileVoter.marathiName} • {selectedProfileVoter.relation} {selectedProfileVoter.relativeName}
-                    </p>
-
-                    {/* Full Polling Booth Location & Stance Tag */}
-                    <div className="flex flex-wrap items-center gap-2 text-xs pt-1">
-                      <span className="flex items-center gap-1 font-semibold text-slate-700 dark:text-slate-300">
-                        <MapPin className="w-3.5 h-3.5 text-[#6256D9]" />
-                        <span>Station {selectedProfileVoter.boothNumber}: {selectedProfileVoter.boothName}</span>
-                      </span>
-                      <span className="text-slate-400">•</span>
-                      <span className="font-semibold text-slate-500">
-                        Serial #{selectedProfileVoter.id.replace("v-", "40")} • {selectedProfileVoter.ward}
-                      </span>
-                      <span className={`px-2 py-0.5 rounded-full font-bold text-[10.5px] ${
-                        selectedProfileVoter.sentiment === "Strong Supporter"
-                          ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300"
-                          : selectedProfileVoter.sentiment === "Lean Favorable"
-                          ? "bg-blue-50 text-blue-700 dark:bg-blue-950/40 dark:text-blue-300"
-                          : "bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300"
-                      }`}>
-                        {selectedProfileVoter.sentiment}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Close & Action */}
-                <div className="flex items-center gap-2">
-                  {/* DEDICATED HIGH-VISIBILITY [ HOUSE ADDRESS ] CTA BUTTON */}
-                  <button
-                    type="button"
-                    onClick={() => setShowHouseAddressModal(true)}
-                    className="px-3.5 py-1.5 rounded-xl bg-[#6256D9] hover:bg-[#5044BF] text-white font-bold text-xs flex items-center gap-1.5 shadow-md shadow-[#6256D9]/20 transition-all cursor-pointer shrink-0"
-                  >
-                    <MapPin className="w-3.5 h-3.5" />
-                    <span>House Address</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setSelectedProfileVoter(null)}
-                    className="p-1.5 rounded-xl text-slate-400 hover:text-slate-700 dark:hover:text-white bg-slate-100 dark:bg-slate-800 transition-colors cursor-pointer"
-                  >
-                    <X className="w-5 h-5" />
-                  </button>
-                </div>
-              </div>
-
-              {/* Action Bar Pills */}
-              <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-2 overflow-x-auto text-xs">
-                <div className="flex items-center gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => showToast("info", "Call Initiated", `Calling ${selectedProfileVoter.phone}...`)}
-                    className="cursor-pointer text-[#6256D9] border-violet-200 dark:border-violet-800 hover:bg-violet-50"
-                  >
-                    <Phone className="w-3.5 h-3.5" />
-                    <span>Call: {selectedProfileVoter.phone}</span>
-                  </Button>
-
-                  <Button
-                    variant="primary"
-                    size="sm"
-                    onClick={() => showToast("success", "WhatsApp Opened", `Opening chat with ${selectedProfileVoter.name}`)}
-                    className="cursor-pointer bg-emerald-600 hover:bg-emerald-700"
-                  >
-                    <MessageSquare className="w-3.5 h-3.5" />
-                    <span>WhatsApp</span>
-                  </Button>
-
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => showToast("info", "Voter Slip Sent", `Dispatched PDF voter slip to ${selectedProfileVoter.phone}`)}
-                  >
-                    <Share2 className="w-3.5 h-3.5" />
-                    <span>Share Digital Slip</span>
-                  </Button>
-                </div>
-
-                <div className="flex items-center gap-2 text-slate-500 font-semibold text-[11px]">
-                  <span>Status:</span>
-                  <span className="text-emerald-600 font-bold bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded">
-                    {selectedProfileVoter.status}
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {/* 2. CONTINUOUS PROFILE DOSSIER (ALL SUBSECTIONS DISPLAYED AT ONCE) */}
-            <div className="p-5 sm:p-6 overflow-y-auto space-y-6 text-xs max-h-[calc(92vh-220px)]">
-              {/* SUBSECTION 1: ATTRIBUTES & ECI DEMOGRAPHICS */}
-              <div className="space-y-3">
-                <div className="flex items-center justify-between pb-2 border-b border-slate-200/80 dark:border-slate-800">
-                  <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-lg bg-violet-100 text-[#6256D9] dark:bg-violet-950/60 flex items-center justify-center font-bold">
-                      <Building2 className="w-3.5 h-3.5" />
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-sm text-slate-900 dark:text-white">
-                        1. Attributes &amp; Demographics
-                      </h3>
-                      <p className="text-[11px] text-slate-500">ECI verified electoral attributes and booth geometry</p>
-                    </div>
-                  </div>
-                  <span className="text-[10px] font-bold text-brand-600 bg-brand-50 dark:bg-brand-950/40 px-2 py-0.5 rounded border border-brand-200 dark:border-brand-800">
-                    ECI Official Record
-                  </span>
-                </div>
-
-                {/* Detailed Demographics Block */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                  <div className="p-3 bg-slate-50 dark:bg-slate-800/40 rounded-xl border border-slate-200/80 dark:border-slate-800">
-                    <span className="text-[10px] text-slate-400 block font-bold">Caste / Community</span>
-                    <span className="font-bold text-slate-900 dark:text-white mt-0.5 block">{selectedProfileVoter.caste}</span>
-                  </div>
-                  <div className="p-3 bg-slate-50 dark:bg-slate-800/40 rounded-xl border border-slate-200/80 dark:border-slate-800">
-                    <span className="text-[10px] text-slate-400 block font-bold">Occupation</span>
-                    <span className="font-bold text-slate-900 dark:text-white mt-0.5 block">{selectedProfileVoter.occupation}</span>
-                  </div>
-                  <div className="p-3 bg-slate-50 dark:bg-slate-800/40 rounded-xl border border-slate-200/80 dark:border-slate-800">
-                    <span className="text-[10px] text-slate-400 block font-bold">Beneficiary Scheme</span>
-                    <span className="font-bold text-slate-900 dark:text-white mt-0.5 block">{selectedProfileVoter.scheme}</span>
-                  </div>
-                  <div className="p-3 bg-slate-50 dark:bg-slate-800/40 rounded-xl border border-slate-200/80 dark:border-slate-800">
-                    <span className="text-[10px] text-slate-400 block font-bold">House Number</span>
-                    <span className="font-bold text-slate-900 dark:text-white mt-0.5 block">{selectedProfileVoter.houseNo}</span>
-                  </div>
-                </div>
-
-                {/* Polling Station & Structural Details */}
-                <div className="p-4 bg-slate-50 dark:bg-slate-800/40 rounded-xl border border-slate-200/80 dark:border-slate-800 space-y-2">
-                  <h4 className="font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
-                    <MapPin className="w-3.5 h-3.5 text-[#6256D9]" />
-                    <span>Polling Station Structural Details</span>
-                  </h4>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-slate-600 dark:text-slate-300">
-                    <div>Station Name: <strong>{selectedProfileVoter.boothNumber} - {selectedProfileVoter.boothName}</strong></div>
-                    <div>Assembly Segment: <strong>215 - Kasba Peth (Pune City)</strong></div>
-                    <div>Municipal Ward: <strong>{selectedProfileVoter.ward} (Kothrud Depot Prabhag)</strong></div>
-                    <div>ECI Building Code: <strong>MH-215-PS101-ROOM1</strong></div>
-                  </div>
-                </div>
-              </div>
-
-              {/* SUBSECTION 2: HOUSEHOLD & FAMILY NETWORK */}
-              <div className="space-y-3 pt-3">
-                <div className="flex items-center justify-between pb-2 border-b border-slate-200/80 dark:border-slate-800">
-                  <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-lg bg-indigo-100 text-indigo-600 dark:bg-indigo-950/60 flex items-center justify-center font-bold">
-                      <Users className="w-3.5 h-3.5" />
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-sm text-slate-900 dark:text-white">
-                        2. Household &amp; Family Members ({selectedProfileVoter.familyMembersCount} Electors)
-                      </h3>
-                      <p className="text-[11px] text-slate-500">
-                        Electors residing in <strong>{selectedProfileVoter.houseNo}</strong> grouped into a unified household card
-                      </p>
-                    </div>
-                  </div>
-                  <span className="text-[10px] font-bold text-indigo-600 bg-indigo-50 dark:bg-indigo-950/40 px-2 py-0.5 rounded border border-indigo-200 dark:border-indigo-800">
-                    Family Unit
-                  </span>
-                </div>
-
-                <div className="space-y-2">
-                  <div className="p-3 bg-violet-50/50 dark:bg-violet-950/20 rounded-xl border border-violet-200 dark:border-violet-900/40 flex items-center justify-between">
-                    <div>
-                      <span className="font-bold text-violet-900 dark:text-violet-200">{selectedProfileVoter.name}</span>
-                      <span className="text-[10px] bg-[#6256D9] text-white font-bold px-1.5 py-0.2 rounded ml-2">Head of Family</span>
-                      <div className="text-[11px] text-slate-500 mt-0.5">Age {selectedProfileVoter.age} • EPIC: {selectedProfileVoter.epicId}</div>
-                    </div>
-                    <span className="font-mono text-xs">{selectedProfileVoter.phone}</span>
-                  </div>
-
-                  <div className="p-3 bg-slate-50 dark:bg-slate-800/40 rounded-xl border border-slate-100 dark:border-slate-800 flex items-center justify-between">
-                    <div>
-                      <span className="font-bold text-slate-800 dark:text-white">Sunita Rajesh Verma</span>
-                      <span className="text-[10px] text-slate-400 ml-2">(Wife)</span>
-                      <div className="text-[11px] text-slate-500 mt-0.5">Age 38 • EPIC: WXE9821443</div>
-                    </div>
-                    <span className="font-mono text-xs">+91 98221 44002</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* SUBSECTION 3: FIELD SURVEY & NOTES */}
-              <div className="space-y-3 pt-3">
-                <div className="flex items-center justify-between pb-2 border-b border-slate-200/80 dark:border-slate-800">
-                  <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-lg bg-emerald-100 text-emerald-600 dark:bg-emerald-950/60 flex items-center justify-center font-bold">
-                      <FileText className="w-3.5 h-3.5" />
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-sm text-slate-900 dark:text-white">
-                        3. Field Survey &amp; Real-Time Notes
-                      </h3>
-                      <p className="text-[11px] text-slate-500">Live field cadre observations, canvassing updates, and door-to-door logs</p>
-                    </div>
-                  </div>
-                  <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded border border-emerald-200 dark:border-emerald-800">
-                    Live Field Feed
-                  </span>
-                </div>
-
-                {/* Append Real-Time Note Input */}
-                <div className="p-4 bg-slate-50 dark:bg-slate-800/40 rounded-2xl border border-slate-200/80 dark:border-slate-800 space-y-2.5">
-                  <label className="block font-bold text-slate-800 dark:text-white">
-                    Append On-Ground Field Agent Note
-                  </label>
-                  <textarea
-                    rows={2}
-                    value={voterNotes}
-                    onChange={(e) => setVoterNotes(e.target.value)}
-                    placeholder="Type voter interaction notes, local requests, or visit observations..."
-                    className="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100"
-                  />
-                  <div className="flex justify-end">
-                    <button
-                      type="button"
-                      onClick={handleAppendNote}
-                      className="px-4 py-1.5 rounded-xl bg-[#6256D9] hover:bg-[#5044BF] text-white font-bold text-xs flex items-center gap-1.5 cursor-pointer shadow-xs"
-                    >
-                      <Save className="w-3.5 h-3.5" />
-                      <span>Save Real-Time Note</span>
-                    </button>
-                  </div>
-                </div>
-
-                {/* Chronological Notes History */}
-                <div className="space-y-2">
-                  <span className="font-bold text-slate-800 dark:text-slate-200 block">Notes History:</span>
-                  {savedNotes.map((note, idx) => (
-                    <div key={idx} className="p-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-200/80 dark:border-slate-800 space-y-1">
-                      <p className="text-slate-700 dark:text-slate-300">{note}</p>
-                      <span className="text-[10px] text-slate-400 block font-medium">Logged by Active Field Cadre • Auto-synced to Cloud</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* SUBSECTION 4: INTERNAL ORGANIZATIONAL METRICS & DATABASE SYNC */}
-              <div className="space-y-3 pt-3">
-                <div className="flex items-center justify-between pb-2 border-b border-slate-200/80 dark:border-slate-800">
-                  <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-lg bg-violet-100 text-[#6256D9] dark:bg-violet-950/60 flex items-center justify-center font-bold">
-                      <RefreshCw className="w-3.5 h-3.5" />
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-sm text-slate-900 dark:text-white">
-                        4. Internal Organizational Metrics &amp; DB Mapping
-                      </h3>
-                      <p className="text-[11px] text-slate-500">Campaign cadre assignments, mobilization grading, and master registry mapping</p>
-                    </div>
-                  </div>
-                  <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded border border-emerald-200 dark:border-emerald-800">
-                    Live Master DB Sync Active
-                  </span>
-                </div>
-
-                <div className="p-4 bg-violet-50/50 dark:bg-violet-950/20 rounded-2xl border border-violet-200 dark:border-violet-800/60 space-y-3">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                    <div>
-                      <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
-                        Assigned Karyakarta / Worker
-                      </label>
-                      <input
-                        type="text"
-                        value={assignedWorker}
-                        onChange={(e) => setAssignedWorker(e.target.value)}
-                        className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
-                        Priority Mobilization Grade
-                      </label>
-                      <select
-                        value={priorityGrade}
-                        onChange={(e) => setPriorityGrade(e.target.value as any)}
-                        className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100"
-                      >
-                        <option value="Grade A - Must Mobilize">Grade A - Must Mobilize</option>
-                        <option value="Grade B - Follow-up">Grade B - Follow-up</option>
-                        <option value="Grade C - Neutral">Grade C - Neutral</option>
-                      </select>
-                    </div>
-
-                    <div>
-                      <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
-                        Custom Campaign Tag
-                      </label>
-                      <input
-                        type="text"
-                        value={customTagInput}
-                        onChange={(e) => setCustomTagInput(e.target.value)}
-                        className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100"
-                      />
-                    </div>
-
-                    <div className="flex items-center pt-5">
-                      <label className="flex items-center gap-2 cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={isFamilyHeadState}
-                          onChange={(e) => setIsFamilyHeadState(e.target.checked)}
-                          className="w-4 h-4 rounded text-[#6256D9] focus:ring-[#6256D9]"
-                        />
-                        <span className="font-bold text-slate-800 dark:text-slate-200">
-                          Recognized Household Head (Decision Maker)
-                        </span>
-                      </label>
-                    </div>
-                  </div>
-
-                  <div className="pt-2 flex justify-end">
-                    <button
-                      type="button"
-                      onClick={handleSyncOrgData}
-                      className="px-5 py-2 rounded-xl bg-[#6256D9] hover:bg-[#5044BF] text-white font-bold text-xs flex items-center gap-1.5 shadow-md shadow-[#6256D9]/20 cursor-pointer"
-                    >
-                      <RefreshCw className="w-3.5 h-3.5" />
-                      <span>Sync with Master Database</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              {/* SUBSECTION 5: GRIEVANCES & CIVIC TICKETS */}
-              <div className="space-y-3 pt-3">
-                <div className="flex items-center justify-between pb-2 border-b border-slate-200/80 dark:border-slate-800">
-                  <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-lg bg-amber-100 text-amber-600 dark:bg-amber-950/60 flex items-center justify-center font-bold">
-                      <AlertCircle className="w-3.5 h-3.5" />
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-sm text-slate-900 dark:text-white">
-                        5. Grievances &amp; Civic Tickets
-                      </h3>
-                      <p className="text-[11px] text-slate-500">Constituency issues, infrastructure complaints, and citizen requests</p>
-                    </div>
-                  </div>
-                  <span className="text-[10px] font-bold text-amber-600 bg-amber-50 dark:bg-amber-950/40 px-2 py-0.5 rounded border border-amber-200 dark:border-amber-800">
-                    1 Active Ticket
-                  </span>
-                </div>
-
-                <div className="space-y-2">
-                  <div className="p-3 bg-amber-50/60 dark:bg-amber-950/20 rounded-xl border border-amber-200 dark:border-amber-900/40">
-                    <div className="flex items-center justify-between font-bold">
-                      <span className="text-amber-900 dark:text-amber-200">Ticket #TKT-9210: Low Water Pressure</span>
-                      <span className="text-[10px] bg-amber-500 text-white px-2 py-0.5 rounded">OPEN</span>
-                    </div>
-                    <p className="text-slate-600 dark:text-slate-300 mt-1">Dahanukar Colony Lane 3 municipal pipeline pressure low for 5 straight days.</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Modal Footer */}
-            <div className="p-4 border-t border-slate-100 dark:border-slate-800 flex justify-end bg-slate-50/50 dark:bg-slate-900">
-              <Button variant="outline" size="sm" onClick={() => setSelectedProfileVoter(null)}>
-                Close Profile
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* SECTION 3: DEDICATED [ HOUSE ADDRESS ] MODAL WITH VERIFIED GPS COORDINATES */}
-      {showHouseAddressModal && selectedProfileVoter && (
-        <div className="fixed inset-0 z-60 bg-slate-950/80 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-[#12131A] border border-slate-200 dark:border-slate-800 rounded-3xl max-w-md w-full shadow-2xl p-5 sm:p-6 space-y-4 animate-scale-up">
+      {/* ===================================================================== */}
+      {/* BROADCAST CAMPAIGN SMS MODAL                                         */}
+      {/* ===================================================================== */}
+      {isSmsModalOpen && (
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 max-w-md w-full p-6 shadow-2xl space-y-4 animate-scaleUp">
             <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
-              <div className="flex items-center gap-2.5">
-                <div className="w-9 h-9 rounded-xl bg-violet-50 text-[#6256D9] dark:bg-violet-950/50 flex items-center justify-center font-bold">
-                  <MapPin className="w-5 h-5" />
-                </div>
-                <div>
-                  <h3 className="font-bold text-sm text-slate-900 dark:text-white">
-                    Structural House Address &amp; GPS
-                  </h3>
-                  <p className="text-[11px] text-slate-500">{selectedProfileVoter.name} ({selectedProfileVoter.epicId})</p>
-                </div>
+              <div>
+                <h3 className="font-extrabold text-slate-900 dark:text-white text-base">Broadcast Campaign SMS</h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400">
+                  Target: {selectedElectors.length > 0 ? `${selectedElectors.length} Selected Voters` : `${filteredElectors.length.toLocaleString()} Filtered Voters`}
+                </p>
               </div>
               <button
-                type="button"
-                onClick={() => setShowHouseAddressModal(false)}
-                className="p-1 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-white"
+                onClick={() => setIsSmsModalOpen(false)}
+                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
               >
-                <X className="w-5 h-5" />
+                <X className="w-4 h-4" />
               </button>
             </div>
 
-            {/* Full Street Address */}
-            <div className="p-3.5 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-200/80 dark:border-slate-700/80 space-y-1 text-xs">
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Physical Residential Address</span>
-              <p className="font-bold text-slate-800 dark:text-slate-100 leading-relaxed">
-                Plot 14, Lane 3, Dahanukar Colony, Kothrud Depot Road, Ward 12, Pune - 411038
-              </p>
-            </div>
-
-            {/* Geodetic Verified GPS Coordinates */}
-            <div className="p-3.5 bg-violet-50/70 dark:bg-violet-950/30 rounded-2xl border border-violet-200 dark:border-violet-800 space-y-2 text-xs">
-              <span className="text-[10px] font-bold text-violet-700 dark:text-violet-300 uppercase tracking-wider block">Verified Geodetic Coordinates</span>
-              <div className="flex items-center justify-between">
-                <span className="font-mono text-base font-black text-[#6256D9]">
-                  18.52043° N, 73.85674° E
-                </span>
-                <span className="text-[10px] bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 font-bold px-2 py-0.5 rounded-full">
-                  ECI Audit Verified
+            <div className="space-y-3 text-xs">
+              <div>
+                <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">SMS Template / Content</label>
+                <textarea
+                  rows={4}
+                  value={smsTemplate}
+                  onChange={(e) => setSmsTemplate(e.target.value)}
+                  className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white"
+                />
+                <span className="text-[10px] text-slate-400 block mt-1">
+                  Supports voter tags: {"{VoterName}"}, {"{BoothNo}"}, {"{PollingStation}"}
                 </span>
               </div>
-              <p className="text-[10px] text-slate-500">Spatial telemetry resolution verified to within ±3.2 meters of doorstep.</p>
-            </div>
 
-            {/* Action Buttons */}
-            <div className="pt-2 flex items-center gap-2">
-              <a
-                href="https://maps.google.com/?q=18.52043,73.85674"
-                target="_blank"
-                rel="noreferrer"
-                className="flex-1 py-2.5 px-4 rounded-xl bg-[#6256D9] hover:bg-[#5044BF] text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-md shadow-[#6256D9]/20"
-              >
-                <ExternalLink className="w-3.5 h-3.5" />
-                <span>Open in Google Maps</span>
-              </a>
-              <button
-                type="button"
-                onClick={() => setShowHouseAddressModal(false)}
-                className="py-2.5 px-4 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs hover:bg-slate-50 dark:hover:bg-slate-800"
-              >
-                Close
-              </button>
+              <div className="p-3 bg-blue-50/60 dark:bg-blue-950/40 rounded-xl border border-blue-100 dark:border-blue-900/60 flex items-center gap-2">
+                <Send className="w-4 h-4 text-blue-600 dark:text-blue-400 shrink-0" />
+                <span className="text-[11px] text-blue-800 dark:text-blue-300">
+                  Estimated delivery cost: ₹
+                  {((selectedElectors.length > 0 ? selectedElectors.length : filteredElectors.length) * 0.12).toFixed(2)}{" "}
+                  via DLT SMS Gateway.
+                </span>
+              </div>
+
+              <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
+                <button
+                  type="button"
+                  onClick={() => setIsSmsModalOpen(false)}
+                  className="px-4 py-2 text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-800 cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const count = selectedElectors.length > 0 ? selectedElectors.length : filteredElectors.length;
+                    setIsSmsModalOpen(false);
+                    showToast("success", "SMS Queued", `Campaign SMS broadcast queued for ${count} voters.`);
+                  }}
+                  className="px-4 py-2 bg-[#2563EB] hover:bg-blue-700 text-white font-bold rounded-xl text-xs shadow-xs cursor-pointer"
+                >
+                  Broadcast SMS
+                </button>
+              </div>
             </div>
           </div>
         </div>
