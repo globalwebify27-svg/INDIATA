@@ -1,120 +1,341 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import {
   Users,
   Vote,
-  BadgeCheck,
-  Shield,
-  BarChart3,
-  BookOpen,
   AlertCircle,
   MapPin,
   Sparkles,
   ArrowRight,
   ChevronRight,
+  ChevronLeft,
   RefreshCw,
   Search,
   CheckCircle2,
   UserPlus,
+  SlidersHorizontal,
+  Building2,
+  MessageSquare,
+  Printer,
+  ShieldCheck,
+  Activity,
+  Layers,
+  PieChart,
+  Radio,
+  Clock,
+  TrendingUp,
+  Award,
+  ChevronDown,
 } from "lucide-react";
 import { useAuth } from "@/context/auth-context";
 import { useToast } from "@/context/toast-context";
-import { Badge } from "@/components/ui/badge";
 
-interface BoothReadinessRow {
-  boothNumber: string;
-  stationName: string;
-  locality: string;
-  voters: number;
-  grade: "Grade A" | "Grade B - Focus" | "Grade D - Focus";
-  bloName: string;
-  bloPhone: string;
-  karyakartasAssigned: number;
-  slipDeliveryPercent: number;
-  projectedTurnout: string;
-  lastTurnout: string;
+// ============================================================================
+// DATA MODELS & REPOSITORIES (MATCHING CANDIDATE WAR ROOM REPO)
+// ============================================================================
+
+interface ElectionContext {
+  electionName: string;
+  state: string;
+  constituency: string;
+  candidateName: string;
+  partyName: string;
+  totalVoters: number;
+  coveredVoters: number;
+  totalBooths: number;
+  activeKaryakartas: number;
+  liveSurveyProgressPercent: number;
+  voterSlipsGeneratedPercent: number;
+  turnoutTargetPercent: number;
 }
 
-const BOOTH_DATA: BoothReadinessRow[] = [
+const ELECTION_META: ElectionContext = {
+  electionName: "Lok Sabha General Elections 2024",
+  state: "Maharashtra",
+  constituency: "34 - Pune Parliamentary Constituency",
+  candidateName: "Adv. Vikram Patil",
+  partyName: "Rashtriya Vikas Morcha",
+  totalVoters: 2154200,
+  coveredVoters: 1682300,
+  totalBooths: 2045,
+  activeKaryakartas: 4850,
+  liveSurveyProgressPercent: 78.2,
+  voterSlipsGeneratedPercent: 84.6,
+  turnoutTargetPercent: 72,
+};
+
+interface PollingStationRecord {
+  boothNumber: number;
+  name: string;
+  locality: string;
+  prabhaag: string;
+  totalVoters: number;
+  grade: "Grade A" | "Grade B • Swing" | "Grade C • Swing" | "Grade D • Swing";
+  bloName: string;
+  bloPhone: string;
+  karyakartas: number;
+  slipsPercent: number;
+  slipsDelivered: number;
+  slipsRemaining: number;
+  projectedTurnout: number;
+  lastTurnout: number;
+}
+
+const BOOTH_RECORDS: PollingStationRecord[] = [
   {
-    boothNumber: "#101",
-    stationName: "Navbharat High School, Room 1",
+    boothNumber: 101,
+    name: "Navbharat High School, Room 1",
     locality: "Kothrud Depot Road",
-    voters: 1142,
+    prabhaag: "Prabhaag 12 - Kothrud West",
+    totalVoters: 1142,
     grade: "Grade A",
     bloName: "Sanjay K. Kulkarni",
     bloPhone: "+91 98220 11234",
-    karyakartasAssigned: 5,
-    slipDeliveryPercent: 92,
-    projectedTurnout: "74%",
-    lastTurnout: "68.4%",
+    karyakartas: 5,
+    slipsPercent: 92,
+    slipsDelivered: 1051,
+    slipsRemaining: 91,
+    projectedTurnout: 74.0,
+    lastTurnout: 68.4,
   },
   {
-    boothNumber: "#102",
-    stationName: "Navbharat High School, Room 2",
+    boothNumber: 102,
+    name: "Navbharat High School, Room 2",
     locality: "Kothrud Depot Road",
-    voters: 1205,
+    prabhaag: "Prabhaag 12 - Kothrud West",
+    totalVoters: 1205,
     grade: "Grade A",
     bloName: "Asha V. More",
     bloPhone: "+91 98220 54321",
-    karyakartasAssigned: 4,
-    slipDeliveryPercent: 88,
-    projectedTurnout: "71.5%",
-    lastTurnout: "65.2%",
+    karyakartas: 4,
+    slipsPercent: 88,
+    slipsDelivered: 1060,
+    slipsRemaining: 145,
+    projectedTurnout: 71.5,
+    lastTurnout: 65.2,
   },
   {
-    boothNumber: "#103",
-    stationName: "Dr. Babasaheb Ambedkar Samaj Mandir",
+    boothNumber: 103,
+    name: "Dr. Babasaheb Ambedkar Samaj Mandir",
     locality: "Paud Phata",
-    voters: 980,
-    grade: "Grade B - Focus",
+    prabhaag: "Prabhaag 12 - Kothrud West",
+    totalVoters: 980,
+    grade: "Grade B • Swing",
     bloName: "Rameshwar P. Mane",
     bloPhone: "+91 94220 98765",
-    karyakartasAssigned: 3,
-    slipDeliveryPercent: 48,
-    projectedTurnout: "66%",
-    lastTurnout: "54.1%",
+    karyakartas: 3,
+    slipsPercent: 74,
+    slipsDelivered: 725,
+    slipsRemaining: 255,
+    projectedTurnout: 66.0,
+    lastTurnout: 54.1,
   },
   {
-    boothNumber: "#104",
-    stationName: "Pune Municipal Primary School No. 18",
+    boothNumber: 104,
+    name: "Pune Municipal Primary School No. 18",
     locality: "Erandwane",
-    voters: 1350,
-    grade: "Grade B - Focus",
+    prabhaag: "Prabhaag 13 - Erandwane",
+    totalVoters: 1350,
+    grade: "Grade B • Swing",
     bloName: "Geeta N. Salunkhe",
     bloPhone: "+91 98901 23456",
-    karyakartasAssigned: 6,
-    slipDeliveryPercent: 68,
-    projectedTurnout: "63.8%",
-    lastTurnout: "51.3%",
+    karyakartas: 6,
+    slipsPercent: 68,
+    slipsDelivered: 918,
+    slipsRemaining: 432,
+    projectedTurnout: 63.8,
+    lastTurnout: 51.3,
   },
   {
-    boothNumber: "#105",
-    stationName: "Abasaheb Garware College, Hall B",
+    boothNumber: 105,
+    name: "Abasaheb Garware College, Hall B",
     locality: "Karve Road",
-    voters: 1410,
-    grade: "Grade A",
-    bloName: "Dattatray V. Shinde",
-    bloPhone: "+91 98224 67890",
-    karyakartasAssigned: 5,
-    slipDeliveryPercent: 82,
-    projectedTurnout: "76.2%",
-    lastTurnout: "71.0%",
+    prabhaag: "Prabhaag 13 - Erandwane",
+    totalVoters: 1480,
+    grade: "Grade C • Swing",
+    bloName: "Dattatraya Shinde",
+    bloPhone: "+91 97632 11098",
+    karyakartas: 3,
+    slipsPercent: 58,
+    slipsDelivered: 858,
+    slipsRemaining: 622,
+    projectedTurnout: 58.2,
+    lastTurnout: 48.9,
   },
   {
-    boothNumber: "#108",
-    stationName: "Gokhale Memorial Community Hall",
+    boothNumber: 106,
+    name: "Modern High School, Wing A",
+    locality: "Shivajinagar Gaothan",
+    prabhaag: "Prabhaag 14 - Shivajinagar",
+    totalVoters: 1120,
+    grade: "Grade A",
+    bloName: "Nitin B. Jagtap",
+    bloPhone: "+91 98505 44321",
+    karyakartas: 4,
+    slipsPercent: 85,
+    slipsDelivered: 952,
+    slipsRemaining: 168,
+    projectedTurnout: 73.4,
+    lastTurnout: 69.1,
+  },
+  {
+    boothNumber: 107,
+    name: "Ferguson Junior College Library",
+    locality: "FC Road",
+    prabhaag: "Prabhaag 14 - Shivajinagar",
+    totalVoters: 1290,
+    grade: "Grade B • Swing",
+    bloName: "Madhavi R. Joshi",
+    bloPhone: "+91 98231 77654",
+    karyakartas: 4,
+    slipsPercent: 71,
+    slipsDelivered: 916,
+    slipsRemaining: 374,
+    projectedTurnout: 68.0,
+    lastTurnout: 62.4,
+  },
+  {
+    boothNumber: 108,
+    name: "Gokhale Memorial Community Hall",
     locality: "Deccan Gymkhana",
-    voters: 890,
-    grade: "Grade D - Focus",
+    prabhaag: "Prabhaag 14 - Shivajinagar",
+    totalVoters: 890,
+    grade: "Grade D • Swing",
     bloName: "Pravin S. Gaikwad",
     bloPhone: "+91 99224 88321",
-    karyakartasAssigned: 2,
-    slipDeliveryPercent: 44,
-    projectedTurnout: "52%",
-    lastTurnout: "41.5%",
+    karyakartas: 2,
+    slipsPercent: 44,
+    slipsDelivered: 392,
+    slipsRemaining: 498,
+    projectedTurnout: 51.0,
+    lastTurnout: 41.5,
+  },
+];
+
+interface DirectiveTask {
+  id: string;
+  title: string;
+  assignedTo: string;
+  assignedRole: string;
+  boothNumber: number;
+  priority: "CRITICAL" | "HIGH" | "MEDIUM" | "LOW";
+  deadline: string;
+  status: "OVERDUE" | "IN PROGRESS" | "PENDING" | "COMPLETED";
+}
+
+const WAR_ROOM_TASKS: DirectiveTask[] = [
+  {
+    id: "TSK-101",
+    title: "Distribute remaining 120 voter slips in Paud Phata swing cluster",
+    assignedTo: "Vikas Mane",
+    assignedRole: "Karyakarta",
+    boothNumber: 103,
+    priority: "CRITICAL",
+    deadline: "Today, 5:00 PM",
+    status: "OVERDUE",
+  },
+  {
+    id: "TSK-102",
+    title: "Verify 18 unmapped senior citizens for home voting assistance",
+    assignedTo: "Pooja Jadhav",
+    assignedRole: "Karyakarta Lead",
+    boothNumber: 101,
+    priority: "HIGH",
+    deadline: "Tomorrow, 12:00 PM",
+    status: "IN PROGRESS",
+  },
+  {
+    id: "TSK-103",
+    title: "Escalate low water pressure grievance TKT-9210 to PMC Ward Officer",
+    assignedTo: "Ramesh Shinde",
+    assignedRole: "War Room Operator",
+    boothNumber: 105,
+    priority: "HIGH",
+    deadline: "Today, 6:30 PM",
+    status: "IN PROGRESS",
+  },
+  {
+    id: "TSK-104",
+    title: "Set up Bluetooth slip printer desks at Navbharat School gate",
+    assignedTo: "Ganesh Patil",
+    assignedRole: "Booth Adhyaksh",
+    boothNumber: 102,
+    priority: "MEDIUM",
+    deadline: "In 2 days",
+    status: "PENDING",
+  },
+  {
+    id: "TSK-105",
+    title: "Cross-check ECI roll additions with BLO Sanjay Kulkarni",
+    assignedTo: "Amit Deshmukh",
+    assignedRole: "Prabhaag Incharge",
+    boothNumber: 101,
+    priority: "LOW",
+    deadline: "Completed 2h ago",
+    status: "COMPLETED",
+  },
+  {
+    id: "TSK-106",
+    title: "AI Voice broadcast follow-up for 420 undecided youth electors",
+    assignedTo: "Sneha Joshi",
+    assignedRole: "Campaign Manager",
+    boothNumber: 104,
+    priority: "MEDIUM",
+    deadline: "Today, 8:00 PM",
+    status: "IN PROGRESS",
+  },
+];
+
+interface CriticalAlert {
+  id: string;
+  severity: "CRITICAL" | "HIGH" | "WARNING";
+  category: string;
+  title: string;
+  description: string;
+  affectedArea: string;
+  timestamp: string;
+  actionLabel: string;
+  actionHref: string;
+}
+
+const CRITICAL_ALERTS: CriticalAlert[] = [
+  {
+    id: "alt-01",
+    severity: "CRITICAL",
+    category: "VOTER SLIP LAG",
+    title: "3 High-Priority Swing Booths Under 50% Slip Distribution",
+    description:
+      "Booth #103 (Paud Phata, 48% slips), Booth #108 (Deccan, 44%), and Booth #112 (Karve Nagar, 46%) require urgent mobilizer surge before tomorrow evening.",
+    affectedArea: "Prabhaag 12 & 14 (3 Polling Stations, 3,420 Electors)",
+    timestamp: "12m ago",
+    actionLabel: "Dispatch Surge Squad ->",
+    actionHref: "/field-map",
+  },
+  {
+    id: "alt-02",
+    severity: "HIGH",
+    category: "PUBLIC GRIEVANCE",
+    title: "Critical Water Supply Disruption in Dahanukar Colony",
+    description:
+      "Ticket #TKT-9210 escalated: Low municipal water pressure reported by 45 resident households in swing sector. Immediate water tanker dispatch coordinated.",
+    affectedArea: "Dahanukar Colony, Kothrud (Booth #102 & #103)",
+    timestamp: "24m ago",
+    actionLabel: "Open Ticket Desk ->",
+    actionHref: "/office/tickets",
+  },
+  {
+    id: "alt-03",
+    severity: "HIGH",
+    category: "CADRE INACTIVITY",
+    title: "5 Assigned Karyakartas Inactive on Field for > 48 Hours",
+    description:
+      "Mobilizers in Ward 14 have not checked in or synced survey app packets. Substitute reserve table agents ready for immediate deployment.",
+    affectedArea: "Ward 14 - Shivajinagar Gaothan",
+    timestamp: "1h ago",
+    actionLabel: "Reassign Cadre ->",
+    actionHref: "/users",
   },
 ];
 
@@ -123,702 +344,1265 @@ export default function CandidateWarRoomDashboard() {
   const { showToast } = useToast();
 
   const [timeframe, setTimeframe] = useState<"today" | "week" | "campaign">("today");
+  const [showFilterDrawer, setShowFilterDrawer] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [boothFilter, setBoothFilter] = useState("");
-  const [selectedGrade, setSelectedGrade] = useState("all");
+
+  // Filters state
+  const [filterGender, setFilterGender] = useState("all");
+  const [filterCaste, setFilterCaste] = useState("all");
+  const [filterMember, setFilterMember] = useState("all");
+  const [filterWard, setFilterWard] = useState("all");
+  const [filterBooth, setFilterBooth] = useState("all");
+
+  // Booth table filter
+  const [boothSearch, setBoothSearch] = useState("");
+  const [boothGradeFilter, setBoothGradeFilter] = useState("all");
+
+  // Ranked booths search
+  const [rankedSearch, setRankedSearch] = useState("");
+  const [rankedPrabhaag, setRankedPrabhaag] = useState("all");
+
+  // Task filter
+  const [taskFilter, setTaskFilter] = useState<"ALL" | "OVERDUE" | "IN PROGRESS" | "PENDING" | "COMPLETED">("ALL");
+
+  // Alerts filter
+  const [alertFilter, setAlertFilter] = useState<"ALL" | "CRITICAL" | "HIGH" | "WARNING">("ALL");
+
+  // Carousel State
+  const [carouselIndex, setCarouselIndex] = useState(0);
+
+  const CAROUSEL_ITEMS = useMemo(
+    () => [
+      {
+        id: "sug-1",
+        category: "ATTENTION REQUIRED",
+        badgeColor: "bg-amber-500/20 text-amber-300 border-amber-400/30",
+        title: "Pending Voter Update Requests",
+        description: "New information collected on-ground by field workers is waiting for candidate admin review.",
+        target: "Target Indicator: 1,240 records pending review",
+        classification: "Classification: Awaiting sync approval",
+        actionText: "Review Update Requests ->",
+        actionHref: "/voters",
+      },
+      {
+        id: "sug-2",
+        category: "HISTORICAL STRATEGY INSIGHT",
+        badgeColor: "bg-cyan-500/20 text-cyan-300 border-cyan-400/30",
+        title: "Previous Campaign Coverage",
+        description: "Review historical campaign activities and booth coverage recorded in the selected constituency.",
+        target: "Target Indicator: 18 booths covered in records",
+        classification: "Classification: Prior election blueprint",
+        actionText: "View Historical Strategy ->",
+        actionHref: "/strategy",
+      },
+      {
+        id: "sug-3",
+        category: "VOTER DATA INSIGHT",
+        badgeColor: "bg-purple-500/20 text-purple-300 border-purple-400/30",
+        title: "Voters Without Mobile Numbers",
+        description: "Identify voter records where mobile contact information is missing across priority booths.",
+        target: "Target Indicator: 2,450 matching records",
+        classification: "Classification: Incomplete contact roll",
+        actionText: "View Filtered Voters ->",
+        actionHref: "/voters",
+      },
+    ],
+    []
+  );
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCarouselIndex((prev) => (prev + 1) % CAROUSEL_ITEMS.length);
+    }, 6000);
+    return () => clearInterval(timer);
+  }, [CAROUSEL_ITEMS.length]);
 
   const handleRefresh = () => {
     setIsRefreshing(true);
     setTimeout(() => {
       setIsRefreshing(false);
-      showToast(
-        "success",
-        "War Room Telemetry Refreshed",
-        "Synchronized with ECI live rolls, 2,045 Polling Stations & GPS trackers.",
-      );
+      showToast("success", "Telemetry Synced", "Master electoral roll, cadre GPS pings, and voter slip metrics are up to date.");
     }, 600);
   };
 
-  const filteredBooths = BOOTH_DATA.filter((b) => {
-    const matchesSearch =
-      b.stationName.toLowerCase().includes(boothFilter.toLowerCase()) ||
-      b.boothNumber.toLowerCase().includes(boothFilter.toLowerCase()) ||
-      b.locality.toLowerCase().includes(boothFilter.toLowerCase());
+  const handleApplyFilters = () => {
+    setShowFilterDrawer(false);
+    showToast("info", "Filters Applied", "War room metrics refreshed with selected filter taxonomy.");
+  };
 
-    const matchesGrade =
-      selectedGrade === "all" ||
-      (selectedGrade === "focus" && b.grade.includes("Focus")) ||
-      (selectedGrade === "grade-a" && b.grade === "Grade A");
+  const handleResetFilters = () => {
+    setFilterGender("all");
+    setFilterCaste("all");
+    setFilterMember("all");
+    setFilterWard("all");
+    setFilterBooth("all");
+    setShowFilterDrawer(false);
+    showToast("info", "Filters Reset", "Showing complete constituency dataset.");
+  };
 
-    return matchesSearch && matchesGrade;
-  });
+  // Filtered booth matrix
+  const filteredBooths = useMemo(() => {
+    return BOOTH_RECORDS.filter((b) => {
+      const matchSearch =
+        b.name.toLowerCase().includes(boothSearch.toLowerCase()) ||
+        b.locality.toLowerCase().includes(boothSearch.toLowerCase()) ||
+        b.boothNumber.toString().includes(boothSearch);
+      const matchGrade = boothGradeFilter === "all" || b.grade.includes(boothGradeFilter);
+      return matchSearch && matchGrade;
+    });
+  }, [boothSearch, boothGradeFilter]);
+
+  // Filtered ranked booths
+  const rankedBooths = useMemo(() => {
+    return [...BOOTH_RECORDS]
+      .sort((a, b) => b.totalVoters - a.totalVoters)
+      .filter((b) => {
+        const matchSearch =
+          b.name.toLowerCase().includes(rankedSearch.toLowerCase()) ||
+          b.locality.toLowerCase().includes(rankedSearch.toLowerCase()) ||
+          b.boothNumber.toString().includes(rankedSearch);
+        const matchPrabhaag = rankedPrabhaag === "all" || b.prabhaag.toLowerCase().includes(rankedPrabhaag.toLowerCase());
+        return matchSearch && matchPrabhaag;
+      });
+  }, [rankedSearch, rankedPrabhaag]);
+
+  // Filtered tasks
+  const filteredTasks = useMemo(() => {
+    if (taskFilter === "ALL") return WAR_ROOM_TASKS;
+    return WAR_ROOM_TASKS.filter((t) => t.status === taskFilter);
+  }, [taskFilter]);
+
+  // Filtered alerts
+  const filteredAlerts = useMemo(() => {
+    if (alertFilter === "ALL") return CRITICAL_ALERTS;
+    return CRITICAL_ALERTS.filter((a) => a.severity === alertFilter);
+  }, [alertFilter]);
 
   return (
-    <div className="space-y-4 sm:space-y-5 pb-10">
-      {/* 1. CANDIDATE CONTEXT & WAR ROOM COMMAND HEADER */}
-      <section className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 p-4 sm:p-5 shadow-premium-xs flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-2 mb-1.5 flex-wrap">
-            <span className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-brand-50 text-[11px] font-bold text-brand-700 border border-brand-200 uppercase tracking-wider">
-              <span className="w-1.5 h-1.5 rounded-full bg-brand-500 animate-pulse" />
-              Central War Room Command
-            </span>
-            <Badge variant="success">Verified Dataset</Badge>
-            <span className="text-[11px] text-slate-400 hidden sm:inline">
-              Updated: Just now
-            </span>
+    <div className="space-y-6 pb-16 font-sans text-slate-800">
+      {/* ========================================================================= */}
+      {/* SECTION 0: CENTRAL WAR ROOM COMMAND HEADER CARD (SCREENSHOT 1)           */}
+      {/* ========================================================================= */}
+      <section className="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-xs space-y-4">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          <div>
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="w-2 h-2 rounded-full bg-blue-600 animate-pulse" />
+              <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                Central War Room Command
+              </span>
+              <span className="px-2 py-0.5 rounded-md text-[10px] font-semibold bg-blue-50 text-blue-700 border border-blue-200">
+                Verified Official Roll
+              </span>
+              <span className="text-slate-300">•</span>
+              <span className="text-[11px] text-slate-400 font-mono">Updated: Just now</span>
+            </div>
+
+            <h1 className="text-xl md:text-2xl font-black text-slate-900 mt-1 tracking-tight">
+              {ELECTION_META.electionName}
+            </h1>
+
+            <div className="flex items-center gap-2 mt-1 text-xs text-slate-500 flex-wrap">
+              <span>
+                Candidate: <strong className="text-slate-800 font-semibold">{ELECTION_META.candidateName}</strong> (
+                {ELECTION_META.partyName})
+              </span>
+              <span>•</span>
+              <span className="text-blue-700 font-semibold">User: {user?.name || "Adv. Vikram Patil"} ({user?.role ? user.role.toUpperCase() : "Candidate Super Admin"})</span>
+            </div>
           </div>
 
-          <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
-            Lok Sabha General Elections 2024
-          </h1>
+          {/* Right Controls */}
+          <div className="flex flex-wrap items-center gap-2.5">
+            <div className="relative">
+              <select className="pl-3 pr-8 py-2 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl text-xs font-bold text-slate-800 appearance-none shadow-xs cursor-pointer">
+                <option value="pc-34">34 - Pune Parliamentary Constituency</option>
+              </select>
+              <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+            </div>
 
-          <p className="text-xs sm:text-[13px] text-slate-600 dark:text-slate-400 mt-0.5 font-normal">
-            Candidate:{" "}
-            <strong className="font-semibold text-slate-800 dark:text-slate-200">
-              {user?.name || "Adv. Vikram Patil"}
-            </strong>{" "}
-            &bull;{" "}
-            <span>{user?.constituencyName || "34 - Pune Parliamentary Constituency"}</span>
-          </p>
-        </div>
+            <div className="relative">
+              <select className="pl-3 pr-8 py-2 bg-blue-50/80 hover:bg-blue-100/80 border border-blue-200 rounded-xl text-xs font-bold text-blue-800 appearance-none shadow-xs cursor-pointer">
+                <option value="all">All Vidhan Sabha Segments</option>
+                <option value="214">214 - Kothrud Assembly Segment</option>
+                <option value="215">215 - Kasba Peth Assembly Segment</option>
+              </select>
+              <ChevronDown className="w-3.5 h-3.5 text-blue-600 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+            </div>
 
-        {/* Timeframe selector & Quick Action controls */}
-        <div className="flex flex-wrap items-center gap-2 sm:gap-2.5">
-          <div className="flex items-center bg-slate-100 dark:bg-slate-800 p-0.5 rounded-xl border border-slate-200 dark:border-slate-700">
+            {/* Filter Toggle */}
             <button
               type="button"
-              onClick={() => setTimeframe("today")}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
-                timeframe === "today"
-                  ? "bg-brand-600 text-white shadow-xs"
-                  : "text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
+              onClick={() => setShowFilterDrawer(!showFilterDrawer)}
+              className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold border transition-all shadow-xs cursor-pointer ${
+                showFilterDrawer
+                  ? "bg-blue-600 text-white border-blue-600 hover:bg-blue-700"
+                  : "bg-white text-slate-700 border-slate-200 hover:bg-slate-50"
               }`}
             >
-              Today
+              <SlidersHorizontal className="w-3.5 h-3.5" />
+              <span>Filters</span>
             </button>
+
+            {/* Timeframe Tabs */}
+            <div className="flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200/80">
+              <button
+                type="button"
+                onClick={() => setTimeframe("today")}
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                  timeframe === "today" ? "bg-white text-slate-900 shadow-xs font-bold" : "text-slate-600 hover:text-slate-900"
+                }`}
+              >
+                Today
+              </button>
+              <button
+                type="button"
+                onClick={() => setTimeframe("week")}
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                  timeframe === "week" ? "bg-white text-slate-900 shadow-xs font-bold" : "text-slate-600 hover:text-slate-900"
+                }`}
+              >
+                This Week
+              </button>
+              <button
+                type="button"
+                onClick={() => setTimeframe("campaign")}
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                  timeframe === "campaign" ? "bg-white text-slate-900 shadow-xs font-bold" : "text-slate-600 hover:text-slate-900"
+                }`}
+              >
+                Full Campaign
+              </button>
+            </div>
+
+            {/* Refresh Button */}
             <button
               type="button"
-              onClick={() => setTimeframe("week")}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
-                timeframe === "week"
-                  ? "bg-brand-600 text-white shadow-xs"
-                  : "text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
-              }`}
+              onClick={handleRefresh}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold shadow-xs cursor-pointer transition-all active:scale-95"
+              title="Refresh ECI Telemetry"
             >
-              This Week
+              <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? "animate-spin text-blue-600" : ""}`} />
+              <span>Refresh</span>
             </button>
-            <button
-              type="button"
-              onClick={() => setTimeframe("campaign")}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
-                timeframe === "campaign"
-                  ? "bg-brand-600 text-white shadow-xs"
-                  : "text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
-              }`}
+
+            {/* Register Elector CTA */}
+            <Link
+              href="/voters"
+              className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-md shadow-blue-600/20 cursor-pointer transition-all"
             >
-              Full Campaign
-            </button>
+              <UserPlus className="w-4 h-4" />
+              <span>+ Register Elector</span>
+            </Link>
           </div>
-
-          <button
-            type="button"
-            onClick={handleRefresh}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 text-slate-700 dark:text-slate-300 text-xs font-medium transition-all shadow-premium-xs cursor-pointer active:scale-95"
-            title="Refresh ECI Roll Telemetry"
-          >
-            <RefreshCw
-              className={`w-3.5 h-3.5 text-slate-500 ${isRefreshing ? "animate-spin" : ""}`}
-            />
-            <span className="hidden sm:inline">Refresh</span>
-          </button>
-
-          <Link
-            href="/voters"
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold shadow-xs transition-all cursor-pointer"
-          >
-            <UserPlus className="w-3.5 h-3.5" />
-            <span>+ Register Elector</span>
-          </Link>
         </div>
+
+        {/* EXPANDABLE MULTI-SELECT FILTER DRAWER */}
+        {showFilterDrawer && (
+          <div className="mt-4 pt-4 border-t border-slate-200 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3 animate-fade-in">
+            <div>
+              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Gender</label>
+              <select
+                value={filterGender}
+                onChange={(e) => setFilterGender(e.target.value)}
+                className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 bg-slate-50 text-xs font-medium"
+              >
+                <option value="all">All Genders</option>
+                <option value="male">Male (51.4%)</option>
+                <option value="female">Female (48.5%)</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Caste Category</label>
+              <select
+                value={filterCaste}
+                onChange={(e) => setFilterCaste(e.target.value)}
+                className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 bg-slate-50 text-xs font-medium"
+              >
+                <option value="all">All Categories</option>
+                <option value="general">General / Open (33.1%)</option>
+                <option value="obc">OBC (29.0%)</option>
+                <option value="sc">SC (13.8%)</option>
+                <option value="minority">Religious Minorities (8.5%)</option>
+                <option value="st_nt">ST / NT (6.6%)</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Member Status</label>
+              <select
+                value={filterMember}
+                onChange={(e) => setFilterMember(e.target.value)}
+                className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 bg-slate-50 text-xs font-medium"
+              >
+                <option value="all">All Member Types</option>
+                <option value="active">Active Cadre (28,450)</option>
+                <option value="new">Newly Registered (+1,630)</option>
+                <option value="standby">Standby / Inactive (4,120)</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Area / Ward</label>
+              <select
+                value={filterWard}
+                onChange={(e) => setFilterWard(e.target.value)}
+                className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 bg-slate-50 text-xs font-medium"
+              >
+                <option value="all">All Wards</option>
+                <option value="ward-12">Prabhaag 12 - Kothrud West</option>
+                <option value="ward-13">Prabhaag 13 - Erandwane</option>
+                <option value="ward-14">Prabhaag 14 - Shivajinagar</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Polling Booth</label>
+              <select
+                value={filterBooth}
+                onChange={(e) => setFilterBooth(e.target.value)}
+                className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 bg-slate-50 text-xs font-medium"
+              >
+                <option value="all">All Polling Stations (8)</option>
+                <option value="101">Booth #101 - Navbharat High School</option>
+                <option value="102">Booth #102 - Saraswati Vidyalaya</option>
+                <option value="103">Booth #103 - Saint Mary Convent</option>
+                <option value="104">Booth #104 - ZP Primary School</option>
+                <option value="105">Booth #105 - Municipal Community Hall</option>
+                <option value="106">Booth #106 - Modern Education Trust</option>
+                <option value="107">Booth #107 - Abhinav Kala Kendra</option>
+                <option value="108">Booth #108 - Pune Gymkhana Pavilion</option>
+              </select>
+            </div>
+
+            <div className="flex items-end gap-2">
+              <button
+                type="button"
+                onClick={handleApplyFilters}
+                className="flex-1 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold shadow-xs cursor-pointer"
+              >
+                Apply Filters
+              </button>
+              <button
+                type="button"
+                onClick={handleResetFilters}
+                className="py-1.5 px-3 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-lg text-xs font-semibold cursor-pointer"
+              >
+                Reset
+              </button>
+            </div>
+          </div>
+        )}
       </section>
 
-      {/* 2. HIGH-PRIORITY OPERATIONAL ALERT BANNER */}
-      <div className="bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 rounded-2xl p-4 shadow-premium-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div className="flex items-start sm:items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-amber-100 dark:bg-amber-900/60 text-amber-800 dark:text-amber-300 flex items-center justify-center shrink-0">
-            <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+      {/* ========================================================================= */}
+      {/* SECTION 1: 3 HIGH-PRIORITY FOCUS BOOTHS ALERT BANNER (SCREENSHOT 1)       */}
+      {/* ========================================================================= */}
+      <section className="bg-amber-50 border border-amber-200 rounded-2xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-xs">
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center shrink-0">
+            <AlertCircle className="w-5 h-5" />
           </div>
           <div>
-            <h4 className="text-xs font-bold text-amber-900 dark:text-amber-200">
-              3 High-Priority Focus Booths Require Slip Distribution Surge
+            <h4 className="text-xs sm:text-sm font-bold text-amber-900">
+              3 High-Priority Swing Booths Require Slip Distribution Surge
             </h4>
-            <p className="text-xs text-amber-700 dark:text-amber-400 mt-0.5">
+            <p className="text-xs text-amber-700 mt-0.5">
               Booth #103 (Paud Phata) &amp; Booth #108 (Deccan) are currently under 50% voter slip distribution threshold.
             </p>
           </div>
         </div>
 
-        <Link href="/field-map" className="shrink-0 self-end sm:self-center">
-          <button
-            type="button"
-            className="whitespace-nowrap px-3.5 py-1.5 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl text-xs transition-colors shadow-xs flex items-center gap-1.5 cursor-pointer active:scale-95"
-          >
-            <span>Dispatch on Live Map</span>
-            <ArrowRight className="w-3.5 h-3.5" />
-          </button>
+        <Link
+          href="/field-map"
+          className="px-4 py-2 bg-[#F59E0B] hover:bg-[#D97706] text-white rounded-xl text-xs font-bold shadow-sm shadow-amber-500/20 cursor-pointer flex items-center gap-1.5 whitespace-nowrap"
+        >
+          <span>Dispatch on Live Map</span>
+          <ArrowRight className="w-3.5 h-3.5" />
         </Link>
-      </div>
+      </section>
 
-      {/* 3. EIGHT KEY PERFORMANCE INDICATOR (KPI) CARDS */}
+      {/* ========================================================================= */}
+      {/* SECTION 2: 8 TOP KPI METRIC CARDS (SCREENSHOT 1)                          */}
+      {/* ========================================================================= */}
       <section className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
-        {/* KPI 1: Total Voters */}
-        <div className="bg-white dark:bg-slate-900 p-3.5 rounded-2xl border border-blue-200/70 dark:border-blue-900/50 shadow-premium-xs hover:border-blue-400 hover:shadow-premium-md cursor-pointer transition-all group relative overflow-hidden flex flex-col justify-between">
+        {/* Card 1: TOTAL VOTERS */}
+        <div className="bg-white p-3.5 rounded-2xl border border-blue-200/70 shadow-xs hover:border-blue-400 transition-all relative overflow-hidden flex flex-col justify-between min-h-[110px]">
           <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-indigo-600" />
-          <div className="flex items-center justify-between mb-1.5 mt-0.5">
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-              Total Voters
-            </span>
-            <div className="w-7 h-7 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center group-hover:scale-110 transition-transform">
-              <Users className="w-3.5 h-3.5" />
-            </div>
-          </div>
-          <div>
-            <p className="text-lg font-black text-slate-900 dark:text-white">
-              21.54 L
-            </p>
-            <div className="flex items-center gap-1 mt-1 text-[10px] text-blue-600 font-semibold truncate">
-              <CheckCircle2 className="w-3 h-3 shrink-0" />
-              <span>ECI Verified</span>
-            </div>
-          </div>
-        </div>
-
-        {/* KPI 2: Booths */}
-        <div className="bg-white dark:bg-slate-900 p-3.5 rounded-2xl border border-purple-200/70 dark:border-purple-900/50 shadow-premium-xs hover:border-purple-400 hover:shadow-premium-md cursor-pointer transition-all group relative overflow-hidden flex flex-col justify-between">
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 to-fuchsia-600" />
-          <div className="flex items-center justify-between mb-1.5 mt-0.5">
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-              Booths
-            </span>
-            <div className="w-7 h-7 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">TOTAL VOTERS</span>
+            <div className="w-6 h-6 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
               <Vote className="w-3.5 h-3.5" />
             </div>
           </div>
-          <div>
-            <p className="text-lg font-black text-slate-900 dark:text-white">
-              2,045
-            </p>
-            <div className="text-[10px] text-purple-600 font-semibold truncate mt-1">
-              <span>8 Wards Active</span>
-            </div>
+          <div className="my-1">
+            <span className="text-lg lg:text-xl font-black text-slate-900 tracking-tight">21.54 L</span>
+          </div>
+          <div className="flex items-center gap-1 text-[10.5px] font-semibold text-emerald-600">
+            <CheckCircle2 className="w-3 h-3" />
+            <span>ECI Verified</span>
           </div>
         </div>
 
-        {/* KPI 3: Cadre */}
-        <div className="bg-white dark:bg-slate-900 p-3.5 rounded-2xl border border-indigo-200/70 dark:border-indigo-900/50 shadow-premium-xs hover:border-indigo-400 hover:shadow-premium-md cursor-pointer transition-all group relative overflow-hidden flex flex-col justify-between">
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-500 to-blue-600" />
-          <div className="flex items-center justify-between mb-1.5 mt-0.5">
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-              Cadre
-            </span>
-            <div className="w-7 h-7 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center group-hover:scale-110 transition-transform">
-              <BadgeCheck className="w-3.5 h-3.5" />
+        {/* Card 2: TOTAL MEMBERS */}
+        <div className="bg-white p-3.5 rounded-2xl border border-indigo-200/70 shadow-xs hover:border-indigo-400 transition-all relative overflow-hidden flex flex-col justify-between min-h-[110px]">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-500 to-purple-600" />
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">TOTAL MEMBERS</span>
+            <div className="w-6 h-6 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center">
+              <Award className="w-3.5 h-3.5" />
             </div>
           </div>
-          <div>
-            <p className="text-lg font-black text-slate-900 dark:text-white">
-              34,200
-            </p>
-            <div className="flex items-center gap-1 mt-1 text-[10px] text-indigo-600 font-semibold truncate">
-              <span>Primary Cadre</span>
-            </div>
+          <div className="my-1">
+            <span className="text-lg lg:text-xl font-black text-slate-900 tracking-tight">34,200</span>
+          </div>
+          <div className="flex items-center gap-1 text-[10.5px] font-semibold text-indigo-600">
+            <span className="w-1.5 h-1.5 rounded-full bg-indigo-600" />
+            <span>28,450 Active Mem</span>
           </div>
         </div>
 
-        {/* KPI 4: Karyakartas */}
-        <div className="bg-white dark:bg-slate-900 p-3.5 rounded-2xl border border-cyan-200/70 dark:border-cyan-900/50 shadow-premium-xs hover:border-cyan-400 hover:shadow-premium-md cursor-pointer transition-all group relative overflow-hidden flex flex-col justify-between">
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-cyan-500 to-teal-500" />
-          <div className="flex items-center justify-between mb-1.5 mt-0.5">
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-              Karyakartas
-            </span>
-            <div className="w-7 h-7 rounded-lg bg-cyan-50 text-cyan-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+        {/* Card 3: TOTAL BOOTHS */}
+        <div className="bg-white p-3.5 rounded-2xl border border-purple-200/70 shadow-xs hover:border-purple-400 transition-all relative overflow-hidden flex flex-col justify-between min-h-[110px]">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 to-pink-600" />
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">TOTAL BOOTHS</span>
+            <div className="w-6 h-6 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center">
+              <MapPin className="w-3.5 h-3.5" />
+            </div>
+          </div>
+          <div className="my-1">
+            <span className="text-lg lg:text-xl font-black text-slate-900 tracking-tight">2,045</span>
+          </div>
+          <div className="text-[10.5px] font-semibold text-slate-500">2,038 Active Stations</div>
+        </div>
+
+        {/* Card 4: BLO OFFICERS */}
+        <div className="bg-white p-3.5 rounded-2xl border border-cyan-200/70 shadow-xs hover:border-cyan-400 transition-all relative overflow-hidden flex flex-col justify-between min-h-[110px]">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-cyan-500 to-teal-600" />
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">BLO OFFICERS</span>
+            <div className="w-6 h-6 rounded-lg bg-cyan-50 text-cyan-600 flex items-center justify-center">
+              <ShieldCheck className="w-3.5 h-3.5" />
+            </div>
+          </div>
+          <div className="my-1">
+            <span className="text-lg lg:text-xl font-black text-slate-900 tracking-tight">2,045</span>
+          </div>
+          <div className="text-[10.5px] font-semibold text-emerald-600">98.4% Verified Assign</div>
+        </div>
+
+        {/* Card 5: KARYAKARTAS */}
+        <div className="bg-white p-3.5 rounded-2xl border border-emerald-200/70 shadow-xs hover:border-emerald-400 transition-all relative overflow-hidden flex flex-col justify-between min-h-[110px]">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-teal-500 to-emerald-600" />
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">KARYAKARTAS</span>
+            <div className="w-6 h-6 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
               <Users className="w-3.5 h-3.5" />
             </div>
           </div>
-          <div>
-            <p className="text-lg font-black text-slate-900 dark:text-white">
-              4,850
-            </p>
-            <div className="flex items-center gap-1 mt-1 text-[10px] text-cyan-700 dark:text-cyan-400 font-semibold truncate">
-              <span className="w-1.5 h-1.5 rounded-full bg-cyan-500 shrink-0" />
-              <span>3,120 On Field</span>
-            </div>
+          <div className="my-1">
+            <span className="text-lg lg:text-xl font-black text-slate-900 tracking-tight">4,850</span>
+          </div>
+          <div className="flex items-center gap-1 text-[10.5px] font-semibold text-emerald-600">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-600" />
+            <span>3,120 On Field</span>
           </div>
         </div>
 
-        {/* KPI 5: ECI BLOs */}
-        <div className="bg-white dark:bg-slate-900 p-3.5 rounded-2xl border border-sky-200/70 dark:border-sky-900/50 shadow-premium-xs hover:border-sky-400 hover:shadow-premium-md cursor-pointer transition-all group relative overflow-hidden flex flex-col justify-between">
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-sky-400 to-blue-500" />
-          <div className="flex items-center justify-between mb-1.5 mt-0.5">
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-              ECI BLOs
-            </span>
-            <div className="w-7 h-7 rounded-lg bg-sky-50 text-sky-600 flex items-center justify-center group-hover:scale-110 transition-transform">
-              <Shield className="w-3.5 h-3.5" />
+        {/* Card 6: COVERAGE */}
+        <div className="bg-white p-3.5 rounded-2xl border border-amber-200/70 shadow-xs hover:border-amber-400 transition-all relative overflow-hidden flex flex-col justify-between min-h-[110px]">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-500 to-orange-600" />
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">COVERAGE</span>
+            <div className="w-6 h-6 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center">
+              <TrendingUp className="w-3.5 h-3.5" />
             </div>
           </div>
-          <div>
-            <p className="text-lg font-black text-slate-900 dark:text-white">
-              2,045
-            </p>
-            <div className="flex items-center gap-1 mt-1 text-[10px] text-sky-700 dark:text-sky-400 font-semibold truncate">
-              <span>98.4% Verified</span>
-            </div>
+          <div className="my-1">
+            <span className="text-lg lg:text-xl font-black text-slate-900 tracking-tight">78.2%</span>
+          </div>
+          <div className="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+            <div className="bg-amber-500 h-1.5 rounded-full" style={{ width: "78.2%" }} />
           </div>
         </div>
 
-        {/* KPI 6: Coverage */}
-        <div className="bg-white dark:bg-slate-900 p-3.5 rounded-2xl border border-amber-200/70 dark:border-amber-900/50 shadow-premium-xs hover:border-amber-400 hover:shadow-premium-md cursor-pointer transition-all group relative overflow-hidden flex flex-col justify-between">
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-500 to-orange-500" />
-          <div className="flex items-center justify-between mb-1.5 mt-0.5">
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-              Coverage
-            </span>
-            <div className="w-7 h-7 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center group-hover:scale-110 transition-transform">
-              <BarChart3 className="w-3.5 h-3.5" />
-            </div>
-          </div>
-          <div>
-            <p className="text-lg font-black text-slate-900 dark:text-white">
-              78.2%
-            </p>
-            <div className="w-full bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full mt-1.5 overflow-hidden">
-              <div className="bg-gradient-to-r from-amber-500 to-orange-500 h-full rounded-full" style={{ width: "78.2%" }} />
-            </div>
-          </div>
-        </div>
-
-        {/* KPI 7: Slips Delivered */}
-        <div className="bg-white dark:bg-slate-900 p-3.5 rounded-2xl border border-violet-200/70 dark:border-violet-900/50 shadow-premium-xs hover:border-violet-400 hover:shadow-premium-md cursor-pointer transition-all group relative overflow-hidden flex flex-col justify-between">
+        {/* Card 7: SLIPS DELIV. */}
+        <div className="bg-white p-3.5 rounded-2xl border border-violet-200/70 shadow-xs hover:border-violet-400 transition-all relative overflow-hidden flex flex-col justify-between min-h-[110px]">
           <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-violet-500 to-purple-600" />
-          <div className="flex items-center justify-between mb-1.5 mt-0.5">
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-              Slips Deliv.
-            </span>
-            <div className="w-7 h-7 rounded-lg bg-violet-50 text-violet-600 flex items-center justify-center group-hover:scale-110 transition-transform">
-              <BookOpen className="w-3.5 h-3.5" />
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">SLIPS DELIV.</span>
+            <div className="w-6 h-6 rounded-lg bg-violet-50 text-violet-600 flex items-center justify-center">
+              <Printer className="w-3.5 h-3.5" />
             </div>
           </div>
-          <div>
-            <p className="text-lg font-black text-slate-900 dark:text-white">
-              84.6%
-            </p>
-            <div className="flex items-center gap-1 mt-1 text-[10px] text-violet-600 font-semibold truncate">
-              <span>18.2 L Handed</span>
-            </div>
+          <div className="my-1">
+            <span className="text-lg lg:text-xl font-black text-slate-900 tracking-tight">84.6%</span>
           </div>
+          <div className="text-[10.5px] font-semibold text-violet-700">18.2 L Handed</div>
         </div>
 
-        {/* KPI 8: Open Issues */}
-        <div className="bg-white dark:bg-slate-900 p-3.5 rounded-2xl border border-rose-200/70 dark:border-rose-900/50 shadow-premium-xs hover:border-rose-400 hover:shadow-premium-md cursor-pointer transition-all group relative overflow-hidden flex flex-col justify-between">
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-rose-500 to-pink-500" />
-          <div className="flex items-center justify-between mb-1.5 mt-0.5">
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-              Open Issues
-            </span>
-            <div className="w-7 h-7 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center group-hover:scale-110 transition-transform">
-              <AlertCircle className="w-3.5 h-3.5" />
+        {/* Card 8: OPEN ISSUES */}
+        <div className="bg-white p-3.5 rounded-2xl border border-rose-200/70 shadow-xs hover:border-rose-400 transition-all relative overflow-hidden flex flex-col justify-between min-h-[110px]">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-rose-500 to-red-600" />
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">OPEN ISSUES</span>
+            <div className="w-6 h-6 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center">
+              <MessageSquare className="w-3.5 h-3.5" />
             </div>
           </div>
-          <div>
-            <p className="text-lg font-black text-slate-900 dark:text-white">
-              42
-            </p>
-            <div className="flex items-center gap-1 mt-1 text-[10px] text-rose-600 font-semibold truncate">
-              <span>89% Resolved</span>
-            </div>
+          <div className="my-1">
+            <span className="text-lg lg:text-xl font-black text-slate-900 tracking-tight">42</span>
           </div>
+          <div className="text-[10.5px] font-semibold text-rose-600">89% Resolved</div>
         </div>
       </section>
 
-      {/* 4. REFERENCE 1 EXACT REPRODUCTION: LIVE FIELD OPERATIONS PREVIEW & INDIATA AI BOT INSIGHTS */}
-      <section className="grid grid-cols-1 lg:grid-cols-12 gap-5">
-        {/* Left Column (7 cols): Live Field Operations Preview */}
-        <div className="lg:col-span-7 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 p-5 shadow-premium-xs flex flex-col justify-between">
-          <div>
-            {/* Header */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-100 dark:border-slate-800">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-xl bg-violet-50 text-violet-600 dark:bg-violet-950/40 dark:text-violet-300 flex items-center justify-center shrink-0">
-                  <MapPin className="w-4 h-4 text-brand-600" />
-                </div>
-                <div>
-                  <h2 className="text-sm font-bold text-slate-900 dark:text-white">
-                    Live Field Operations Preview
-                  </h2>
-                  <p className="text-xs text-slate-500 mt-0.5">
-                    Visualizing active Karyakarta survey tracks across Kothrud, Erandwane, and Shivajinagar.
-                  </p>
-                </div>
+      {/* ========================================================================= */}
+      {/* SECTION 3: LIVE FIELD OPS MAP PREVIEW + ATTENTION CAROUSEL (SCREENSHOT 2)  */}
+      {/* ========================================================================= */}
+      <section className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+        {/* Left: Live Field Operations Preview */}
+        <div className="lg:col-span-2 bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div>
+              <div className="flex items-center gap-2">
+                <MapPin className="w-4 h-4 text-blue-600" />
+                <h3 className="font-bold text-slate-900 text-sm">Live Field Operations Preview</h3>
               </div>
-
-              <Link
-                href="/field-map"
-                className="text-xs font-semibold text-[#6256D9] hover:text-[#5044BF] flex items-center gap-1 shrink-0 self-start sm:self-center"
-              >
-                <span>Expand Interactive Full Map</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </Link>
+              <p className="text-xs text-slate-500">
+                Visualizing active Karyakarta survey tracks across Kothrud, Erandwane, and Shivajinagar.
+              </p>
             </div>
 
-            {/* Visual Canvas Area with Subtle Dotted Grid and Geodetic Coordinates - Clickable */}
             <Link
               href="/field-map"
-              className="block relative h-64 sm:h-72 my-4 rounded-xl bg-slate-50/70 dark:bg-slate-950/60 border border-slate-200/70 dark:border-slate-800 overflow-hidden group cursor-pointer"
-              title="Click anywhere to open Live Field Map"
+              className="text-xs font-bold text-blue-600 hover:text-blue-700 flex items-center gap-1 self-start sm:self-auto cursor-pointer"
             >
-              {/* Geodetic Grid Lat/Long Coordinates Markers */}
-              <div className="absolute top-2 left-2 z-10 px-2 py-0.5 rounded bg-black/60 backdrop-blur-xs font-mono text-[9px] text-violet-300 font-bold border border-violet-500/30">
-                18.5220° N, 73.8540° E
-              </div>
-              <div className="absolute bottom-8 right-2 z-10 px-2 py-0.5 rounded bg-black/60 backdrop-blur-xs font-mono text-[9px] text-violet-300 font-bold border border-violet-500/30">
-                AC-215 (BOOTHS 1-215)
-              </div>
-
-              {/* Subtle Dot Matrix Pattern */}
-              <div
-                className="absolute inset-0 opacity-40 dark:opacity-20 pointer-events-none"
-                style={{
-                  backgroundImage: "radial-gradient(circle, #94a3b8 1px, transparent 1px)",
-                  backgroundSize: "24px 24px",
-                }}
-              />
-
-              {/* Smooth Area Curve SVG */}
-              <svg
-                className="w-full h-full absolute inset-0"
-                viewBox="0 0 700 280"
-                preserveAspectRatio="none"
-              >
-                <defs>
-                  <linearGradient id="liveWaveGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                    <stop offset="0%" stopColor="#7c3aed" stopOpacity="0.18" />
-                    <stop offset="70%" stopColor="#8b5cf6" stopOpacity="0.06" />
-                    <stop offset="100%" stopColor="#8b5cf6" stopOpacity="0.00" />
-                  </linearGradient>
-                  <linearGradient id="waveLineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" stopColor="#6366f1" />
-                    <stop offset="50%" stopColor="#8b5cf6" />
-                    <stop offset="100%" stopColor="#7c3aed" />
-                  </linearGradient>
-                </defs>
-
-                {/* Translucent Purple Wave Area Fill */}
-                <path
-                  d="M 0,200 C 80,200 120,135 190,135 C 260,135 300,195 370,195 C 440,195 480,95 560,95 C 630,95 670,165 700,165 L 700,280 L 0,280 Z"
-                  fill="url(#liveWaveGrad)"
-                />
-
-                {/* Smooth Glowing Bezier Stroke Line */}
-                <path
-                  d="M 0,200 C 80,200 120,135 190,135 C 260,135 300,195 370,195 C 440,195 480,95 560,95 C 630,95 670,165 700,165"
-                  fill="none"
-                  stroke="url(#waveLineGrad)"
-                  strokeWidth="3"
-                  strokeLinecap="round"
-                />
-
-                {/* Node 1: Pooja J. (Booth 101) - Purple Crest */}
-                <g>
-                  <circle cx="190" cy="135" r="14" fill="#6366f1" fillOpacity="0.2" className="animate-ping" />
-                  <circle cx="190" cy="135" r="6.5" fill="#4f46e5" stroke="#ffffff" strokeWidth="2.5" />
-                </g>
-
-                {/* Node 2: Ganesh P. (Booth 102) - Cyan Valley */}
-                <g>
-                  <circle cx="370" cy="195" r="14" fill="#06b6d4" fillOpacity="0.2" className="animate-ping" />
-                  <circle cx="370" cy="195" r="6.5" fill="#06b6d4" stroke="#ffffff" strokeWidth="2.5" />
-                </g>
-
-                {/* Node 3: Vikas M. (Booth 104) - Blue Crest */}
-                <g>
-                  <circle cx="560" cy="95" r="14" fill="#3b82f6" fillOpacity="0.2" className="animate-ping" />
-                  <circle cx="560" cy="95" r="6.5" fill="#2563eb" stroke="#ffffff" strokeWidth="2.5" />
-                </g>
-              </svg>
-
-              {/* Floating Legend Card in Upper-Right of Canvas */}
-              <div className="absolute top-3 right-3 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md px-3 py-2 rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-xs space-y-1.5 text-xs">
-                <div className="flex items-center gap-2 font-semibold text-slate-700 dark:text-slate-200">
-                  <span className="w-2 h-2 rounded-full bg-[#4f46e5]" />
-                  <span>Pooja J. (Booth 101)</span>
-                </div>
-                <div className="flex items-center gap-2 font-semibold text-slate-700 dark:text-slate-200">
-                  <span className="w-2 h-2 rounded-full bg-[#06b6d4]" />
-                  <span>Ganesh P. (Booth 102)</span>
-                </div>
-                <div className="flex items-center gap-2 font-semibold text-slate-700 dark:text-slate-200">
-                  <span className="w-2 h-2 rounded-full bg-[#2563eb]" />
-                  <span>Vikas M. (Booth 104)</span>
-                </div>
-              </div>
-
-              {/* Bottom-Left Indicators inside Canvas */}
-              <div className="absolute bottom-3 left-3 flex items-center gap-3.5 text-xs font-semibold text-slate-700 dark:text-slate-300">
-                <div className="flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-[#4f46e5]" />
-                  <span>Active Karyakarta</span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <span className="w-3.5 h-2 rounded bg-violet-200 dark:bg-violet-900/60 border border-violet-300 dark:border-violet-700" />
-                  <span>Active Survey Area</span>
-                </div>
-              </div>
-
-              {/* Hover overlay hint */}
-              <div className="absolute inset-0 bg-violet-900/10 dark:bg-violet-950/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
-                <span className="px-3 py-1.5 rounded-xl bg-black/80 text-white font-bold text-xs backdrop-blur-xs flex items-center gap-1.5 shadow-lg">
-                  <MapPin className="w-3.5 h-3.5 text-violet-400" />
-                  <span>Tap to Launch Live Field Map &amp; Telemetry</span>
-                </span>
-              </div>
-            </Link>
-          </div>
-
-          {/* Lower Telemetry Strip */}
-          <div className="pt-2 flex flex-col sm:flex-row sm:items-center justify-between text-xs text-slate-500 gap-1 border-t border-slate-100 dark:border-slate-800">
-            <span>Boundary: 34 - Pune Parliamentary Constituency</span>
-            <span className="text-emerald-600 font-medium">Last ping: 12 seconds ago</span>
-          </div>
-        </div>
-
-        {/* Right Column (5 cols): INDIATA AI BOT INSIGHTS (Light Theme Cohesive) */}
-        <div className="lg:col-span-5 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 p-5 shadow-premium-xs flex flex-col justify-between">
-          <div className="space-y-4">
-            {/* Header */}
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
-              <div className="flex items-center gap-2">
-                <div className="w-7 h-7 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-600 text-white flex items-center justify-center shadow-xs">
-                  <Sparkles className="w-3.5 h-3.5 text-amber-300" />
-                </div>
-                <div>
-                  <h3 className="text-xs font-bold text-slate-900 dark:text-white tracking-wider uppercase">
-                    INDIATA AI BOT INSIGHTS
-                  </h3>
-                  <p className="text-[10px] text-slate-400">
-                    Autonomous Strategy Feed
-                  </p>
-                </div>
-              </div>
-
-              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500 text-white shadow-2xs">
-                Live Model
-              </span>
-            </div>
-
-            {/* Main Insight Box with Light Tint matching Reference 1 */}
-            <div className="bg-violet-50/70 dark:bg-slate-800/60 border border-violet-100 dark:border-slate-700/80 rounded-2xl p-4 space-y-3">
-              <div className="flex items-start gap-1.5 text-xs font-bold text-brand-700 dark:text-brand-300">
-                <Sparkles className="w-3.5 h-3.5 text-brand-600 shrink-0 mt-0.5" />
-                <span>Key Opportunity: Ladki Bahin Yojana Sentiment Lift</span>
-              </div>
-
-              <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-                Survey data indicates an 18.4% favorable sentiment surge among women voters in Wards 12 &amp; 13 following direct benefit disbursements.
-              </p>
-
-              {/* Three Metric Gauges */}
-              <div className="grid grid-cols-3 gap-2 pt-1 text-center">
-                <div className="p-2.5 rounded-xl bg-white/90 dark:bg-slate-900/80 border border-slate-200/70 dark:border-slate-700/60 shadow-2xs">
-                  <div className="text-[10px] font-medium text-slate-500">Projected Turnout</div>
-                  <div className="text-base font-black text-slate-900 dark:text-white mt-0.5 tabular-nums">
-                    68.4%
-                  </div>
-                  <div className="text-[10px] text-slate-500 mt-0.5 font-medium">
-                    (Target: 72%)
-                  </div>
-                </div>
-
-                <div className="p-2.5 rounded-xl bg-white/90 dark:bg-slate-900/80 border border-slate-200/70 dark:border-slate-700/60 shadow-2xs">
-                  <div className="text-[10px] font-medium text-slate-500">Supporter Base</div>
-                  <div className="text-base font-black text-slate-900 dark:text-white mt-0.5 tabular-nums">
-                    46.8%
-                  </div>
-                  <div className="text-[10px] text-emerald-600 font-bold mt-0.5">
-                    (+4.2%)
-                  </div>
-                </div>
-
-                <div className="p-2.5 rounded-xl bg-white/90 dark:bg-slate-900/80 border border-slate-200/70 dark:border-slate-700/60 shadow-2xs">
-                  <div className="text-[10px] font-medium text-slate-500">Undecided Voters</div>
-                  <div className="text-base font-black text-slate-900 dark:text-white mt-0.5 tabular-nums">
-                    18.5%
-                  </div>
-                  <div className="text-[10px] text-amber-600 font-medium mt-0.5">
-                    Undecided Pool
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Bottom Action Button matching Reference 1 */}
-          <div className="mt-4 pt-2">
-            <Link
-              href="/ai/assistant"
-              className="w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl text-xs transition-colors shadow-md shadow-brand-600/20 active:scale-98 cursor-pointer"
-            >
-              <span>Open Strategy Bot Analytics</span>
+              <span>Expand Interactive Full Map</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
+
+          {/* SVG Preview Canvas */}
+          <div className="relative w-full h-64 rounded-xl border border-slate-200/80 bg-slate-50/50 overflow-hidden flex items-center justify-center">
+            {/* Grid background dots */}
+            <svg className="absolute inset-0 w-full h-full text-slate-200/80" width="100%" height="100%">
+              <defs>
+                <pattern id="grid-dots" width="20" height="20" patternUnits="userSpaceOnUse">
+                  <circle cx="2" cy="2" r="1" fill="currentColor" />
+                </pattern>
+              </defs>
+              <rect width="100%" height="100%" fill="url(#grid-dots)" />
+            </svg>
+
+            {/* Geometric Polygons & Trajectories */}
+            <svg viewBox="0 0 600 240" className="w-full h-full relative z-10">
+              {/* Sine Wave Curve */}
+              <path
+                d="M 20 180 C 140 30, 240 240, 360 120 S 480 40, 580 160"
+                fill="none"
+                stroke="#3B82F6"
+                strokeWidth="2.5"
+                strokeDasharray="6 4"
+                className="opacity-70"
+              />
+
+              {/* Polygon 1: Blue (Booth 101) */}
+              <polygon
+                points="120,70 200,90 170,180 90,150"
+                fill="#3B82F6"
+                fillOpacity="0.08"
+                stroke="#2563EB"
+                strokeWidth="2"
+              />
+              <g transform="translate(135, 125)">
+                <rect x="-6" y="-12" width="100" height="22" rx="6" fill="white" stroke="#E2E8F0" />
+                <circle cx="2" cy="-1" r="3" fill="#2563EB" />
+                <text x="10" y="2" fontSize="9" fontWeight="bold" fill="#1E293B">Pooja J. (Booth 101)</text>
+              </g>
+
+              {/* Polygon 2: Green (Booth 102) */}
+              <polygon
+                points="230,80 320,70 340,160 250,170"
+                fill="#10B981"
+                fillOpacity="0.08"
+                stroke="#059669"
+                strokeWidth="2"
+              />
+              <g transform="translate(265, 125)">
+                <rect x="-6" y="-12" width="105" height="22" rx="6" fill="white" stroke="#E2E8F0" />
+                <circle cx="2" cy="-1" r="3" fill="#059669" />
+                <text x="10" y="2" fontSize="9" fontWeight="bold" fill="#1E293B">Ganesh P. (Booth 102)</text>
+              </g>
+
+              {/* Polygon 3: Amber (Booth 104) */}
+              <polygon
+                points="360,90 470,95 440,190 350,180"
+                fill="#F59E0B"
+                fillOpacity="0.08"
+                stroke="#D97706"
+                strokeWidth="2"
+              />
+              <g transform="translate(385, 145)">
+                <rect x="-6" y="-12" width="100" height="22" rx="6" fill="white" stroke="#E2E8F0" />
+                <circle cx="2" cy="-1" r="3" fill="#D97706" />
+                <text x="10" y="2" fontSize="9" fontWeight="bold" fill="#1E293B">Vikas M. (Booth 104)</text>
+              </g>
+            </svg>
+
+            {/* Bottom Legend */}
+            <div className="absolute bottom-3 left-4 flex items-center gap-4 text-xs font-semibold bg-white/95 px-3 py-1.5 rounded-xl border border-slate-200/90 shadow-xs z-20">
+              <span className="flex items-center gap-1.5 text-slate-700">
+                <span className="w-2.5 h-2.5 rounded-full bg-blue-600" />
+                <span>Active Karyakarta</span>
+              </span>
+              <span className="flex items-center gap-1.5 text-slate-700">
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-600" />
+                <span>Field Squad</span>
+              </span>
+              <span className="flex items-center gap-1.5 text-slate-700">
+                <span className="w-2.5 h-2.5 rounded-full bg-amber-500" />
+                <span>Swing Zone</span>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Right: Attention Required Carousel (Dark Card) */}
+        {(() => {
+          const currentCarousel = CAROUSEL_ITEMS[carouselIndex] || CAROUSEL_ITEMS[0]!;
+          return (
+            <div className="bg-[#0B1527] text-white p-5 rounded-2xl border border-slate-800 shadow-md flex flex-col justify-between relative overflow-hidden">
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider bg-amber-500/20 text-amber-300 border border-amber-400/30">
+                    <Sparkles className="w-3 h-3" />
+                    <span>{currentCarousel.category}</span>
+                  </span>
+
+                  <div className="flex items-center gap-1">
+                    <button
+                      type="button"
+                      onClick={() => setCarouselIndex((prev) => (prev - 1 + CAROUSEL_ITEMS.length) % CAROUSEL_ITEMS.length)}
+                      className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer"
+                    >
+                      <ChevronLeft className="w-4 h-4" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setCarouselIndex((prev) => (prev + 1) % CAROUSEL_ITEMS.length)}
+                      className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer"
+                    >
+                      <ChevronRight className="w-4 h-4" />
+                    </button>
+                    <span className="text-[10px] font-semibold text-slate-400 bg-slate-800 px-2 py-0.5 rounded-full ml-1">
+                      Auto
+                    </span>
+                  </div>
+                </div>
+
+                <h3 className="font-bold text-base text-white tracking-tight">
+                  {currentCarousel.title}
+                </h3>
+                <p className="text-xs text-slate-300 mt-1 leading-relaxed">
+                  {currentCarousel.description}
+                </p>
+
+                <div className="mt-4 p-3 rounded-xl bg-slate-800/80 border border-slate-700/60 text-xs space-y-1">
+                  <p className="font-semibold text-slate-200">{currentCarousel.target}</p>
+                  <p className="text-slate-400 text-[11px]">{currentCarousel.classification}</p>
+                </div>
+              </div>
+
+              <div className="mt-5 space-y-3">
+                <Link
+                  href={currentCarousel.actionHref}
+                  className="w-full py-2.5 px-4 bg-white hover:bg-slate-100 text-slate-900 rounded-xl text-xs font-bold text-center flex items-center justify-center gap-1.5 shadow-sm transition-all"
+                >
+                  <span>{currentCarousel.actionText}</span>
+                </Link>
+
+                {/* Pagination Dots */}
+                <div className="flex items-center justify-center gap-1.5">
+                  {CAROUSEL_ITEMS.map((item, idx) => (
+                    <button
+                      key={item.id}
+                      type="button"
+                      onClick={() => setCarouselIndex(idx)}
+                      className={`h-1.5 rounded-full transition-all ${
+                        carouselIndex === idx ? "w-6 bg-amber-400" : "w-1.5 bg-slate-700"
+                      }`}
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+          );
+        })()}
+      </section>
+
+      {/* ========================================================================= */}
+      {/* SECTION 4: ORGANISATION SCORE + GENDER + MEMBER SUMMARY (SCREENSHOT 2 & 3) */}
+      {/* ========================================================================= */}
+      <section className="grid grid-cols-1 md:grid-cols-3 gap-5">
+        {/* Card 1: Organisation Score */}
+        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <Award className="w-4 h-4 text-blue-600" />
+                <h3 className="font-bold text-slate-900 text-sm">Organisation Score</h3>
+              </div>
+              <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200">
+                ECI Roll Match: High
+              </span>
+            </div>
+
+            {/* Circular Radial Gauge */}
+            <div className="flex flex-col items-center justify-center my-3">
+              <div className="relative w-28 h-28 flex items-center justify-center">
+                <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
+                  <circle cx="50" cy="50" r="40" fill="transparent" stroke="#E2E8F0" strokeWidth="8" />
+                  <circle
+                    cx="50"
+                    cy="50"
+                    r="40"
+                    fill="transparent"
+                    stroke="#2563EB"
+                    strokeWidth="8"
+                    strokeDasharray="251.2"
+                    strokeDashoffset={251.2 * (1 - 0.82)}
+                    strokeLinecap="round"
+                  />
+                </svg>
+                <div className="absolute text-center">
+                  <span className="text-xl font-black text-slate-900 block leading-none">82%</span>
+                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">HEALTH</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-2 text-xs">
+              <div className="flex justify-between items-center text-slate-600">
+                <span className="font-medium">Booth Coverage</span>
+                <span className="font-bold text-slate-900">99.6%</span>
+              </div>
+              <p className="text-[11px] text-slate-400">2,038 / 2,045 booths active</p>
+            </div>
+          </div>
+
+          <div className="mt-4 p-2 rounded-xl bg-amber-50 text-amber-800 border border-amber-200 text-xs font-semibold flex items-center gap-2">
+            <AlertCircle className="w-4 h-4 text-amber-600 shrink-0" />
+            <span>Booths w/o Data: 7 Booths</span>
+          </div>
+        </div>
+
+        {/* Card 2: Gender Distribution */}
+        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <Users className="w-4 h-4 text-purple-600" />
+                <h3 className="font-bold text-slate-900 text-sm">Gender Distribution</h3>
+              </div>
+              <span className="text-xs text-slate-400 font-mono">21,54,328 total</span>
+            </div>
+
+            {/* Donut Chart */}
+            <div className="flex flex-col items-center justify-center my-3">
+              <div className="relative w-28 h-28 flex items-center justify-center">
+                <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
+                  <circle cx="50" cy="50" r="40" fill="transparent" stroke="#E2E8F0" strokeWidth="10" />
+                  <circle
+                    cx="50"
+                    cy="50"
+                    r="40"
+                    fill="transparent"
+                    stroke="#2563EB"
+                    strokeWidth="10"
+                    strokeDasharray="251.2"
+                    strokeDashoffset={251.2 * (1 - 0.514)}
+                    strokeLinecap="round"
+                  />
+                  <circle
+                    cx="50"
+                    cy="50"
+                    r="40"
+                    fill="transparent"
+                    stroke="#EC4899"
+                    strokeWidth="10"
+                    strokeDasharray="251.2"
+                    strokeDashoffset={251.2 * (1 - 0.485)}
+                    strokeLinecap="round"
+                    className="rotate-180 origin-center"
+                  />
+                </svg>
+                <div className="absolute text-center">
+                  <span className="text-xs font-black text-slate-900 block leading-tight">100%</span>
+                  <span className="text-[9px] font-bold text-slate-400 uppercase">CLASSIFIED</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-2 text-xs">
+              <div className="flex items-center justify-between">
+                <span className="flex items-center gap-1.5 text-slate-700">
+                  <span className="w-2 h-2 rounded-full bg-blue-600" />
+                  <span>Male</span>
+                </span>
+                <span className="font-bold text-slate-900">11,07,320 (51.4%)</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="flex items-center gap-1.5 text-slate-700">
+                  <span className="w-2 h-2 rounded-full bg-pink-500" />
+                  <span>Female</span>
+                </span>
+                <span className="font-bold text-slate-900">10,45,288 (48.5%)</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+            <span>Third Gender / Others:</span>
+            <span className="font-bold text-slate-700">1,720 (0.1%)</span>
+          </div>
+        </div>
+
+        {/* Card 3: Member Summary */}
+        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <Users className="w-4 h-4 text-emerald-600" />
+                <h3 className="font-bold text-slate-900 text-sm">Member Summary</h3>
+              </div>
+              <Link href="/members" className="text-xs font-bold text-blue-600 hover:text-blue-700">
+                View Roster &rarr;
+              </Link>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3 my-2">
+              <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/80">
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Total Members</span>
+                <span className="text-lg font-black text-slate-900 mt-0.5 block">34,200</span>
+              </div>
+              <div className="p-3 bg-emerald-50 rounded-xl border border-emerald-200/80">
+                <span className="text-[10px] font-bold text-emerald-600 uppercase tracking-wider block">Active Cadre</span>
+                <span className="text-lg font-black text-emerald-700 mt-0.5 block">28,450</span>
+              </div>
+            </div>
+
+            <div className="space-y-2 mt-3 text-xs">
+              <div className="flex justify-between text-slate-600">
+                <span>Standby / Inactive</span>
+                <span className="font-bold text-slate-900">4,120</span>
+              </div>
+              <div className="flex justify-between text-slate-600">
+                <span>Newly Enrolled (Past 14 days)</span>
+                <span className="font-bold text-emerald-600">+1,630</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+            <span className="text-slate-500">Cadre Readiness Rate:</span>
+            <span className="font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md">83.2% Verified</span>
+          </div>
         </div>
       </section>
 
-      {/* 5. BOOTH INTELLIGENCE & READINESS MATRIX (DATA TABLE) */}
-      <section className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-premium-xs overflow-hidden">
-        {/* Table Filter & Action Header */}
-        <div className="p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-3">
-          <div>
-            <h2 className="text-base font-bold text-slate-900 dark:text-white">
-              Booth Intelligence &amp; Readiness Matrix
-            </h2>
-            <p className="text-xs text-slate-500 mt-0.5">
-              Live status, grade ratings, BLO verification, and karyakarta staffing per polling station.
-            </p>
+      {/* Blue Action Button Row (Screenshot 3) */}
+      <div className="flex">
+        <Link
+          href="/voters"
+          className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-md shadow-blue-600/20 cursor-pointer flex items-center gap-2"
+        >
+          <UserPlus className="w-4 h-4" />
+          <span>+ Add / Import Voters</span>
+        </Link>
+      </div>
+
+      {/* ========================================================================= */}
+      {/* SECTION 5: CASTE CATEGORIES & CASTE DISTRIBUTION (SCREENSHOT 3)           */}
+      {/* ========================================================================= */}
+      <section className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        {/* Left Card: Caste Categories */}
+        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="flex items-center gap-2">
+                <Layers className="w-4 h-4 text-blue-600" />
+                <h3 className="font-bold text-slate-900 text-sm">Caste Categories</h3>
+              </div>
+              <p className="text-xs text-slate-500 mt-0.5">Broad social classifications across 21.54 L electorate</p>
+            </div>
+            <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200">
+              6 Categories
+            </span>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2">
-            <div className="relative">
-              <input
-                type="text"
-                value={boothFilter}
-                onChange={(e) => setBoothFilter(e.target.value)}
-                placeholder="Search booth #, name..."
-                className="pl-7 pr-3 py-1.5 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-brand-500 w-44 sm:w-48 shadow-premium-xs"
-              />
-              <Search className="w-3.5 h-3.5 absolute left-2 top-2 text-slate-400" />
+          <div className="space-y-3 pt-2 text-xs">
+            {/* General */}
+            <div>
+              <div className="flex justify-between font-semibold mb-1">
+                <span className="text-slate-800 flex items-center gap-1.5">
+                  <span className="w-2.5 h-2.5 rounded-sm bg-blue-600" />
+                  <span>General / Open Category</span>
+                </span>
+                <span className="font-mono text-slate-900">712,000 &bull; <strong>33.1%</strong></span>
+              </div>
+              <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+                <div className="bg-blue-600 h-2 rounded-full" style={{ width: "33.1%" }} />
+              </div>
             </div>
 
-            <select
-              value={selectedGrade}
-              onChange={(e) => setSelectedGrade(e.target.value)}
-              className="py-1.5 pl-2 pr-6 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-1 focus:ring-brand-500 cursor-pointer shadow-premium-xs"
-            >
-              <option value="all">All Grades</option>
-              <option value="grade-a">Grade A Only</option>
-              <option value="focus">Focus Booths</option>
-            </select>
+            {/* OBC */}
+            <div>
+              <div className="flex justify-between font-semibold mb-1">
+                <span className="text-slate-800 flex items-center gap-1.5">
+                  <span className="w-2.5 h-2.5 rounded-sm bg-cyan-500" />
+                  <span>OBC (Other Backward Classes)</span>
+                </span>
+                <span className="font-mono text-slate-900">624,000 &bull; <strong>29%</strong></span>
+              </div>
+              <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+                <div className="bg-cyan-500 h-2 rounded-full" style={{ width: "29%" }} />
+              </div>
+            </div>
 
-            <Link
-              href="/voters"
-              className="text-xs font-semibold text-brand-600 hover:underline flex items-center gap-1 ml-2"
-            >
-              <span>Filter Total Voters by Booth</span>
-              <ArrowRight className="w-3 h-3" />
+            {/* SC */}
+            <div>
+              <div className="flex justify-between font-semibold mb-1">
+                <span className="text-slate-800 flex items-center gap-1.5">
+                  <span className="w-2.5 h-2.5 rounded-sm bg-purple-600" />
+                  <span>SC (Scheduled Castes)</span>
+                </span>
+                <span className="font-mono text-slate-900">298,000 &bull; <strong>13.8%</strong></span>
+              </div>
+              <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+                <div className="bg-purple-600 h-2 rounded-full" style={{ width: "13.8%" }} />
+              </div>
+            </div>
+
+            {/* Religious Minorities */}
+            <div>
+              <div className="flex justify-between font-semibold mb-1">
+                <span className="text-slate-800 flex items-center gap-1.5">
+                  <span className="w-2.5 h-2.5 rounded-sm bg-indigo-600" />
+                  <span>Religious Minorities</span>
+                </span>
+                <span className="font-mono text-slate-900">184,000 &bull; <strong>8.5%</strong></span>
+              </div>
+              <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+                <div className="bg-indigo-600 h-2 rounded-full" style={{ width: "8.5%" }} />
+              </div>
+            </div>
+
+            {/* ST / NT */}
+            <div>
+              <div className="flex justify-between font-semibold mb-1">
+                <span className="text-slate-800 flex items-center gap-1.5">
+                  <span className="w-2.5 h-2.5 rounded-sm bg-amber-500" />
+                  <span>ST / NT (Nomadic Tribes)</span>
+                </span>
+                <span className="font-mono text-slate-900">142,000 &bull; <strong>6.6%</strong></span>
+              </div>
+              <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+                <div className="bg-amber-500 h-2 rounded-full" style={{ width: "6.6%" }} />
+              </div>
+            </div>
+
+            {/* Other */}
+            <div>
+              <div className="flex justify-between font-semibold mb-1">
+                <span className="text-slate-800 flex items-center gap-1.5">
+                  <span className="w-2.5 h-2.5 rounded-sm bg-slate-400" />
+                  <span>Other / Unclassified</span>
+                </span>
+                <span className="font-mono text-slate-900">194,200 &bull; <strong>9%</strong></span>
+              </div>
+              <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+                <div className="bg-slate-400 h-2 rounded-full" style={{ width: "9%" }} />
+              </div>
+            </div>
+          </div>
+
+          <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+            <span className="text-slate-500">Primary Demographic: <strong>General + OBC (62.1%)</strong></span>
+            <Link href="/voters" className="font-bold text-blue-600 hover:text-blue-700">
+              Filter Roll by Caste &rarr;
             </Link>
           </div>
         </div>
 
-        {/* Structured Table */}
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse text-xs">
-            <thead>
-              <tr className="bg-slate-50 dark:bg-slate-800/60 border-b border-slate-100 dark:border-slate-800 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
-                <th className="py-3 px-4">Booth #</th>
-                <th className="py-3 px-4">Polling Station Name &amp; Locality</th>
-                <th className="py-3 px-3">Voters</th>
-                <th className="py-3 px-3">Grade</th>
-                <th className="py-3 px-3">BLO Incharge</th>
-                <th className="py-3 px-3">Karyakartas</th>
-                <th className="py-3 px-4">Slip Delivery</th>
-                <th className="py-3 px-3">Projected Turnout</th>
-                <th className="py-3 px-4 text-right">Actions</th>
+        {/* Right Card: Caste Distribution */}
+        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="flex items-center gap-2">
+                <PieChart className="w-4 h-4 text-purple-600" />
+                <h3 className="font-bold text-slate-900 text-sm">Caste Distribution</h3>
+              </div>
+              <p className="text-xs text-slate-500 mt-0.5">Specific community clusters &amp; demographic density</p>
+            </div>
+            <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-purple-50 text-purple-700 border border-purple-200">
+              Community Breakdown
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3 pt-2 text-xs">
+            {/* Col 1 */}
+            <div className="space-y-3">
+              <div>
+                <div className="flex justify-between font-semibold mb-1">
+                  <span className="flex items-center gap-1 text-slate-800">
+                    <span className="w-2 h-2 rounded-full bg-blue-600" />
+                    <span>Maratha</span>
+                  </span>
+                  <span className="font-bold text-slate-900">22.4%</span>
+                </div>
+                <div className="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                  <div className="bg-blue-600 h-1.5 rounded-full" style={{ width: "22.4%" }} />
+                </div>
+                <span className="text-[10px] text-slate-400 block mt-0.5">General / Open Category • 482,100</span>
+              </div>
+
+              <div>
+                <div className="flex justify-between font-semibold mb-1">
+                  <span className="flex items-center gap-1 text-slate-800">
+                    <span className="w-2 h-2 rounded-full bg-indigo-600" />
+                    <span>Brahmin</span>
+                  </span>
+                  <span className="font-bold text-slate-900">10.4%</span>
+                </div>
+                <div className="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                  <div className="bg-indigo-600 h-1.5 rounded-full" style={{ width: "10.4%" }} />
+                </div>
+                <span className="text-[10px] text-slate-400 block mt-0.5">General / Open Category • 224,000</span>
+              </div>
+
+              <div>
+                <div className="flex justify-between font-semibold mb-1">
+                  <span className="flex items-center gap-1 text-slate-800">
+                    <span className="w-2 h-2 rounded-full bg-cyan-600" />
+                    <span>Vanjari (OBC/NT)</span>
+                  </span>
+                  <span className="font-bold text-slate-900">5.3%</span>
+                </div>
+                <div className="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                  <div className="bg-cyan-600 h-1.5 rounded-full" style={{ width: "5.3%" }} />
+                </div>
+                <span className="text-[10px] text-slate-400 block mt-0.5">OBC • 114,000</span>
+              </div>
+
+              <div>
+                <div className="flex justify-between font-semibold mb-1">
+                  <span className="flex items-center gap-1 text-slate-800">
+                    <span className="w-2 h-2 rounded-full bg-purple-600" />
+                    <span>Matang (SC)</span>
+                  </span>
+                  <span className="font-bold text-slate-900">4.6%</span>
+                </div>
+                <div className="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                  <div className="bg-purple-600 h-1.5 rounded-full" style={{ width: "4.6%" }} />
+                </div>
+                <span className="text-[10px] text-slate-400 block mt-0.5">SC • 100,000</span>
+              </div>
+
+              <div>
+                <div className="flex justify-between font-semibold mb-1">
+                  <span className="flex items-center gap-1 text-slate-800">
+                    <span className="w-2 h-2 rounded-full bg-blue-400" />
+                    <span>Jain / Marwari</span>
+                  </span>
+                  <span className="font-bold text-slate-900">3.2%</span>
+                </div>
+                <div className="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                  <div className="bg-blue-400 h-1.5 rounded-full" style={{ width: "3.2%" }} />
+                </div>
+                <span className="text-[10px] text-slate-400 block mt-0.5">General / Open Category</span>
+              </div>
+            </div>
+
+            {/* Col 2 */}
+            <div className="space-y-3">
+              <div>
+                <div className="flex justify-between font-semibold mb-1">
+                  <span className="flex items-center gap-1 text-slate-800">
+                    <span className="w-2 h-2 rounded-full bg-blue-500" />
+                    <span>Mali (OBC)</span>
+                  </span>
+                  <span className="font-bold text-slate-900">9.2%</span>
+                </div>
+                <div className="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                  <div className="bg-blue-500 h-1.5 rounded-full" style={{ width: "9.2%" }} />
+                </div>
+                <span className="text-[10px] text-slate-400 block mt-0.5">OBC • 198,000</span>
+              </div>
+
+              <div>
+                <div className="flex justify-between font-semibold mb-1">
+                  <span className="flex items-center gap-1 text-slate-800">
+                    <span className="w-2 h-2 rounded-full bg-indigo-500" />
+                    <span>Neo-Buddhist (SC)</span>
+                  </span>
+                  <span className="font-bold text-slate-900">9.2%</span>
+                </div>
+                <div className="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                  <div className="bg-indigo-500 h-1.5 rounded-full" style={{ width: "9.2%" }} />
+                </div>
+                <span className="text-[10px] text-slate-400 block mt-0.5">SC • 198,000</span>
+              </div>
+
+              <div>
+                <div className="flex justify-between font-semibold mb-1">
+                  <span className="flex items-center gap-1 text-slate-800">
+                    <span className="w-2 h-2 rounded-full bg-purple-500" />
+                    <span>Muslim</span>
+                  </span>
+                  <span className="font-bold text-slate-900">6.6%</span>
+                </div>
+                <div className="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                  <div className="bg-purple-500 h-1.5 rounded-full" style={{ width: "6.6%" }} />
+                </div>
+                <span className="text-[10px] text-slate-400 block mt-0.5">Religious Minorities • 142,000</span>
+              </div>
+
+              <div>
+                <div className="flex justify-between font-semibold mb-1">
+                  <span className="flex items-center gap-1 text-slate-800">
+                    <span className="w-2 h-2 rounded-full bg-teal-500" />
+                    <span>Dhangar (OBC/NT)</span>
+                  </span>
+                  <span className="font-bold text-slate-900">4.1%</span>
+                </div>
+                <div className="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                  <div className="bg-teal-500 h-1.5 rounded-full" style={{ width: "4.1%" }} />
+                </div>
+                <span className="text-[10px] text-slate-400 block mt-0.5">OBC • 88,000</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+            <span className="text-slate-400">Aggregated from verified booth surveys and electoral records</span>
+            <span className="font-bold text-slate-700">10 Key Segments</span>
+          </div>
+        </div>
+      </section>
+
+      {/* ========================================================================= */}
+      {/* SECTION 6: BOOTH INTELLIGENCE & READINESS MATRIX (SCREENSHOT 4)           */}
+      {/* ========================================================================= */}
+      <section className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-4">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+          <div>
+            <div className="flex items-center gap-2">
+              <Building2 className="w-4 h-4 text-blue-600" />
+              <h3 className="font-bold text-slate-900 text-sm">Booth Intelligence &amp; Readiness Matrix</h3>
+            </div>
+            <p className="text-xs text-slate-500 mt-0.5">
+              Live status, grade ratings, BLO verification, karyakarta staffing, and slip delivery per polling station.
+            </p>
+          </div>
+
+          {/* Table Filters */}
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="relative">
+              <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+              <input
+                type="text"
+                placeholder="Search booth name, locality, #..."
+                value={boothSearch}
+                onChange={(e) => setBoothSearch(e.target.value)}
+                className="pl-8 pr-3 py-1.5 rounded-xl border border-slate-200 bg-slate-50 text-xs w-48 sm:w-64 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              />
+            </div>
+
+            <select
+              value={boothGradeFilter}
+              onChange={(e) => setBoothGradeFilter(e.target.value)}
+              className="px-2.5 py-1.5 rounded-xl border border-slate-200 bg-slate-50 text-xs font-semibold text-slate-700"
+            >
+              <option value="all">All Grades</option>
+              <option value="Grade A">Grade A</option>
+              <option value="Grade B">Grade B • Swing</option>
+              <option value="Grade C">Grade C • Swing</option>
+              <option value="Grade D">Grade D • Swing</option>
+            </select>
+          </div>
+        </div>
+
+        {/* Matrix Table */}
+        <div className="overflow-x-auto rounded-xl border border-slate-200">
+          <table className="w-full text-left text-xs">
+            <thead className="bg-slate-50 border-b border-slate-200 text-slate-500 font-bold uppercase text-[10px] tracking-wider">
+              <tr>
+                <th className="py-3 px-3">BOOTH #</th>
+                <th className="py-3 px-3">POLLING STATION NAME &amp; LOCALITY</th>
+                <th className="py-3 px-3">VOTERS</th>
+                <th className="py-3 px-3">GRADE</th>
+                <th className="py-3 px-3">BLO INCHARGE</th>
+                <th className="py-3 px-3">KARYAKARTAS</th>
+                <th className="py-3 px-3">SLIP DELIVERY</th>
+                <th className="py-3 px-3">PROJECTED TURNOUT</th>
+                <th className="py-3 px-3 text-right">ACTIONS</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-slate-800 dark:text-slate-100">
-              {filteredBooths.map((row) => (
-                <tr
-                  key={row.boothNumber}
-                  className="hover:bg-slate-50/80 dark:hover:bg-slate-800/50 transition-colors"
-                >
-                  <td className="py-3 px-4 font-bold font-mono text-brand-600">
-                    {row.boothNumber}
+            <tbody className="divide-y divide-slate-100">
+              {filteredBooths.map((booth) => (
+                <tr key={booth.boothNumber} className="hover:bg-slate-50/80 transition-colors">
+                  <td className="py-3 px-3 font-mono font-bold text-blue-600">#{booth.boothNumber}</td>
+                  <td className="py-3 px-3">
+                    <p className="font-bold text-slate-900">{booth.name}</p>
+                    <p className="text-[11px] text-slate-400 mt-0.5">{booth.locality}</p>
                   </td>
-                  <td className="py-3 px-4">
-                    <div className="font-semibold text-slate-900 dark:text-white">
-                      {row.stationName}
-                    </div>
-                    <div className="text-[11px] text-slate-500 mt-0.5">
-                      {row.locality}
-                    </div>
-                  </td>
-                  <td className="py-3 px-3 font-semibold tabular-nums">
-                    {row.voters.toLocaleString()}
-                  </td>
+                  <td className="py-3 px-3 font-semibold text-slate-800">{booth.totalVoters.toLocaleString()}</td>
                   <td className="py-3 px-3">
                     <span
-                      className={`px-2 py-0.5 rounded text-[10.5px] font-bold ${
-                        row.grade === "Grade A"
+                      className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                        booth.grade.includes("Grade A")
                           ? "bg-blue-50 text-blue-700 border border-blue-200"
-                          : row.grade === "Grade B - Focus"
+                          : booth.grade.includes("Grade B")
+                          ? "bg-purple-50 text-purple-700 border border-purple-200"
+                          : booth.grade.includes("Grade C")
                           ? "bg-amber-50 text-amber-700 border border-amber-200"
                           : "bg-rose-50 text-rose-700 border border-rose-200"
                       }`}
                     >
-                      {row.grade}
+                      {booth.grade}
                     </span>
                   </td>
                   <td className="py-3 px-3">
-                    <div className="font-medium text-slate-800 dark:text-slate-200">
-                      {row.bloName}
-                    </div>
-                    <div className="text-[10.5px] text-slate-500 font-mono">
-                      {row.bloPhone}
-                    </div>
+                    <p className="font-semibold text-slate-800">{booth.bloName}</p>
+                    <p className="text-[11px] text-slate-400">{booth.bloPhone}</p>
                   </td>
-                  <td className="py-3 px-3 font-medium">
-                    <span className="px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-[11px]">
-                      {row.karyakartasAssigned} Assigned
-                    </span>
-                  </td>
-                  <td className="py-3 px-4">
-                    <div className="flex items-center gap-2 min-w-[120px]">
-                      <div className="flex-1 bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden">
+                  <td className="py-3 px-3 font-medium text-slate-700">{booth.karyakartas} Assigned</td>
+                  <td className="py-3 px-3">
+                    <div className="flex items-center gap-2">
+                      <div className="w-16 bg-slate-100 rounded-full h-1.5 overflow-hidden">
                         <div
-                          className={`h-full rounded-full ${
-                            row.slipDeliveryPercent >= 80
-                              ? "bg-brand-600"
-                              : row.slipDeliveryPercent >= 60
-                              ? "bg-amber-500"
-                              : "bg-rose-500"
+                          className={`h-1.5 rounded-full ${
+                            booth.slipsPercent >= 80 ? "bg-blue-600" : booth.slipsPercent >= 50 ? "bg-amber-500" : "bg-rose-500"
                           }`}
-                          style={{ width: `${row.slipDeliveryPercent}%` }}
+                          style={{ width: `${booth.slipsPercent}%` }}
                         />
                       </div>
-                      <span className="font-bold text-[11.5px] tabular-nums">
-                        {row.slipDeliveryPercent}%
-                      </span>
+                      <span className="font-bold text-slate-800 text-[11px]">{booth.slipsPercent}%</span>
                     </div>
                   </td>
                   <td className="py-3 px-3">
-                    <div className="font-bold text-slate-900 dark:text-white">
-                      {row.projectedTurnout}
-                    </div>
-                    <div className="text-[10px] text-slate-500">
-                      Last: {row.lastTurnout}
-                    </div>
+                    <span className="font-bold text-slate-900">{booth.projectedTurnout}%</span>
+                    <span className="text-[10px] text-slate-400 block">Last: {booth.lastTurnout}%</span>
                   </td>
-                  <td className="py-3 px-4 text-right">
-                    <Link href={`/voters?booth=${encodeURIComponent(row.boothNumber)}`}>
-                      <button
-                        type="button"
-                        className="px-2.5 py-1 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-brand-500 hover:bg-brand-50 hover:text-brand-700 text-slate-700 dark:text-slate-300 font-semibold text-[11px] transition-colors cursor-pointer"
-                      >
-                        Inspect Roll
-                      </button>
+                  <td className="py-3 px-3 text-right">
+                    <Link
+                      href={`/voters?booth=${booth.boothNumber}`}
+                      className="px-2.5 py-1 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold text-[11px] shadow-2xs"
+                    >
+                      Inspect Roll
                     </Link>
                   </td>
                 </tr>
@@ -828,429 +1612,1655 @@ export default function CandidateWarRoomDashboard() {
         </div>
       </section>
 
-      {/* 6. DUAL LOWER SECTION: CAMPAIGN CHANNELS & OFFICE TICKETS (2-Column Grid) */}
-      <section className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-        {/* Left: Campaign Communication Channels */}
-        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 p-5 shadow-premium-xs flex flex-col justify-between">
+      {/* ========================================================================= */}
+      {/* SECTION 7: TOP BOOTHS BY TOTAL VOTER COUNT (SCREENSHOT 5)                 */}
+      {/* ========================================================================= */}
+      <section className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
-              <div>
-                <h3 className="text-sm font-bold text-slate-900 dark:text-white">
-                  Campaign Communication Channels
-                </h3>
-                <p className="text-[11.5px] text-slate-500 mt-0.5">
-                  Live delivery throughput across automated voter broadcasts.
-                </p>
-              </div>
-              <Link
-                href="/campaigns"
-                className="text-xs font-semibold text-brand-600 hover:underline"
-              >
-                Manage Campaigns
-              </Link>
+            <div className="flex items-center gap-2">
+              <Award className="w-4 h-4 text-amber-500" />
+              <h3 className="font-bold text-slate-900 text-sm">Top Booths by Total Voter Count</h3>
             </div>
-
-            <div className="mt-4 space-y-4">
-              <div className="space-y-1.5">
-                <div className="flex items-center justify-between text-xs">
-                  <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-emerald-500" />
-                    <span className="font-semibold text-slate-800 dark:text-slate-200">
-                      WhatsApp Voter Slip Broadcast
-                    </span>
-                  </div>
-                  <span className="font-bold tabular-nums text-emerald-600">
-                    96% Delivered{" "}
-                    <span className="font-normal text-slate-400 text-[11px]">
-                      (4,320 / 4,500)
-                    </span>
-                  </span>
-                </div>
-                <div className="w-full bg-slate-100 dark:bg-slate-800 h-2 rounded-full overflow-hidden">
-                  <div className="bg-emerald-500 h-full rounded-full" style={{ width: "96%" }} />
-                </div>
-              </div>
-
-              <div className="space-y-1.5">
-                <div className="flex items-center justify-between text-xs">
-                  <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-brand-600" />
-                    <span className="font-semibold text-slate-800 dark:text-slate-200">
-                      Youth First-Time Voter SMS
-                    </span>
-                  </div>
-                  <span className="font-bold tabular-nums text-brand-600">
-                    97% Delivered{" "}
-                    <span className="font-normal text-slate-400 text-[11px]">
-                      (7,950 / 8,200)
-                    </span>
-                  </span>
-                </div>
-                <div className="w-full bg-slate-100 dark:bg-slate-800 h-2 rounded-full overflow-hidden">
-                  <div className="bg-brand-600 h-full rounded-full" style={{ width: "97%" }} />
-                </div>
-              </div>
-
-              <div className="space-y-1.5">
-                <div className="flex items-center justify-between text-xs">
-                  <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-indigo-500" />
-                    <span className="font-semibold text-slate-800 dark:text-slate-200">
-                      AI Voice Outreach Calls
-                    </span>
-                  </div>
-                  <span className="font-bold tabular-nums text-indigo-600">
-                    87% Connected{" "}
-                    <span className="font-normal text-slate-400 text-[11px]">
-                      (10,450 / 12,000)
-                    </span>
-                  </span>
-                </div>
-                <div className="w-full bg-slate-100 dark:bg-slate-800 h-2 rounded-full overflow-hidden">
-                  <div className="bg-indigo-500 h-full rounded-full" style={{ width: "87%" }} />
-                </div>
-              </div>
-            </div>
+            <p className="text-xs text-slate-500 mt-0.5">
+              Ranked descending order of registered voters to focus high-density mobilizations and voter slip delivery.
+            </p>
           </div>
 
-          <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs text-slate-500">
-            <span>Twilio &amp; Meta Cloud Gateway: Active</span>
-            <span className="text-emerald-600 font-semibold">Zero Throttling</span>
+          <div className="flex items-center gap-2">
+            <div className="relative">
+              <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+              <input
+                type="text"
+                placeholder="Search ranked booths..."
+                value={rankedSearch}
+                onChange={(e) => setRankedSearch(e.target.value)}
+                className="pl-8 pr-3 py-1.5 rounded-xl border border-slate-200 bg-slate-50 text-xs w-40 sm:w-48"
+              />
+            </div>
+
+            <select
+              value={rankedPrabhaag}
+              onChange={(e) => setRankedPrabhaag(e.target.value)}
+              className="px-2.5 py-1.5 rounded-xl border border-slate-200 bg-slate-50 text-xs font-semibold text-slate-700"
+            >
+              <option value="all">All Prabhaags</option>
+              <option value="12">Prabhaag 12</option>
+              <option value="13">Prabhaag 13</option>
+              <option value="14">Prabhaag 14</option>
+            </select>
+
+            <span className="text-xs font-semibold text-slate-400 bg-slate-100 px-2.5 py-1.5 rounded-xl hidden sm:inline-block">
+              Showing {rankedBooths.length} Ranked Booths
+            </span>
+          </div>
+        </div>
+
+        {/* Ranked Table */}
+        <div className="overflow-x-auto rounded-xl border border-slate-200">
+          <table className="w-full text-left text-xs">
+            <thead className="bg-slate-50 border-b border-slate-200 text-slate-500 font-bold uppercase text-[10px] tracking-wider">
+              <tr>
+                <th className="py-3 px-3">RANK</th>
+                <th className="py-3 px-3">POLLING LOCATION &amp; BUILDING</th>
+                <th className="py-3 px-3">BOOTH NUMBER</th>
+                <th className="py-3 px-3">AREA / PRABHAAG</th>
+                <th className="py-3 px-3">TOTAL VOTERS</th>
+                <th className="py-3 px-3">COVERAGE &amp; SLIPS</th>
+                <th className="py-3 px-3 text-right">ACTION</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100">
+              {rankedBooths.map((booth, idx) => {
+                const rankNum = idx + 1;
+                return (
+                  <tr key={booth.boothNumber} className="hover:bg-slate-50/80 transition-colors">
+                    <td className="py-3 px-3">
+                      <span
+                        className={`inline-flex items-center justify-center w-6 h-6 rounded-full font-black text-xs font-mono shadow-2xs ${
+                          rankNum === 1
+                            ? "bg-amber-100 text-amber-900 border border-amber-300"
+                            : rankNum === 2
+                            ? "bg-slate-200 text-slate-800 border border-slate-300"
+                            : rankNum === 3
+                            ? "bg-orange-100 text-orange-900 border border-orange-300"
+                            : "bg-slate-100 text-slate-600"
+                        }`}
+                      >
+                        #{rankNum}
+                      </span>
+                    </td>
+                    <td className="py-3 px-3">
+                      <p className="font-bold text-slate-900">{booth.name}</p>
+                      <p className="text-[11px] text-slate-400 mt-0.5">{booth.locality}</p>
+                    </td>
+                    <td className="py-3 px-3 font-mono font-semibold text-slate-700">Booth #{booth.boothNumber}</td>
+                    <td className="py-3 px-3 text-slate-600 font-medium">{booth.prabhaag}</td>
+                    <td className="py-3 px-3 font-bold text-slate-900">
+                      {booth.totalVoters.toLocaleString()}{" "}
+                      <span className="text-[11px] font-normal text-slate-400">registered</span>
+                    </td>
+                    <td className="py-3 px-3">
+                      <span className="font-bold text-slate-900">{booth.slipsPercent}%</span>{" "}
+                      <span className="text-[11px] text-slate-400">({booth.slipsDelivered.toLocaleString()} slips)</span>
+                    </td>
+                    <td className="py-3 px-3 text-right">
+                      <Link
+                        href={`/voters?booth=${booth.boothNumber}`}
+                        className="px-2.5 py-1 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold text-[11px]"
+                      >
+                        Inspect Roll
+                      </Link>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      {/* ========================================================================= */}
+      {/* SECTION 8: CAMPAIGN CHANNELS & OFFICE TICKETS (SCREENSHOT 6)              */}
+      {/* ========================================================================= */}
+      <section className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        {/* Left: Campaign Communication Channels */}
+        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="flex items-center gap-2">
+                <Radio className="w-4 h-4 text-blue-600" />
+                <h3 className="font-bold text-slate-900 text-sm">Campaign Communication Channels</h3>
+              </div>
+              <p className="text-xs text-slate-500 mt-0.5">Live delivery throughput across automated voter broadcasts.</p>
+            </div>
+            <Link href="/campaigns" className="text-xs font-bold text-blue-600 hover:text-blue-700">
+              Manage Campaigns &rarr;
+            </Link>
+          </div>
+
+          <div className="space-y-4 pt-1 text-xs">
+            {/* Channel 1: WhatsApp */}
+            <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200/80 space-y-2">
+              <div className="flex items-center justify-between font-bold">
+                <span className="flex items-center gap-1.5 text-slate-800">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                  <span>WhatsApp Voter Slip Broadcast</span>
+                </span>
+                <span className="text-blue-600">96% Delivered (4,320 / 4,500)</span>
+              </div>
+              <div className="w-full bg-slate-200 rounded-full h-2 overflow-hidden">
+                <div className="bg-blue-600 h-2 rounded-full" style={{ width: "96%" }} />
+              </div>
+              <div className="flex justify-between text-[11px] text-slate-500 pt-1">
+                <span>Delivered: <strong>4,320</strong></span>
+                <span>Failed: <strong className="text-rose-600">180 (4%)</strong></span>
+                <span>Responses: <strong className="text-emerald-600">614 (14.2%)</strong></span>
+              </div>
+            </div>
+
+            {/* Channel 2: Youth SMS */}
+            <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200/80 space-y-2">
+              <div className="flex items-center justify-between font-bold">
+                <span className="flex items-center gap-1.5 text-slate-800">
+                  <span className="w-2 h-2 rounded-full bg-blue-500" />
+                  <span>Youth First-Time Voter SMS</span>
+                </span>
+                <span className="text-blue-600">97% Delivered (7,950 / 8,200)</span>
+              </div>
+              <div className="w-full bg-slate-200 rounded-full h-2 overflow-hidden">
+                <div className="bg-blue-500 h-2 rounded-full" style={{ width: "97%" }} />
+              </div>
+              <div className="flex justify-between text-[11px] text-slate-500 pt-1">
+                <span>Delivered: <strong>7,950</strong></span>
+                <span>Failed: <strong className="text-rose-600">250 (3%)</strong></span>
+                <span>Click-through: <strong className="text-blue-600">1,550 (19.5%)</strong></span>
+              </div>
+            </div>
+
+            {/* Channel 3: AI Voice */}
+            <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200/80 space-y-2">
+              <div className="flex items-center justify-between font-bold">
+                <span className="flex items-center gap-1.5 text-slate-800">
+                  <span className="w-2 h-2 rounded-full bg-purple-500" />
+                  <span>AI Voice Outreach Calls</span>
+                </span>
+                <span className="text-purple-600">87% Connected (10,450 / 12,000)</span>
+              </div>
+              <div className="w-full bg-slate-200 rounded-full h-2 overflow-hidden">
+                <div className="bg-purple-600 h-2 rounded-full" style={{ width: "87%" }} />
+              </div>
+              <div className="flex justify-between text-[11px] text-slate-500 pt-1">
+                <span>Connected: <strong>10,450</strong></span>
+                <span>Failed: <strong className="text-rose-600">1,550 (13%)</strong></span>
+                <span>Avg Duration: <strong>48 sec</strong></span>
+              </div>
+            </div>
           </div>
         </div>
 
         {/* Right: Top Public Demands & Office Tickets */}
-        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 p-5 shadow-premium-xs flex flex-col justify-between">
-          <div>
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
-              <div>
-                <h3 className="text-sm font-bold text-slate-900 dark:text-white">
-                  Top Public Demands &amp; Office Tickets
-                </h3>
-                <p className="text-[11.5px] text-slate-500 mt-0.5">
-                  Constituency grievances logged via Candidate Office Helpdesk.
-                </p>
+        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="flex items-center gap-2">
+                <Building2 className="w-4 h-4 text-amber-600" />
+                <h3 className="font-bold text-slate-900 text-sm">Top Public Demands &amp; Office Tickets</h3>
               </div>
-              <Link
-                href="/office/tickets"
-                className="text-xs font-semibold text-brand-600 hover:underline"
-              >
-                Open Ticket Desk
-              </Link>
+              <p className="text-xs text-slate-500 mt-0.5">Constituency grievances logged via Candidate Office Helpdesk.</p>
             </div>
+            <Link href="/office/tickets" className="text-xs font-bold text-blue-600 hover:text-blue-700">
+              Open Ticket Desk &rarr;
+            </Link>
+          </div>
 
-            <div className="mt-3 divide-y divide-slate-100 dark:divide-slate-800">
-              <div className="py-2.5 flex items-start justify-between gap-3">
-                <div className="space-y-0.5 min-w-0">
-                  <div className="flex items-center gap-2">
-                    <span className="font-mono font-bold text-xs text-brand-600">
-                      TKT-9210
-                    </span>
-                    <span className="font-bold text-xs text-slate-900 dark:text-white truncate">
-                      Water Supply
-                    </span>
-                    <span className="px-1.5 py-0.2 rounded text-[9.5px] font-bold bg-rose-50 text-rose-600">
-                      HIGH
-                    </span>
-                  </div>
-                  <p className="text-[11px] text-slate-500 line-clamp-1">
-                    Entire Dahanukar Colony Lane 3 has faced low municipal pressure for 5 straight days...
-                  </p>
-                </div>
-                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-50 text-amber-700 shrink-0">
-                  OPEN
-                </span>
-              </div>
-
-              <div className="py-2.5 flex items-start justify-between gap-3">
-                <div className="space-y-0.5 min-w-0">
-                  <div className="flex items-center gap-2">
-                    <span className="font-mono font-bold text-xs text-brand-600">
-                      TKT-9208
-                    </span>
-                    <span className="font-bold text-xs text-slate-900 dark:text-white truncate">
-                      Pension
-                    </span>
-                    <span className="px-1.5 py-0.2 rounded text-[9.5px] font-bold bg-amber-50 text-amber-700">
-                      MEDIUM
-                    </span>
-                  </div>
-                  <p className="text-[11px] text-slate-500 line-clamp-1">
-                    Sanjay Gandhi Niradhar Yojana monthly pension not credited into bank for 3 senior citizens...
-                  </p>
-                </div>
-                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-50 text-brand-600 shrink-0">
-                  IN PROGRESS
-                </span>
-              </div>
-
-              <div className="py-2.5 flex items-start justify-between gap-3">
-                <div className="space-y-0.5 min-w-0">
-                  <div className="flex items-center gap-2">
-                    <span className="font-mono font-bold text-xs text-brand-600">
-                      TKT-9195
-                    </span>
-                    <span className="font-bold text-xs text-slate-900 dark:text-white truncate">
-                      Roads &amp; Infrastructure
-                    </span>
-                    <span className="px-1.5 py-0.2 rounded text-[9.5px] font-bold bg-rose-50 text-rose-600">
-                      CRITICAL
-                    </span>
-                  </div>
-                  <p className="text-[11px] text-slate-500 line-clamp-1">
-                    Deep pothole causing accidents near Erandwane fire station crossing.
-                  </p>
-                </div>
-                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-emerald-700 shrink-0">
-                  RESOLVED
-                </span>
-              </div>
+          {/* 4 Mini Stat Boxes */}
+          <div className="grid grid-cols-4 gap-2 text-center text-xs">
+            <div className="p-2.5 bg-slate-50 rounded-xl border border-slate-200/80">
+              <span className="text-[10px] font-bold text-slate-500 uppercase block">TOTAL</span>
+              <span className="text-base font-black text-slate-900 mt-0.5 block">42</span>
+            </div>
+            <div className="p-2.5 bg-amber-50 rounded-xl border border-amber-200/80">
+              <span className="text-[10px] font-bold text-amber-700 uppercase block">OPEN</span>
+              <span className="text-base font-black text-amber-900 mt-0.5 block">14</span>
+            </div>
+            <div className="p-2.5 bg-blue-50 rounded-xl border border-blue-200/80">
+              <span className="text-[10px] font-bold text-blue-700 uppercase block">IN PROGRESS</span>
+              <span className="text-base font-black text-blue-900 mt-0.5 block">18</span>
+            </div>
+            <div className="p-2.5 bg-purple-50 rounded-xl border border-purple-200/80">
+              <span className="text-[10px] font-bold text-purple-700 uppercase block">RESOLVED</span>
+              <span className="text-base font-black text-purple-900 mt-0.5 block">10</span>
             </div>
           </div>
 
-          <div className="mt-2 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs text-slate-500">
-            <span>Average Resolution Time: 4.2 Hours</span>
-            <span className="text-emerald-600 font-semibold">92% Satisfaction</span>
+          {/* 3 Sample Tickets */}
+          <div className="space-y-2.5 text-xs">
+            {/* TKT-9210 */}
+            <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/80 space-y-1">
+              <div className="flex items-center justify-between">
+                <span className="font-bold text-slate-900">
+                  <span className="text-blue-600 font-mono">TKT-9210</span> Water Supply
+                </span>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-100 text-amber-800">HIGH</span>
+                  <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800">OPEN</span>
+                </div>
+              </div>
+              <p className="text-[11px] text-slate-600 leading-relaxed">
+                Entire Dahanukar Colony Lane 3 has faced low municipal pressure for 5 straight days...
+              </p>
+              <p className="text-[10px] text-slate-400">
+                Visitor: Narayan Govind Joshi • Assigned: Sachin Babar (Prabhaag Incharge)
+              </p>
+            </div>
+
+            {/* TKT-9208 */}
+            <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/80 space-y-1">
+              <div className="flex items-center justify-between">
+                <span className="font-bold text-slate-900">
+                  <span className="text-blue-600 font-mono">TKT-9208</span> Pension
+                </span>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-100 text-blue-800">MEDIUM</span>
+                  <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-100 text-blue-800">IN PROGRESS</span>
+                </div>
+              </div>
+              <p className="text-[11px] text-slate-600 leading-relaxed">
+                Sanjay Gandhi Niradhar Yojana monthly pension not credited into bank for 3...
+              </p>
+              <p className="text-[10px] text-slate-400">
+                Visitor: Shabana Begum Mansuri • Assigned: Office Helpdesk (Sanjay Shinde)
+              </p>
+            </div>
+
+            {/* TKT-9195 */}
+            <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/80 space-y-1">
+              <div className="flex items-center justify-between">
+                <span className="font-bold text-slate-900">
+                  <span className="text-blue-600 font-mono">TKT-9195</span> Roads &amp; Infrastructure
+                </span>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-rose-100 text-rose-800">CRITICAL</span>
+                  <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-purple-100 text-purple-800">RESOLVED</span>
+                </div>
+              </div>
+              <p className="text-[11px] text-slate-600 leading-relaxed">
+                Deep pothole causing accidents near Erandwane fire station crossing.
+              </p>
+              <p className="text-[10px] text-slate-400">
+                Visitor: Mahesh Balkrishna Kadam • Assigned: Sachin Babar
+              </p>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* 7. VOTER INTELLIGENCE & DEMOGRAPHIC DISTRIBUTION */}
-      <section className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 p-5 shadow-premium-xs">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-slate-100 dark:border-slate-800">
+      {/* ========================================================================= */}
+      {/* SECTION 9: VOTER INTELLIGENCE & POLITICAL LEANING (SCREENSHOT 7)          */}
+      {/* ========================================================================= */}
+      <section className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-4">
+        <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-base font-bold text-slate-900 dark:text-white">
-              Voter Intelligence &amp; Demographic Distribution
-            </h2>
+            <div className="flex items-center gap-2">
+              <PieChart className="w-4 h-4 text-blue-600" />
+              <h3 className="font-bold text-slate-900 text-sm">Voter Intelligence &amp; Demographic Distribution</h3>
+            </div>
             <p className="text-xs text-slate-500 mt-0.5">
               Constituency voter segmentation across age cohorts, gender ratio, and social clusters.
             </p>
           </div>
-          <Link
-            href="/voters"
-            className="text-xs font-semibold text-brand-600 hover:underline flex items-center gap-1"
-          >
-            <span>Explore Full Board</span>
-            <ChevronRight className="w-3.5 h-3.5" />
+          <Link href="/voters" className="text-xs font-bold text-blue-600 hover:text-blue-700">
+            Explore Full Board &rarr;
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-5">
-          {/* Column A: Age Demographics */}
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-slate-800 dark:text-slate-200">
-                Age Demographics
-              </span>
-              <span className="text-[11px] text-slate-500">Total: 21.54 L</span>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 pt-1 text-xs">
+          {/* Col 1: Age Demographics */}
+          <div className="p-4 bg-slate-50 rounded-xl border border-slate-200/80 space-y-3">
+            <div className="flex justify-between font-bold text-slate-900">
+              <span>Age Demographics</span>
+              <span className="text-slate-500 font-mono">Total: 21.54 L</span>
             </div>
-
             <div className="space-y-2.5">
               <div>
-                <div className="flex justify-between text-[11.5px] mb-1">
-                  <span className="text-slate-600 dark:text-slate-400">18 - 25 Yrs (Youth First-Time)</span>
-                  <span className="font-bold tabular-nums">3.98 L (18.5%)</span>
+                <div className="flex justify-between text-slate-700 font-medium mb-1">
+                  <span>18 - 25 Yrs (Youth First-Time)</span>
+                  <span className="font-bold">3.98 L (18.5%)</span>
                 </div>
-                <div className="w-full bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden">
-                  <div className="bg-brand-600 h-full rounded-full" style={{ width: "18.5%" }} />
-                </div>
-              </div>
-
-              <div>
-                <div className="flex justify-between text-[11.5px] mb-1">
-                  <span className="text-slate-600 dark:text-slate-400">26 - 40 Yrs (Working Core)</span>
-                  <span className="font-bold tabular-nums">8.23 L (38.2%)</span>
-                </div>
-                <div className="w-full bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden">
-                  <div className="bg-indigo-500 h-full rounded-full" style={{ width: "38.2%" }} />
+                <div className="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
+                  <div className="bg-blue-600 h-1.5 rounded-full" style={{ width: "18.5%" }} />
                 </div>
               </div>
-
               <div>
-                <div className="flex justify-between text-[11.5px] mb-1">
-                  <span className="text-slate-600 dark:text-slate-400">41 - 60 Yrs (Family Heads)</span>
-                  <span className="font-bold tabular-nums">5.84 L (27.1%)</span>
+                <div className="flex justify-between text-slate-700 font-medium mb-1">
+                  <span>26 - 40 Yrs (Working Core)</span>
+                  <span className="font-bold">8.23 L (38.2%)</span>
                 </div>
-                <div className="w-full bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden">
-                  <div className="bg-cyan-500 h-full rounded-full" style={{ width: "27.1%" }} />
+                <div className="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
+                  <div className="bg-cyan-500 h-1.5 rounded-full" style={{ width: "38.2%" }} />
                 </div>
               </div>
-
               <div>
-                <div className="flex justify-between text-[11.5px] mb-1">
-                  <span className="text-slate-600 dark:text-slate-400">60+ Yrs (Senior Citizens)</span>
-                  <span className="font-bold tabular-nums">3.49 L (16.2%)</span>
+                <div className="flex justify-between text-slate-700 font-medium mb-1">
+                  <span>41 - 60 Yrs (Family Heads)</span>
+                  <span className="font-bold">5.84 L (27.1%)</span>
                 </div>
-                <div className="w-full bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden">
-                  <div className="bg-amber-500 h-full rounded-full" style={{ width: "16.2%" }} />
+                <div className="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
+                  <div className="bg-indigo-600 h-1.5 rounded-full" style={{ width: "27.1%" }} />
+                </div>
+              </div>
+              <div>
+                <div className="flex justify-between text-slate-700 font-medium mb-1">
+                  <span>60+ Yrs (Senior Citizens)</span>
+                  <span className="font-bold">3.49 L (16.2%)</span>
+                </div>
+                <div className="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
+                  <div className="bg-amber-500 h-1.5 rounded-full" style={{ width: "16.2%" }} />
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Column B: Gender Ratio */}
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-slate-800 dark:text-slate-200">
-                Gender Ratio &amp; Turnout Inclination
-              </span>
-              <span className="text-[11px] font-semibold text-emerald-600">
+          {/* Col 2: Gender Ratio & Turnout */}
+          <div className="p-4 bg-slate-50 rounded-xl border border-slate-200/80 space-y-3">
+            <div className="flex justify-between font-bold text-slate-900">
+              <span>Gender Ratio &amp; Turnout Inclination</span>
+              <span className="px-2 py-0.5 rounded-md text-[10px] bg-blue-50 text-blue-700 border border-blue-200">
                 944 F/1000 M
               </span>
             </div>
 
-            <div className="grid grid-cols-2 gap-3 pt-1">
-              <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-center">
-                <span className="text-[10px] font-bold text-slate-400 uppercase">
-                  Male Voters
-                </span>
-                <div className="text-base font-bold text-slate-900 dark:text-white mt-0.5">
-                  11.07 L
-                </div>
-                <div className="text-[10.5px] text-brand-600 font-semibold mt-0.5">
-                  51.4% (67% Projected)
-                </div>
+            <div className="grid grid-cols-2 gap-2 text-center pt-1">
+              <div className="p-2.5 bg-white rounded-lg border border-slate-200">
+                <span className="text-[10px] text-slate-400 font-bold uppercase block">MALE VOTERS</span>
+                <span className="text-base font-black text-slate-900 block mt-0.5">11.07 L</span>
+                <span className="text-[10px] text-slate-500 block mt-0.5">51.4% (67% Projected Turnout)</span>
               </div>
-
-              <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-center">
-                <span className="text-[10px] font-bold text-slate-400 uppercase">
-                  Female Voters
-                </span>
-                <div className="text-base font-bold text-slate-900 dark:text-white mt-0.5">
-                  10.45 L
-                </div>
-                <div className="text-[10.5px] text-emerald-600 font-semibold mt-0.5">
-                  48.5% (71% Projected)
-                </div>
+              <div className="p-2.5 bg-white rounded-lg border border-slate-200">
+                <span className="text-[10px] text-slate-400 font-bold uppercase block">FEMALE VOTERS</span>
+                <span className="text-base font-black text-slate-900 block mt-0.5">10.45 L</span>
+                <span className="text-[10px] text-slate-500 block mt-0.5">48.5% (71% Projected Turnout)</span>
               </div>
             </div>
 
-            <div className="p-3 rounded-xl bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900/50">
-              <span className="text-[11px] font-bold text-rose-600">
-                Women Mobilization Signal:
-              </span>
-              <p className="text-[11px] text-slate-600 dark:text-slate-400 mt-0.5">
-                Ladki Bahin scheme recipients in Wards 12 &amp; 13 show 74% strong turnout intent.
-              </p>
+            <div className="p-2.5 rounded-lg bg-pink-50 border border-pink-200/80 text-[11px] text-pink-900">
+              <strong className="block mb-0.5">Women Mobilization Signal:</strong>
+              Ladki Bahin scheme recipients in Wards 12 &amp; 13 show 74% strong turnout intent.
             </div>
           </div>
 
-          {/* Column C: Social Clusters */}
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-slate-800 dark:text-slate-200">
-                Social &amp; Demographic Clusters
-              </span>
-              <span className="text-[11px] text-slate-500">Sample Model</span>
+          {/* Col 3: Social & Demographic Clusters */}
+          <div className="p-4 bg-slate-50 rounded-xl border border-slate-200/80 space-y-3">
+            <div className="flex justify-between font-bold text-slate-900">
+              <span>Social &amp; Demographic Clusters</span>
+              <span className="text-slate-400 text-[11px]">Sample Model</span>
             </div>
 
-            <div className="space-y-2 text-xs">
-              <div className="flex items-center justify-between">
-                <span className="flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-brand-600" />
-                  <span>Maratha Community</span>
-                </span>
-                <span className="font-bold tabular-nums">22.4%</span>
+            <div className="space-y-2 font-medium text-slate-700">
+              <div className="flex justify-between">
+                <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-blue-600" />Maratha Community</span>
+                <span className="font-bold text-slate-900">22.4%</span>
               </div>
-
-              <div className="flex items-center justify-between">
-                <span className="flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-cyan-500" />
-                  <span>OBC Clusters (Mali, Vanjari, Dhangar)</span>
-                </span>
-                <span className="font-bold tabular-nums">14.5%</span>
+              <div className="flex justify-between">
+                <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-cyan-600" />OBC Clusters (Mali, Vanjari, Dhangar)</span>
+                <span className="font-bold text-slate-900">14.5%</span>
               </div>
-
-              <div className="flex items-center justify-between">
-                <span className="flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-indigo-500" />
-                  <span>Brahmin Demographic</span>
-                </span>
-                <span className="font-bold tabular-nums">10.4%</span>
+              <div className="flex justify-between">
+                <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-indigo-600" />Brahmin Demographic</span>
+                <span className="font-bold text-slate-900">10.4%</span>
               </div>
-
-              <div className="flex items-center justify-between">
-                <span className="flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-rose-500" />
-                  <span>SC (Neo-Buddhist &amp; Matang)</span>
-                </span>
-                <span className="font-bold tabular-nums">9.2%</span>
+              <div className="flex justify-between">
+                <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-purple-600" />SC (Neo-Buddhist &amp; Matang)</span>
+                <span className="font-bold text-slate-900">9.2%</span>
               </div>
-
-              <div className="flex items-center justify-between">
-                <span className="flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-sky-500" />
-                  <span>Muslim Community</span>
-                </span>
-                <span className="font-bold tabular-nums">6.6%</span>
+              <div className="flex justify-between">
+                <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-pink-600" />Muslim Community</span>
+                <span className="font-bold text-slate-900">6.6%</span>
               </div>
+              <div className="flex justify-between">
+                <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-amber-500" />Other Mixed Classifications</span>
+                <span className="font-bold text-slate-900">36.9%</span>
+              </div>
+            </div>
+          </div>
+        </div>
 
-              <div className="flex items-center justify-between">
-                <span className="flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-amber-500" />
-                  <span>Other Mixed Classifications</span>
-                </span>
-                <span className="font-bold tabular-nums">36.9%</span>
+        {/* Voter Classification & Political Leaning Intelligence */}
+        <div className="pt-4 border-t border-slate-100 space-y-3">
+          <div className="flex items-center justify-between">
+            <div>
+              <h4 className="font-bold text-slate-900 text-sm">Voter Classification &amp; Political Leaning Intelligence</h4>
+              <p className="text-xs text-slate-500 mt-0.5">
+                Electoral sentiment segmentation derived from verified field surveys and household interactions.
+              </p>
+            </div>
+            <span className="px-2.5 py-1 rounded-md text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200">
+              16.82 L SAMPLED (78.2% SURVEYED)
+            </span>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 text-center text-xs">
+            <div className="p-3 bg-blue-50 rounded-xl border border-blue-200">
+              <span className="text-[10px] font-bold text-blue-700 uppercase block">SUPPORTERS</span>
+              <span className="text-base font-black text-blue-900 block mt-0.5">7.87 L</span>
+              <span className="text-[10px] text-blue-600 mt-0.5 block">46.8% of surveyed</span>
+            </div>
+            <div className="p-3 bg-cyan-50 rounded-xl border border-cyan-200">
+              <span className="text-[10px] font-bold text-cyan-700 uppercase block">LEANING FAVORABLE</span>
+              <span className="text-base font-black text-cyan-900 block mt-0.5">2.35 L</span>
+              <span className="text-[10px] text-cyan-600 mt-0.5 block">14.0% favorable</span>
+            </div>
+            <div className="p-3 bg-amber-50 rounded-xl border border-amber-200">
+              <span className="text-[10px] font-bold text-amber-700 uppercase block">NEUTRAL</span>
+              <span className="text-base font-black text-amber-900 block mt-0.5">2.69 L</span>
+              <span className="text-[10px] text-amber-600 mt-0.5 block">16.0% neutral</span>
+            </div>
+            <div className="p-3 bg-purple-50 rounded-xl border border-purple-200">
+              <span className="text-[10px] font-bold text-purple-700 uppercase block">UNDECIDED / SWING</span>
+              <span className="text-base font-black text-purple-900 block mt-0.5">3.11 L</span>
+              <span className="text-[10px] text-purple-600 mt-0.5 block">18.5% core swing</span>
+            </div>
+            <div className="p-3 bg-rose-50 rounded-xl border border-rose-200">
+              <span className="text-[10px] font-bold text-rose-700 uppercase block">OPPOSITION</span>
+              <span className="text-base font-black text-rose-900 block mt-0.5">0.80 L</span>
+              <span className="text-[10px] text-rose-600 mt-0.5 block">4.8% opponent</span>
+            </div>
+            <div className="p-3 bg-slate-100 rounded-xl border border-slate-200">
+              <span className="text-[10px] font-bold text-slate-500 uppercase block">UNCLASSIFIED</span>
+              <span className="text-base font-black text-slate-700 block mt-0.5">1.72 L</span>
+              <span className="text-[10px] text-slate-500 mt-0.5 block">Pending survey</span>
+            </div>
+          </div>
+
+          {/* Net Leaning Bar */}
+          <div className="pt-2">
+            <span className="text-[11px] font-bold text-slate-500 block mb-1">Constituency Field Leaning Balance</span>
+            <div className="w-full bg-slate-100 rounded-full h-3 overflow-hidden flex">
+              <div className="bg-blue-600 h-3" style={{ width: "46.8%" }} title="Supporters: 46.8%" />
+              <div className="bg-cyan-500 h-3" style={{ width: "14.0%" }} title="Leaning Favorable: 14.0%" />
+              <div className="bg-amber-400 h-3" style={{ width: "16.0%" }} title="Neutral: 16.0%" />
+              <div className="bg-purple-500 h-3" style={{ width: "18.5%" }} title="Swing: 18.5%" />
+              <div className="bg-rose-500 h-3" style={{ width: "4.8%" }} title="Opposition: 4.8%" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ========================================================================= */}
+      {/* SECTION 10: COMMUNITY & LOCAL STAKEHOLDER STATISTICS (SCREENSHOT 8)       */}
+      {/* ========================================================================= */}
+      <section className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div>
+            <div className="flex items-center gap-2">
+              <Users className="w-4 h-4 text-emerald-600" />
+              <h3 className="font-bold text-slate-900 text-sm">Community &amp; Local Stakeholder Statistics</h3>
+              <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                LIVE CENTRALIZED RECORDS
+              </span>
+            </div>
+            <p className="text-xs text-slate-500 mt-0.5">
+              Aggregate real-time intelligence on voluntary farmer, worker, cooperative, and grassroots associations across authorized elector rolls.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2 self-start sm:self-auto text-xs">
+            <span className="text-slate-400 font-mono flex items-center gap-1">
+              <Clock className="w-3.5 h-3.5" />
+              <span>Last Refreshed: 22:50</span>
+            </span>
+            <Link href="/voters" className="font-bold text-blue-600 hover:text-blue-700">
+              Filter Electors &rarr;
+            </Link>
+          </div>
+        </div>
+
+        {/* 12 Stat Cards Grid */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 text-center text-xs">
+          <div className="p-3 bg-emerald-50/70 rounded-xl border border-emerald-200/80">
+            <span className="text-[10px] font-bold text-emerald-700 uppercase block truncate">TOTAL ASSOCIATED ELECT...</span>
+            <span className="text-lg font-black text-emerald-900 mt-0.5 block">8</span>
+            <span className="text-[10px] text-slate-500 block truncate">Unique Electors (Counted Once)</span>
+          </div>
+
+          <div className="p-3 bg-green-50/70 rounded-xl border border-green-200/80">
+            <span className="text-[10px] font-bold text-green-700 uppercase block truncate">FARMERS &amp; AGRICULTURE</span>
+            <span className="text-lg font-black text-green-900 mt-0.5 block">1</span>
+            <span className="text-[10px] text-slate-500 block truncate">Farmers &amp; Assocs.</span>
+          </div>
+
+          <div className="p-3 bg-amber-50/70 rounded-xl border border-amber-200/80">
+            <span className="text-[10px] font-bold text-amber-700 uppercase block truncate">SUGAR FACTORY WORKERS</span>
+            <span className="text-lg font-black text-amber-900 mt-0.5 block">1</span>
+            <span className="text-[10px] text-slate-500 block truncate">Sugar Mill &amp; Cane Coop</span>
+          </div>
+
+          <div className="p-3 bg-pink-50/70 rounded-xl border border-pink-200/80">
+            <span className="text-[10px] font-bold text-pink-700 uppercase block truncate">ANGANWADI / BALWADI</span>
+            <span className="text-lg font-black text-pink-900 mt-0.5 block">1</span>
+            <span className="text-[10px] text-slate-500 block truncate">Childcare Volunteers</span>
+          </div>
+
+          <div className="p-3 bg-blue-50/70 rounded-xl border border-blue-200/80">
+            <span className="text-[10px] font-bold text-blue-700 uppercase block truncate">VILLAGE COMMUNITY</span>
+            <span className="text-lg font-black text-blue-900 mt-0.5 block">1</span>
+            <span className="text-[10px] text-slate-500 block truncate">Village Active Members</span>
+          </div>
+
+          <div className="p-3 bg-purple-50/70 rounded-xl border border-purple-200/80">
+            <span className="text-[10px] font-bold text-purple-700 uppercase block truncate">LOCAL STAKEHOLDERS</span>
+            <span className="text-lg font-black text-purple-900 mt-0.5 block">2</span>
+            <span className="text-[10px] text-slate-500 block truncate">Trade &amp; RWA Guilds</span>
+          </div>
+
+          <div className="p-3 bg-indigo-50/70 rounded-xl border border-indigo-200/80">
+            <span className="text-[10px] font-bold text-indigo-700 uppercase block truncate">COOPERATIVE SOCIETIES</span>
+            <span className="text-lg font-black text-indigo-900 mt-0.5 block">2</span>
+            <span className="text-[10px] text-slate-500 block truncate">Patsanstha &amp; Credit</span>
+          </div>
+
+          <div className="p-3 bg-teal-50/70 rounded-xl border border-teal-200/80">
+            <span className="text-[10px] font-bold text-teal-700 uppercase block truncate">SHG MEMBERS (BACHAT G...</span>
+            <span className="text-lg font-black text-teal-900 mt-0.5 block">3</span>
+            <span className="text-[10px] text-slate-500 block truncate">Women Self-Help</span>
+          </div>
+
+          <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/80">
+            <span className="text-[10px] font-bold text-slate-600 uppercase block truncate">OTHER COMMUNITY GRO...</span>
+            <span className="text-lg font-black text-slate-900 mt-0.5 block">1</span>
+            <span className="text-[10px] text-slate-500 block truncate">Special Collectives</span>
+          </div>
+
+          <div className="p-3 bg-yellow-50/70 rounded-xl border border-yellow-200/80">
+            <span className="text-[10px] font-bold text-yellow-700 uppercase block truncate">PENDING VERIFICATION</span>
+            <span className="text-lg font-black text-yellow-900 mt-0.5 block">2</span>
+            <span className="text-[10px] text-slate-500 block truncate">Unverified Intake</span>
+          </div>
+
+          <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/80">
+            <span className="text-[10px] font-bold text-slate-500 uppercase block truncate">NOT DISCLOSED</span>
+            <span className="text-lg font-black text-slate-700 mt-0.5 block">1</span>
+            <span className="text-[10px] text-slate-500 block truncate">Declaration Opt-out</span>
+          </div>
+
+          <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/80">
+            <span className="text-[10px] font-bold text-slate-500 uppercase block truncate">NOT ASSOCIATED</span>
+            <span className="text-lg font-black text-slate-700 mt-0.5 block">1</span>
+            <span className="text-[10px] text-slate-500 block truncate">Confirmed Independent</span>
+          </div>
+        </div>
+
+        {/* Bottom Sub-Cards Row */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 pt-2 text-xs">
+          {/* Card 1: Community Group Distribution */}
+          <div className="lg:col-span-2 p-4 bg-slate-50 rounded-xl border border-slate-200/80 space-y-3">
+            <div className="flex justify-between font-bold text-slate-900">
+              <span>1. Community Group Distribution</span>
+              <span className="text-slate-500 font-mono">12 Total Recorded</span>
+            </div>
+
+            {/* Segmented Bar */}
+            <div className="w-full bg-slate-200 rounded-full h-2.5 overflow-hidden flex">
+              <div className="bg-emerald-500 h-2.5" style={{ width: "8.3%" }} />
+              <div className="bg-amber-500 h-2.5" style={{ width: "8.3%" }} />
+              <div className="bg-pink-500 h-2.5" style={{ width: "8.3%" }} />
+              <div className="bg-blue-500 h-2.5" style={{ width: "8.3%" }} />
+              <div className="bg-purple-500 h-2.5" style={{ width: "16.7%" }} />
+              <div className="bg-indigo-500 h-2.5" style={{ width: "16.7%" }} />
+              <div className="bg-teal-500 h-2.5" style={{ width: "25%" }} />
+              <div className="bg-slate-400 h-2.5" style={{ width: "8.3%" }} />
+            </div>
+
+            {/* 8-Item Legend Grid */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1 font-medium text-slate-700">
+              <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-emerald-500" />Agriculture: 1 (8%)</div>
+              <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-amber-500" />Sugar Industry: 1 (8%)</div>
+              <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-pink-500" />Childcare: 1 (8%)</div>
+              <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-blue-500" />Village: 1 (8%)</div>
+              <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-purple-500" />Local Orgs: 2 (17%)</div>
+              <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-indigo-500" />Cooperatives: 2 (17%)</div>
+              <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-teal-500" />Self-Help Groups: 3 (25%)</div>
+              <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-slate-400" />Other: 1 (8%)</div>
+            </div>
+          </div>
+
+          {/* Right Cards: Verification & Constituency */}
+          <div className="space-y-3">
+            <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200/80">
+              <div className="flex justify-between font-bold text-slate-900 mb-2">
+                <span>3. Verification Overview</span>
+                <span className="text-emerald-600">83% Validated</span>
+              </div>
+              <div className="grid grid-cols-2 gap-2 text-center font-bold">
+                <div className="p-2 bg-emerald-50 text-emerald-800 rounded-lg border border-emerald-200">
+                  Verified: 10
+                </div>
+                <div className="p-2 bg-amber-50 text-amber-800 rounded-lg border border-amber-200">
+                  Pending: 2
+                </div>
+              </div>
+            </div>
+
+            <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200/80">
+              <div className="flex justify-between font-bold text-slate-900 mb-1">
+                <span>4. Constituency-wise Distribution</span>
+                <span className="text-slate-400 text-[10px]">By Assembly Segment</span>
+              </div>
+              <div className="space-y-1 text-slate-700">
+                <div className="flex justify-between">
+                  <span>215 - Kasba Peth</span>
+                  <span className="font-bold">7 (58%)</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>214 - Kothrud</span>
+                  <span className="font-bold">5 (42%)</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 8. DATA QUALITY & ELECTORAL ROLL INTEGRITY METRICS */}
-      <section className="bg-slate-950 text-white rounded-2xl border border-slate-900 p-5 shadow-premium-xs">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-slate-900">
-          <div>
-            <div className="flex items-center gap-2">
-              <Shield className="w-4 h-4 text-emerald-400" />
-              <h2 className="text-sm font-bold text-white tracking-wide">
-                Data Quality &amp; Electoral Roll Integrity Metrics
-              </h2>
+      {/* ========================================================================= */}
+      {/* SECTION 11: WORKFORCE MOBILIZATION & TASK MANAGEMENT (SCREENSHOT 9 & 10)  */}
+      {/* ========================================================================= */}
+      <section className="space-y-5">
+        {/* Top: Cadre Mobilization Summary & Table (Screenshot 9) */}
+        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 text-center text-xs">
+            <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/80">
+              <span className="text-[10px] font-bold text-slate-500 uppercase block">TOTAL CADRE</span>
+              <span className="text-lg font-black text-slate-900 mt-0.5 block">4,850</span>
+              <span className="text-[10px] text-slate-400 block">Registered Karyakartas</span>
             </div>
-            <p className="text-xs text-slate-400 mt-0.5">
-              Audit status of voter contacts, photo rolls, geospatial coordinates, and duplicate indices.
-            </p>
+            <div className="p-3 bg-blue-50 rounded-xl border border-blue-200/80">
+              <span className="text-[10px] font-bold text-blue-700 uppercase block">ACTIVE ON FIELD</span>
+              <span className="text-lg font-black text-blue-900 mt-0.5 block">3,120</span>
+              <span className="text-[10px] text-blue-600 block">64.3% Real-time deployed</span>
+            </div>
+            <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/80">
+              <span className="text-[10px] font-bold text-slate-500 uppercase block">INACTIVE / STANDBY</span>
+              <span className="text-lg font-black text-slate-700 mt-0.5 block">1,730</span>
+              <span className="text-[10px] text-slate-400 block">Available for reserve</span>
+            </div>
+            <div className="p-3 bg-indigo-50 rounded-xl border border-indigo-200/80">
+              <span className="text-[10px] font-bold text-indigo-700 uppercase block">SURVEYS DONE</span>
+              <span className="text-lg font-black text-indigo-900 mt-0.5 block">16.82 L</span>
+              <span className="text-[10px] text-indigo-600 block">78.2% Completion</span>
+            </div>
+            <div className="p-3 bg-purple-50 rounded-xl border border-purple-200/80">
+              <span className="text-[10px] font-bold text-purple-700 uppercase block">ASSIGNED BOOTHS</span>
+              <span className="text-lg font-black text-purple-900 mt-0.5 block">2,038</span>
+              <span className="text-[10px] text-purple-600 block">99.6% Booth coverage</span>
+            </div>
+            <div className="p-3 bg-amber-50 rounded-xl border border-amber-200/80">
+              <span className="text-[10px] font-bold text-amber-700 uppercase block">UNASSIGNED BOOTHS</span>
+              <span className="text-lg font-black text-amber-900 mt-0.5 block">7</span>
+              <span className="text-[10px] text-amber-600 block">Requires table agents</span>
+            </div>
           </div>
-          <span className="px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 self-start sm:self-center">
-            Roll Health: 96.2% Optimal
-          </span>
+
+          {/* Workforce Mobilization Table */}
+          <div className="overflow-x-auto rounded-xl border border-slate-200">
+            <table className="w-full text-left text-xs">
+              <thead className="bg-slate-50 border-b border-slate-200 text-slate-500 font-bold uppercase text-[10px] tracking-wider">
+                <tr>
+                  <th className="py-3 px-3">KARYAKARTA NAME</th>
+                  <th className="py-3 px-3">PRABHAAG &amp; ASSIGNED BOOTH</th>
+                  <th className="py-3 px-3">SURVEYS COMPLETED</th>
+                  <th className="py-3 px-3">VOTER SLIPS HANDED</th>
+                  <th className="py-3 px-3">FIELD STATUS</th>
+                  <th className="py-3 px-3 text-right">ACTION</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100 font-medium">
+                <tr className="hover:bg-slate-50/80">
+                  <td className="py-3 px-3 flex items-center gap-2">
+                    <div className="w-6 h-6 rounded-full bg-slate-200 text-slate-700 font-bold text-[10px] flex items-center justify-center">
+                      Po
+                    </div>
+                    <span className="font-bold text-slate-900">Pooja Jadhav</span>
+                  </td>
+                  <td className="py-3 px-3">
+                    <strong className="text-slate-900 block">Booth #101</strong>
+                    <span className="text-[11px] text-slate-400">Prabhaag 12 - Kothrud West</span>
+                  </td>
+                  <td className="py-3 px-3 font-bold text-blue-600">184</td>
+                  <td className="py-3 px-3 font-bold text-slate-900">420</td>
+                  <td className="py-3 px-3">
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                      Active on Field
+                    </span>
+                  </td>
+                  <td className="py-3 px-3 text-right">
+                    <button
+                      type="button"
+                      onClick={() => showToast("info", "GPS Locator", "Pinging Pooja Jadhav: Navbharat School corridor")}
+                      className="px-2.5 py-1 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold text-[11px]"
+                    >
+                      Locate GPS
+                    </button>
+                  </td>
+                </tr>
+
+                <tr className="hover:bg-slate-50/80">
+                  <td className="py-3 px-3 flex items-center gap-2">
+                    <div className="w-6 h-6 rounded-full bg-slate-200 text-slate-700 font-bold text-[10px] flex items-center justify-center">
+                      Ga
+                    </div>
+                    <span className="font-bold text-slate-900">Ganesh Patil</span>
+                  </td>
+                  <td className="py-3 px-3">
+                    <strong className="text-slate-900 block">Booth #102</strong>
+                    <span className="text-[11px] text-slate-400">Prabhaag 12 - Kothrud West</span>
+                  </td>
+                  <td className="py-3 px-3 font-bold text-blue-600">210</td>
+                  <td className="py-3 px-3 font-bold text-slate-900">512</td>
+                  <td className="py-3 px-3">
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                      Active on Field
+                    </span>
+                  </td>
+                  <td className="py-3 px-3 text-right">
+                    <button
+                      type="button"
+                      onClick={() => showToast("info", "GPS Locator", "Pinging Ganesh Patil: Saraswati Vidyalaya Gate")}
+                      className="px-2.5 py-1 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold text-[11px]"
+                    >
+                      Locate GPS
+                    </button>
+                  </td>
+                </tr>
+
+                <tr className="hover:bg-slate-50/80">
+                  <td className="py-3 px-3 flex items-center gap-2">
+                    <div className="w-6 h-6 rounded-full bg-slate-200 text-slate-700 font-bold text-[10px] flex items-center justify-center">
+                      Vi
+                    </div>
+                    <span className="font-bold text-slate-900">Vikas More</span>
+                  </td>
+                  <td className="py-3 px-3">
+                    <strong className="text-slate-900 block">Booth #104</strong>
+                    <span className="text-[11px] text-slate-400">Prabhaag 13 - Erandwane</span>
+                  </td>
+                  <td className="py-3 px-3 font-bold text-blue-600">95</td>
+                  <td className="py-3 px-3 font-bold text-slate-900">230</td>
+                  <td className="py-3 px-3">
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-600">
+                      Offline
+                    </span>
+                  </td>
+                  <td className="py-3 px-3 text-right">
+                    <button
+                      type="button"
+                      onClick={() => showToast("warning", "GPS Offline", "Vikas More terminal last reported 2 hours ago")}
+                      className="px-2.5 py-1 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold text-[11px]"
+                    >
+                      Locate GPS
+                    </button>
+                  </td>
+                </tr>
+
+                <tr className="hover:bg-slate-50/80">
+                  <td className="py-3 px-3 flex items-center gap-2">
+                    <div className="w-6 h-6 rounded-full bg-slate-200 text-slate-700 font-bold text-[10px] flex items-center justify-center">
+                      Su
+                    </div>
+                    <span className="font-bold text-slate-900">Supriya Salve</span>
+                  </td>
+                  <td className="py-3 px-3">
+                    <strong className="text-slate-900 block">Booth #106</strong>
+                    <span className="text-[11px] text-slate-400">Prabhaag 14 - Shivajinagar</span>
+                  </td>
+                  <td className="py-3 px-3 font-bold text-blue-600">142</td>
+                  <td className="py-3 px-3 font-bold text-slate-900">310</td>
+                  <td className="py-3 px-3">
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                      Active on Field
+                    </span>
+                  </td>
+                  <td className="py-3 px-3 text-right">
+                    <button
+                      type="button"
+                      onClick={() => showToast("info", "GPS Locator", "Pinging Supriya Salve: Modern High School Desk")}
+                      className="px-2.5 py-1 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold text-[11px]"
+                    >
+                      Locate GPS
+                    </button>
+                  </td>
+                </tr>
+
+                <tr className="hover:bg-slate-50/80">
+                  <td className="py-3 px-3 flex items-center gap-2">
+                    <div className="w-6 h-6 rounded-full bg-slate-200 text-slate-700 font-bold text-[10px] flex items-center justify-center">
+                      Am
+                    </div>
+                    <span className="font-bold text-slate-900">Amol Chordia</span>
+                  </td>
+                  <td className="py-3 px-3">
+                    <strong className="text-slate-900 block">Booth #103</strong>
+                    <span className="text-[11px] text-slate-400">Prabhaag 12 - Kothrud West</span>
+                  </td>
+                  <td className="py-3 px-3 font-bold text-slate-400">0</td>
+                  <td className="py-3 px-3 font-bold text-slate-400">0</td>
+                  <td className="py-3 px-3">
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-600">
+                      Offline
+                    </span>
+                  </td>
+                  <td className="py-3 px-3 text-right">
+                    <button
+                      type="button"
+                      onClick={() => showToast("warning", "GPS Offline", "Amol Chordia terminal currently offline")}
+                      className="px-2.5 py-1 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold text-[11px]"
+                    >
+                      Locate GPS
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-4">
-          <div className="p-3.5 rounded-xl bg-slate-900/60 border border-slate-800">
-            <div className="text-[11px] text-slate-400">Mobile Contact Seeding:</div>
-            <div className="text-xl font-bold text-white mt-0.5 tabular-nums">89.4%</div>
-            <div className="w-full bg-slate-800 h-1.5 rounded-full mt-2 overflow-hidden">
-              <div className="bg-brand-600 h-full rounded-full" style={{ width: "89.4%" }} />
+        {/* Bottom: War Room Task Management (Screenshot 9 & 10) */}
+        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-blue-600" />
+                <h3 className="font-bold text-slate-900 text-sm">War Room Task Management</h3>
+              </div>
+              <p className="text-xs text-slate-500 mt-0.5">
+                Operational directives assigned to booth adhyaksh, karyakartas, and war room coordinators.
+              </p>
             </div>
-            <div className="text-[10px] text-slate-400 mt-1.5">19.25 L reachable phones</div>
+
+            {/* Filter Tabs */}
+            <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl text-xs font-semibold">
+              {(["ALL", "OVERDUE", "IN PROGRESS", "PENDING", "COMPLETED"] as const).map((tab) => (
+                <button
+                  key={tab}
+                  type="button"
+                  onClick={() => setTaskFilter(tab)}
+                  className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
+                    taskFilter === tab ? "bg-white text-slate-900 shadow-xs font-bold" : "text-slate-600 hover:text-slate-900"
+                  }`}
+                >
+                  {tab}
+                </button>
+              ))}
+            </div>
           </div>
 
-          <div className="p-3.5 rounded-xl bg-slate-900/60 border border-slate-800">
-            <div className="text-[11px] text-slate-400">ECI Photo Roll Clarity:</div>
-            <div className="text-xl font-bold text-white mt-0.5 tabular-nums">98.1%</div>
-            <div className="w-full bg-slate-800 h-1.5 rounded-full mt-2 overflow-hidden">
-              <div className="bg-emerald-500 h-full rounded-full" style={{ width: "98.1%" }} />
+          {/* 6 Summary Boxes (Screenshot 10) */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 text-center text-xs">
+            <div className="p-2.5 bg-slate-50 rounded-xl border border-slate-200">
+              <span className="text-[10px] font-bold text-slate-400 uppercase block">TOTAL TASKS</span>
+              <span className="text-base font-black text-slate-900 block mt-0.5">6</span>
             </div>
-            <div className="text-[10px] text-slate-400 mt-1.5">High-resolution ECI portraits</div>
+            <div className="p-2.5 bg-blue-50/60 rounded-xl border border-blue-200">
+              <span className="text-[10px] font-bold text-blue-700 uppercase block">ASSIGNED</span>
+              <span className="text-base font-black text-blue-900 block mt-0.5">6</span>
+            </div>
+            <div className="p-2.5 bg-cyan-50/60 rounded-xl border border-cyan-200">
+              <span className="text-[10px] font-bold text-cyan-700 uppercase block">IN PROGRESS</span>
+              <span className="text-base font-black text-cyan-900 block mt-0.5">3</span>
+            </div>
+            <div className="p-2.5 bg-yellow-50/60 rounded-xl border border-yellow-200">
+              <span className="text-[10px] font-bold text-yellow-700 uppercase block">PENDING</span>
+              <span className="text-base font-black text-yellow-900 block mt-0.5">1</span>
+            </div>
+            <div className="p-2.5 bg-rose-50/60 rounded-xl border border-rose-200">
+              <span className="text-[10px] font-bold text-rose-700 uppercase block">OVERDUE</span>
+              <span className="text-base font-black text-rose-900 block mt-0.5">1</span>
+            </div>
+            <div className="p-2.5 bg-purple-50/60 rounded-xl border border-purple-200">
+              <span className="text-[10px] font-bold text-purple-700 uppercase block">COMPLETED</span>
+              <span className="text-base font-black text-purple-900 block mt-0.5">1</span>
+            </div>
           </div>
 
-          <div className="p-3.5 rounded-xl bg-slate-900/60 border border-slate-800">
-            <div className="text-[11px] text-slate-400">Geotagged Address Accuracy:</div>
-            <div className="text-xl font-bold text-white mt-0.5 tabular-nums">94.7%</div>
-            <div className="w-full bg-slate-800 h-1.5 rounded-full mt-2 overflow-hidden">
-              <div className="bg-cyan-500 h-full rounded-full" style={{ width: "94.7%" }} />
+          {/* Task Management Table */}
+          <div className="overflow-x-auto rounded-xl border border-slate-200">
+            <table className="w-full text-left text-xs">
+              <thead className="bg-slate-50 border-b border-slate-200 text-slate-500 font-bold uppercase text-[10px] tracking-wider">
+                <tr>
+                  <th className="py-3 px-3">TASK ID &amp; DIRECTIVE</th>
+                  <th className="py-3 px-3">ASSIGNED PERSON &amp; ROLE</th>
+                  <th className="py-3 px-3">BOOTH</th>
+                  <th className="py-3 px-3">PRIORITY</th>
+                  <th className="py-3 px-3">DEADLINE</th>
+                  <th className="py-3 px-3">STATUS</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100 font-medium">
+                {filteredTasks.map((t) => (
+                  <tr key={t.id} className="hover:bg-slate-50/80">
+                    <td className="py-3 px-3">
+                      <span className="font-mono font-bold text-blue-600 block">{t.id}</span>
+                      <span className="text-slate-800 font-semibold">{t.title}</span>
+                    </td>
+                    <td className="py-3 px-3">
+                      <p className="font-bold text-slate-900">{t.assignedTo}</p>
+                      <p className="text-[11px] text-slate-400">{t.assignedRole}</p>
+                    </td>
+                    <td className="py-3 px-3 font-mono font-semibold text-slate-700">Booth #{t.boothNumber}</td>
+                    <td className="py-3 px-3">
+                      <span
+                        className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                          t.priority === "CRITICAL"
+                            ? "bg-rose-100 text-rose-800"
+                            : t.priority === "HIGH"
+                            ? "bg-amber-100 text-amber-800"
+                            : t.priority === "MEDIUM"
+                            ? "bg-blue-100 text-blue-800"
+                            : "bg-slate-100 text-slate-600"
+                        }`}
+                      >
+                        {t.priority}
+                      </span>
+                    </td>
+                    <td className="py-3 px-3 text-slate-600 font-medium">{t.deadline}</td>
+                    <td className="py-3 px-3">
+                      <span
+                        className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                          t.status === "OVERDUE"
+                            ? "bg-rose-100 text-rose-800"
+                            : t.status === "IN PROGRESS"
+                            ? "bg-blue-100 text-blue-800"
+                            : t.status === "PENDING"
+                            ? "bg-amber-100 text-amber-800"
+                            : "bg-purple-100 text-purple-800"
+                        }`}
+                      >
+                        {t.status}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      {/* ========================================================================= */}
+      {/* SECTION 12: LIVE MONITORING & CRITICAL ALERTS STACK (SCREENSHOT 11)       */}
+      {/* ========================================================================= */}
+      <section className="space-y-5">
+        {/* Top: Live War Room Monitoring */}
+        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="flex items-center gap-2">
+                <Radio className="w-4 h-4 text-blue-600" />
+                <h3 className="font-bold text-slate-900 text-sm">Live War Room Monitoring</h3>
+              </div>
+              <p className="text-xs text-slate-500 mt-0.5">
+                Live telemetry aggregated from active Android terminals, web kiosks, and field dispatchers.
+              </p>
             </div>
-            <div className="text-[10px] text-slate-400 mt-1.5">Matched to Prabhag boundary</div>
+            <span className="px-2.5 py-1 rounded-md text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200">
+              Real-Time Sync
+            </span>
           </div>
 
-          <div className="p-3.5 rounded-xl bg-slate-900/60 border border-slate-800">
-            <div className="text-[11px] text-slate-400">Duplicate Detection Index:</div>
-            <div className="text-xl font-bold text-amber-400 mt-0.5 tabular-nums">0.3% (Low Risk)</div>
-            <div className="w-full bg-slate-800 h-1.5 rounded-full mt-2 overflow-hidden">
-              <div className="bg-amber-500 h-full rounded-full" style={{ width: "3%" }} />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
+            <div className="p-3.5 bg-blue-50/50 rounded-xl border border-blue-100 flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center font-bold">
+                  <MapPin className="w-4 h-4" />
+                </div>
+                <div>
+                  <h4 className="font-bold text-slate-900 text-xs">Active Polling Stations</h4>
+                  <p className="text-[11px] text-slate-500">2,038 of 2,045 operational</p>
+                </div>
+              </div>
+              <span className="font-black text-sm text-blue-700">99.6%</span>
             </div>
-            <div className="text-[10px] text-slate-400 mt-1.5">Cross-booth deduplicated</div>
+
+            <div className="p-3.5 bg-emerald-50/50 rounded-xl border border-emerald-100 flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold">
+                  <Users className="w-4 h-4" />
+                </div>
+                <div>
+                  <h4 className="font-bold text-slate-900 text-xs">Active Field Mobilizers</h4>
+                  <p className="text-[11px] text-slate-500">GPS pinging within 15 mins</p>
+                </div>
+              </div>
+              <span className="font-black text-sm text-emerald-700">3,120</span>
+            </div>
+
+            <div className="p-3.5 bg-amber-50/50 rounded-xl border border-amber-100 flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center font-bold">
+                  <AlertCircle className="w-4 h-4" />
+                </div>
+                <div>
+                  <h4 className="font-bold text-slate-900 text-xs">Critical Flagged Issues</h4>
+                  <p className="text-[11px] text-slate-500">Action required by coordinators</p>
+                </div>
+              </div>
+              <span className="font-black text-sm text-amber-700">4</span>
+            </div>
+
+            <div className="p-3.5 bg-purple-50/50 rounded-xl border border-purple-100 flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-purple-100 text-purple-700 flex items-center justify-center font-bold">
+                  <Clock className="w-4 h-4" />
+                </div>
+                <div>
+                  <h4 className="font-bold text-slate-900 text-xs">Last Global Telemetry Sync</h4>
+                  <p className="text-[11px] text-slate-500">ECI server connection verified</p>
+                </div>
+              </div>
+              <span className="font-black text-sm text-purple-700">Just now</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom: Alerts & Attention Required (Screenshot 11) */}
+        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <div className="flex items-center gap-2">
+                <AlertCircle className="w-4 h-4 text-rose-600" />
+                <h3 className="font-bold text-slate-900 text-sm">Alerts &amp; Attention Required</h3>
+              </div>
+              <p className="text-xs text-slate-500 mt-0.5">
+                Actionable operational bottlenecks, lagging booth coverage, and overdue assignments requiring intervention.
+              </p>
+            </div>
+
+            <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl text-xs font-semibold">
+              {(["ALL", "CRITICAL", "HIGH", "WARNING"] as const).map((tab) => (
+                <button
+                  key={tab}
+                  type="button"
+                  onClick={() => setAlertFilter(tab)}
+                  className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
+                    alertFilter === tab ? "bg-white text-slate-900 shadow-xs font-bold" : "text-slate-600 hover:text-slate-900"
+                  }`}
+                >
+                  {tab === "ALL" ? "All Alerts" : tab}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Stack of Alert Cards */}
+          <div className="space-y-3">
+            {filteredAlerts.map((alt) => (
+              <div
+                key={alt.id}
+                className={`p-4 rounded-xl border flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-all ${
+                  alt.severity === "CRITICAL"
+                    ? "bg-rose-50/50 border-rose-200"
+                    : alt.severity === "HIGH"
+                    ? "bg-amber-50/50 border-amber-200"
+                    : "bg-slate-50 border-slate-200"
+                }`}
+              >
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    <span
+                      className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${
+                        alt.severity === "CRITICAL"
+                          ? "bg-rose-100 text-rose-800"
+                          : alt.severity === "HIGH"
+                          ? "bg-amber-100 text-amber-800"
+                          : "bg-slate-200 text-slate-700"
+                      }`}
+                    >
+                      {alt.severity}
+                    </span>
+                    <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                      {alt.category}
+                    </span>
+                    <span className="text-slate-300">•</span>
+                    <span className="text-[11px] text-slate-400 font-mono">{alt.timestamp}</span>
+                  </div>
+
+                  <h4 className="font-bold text-slate-900 text-xs sm:text-sm">{alt.title}</h4>
+                  <p className="text-xs text-slate-600 leading-relaxed">{alt.description}</p>
+                  <p className="text-[11px] text-slate-400 font-medium">Affected Area: {alt.affectedArea}</p>
+                </div>
+
+                <Link
+                  href={alt.actionHref}
+                  className={`px-4 py-2 text-white rounded-xl text-xs font-bold shadow-sm cursor-pointer whitespace-nowrap self-start sm:self-auto ${
+                    alt.severity === "CRITICAL"
+                      ? "bg-[#E11D48] hover:bg-[#BE123C]"
+                      : "bg-[#F59E0B] hover:bg-[#D97706]"
+                  }`}
+                >
+                  {alt.actionLabel}
+                </Link>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ========================================================================= */}
+      {/* SECTION 13: DATA QUALITY & RECENT ACTIVITY FEED (SCREENSHOT 12)           */}
+      {/* ========================================================================= */}
+      <section className="space-y-5">
+        {/* Data Quality & Integrity (Dark Navy Cards!) */}
+        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="flex items-center gap-2">
+                <ShieldCheck className="w-4 h-4 text-blue-600" />
+                <h3 className="font-bold text-slate-900 text-sm">Data Quality &amp; Electoral Roll Integrity Metrics</h3>
+              </div>
+              <p className="text-xs text-slate-500 mt-0.5">
+                Audit status of voter contacts, photo rolls, geospatial coordinates, and duplicate indices.
+              </p>
+            </div>
+            <span className="px-2.5 py-1 rounded-md text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200">
+              ROLL HEALTH: 96.2% OPTIMAL
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
+            {/* Dark Card 1 */}
+            <div className="p-4 rounded-xl bg-[#0B1527] border border-slate-800 text-white space-y-2">
+              <span className="text-[11px] text-slate-400 block font-medium">Mobile Contact Seeding:</span>
+              <div className="flex justify-between items-baseline">
+                <span className="text-xl font-black text-white">89.4%</span>
+              </div>
+              <div className="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
+                <div className="bg-blue-500 h-1.5 rounded-full" style={{ width: "89.4%" }} />
+              </div>
+              <span className="text-[10px] text-slate-400 block">19.25 L reachable phones</span>
+            </div>
+
+            {/* Dark Card 2 */}
+            <div className="p-4 rounded-xl bg-[#0B1527] border border-slate-800 text-white space-y-2">
+              <span className="text-[11px] text-slate-400 block font-medium">ECI Photo Roll Clarity:</span>
+              <div className="flex justify-between items-baseline">
+                <span className="text-xl font-black text-white">98.1%</span>
+              </div>
+              <div className="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
+                <div className="bg-cyan-500 h-1.5 rounded-full" style={{ width: "98.1%" }} />
+              </div>
+              <span className="text-[10px] text-slate-400 block">High-resolution ECI portraits</span>
+            </div>
+
+            {/* Dark Card 3 */}
+            <div className="p-4 rounded-xl bg-[#0B1527] border border-slate-800 text-white space-y-2">
+              <span className="text-[11px] text-slate-400 block font-medium">Geotagged Address Accuracy:</span>
+              <div className="flex justify-between items-baseline">
+                <span className="text-xl font-black text-white">94.7%</span>
+              </div>
+              <div className="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
+                <div className="bg-purple-500 h-1.5 rounded-full" style={{ width: "94.7%" }} />
+              </div>
+              <span className="text-[10px] text-slate-400 block">Matched to Prabhaag boundary</span>
+            </div>
+
+            {/* Dark Card 4 */}
+            <div className="p-4 rounded-xl bg-[#0B1527] border border-slate-800 text-white space-y-2">
+              <span className="text-[11px] text-slate-400 block font-medium">Duplicate Detection Index:</span>
+              <div className="flex justify-between items-baseline">
+                <span className="text-xl font-black text-white">0.3% (Low Risk)</span>
+              </div>
+              <div className="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
+                <div className="bg-slate-600 h-1.5 rounded-full" style={{ width: "0.3%" }} />
+              </div>
+              <span className="text-[10px] text-slate-400 block">Cross-booth deduplicated</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Recent Activity Feed (Screenshot 12) */}
+        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="flex items-center gap-2">
+                <Activity className="w-4 h-4 text-blue-600" />
+                <h3 className="font-bold text-slate-900 text-sm">Recent Activity Feed</h3>
+              </div>
+              <p className="text-xs text-slate-500 mt-0.5">
+                Chronological operational log across voter registrations, surveys, tasks, and grievances.
+              </p>
+            </div>
+            <Link href="/activities" className="text-xs font-bold text-blue-600 hover:text-blue-700">
+              View Full Audit Trail &rarr;
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-xs">
+            {/* Act 1 */}
+            <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/80 space-y-1">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-100 text-blue-800">SLIP</span>
+                <span className="text-slate-400 text-[10px]">2m ago</span>
+              </div>
+              <h5 className="font-bold text-slate-900 mt-1">Pooja Jadhav</h5>
+              <p className="text-slate-600">Delivered 8 voter information slips</p>
+              <p className="text-slate-400 text-[11px]">Booth 101 Navbharat High School</p>
+            </div>
+
+            {/* Act 2 */}
+            <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/80 space-y-1">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-100 text-amber-800">OFFICE</span>
+                <span className="text-slate-400 text-[10px]">7m ago</span>
+              </div>
+              <h5 className="font-bold text-slate-900 mt-1">Office Reception</h5>
+              <p className="text-slate-600">Registered grievance #TKT-9210 (Water Supply)</p>
+              <p className="text-slate-400 text-[11px]">Dahanukar Colony Lane 3</p>
+            </div>
+
+            {/* Act 3 */}
+            <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/80 space-y-1">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-purple-100 text-purple-800">SURVEY</span>
+                <span className="text-slate-400 text-[10px]">14m ago</span>
+              </div>
+              <h5 className="font-bold text-slate-900 mt-1">Ganesh Patil</h5>
+              <p className="text-slate-600">Logged new household survey (Supporter classified)</p>
+              <p className="text-slate-400 text-[11px]">Booth 102 Kothrud Depot</p>
+            </div>
+
+            {/* Act 4 */}
+            <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/80 space-y-1">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-cyan-100 text-cyan-800">CAMPAIGN</span>
+                <span className="text-slate-400 text-[10px]">28m ago</span>
+              </div>
+              <h5 className="font-bold text-slate-900 mt-1">Broadcast Server</h5>
+              <p className="text-slate-600">WhatsApp Campaign CMP-01 reached 96% delivery threshold</p>
+              <p className="text-slate-400 text-[11px]">Ward 12 Broadcast Node</p>
+            </div>
+
+            {/* Act 5 */}
+            <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/80 space-y-1">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800">BLO</span>
+                <span className="text-slate-400 text-[10px]">42m ago</span>
+              </div>
+              <h5 className="font-bold text-slate-900 mt-1">Sanjay Kulkarni (BLO)</h5>
+              <p className="text-slate-600">ECI electoral roll amendment verified (14 additions)</p>
+              <p className="text-slate-400 text-[11px]">Booth 101 Electoral Table</p>
+            </div>
+
+            {/* Act 6 */}
+            <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/80 space-y-1">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-rose-100 text-rose-800">CADRE</span>
+                <span className="text-slate-400 text-[10px]">55m ago</span>
+              </div>
+              <h5 className="font-bold text-slate-900 mt-1">Amit Deshmukh</h5>
+              <p className="text-slate-600">Reassigned 2 standby karyakartas to Paud Phata swing sector</p>
+              <p className="text-slate-400 text-[11px]">Booth 103 Desk</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ========================================================================= */}
+      {/* SECTION 14: VOTER SLIPS & WORKFORCE DISPATCH STREAM (SCREENSHOT 13 & 14)  */}
+      {/* ========================================================================= */}
+      <section className="space-y-5">
+        {/* Top: Voter Slip Generation & Distribution Analytics (Screenshot 13) */}
+        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="flex items-center gap-2">
+                <Printer className="w-4 h-4 text-blue-600" />
+                <h3 className="font-bold text-slate-900 text-sm">Voter Slip Generation &amp; Distribution Analytics</h3>
+              </div>
+              <p className="text-xs text-slate-500 mt-0.5">
+                Constituency-wide throughput of printed, digital WhatsApp slips, and door-to-door handovers.
+              </p>
+            </div>
+            <Link href="/voters" className="text-xs font-bold text-blue-600 hover:text-blue-700">
+              Launch Slip Batch Generator &rarr;
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 text-center text-xs">
+            <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
+              <span className="text-[10px] font-bold text-slate-500 uppercase block">TOTAL SLIPS NEEDED</span>
+              <span className="text-base font-black text-slate-900 block mt-0.5">21.54 L</span>
+              <span className="text-[10px] text-slate-400 mt-0.5 block">100% Electors</span>
+            </div>
+            <div className="p-3 bg-blue-50/70 rounded-xl border border-blue-200">
+              <span className="text-[10px] font-bold text-blue-700 uppercase block">SLIPS GENERATED</span>
+              <span className="text-base font-black text-blue-900 block mt-0.5">19.82 L</span>
+              <span className="text-[10px] text-blue-600 mt-0.5 block">92.0% Prepared</span>
+            </div>
+            <div className="p-3 bg-purple-50/70 rounded-xl border border-purple-200">
+              <span className="text-[10px] font-bold text-purple-700 uppercase block">DELIVERED TO ELECTORS</span>
+              <span className="text-base font-black text-purple-900 block mt-0.5">18.23 L</span>
+              <span className="text-[10px] text-purple-600 mt-0.5 block">84.6% Handed Over</span>
+            </div>
+            <div className="p-3 bg-teal-50/70 rounded-xl border border-teal-200">
+              <span className="text-[10px] font-bold text-teal-700 uppercase block">DIGITAL WHATSAPP SLIPS</span>
+              <span className="text-base font-black text-teal-900 block mt-0.5">12.45 L</span>
+              <span className="text-[10px] text-teal-600 mt-0.5 block">Delivered on mobile</span>
+            </div>
+            <div className="p-3 bg-indigo-50/70 rounded-xl border border-indigo-200">
+              <span className="text-[10px] font-bold text-indigo-700 uppercase block">THERMAL PRINTED SLIPS</span>
+              <span className="text-base font-black text-indigo-900 block mt-0.5">5.78 L</span>
+              <span className="text-[10px] text-indigo-600 mt-0.5 block">Field printer dispatched</span>
+            </div>
+            <div className="p-3 bg-amber-50/70 rounded-xl border border-amber-200">
+              <span className="text-[10px] font-bold text-amber-700 uppercase block">PENDING SLIPS</span>
+              <span className="text-base font-black text-amber-900 block mt-0.5">3.31 L</span>
+              <span className="text-[10px] text-amber-600 mt-0.5 block">Target for remaining days</span>
+            </div>
+          </div>
+
+          {/* Booth-Wise Slip Distribution Performance Sample */}
+          <div className="pt-2">
+            <div className="flex justify-between items-center mb-2 text-xs">
+              <span className="font-bold text-slate-800">Booth-Wise Slip Distribution Performance Sample</span>
+              <span className="text-slate-400 text-[11px]">Showing representative sample of polling stations</span>
+            </div>
+
+            <div className="space-y-3">
+              {/* Booth 101 */}
+              <div>
+                <div className="flex justify-between text-xs font-semibold mb-1">
+                  <span className="text-slate-800">Booth #101: Kothrud Depot Road</span>
+                  <span className="text-blue-600 font-bold">92%</span>
+                </div>
+                <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+                  <div className="bg-blue-600 h-2 rounded-full" style={{ width: "92%" }} />
+                </div>
+                <div className="flex justify-between text-[11px] text-slate-400 mt-0.5">
+                  <span>1,051 delivered</span>
+                  <span>91 remaining</span>
+                </div>
+              </div>
+
+              {/* Booth 102 */}
+              <div>
+                <div className="flex justify-between text-xs font-semibold mb-1">
+                  <span className="text-slate-800">Booth #102: Kothrud Depot Road</span>
+                  <span className="text-blue-600 font-bold">88%</span>
+                </div>
+                <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+                  <div className="bg-blue-600 h-2 rounded-full" style={{ width: "88%" }} />
+                </div>
+                <div className="flex justify-between text-[11px] text-slate-400 mt-0.5">
+                  <span>1,060 delivered</span>
+                  <span>145 remaining</span>
+                </div>
+              </div>
+
+              {/* Booth 103 */}
+              <div>
+                <div className="flex justify-between text-xs font-semibold mb-1">
+                  <span className="text-slate-800">Booth #103: Paud Phata</span>
+                  <span className="text-amber-600 font-bold">74%</span>
+                </div>
+                <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+                  <div className="bg-amber-500 h-2 rounded-full" style={{ width: "74%" }} />
+                </div>
+                <div className="flex justify-between text-[11px] text-slate-400 mt-0.5">
+                  <span>725 delivered</span>
+                  <span>255 remaining</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom: Side-by-Side Workforce Assignments & Live War Room Activity Stream (Screenshot 14) */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+          {/* Left: Workforce Assignments & Field Cadre Performance */}
+          <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="flex items-center gap-2">
+                  <Users className="w-4 h-4 text-blue-600" />
+                  <h3 className="font-bold text-slate-900 text-sm">Workforce Assignments &amp; Field Cadre Performance</h3>
+                </div>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  Top karyakarta mobilizers ranked by door-to-door surveys and voter slips handed over.
+                </p>
+              </div>
+              <Link href="/users" className="text-xs font-bold text-blue-600 hover:text-blue-700">
+                All 4,850 Cadre &rarr;
+              </Link>
+            </div>
+
+            <div className="overflow-x-auto rounded-xl border border-slate-200">
+              <table className="w-full text-left text-xs">
+                <thead className="bg-slate-50 border-b border-slate-200 text-slate-500 font-bold uppercase text-[10px] tracking-wider">
+                  <tr>
+                    <th className="py-2.5 px-3">KARYAKARTA</th>
+                    <th className="py-2.5 px-3">PRABHAAG &amp; BOOTH</th>
+                    <th className="py-2.5 px-3">SURVEYS</th>
+                    <th className="py-2.5 px-3">SLIPS HANDED</th>
+                    <th className="py-2.5 px-3">FIELD STATUS</th>
+                    <th className="py-2.5 px-3 text-right">ACTION</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100 font-medium">
+                  <tr className="hover:bg-slate-50/80">
+                    <td className="py-2.5 px-3 flex items-center gap-2">
+                      <div className="w-6 h-6 rounded-full bg-slate-200 text-slate-700 font-bold text-[10px] flex items-center justify-center">
+                        Po
+                      </div>
+                      <span className="font-bold text-slate-900">Pooja Jadhav</span>
+                    </td>
+                    <td className="py-2.5 px-3">
+                      <strong className="text-slate-900 block">Booth #101</strong>
+                      <span className="text-[11px] text-slate-400">Prabhaag 12 - Kothrud West</span>
+                    </td>
+                    <td className="py-2.5 px-3 font-bold text-blue-600">184</td>
+                    <td className="py-2.5 px-3 font-bold text-slate-900">420</td>
+                    <td className="py-2.5 px-3">
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                        Active on Field
+                      </span>
+                    </td>
+                    <td className="py-2.5 px-3 text-right">
+                      <button
+                        type="button"
+                        onClick={() => showToast("info", "GPS Locator", "Pinging Pooja Jadhav: Navbharat School corridor")}
+                        className="px-2 py-1 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold text-[11px]"
+                      >
+                        Locate GPS
+                      </button>
+                    </td>
+                  </tr>
+
+                  <tr className="hover:bg-slate-50/80">
+                    <td className="py-2.5 px-3 flex items-center gap-2">
+                      <div className="w-6 h-6 rounded-full bg-slate-200 text-slate-700 font-bold text-[10px] flex items-center justify-center">
+                        Ga
+                      </div>
+                      <span className="font-bold text-slate-900">Ganesh Patil</span>
+                    </td>
+                    <td className="py-2.5 px-3">
+                      <strong className="text-slate-900 block">Booth #102</strong>
+                      <span className="text-[11px] text-slate-400">Prabhaag 12 - Kothrud West</span>
+                    </td>
+                    <td className="py-2.5 px-3 font-bold text-blue-600">210</td>
+                    <td className="py-2.5 px-3 font-bold text-slate-900">512</td>
+                    <td className="py-2.5 px-3">
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                        Active on Field
+                      </span>
+                    </td>
+                    <td className="py-2.5 px-3 text-right">
+                      <button
+                        type="button"
+                        onClick={() => showToast("info", "GPS Locator", "Pinging Ganesh Patil: Saraswati Vidyalaya Gate")}
+                        className="px-2 py-1 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold text-[11px]"
+                      >
+                        Locate GPS
+                      </button>
+                    </td>
+                  </tr>
+
+                  <tr className="hover:bg-slate-50/80">
+                    <td className="py-2.5 px-3 flex items-center gap-2">
+                      <div className="w-6 h-6 rounded-full bg-slate-200 text-slate-700 font-bold text-[10px] flex items-center justify-center">
+                        Vi
+                      </div>
+                      <span className="font-bold text-slate-900">Vikas More</span>
+                    </td>
+                    <td className="py-2.5 px-3">
+                      <strong className="text-slate-900 block">Booth #104</strong>
+                      <span className="text-[11px] text-slate-400">Prabhaag 13 - Erandwane</span>
+                    </td>
+                    <td className="py-2.5 px-3 font-bold text-blue-600">95</td>
+                    <td className="py-2.5 px-3 font-bold text-slate-900">230</td>
+                    <td className="py-2.5 px-3">
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-600">
+                        Offline
+                      </span>
+                    </td>
+                    <td className="py-2.5 px-3 text-right">
+                      <button
+                        type="button"
+                        onClick={() => showToast("warning", "GPS Offline", "Vikas More terminal last reported 2 hours ago")}
+                        className="px-2 py-1 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold text-[11px]"
+                      >
+                        Locate GPS
+                      </button>
+                    </td>
+                  </tr>
+
+                  <tr className="hover:bg-slate-50/80">
+                    <td className="py-2.5 px-3 flex items-center gap-2">
+                      <div className="w-6 h-6 rounded-full bg-slate-200 text-slate-700 font-bold text-[10px] flex items-center justify-center">
+                        Su
+                      </div>
+                      <span className="font-bold text-slate-900">Supriya Salve</span>
+                    </td>
+                    <td className="py-2.5 px-3">
+                      <strong className="text-slate-900 block">Booth #106</strong>
+                      <span className="text-[11px] text-slate-400">Prabhaag 14 - Shivajinagar</span>
+                    </td>
+                    <td className="py-2.5 px-3 font-bold text-blue-600">142</td>
+                    <td className="py-2.5 px-3 font-bold text-slate-900">310</td>
+                    <td className="py-2.5 px-3">
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                        Active on Field
+                      </span>
+                    </td>
+                    <td className="py-2.5 px-3 text-right">
+                      <button
+                        type="button"
+                        onClick={() => showToast("info", "GPS Locator", "Pinging Supriya Salve: Modern High School Desk")}
+                        className="px-2 py-1 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold text-[11px]"
+                      >
+                        Locate GPS
+                      </button>
+                    </td>
+                  </tr>
+
+                  <tr className="hover:bg-slate-50/80">
+                    <td className="py-2.5 px-3 flex items-center gap-2">
+                      <div className="w-6 h-6 rounded-full bg-slate-200 text-slate-700 font-bold text-[10px] flex items-center justify-center">
+                        Am
+                      </div>
+                      <span className="font-bold text-slate-900">Amol Chordia</span>
+                    </td>
+                    <td className="py-2.5 px-3">
+                      <strong className="text-slate-900 block">Booth #103</strong>
+                      <span className="text-[11px] text-slate-400">Prabhaag 12 - Kothrud West</span>
+                    </td>
+                    <td className="py-2.5 px-3 font-bold text-slate-400">0</td>
+                    <td className="py-2.5 px-3 font-bold text-slate-400">0</td>
+                    <td className="py-2.5 px-3">
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-600">
+                        Offline
+                      </span>
+                    </td>
+                    <td className="py-2.5 px-3 text-right">
+                      <button
+                        type="button"
+                        onClick={() => showToast("warning", "GPS Offline", "Amol Chordia terminal currently offline")}
+                        className="px-2 py-1 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold text-[11px]"
+                      >
+                        Locate GPS
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* Right: Live War Room Activity Stream (Screenshot 14) */}
+          <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs flex flex-col justify-between space-y-4">
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <Radio className="w-4 h-4 text-blue-600" />
+                  <h3 className="font-bold text-slate-900 text-sm">Live War Room Activity Stream</h3>
+                </div>
+                <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200">
+                  Live Feed
+                </span>
+              </div>
+              <p className="text-xs text-slate-500">
+                Real-time audit log of surveys, slip distributions, and field grievance escalations.
+              </p>
+
+              {/* Feed Items Stack */}
+              <div className="space-y-2.5 mt-3 text-xs">
+                <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/80">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-100 text-blue-800">SLIP</span>
+                    <span className="text-slate-400 text-[10px]">2m ago</span>
+                  </div>
+                  <h5 className="font-bold text-slate-900 mt-1">Pooja Jadhav</h5>
+                  <p className="text-slate-600">Delivered 8 voter information slips</p>
+                  <p className="text-slate-400 text-[11px]">Booth 101</p>
+                </div>
+
+                <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/80">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-100 text-amber-800">OFFICE</span>
+                    <span className="text-slate-400 text-[10px]">7m ago</span>
+                  </div>
+                  <h5 className="font-bold text-slate-900 mt-1">Office Reception</h5>
+                  <p className="text-slate-600">Registered grievance #TKT-9210 (Water Supply)</p>
+                  <p className="text-slate-400 text-[11px]">Kothrud</p>
+                </div>
+
+                <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/80">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-purple-100 text-purple-800">SURVEY</span>
+                    <span className="text-slate-400 text-[10px]">14m ago</span>
+                  </div>
+                  <h5 className="font-bold text-slate-900 mt-1">Ganesh Patil</h5>
+                  <p className="text-slate-600">Logged new household survey (Supporter classified)</p>
+                  <p className="text-slate-400 text-[11px]">Booth 102</p>
+                </div>
+
+                <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/80">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-cyan-100 text-cyan-800">CAMPAIGN</span>
+                    <span className="text-slate-400 text-[10px]">28m ago</span>
+                  </div>
+                  <h5 className="font-bold text-slate-900 mt-1">Broadcast Server</h5>
+                  <p className="text-slate-600">WhatsApp Campaign CMP-01 reached 96% delivery threshold</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Bottom Button */}
+            <Link
+              href="/activities"
+              className="w-full py-2.5 px-4 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold text-center block transition-all"
+            >
+              View Complete Activity Audit Log
+            </Link>
           </div>
         </div>
       </section>

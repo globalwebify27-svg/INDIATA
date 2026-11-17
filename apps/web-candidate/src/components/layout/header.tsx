@@ -167,34 +167,31 @@ export function Header({
 
   return (
     <>
-      <header className="h-[68px] bg-white/95 dark:bg-[#090A0F]/95 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800 px-4 sm:px-6 flex items-center justify-between sticky top-0 z-30 shadow-premium-xs select-none gap-3">
+      <header className="h-16 bg-white dark:bg-slate-950 border-b border-slate-200 dark:border-slate-900/80 px-4 sm:px-6 flex items-center justify-between sticky top-0 z-30 select-none gap-3">
         {/* LEFT: Sidebar Toggle + Constituency Pill + War Room Live */}
         <div className="flex items-center gap-3 min-w-0">
           <button
             type="button"
             onClick={handleToggle}
-            className="p-1.5 rounded-lg text-slate-500 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors shrink-0"
+            className="p-1.5 rounded-lg text-slate-500 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors shrink-0 md:hidden"
             aria-label={collapsed ? "Expand navigation" : "Collapse navigation"}
             title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
           >
             <Menu className="w-5 h-5" />
           </button>
 
-          {/* Vertical Divider */}
-          <div className="h-6 w-px bg-slate-200 dark:bg-slate-800 hidden sm:block" />
-
           {/* Constituency Context Selector Pill */}
           <div className="relative" ref={constituencyRef}>
             <button
               type="button"
               onClick={() => setConstituencyDropdownOpen(!constituencyDropdownOpen)}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700/80 text-xs font-semibold text-slate-800 dark:text-slate-200 transition-colors"
+              className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-[#273750] bg-slate-50 dark:bg-[#111C30] hover:bg-slate-100 dark:hover:bg-[#17243A] text-xs font-semibold text-slate-800 dark:text-[#F1F5FC] transition-colors"
             >
-              <MapPin className="w-3.5 h-3.5 text-[#6256D9]" />
+              <MapPin className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
               <span className="truncate max-w-[140px] sm:max-w-[210px]">
                 {selectedConstituency}
               </span>
-              <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
+              <ChevronDown className="w-3.5 h-3.5 text-slate-400 dark:text-[#71819B]" />
             </button>
 
             {constituencyDropdownOpen && (
@@ -227,27 +224,30 @@ export function Header({
           </div>
 
           {/* War Room Live Pulsing Indicator */}
-          <div className="hidden lg:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-violet-50 dark:bg-violet-950/40 text-violet-700 dark:text-violet-300 border border-violet-200 dark:border-violet-800 text-[11px] font-medium">
-            <span className="w-2 h-2 rounded-full bg-[#6256D9] animate-pulse" />
-            <span>War Room Live</span>
+          <div className="hidden lg:flex items-center gap-2 px-3 py-1 bg-blue-50 dark:bg-[#17243A] border border-blue-200/80 dark:border-blue-900/60 rounded-full text-xs font-semibold text-blue-700 dark:text-blue-400">
+            <span className="w-2 h-2 rounded-full bg-blue-600 dark:bg-blue-400 pulse-glow-blue" />
+            <span className="tracking-wide">War Room Live</span>
           </div>
         </div>
 
-        {/* CENTER: Global Search */}
-        <div ref={searchRef} className="flex-1 max-w-lg mx-2 sm:mx-6 relative">
-          <form onSubmit={handleSearchSubmit} className="relative">
-            <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+        {/* CENTER: Global Search with Ctrl K */}
+        <div ref={searchRef} className="flex-1 max-w-md mx-2 sm:mx-6 relative hidden sm:block">
+          <form onSubmit={handleSearchSubmit} className="relative flex items-center">
+            <Search className="w-4 h-4 text-slate-400 dark:text-[#71819B] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
             <input
               type="text"
-              placeholder="Global search: voter name, EPIC ID, booth, phone..."
+              placeholder="Global search: voter, EPIC ID, booth, phone..."
               value={searchQuery}
               onChange={(e) => {
                 setSearchQuery(e.target.value);
                 setSearchResultsOpen(true);
               }}
               onFocus={() => setSearchResultsOpen(true)}
-              className="w-full pl-10 pr-8 py-2 bg-slate-50 hover:bg-slate-100/80 focus:bg-white text-xs text-slate-800 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition-all placeholder:text-slate-400 dark:bg-slate-800 dark:text-slate-100 dark:border-slate-700"
+              className="w-full pl-10 pr-16 py-2 bg-slate-50 dark:bg-[#111C30] border border-slate-200 dark:border-[#273750] rounded-xl text-xs text-slate-900 dark:text-[#F1F5FC] placeholder:text-slate-400 dark:placeholder:text-[#71819B] focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all"
             />
+            <kbd className="absolute right-2.5 top-1/2 -translate-y-1/2 px-1.5 py-0.5 rounded text-[10px] font-mono bg-slate-200 dark:bg-[#1C2C46] text-slate-600 dark:text-[#94A3B8] pointer-events-none">
+              Ctrl K
+            </kbd>
             {searchQuery && (
               <button
                 type="button"
@@ -255,7 +255,7 @@ export function Header({
                   setSearchQuery("");
                   setSearchResultsOpen(false);
                 }}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                className="absolute right-14 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
               >
                 <X className="w-3.5 h-3.5" />
               </button>
@@ -295,31 +295,43 @@ export function Header({
           )}
         </div>
 
-        {/* RIGHT: AI Mode + Notifications + Theme + Profile */}
-        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+        {/* RIGHT: Theme Toggle + AI Mode + Notifications + Profile */}
+        <div className="flex items-center gap-2.5 shrink-0">
+          {/* Theme Toggle */}
+          <button
+            type="button"
+            onClick={toggleTheme}
+            className="p-2 rounded-xl text-slate-600 dark:text-[#94A3B8] hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-[#17243A] transition-colors"
+            title={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+            aria-label="Toggle theme"
+          >
+            {theme === "dark" ? (
+              <Sun className="w-4 h-4 text-amber-400" />
+            ) : (
+              <Moon className="w-4 h-4" />
+            )}
+          </button>
+
           {/* AI Mode Gradient Action Button */}
           <Link
             href="/strategy"
-            className="flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-semibold shadow-xs transition-all bg-gradient-to-r from-violet-600 to-indigo-600 text-white hover:opacity-95"
+            className="relative flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs font-bold shadow-md shadow-indigo-500/20 transition-all"
             title="Open Strategy & Agentic AI Intelligence"
           >
-            <Sparkles className="w-4 h-4 text-amber-300 animate-pulse shrink-0" />
+            <Sparkles className="w-3.5 h-3.5 text-amber-300 animate-pulse shrink-0" />
             <span className="hidden sm:inline">AI Mode</span>
           </Link>
-
-          {/* Translucent Divider */}
-          <div className="h-6 w-px bg-slate-200 dark:bg-slate-800 hidden sm:block" />
 
           {/* Notifications Dropdown (Section 11 Custom Push Messaging) */}
           <div className="relative" ref={notificationsRef}>
             <button
               type="button"
               onClick={() => setNotificationsOpen(!notificationsOpen)}
-              className="p-2 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors relative"
+              className="relative p-2 rounded-xl text-slate-600 dark:text-[#94A3B8] hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-[#17243A] transition-colors"
               title="System Notifications & Field Directives"
             >
-              <Bell className="w-5 h-5" />
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-rose-500 ring-2 ring-white dark:ring-slate-900" />
+              <Bell className="w-4 h-4" />
+              <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-rose-500 ring-2 ring-white dark:ring-[#0D1524]" />
             </button>
 
             {notificationsOpen && (
@@ -337,7 +349,7 @@ export function Header({
                       setNotificationsOpen(false);
                       setShowDirectiveModal(true);
                     }}
-                    className="text-[11px] font-bold text-white bg-[#6256D9] hover:bg-[#5044BF] px-2.5 py-1 rounded-lg transition-colors cursor-pointer shadow-xs"
+                    className="text-[11px] font-bold text-white bg-blue-600 hover:bg-blue-700 px-2.5 py-1 rounded-lg transition-colors cursor-pointer shadow-xs"
                   >
                     + Compose Directive
                   </button>
@@ -350,7 +362,7 @@ export function Header({
                     onClick={() => setNotificationTab("alerts")}
                     className={`flex-1 py-2 text-center transition-colors border-b-2 ${
                       notificationTab === "alerts"
-                        ? "border-[#6256D9] text-[#6256D9]"
+                        ? "border-blue-600 text-blue-600"
                         : "border-transparent text-slate-500 hover:text-slate-800"
                     }`}
                   >
@@ -361,7 +373,7 @@ export function Header({
                     onClick={() => setNotificationTab("directives")}
                     className={`flex-1 py-2 text-center transition-colors border-b-2 ${
                       notificationTab === "directives"
-                        ? "border-[#6256D9] text-[#6256D9]"
+                        ? "border-blue-600 text-blue-600"
                         : "border-transparent text-slate-500 hover:text-slate-800"
                     }`}
                   >
@@ -408,7 +420,7 @@ export function Header({
                         </div>
                         <p className="text-[11px] text-slate-600 dark:text-slate-300">{dir.body}</p>
                         <div className="flex items-center justify-between text-[10px] text-slate-400 pt-0.5">
-                          <span className="font-medium text-[#6256D9]">{dir.scope}</span>
+                          <span className="font-medium text-blue-600">{dir.scope}</span>
                           <span>{dir.sentAt}</span>
                         </div>
                       </div>
@@ -419,41 +431,25 @@ export function Header({
             )}
           </div>
 
-          {/* Theme Toggle */}
-          <button
-            type="button"
-            onClick={toggleTheme}
-            className="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-            title={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
-            aria-label="Toggle theme"
-          >
-            {theme === "dark" ? (
-              <Sun className="w-4.5 h-4.5 text-amber-400" />
-            ) : (
-              <Moon className="w-4.5 h-4.5" />
-            )}
-          </button>
-
           {/* User Profile Avatar Dropdown */}
-          <div className="relative pl-1 border-l border-slate-200 dark:border-slate-800" ref={userMenuRef}>
+          <div className="relative" ref={userMenuRef}>
             <button
               type="button"
               onClick={() => setUserMenuOpen(!userMenuOpen)}
-              className="flex items-center gap-2 p-1 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              className="flex items-center gap-2.5 pl-2 pr-3 py-1 rounded-xl bg-slate-50 dark:bg-[#111C30] border border-slate-200 dark:border-[#273750] hover:bg-slate-100 dark:hover:bg-[#17243A] transition-all cursor-pointer"
             >
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-600 text-white font-bold flex items-center justify-center text-xs shadow-sm shrink-0">
+              <div className="w-7 h-7 rounded-lg bg-blue-600 text-white font-black text-xs flex items-center justify-center shrink-0">
                 {candidateInitials}
               </div>
 
-              <div className="text-left hidden md:block leading-tight max-w-[120px]">
-                <div className="text-xs font-bold text-slate-800 dark:text-slate-100 truncate">
+              <div className="text-left hidden md:block">
+                <p className="text-xs font-bold text-slate-900 dark:text-[#F1F5FC] leading-none">
                   {user?.name || "Adv. Vikram Patil"}
-                </div>
-                <div className="text-[10px] text-slate-500 truncate">
+                </p>
+                <p className="text-[10px] text-slate-500 dark:text-[#71819B] mt-0.5">
                   Candidate Admin
-                </div>
+                </p>
               </div>
-              <ChevronDown className="w-3.5 h-3.5 text-slate-400 hidden md:block" />
             </button>
 
             {userMenuOpen && (

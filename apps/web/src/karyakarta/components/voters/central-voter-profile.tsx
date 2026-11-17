@@ -44,7 +44,6 @@ interface CentralVoterProfileProps {
   onRequestCorrection?: (voter: VoterRecord) => void;
 }
 
-type TabType = "personal" | "address" | "booth" | "family" | "survey" | "activity";
 
 export function CentralVoterProfile({
   voter,
@@ -62,10 +61,16 @@ export function CentralVoterProfile({
   onOpenFamilyTree,
   onRequestCorrection,
 }: CentralVoterProfileProps) {
-  const [activeTab, setActiveTab] = useState<TabType>("personal");
   const [copiedEpic, setCopiedEpic] = useState(false);
 
   if (!isOpen || !voter) return null;
+
+  const scrollToSection = (secId: string) => {
+    const el = document.getElementById(secId);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
 
   // Booth info lookup
   const boothInfo = allBooths.find((b) => b.boothNumber === voter.boothNumber);
@@ -297,88 +302,90 @@ export function CentralVoterProfile({
         </div>
 
         {/* ========================================================= */}
-        {/* TABS NAVIGATION                                           */}
+        {/* QUICK JUMP SUBSECTION TOOLBAR (ALL SUBSECTIONS DISPLAYED AT ONCE) */}
         {/* ========================================================= */}
-        <div className="flex items-center gap-1 px-5 pt-3 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 overflow-x-auto text-xs">
+        <div className="flex items-center gap-1.5 px-5 py-2.5 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 overflow-x-auto text-xs shrink-0">
+          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider shrink-0 mr-1">
+            Subsections:
+          </span>
           <button
-            onClick={() => setActiveTab("personal")}
-            className={`py-2 px-3 rounded-t-lg font-bold transition-colors cursor-pointer flex items-center gap-1.5 whitespace-nowrap ${
-              activeTab === "personal"
-                ? "bg-white dark:bg-slate-900 text-blue-600 border-t-2 border-blue-600"
-                : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
-            }`}
+            type="button"
+            onClick={() => scrollToSection("sec-personal")}
+            className="py-1.5 px-2.5 rounded-lg font-bold transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 border border-slate-200 dark:border-slate-700 hover:border-blue-300 shadow-2xs"
           >
             <User className="w-3.5 h-3.5" />
-            <span>Personal &amp; ID</span>
+            <span>1. Personal &amp; ID</span>
           </button>
 
           <button
-            onClick={() => setActiveTab("address")}
-            className={`py-2 px-3 rounded-t-lg font-bold transition-colors cursor-pointer flex items-center gap-1.5 whitespace-nowrap ${
-              activeTab === "address"
-                ? "bg-white dark:bg-slate-900 text-blue-600 border-t-2 border-blue-600"
-                : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
-            }`}
+            type="button"
+            onClick={() => scrollToSection("sec-address")}
+            className="py-1.5 px-2.5 rounded-lg font-bold transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap bg-white dark:bg-slate-800 text-emerald-600 dark:text-emerald-400 border border-slate-200 dark:border-slate-700 hover:border-emerald-300 shadow-2xs"
           >
             <MapPin className="w-3.5 h-3.5" />
-            <span>Address &amp; Location</span>
+            <span>2. Address &amp; Location</span>
           </button>
 
           <button
-            onClick={() => setActiveTab("booth")}
-            className={`py-2 px-3 rounded-t-lg font-bold transition-colors cursor-pointer flex items-center gap-1.5 whitespace-nowrap ${
-              activeTab === "booth"
-                ? "bg-white dark:bg-slate-900 text-blue-600 border-t-2 border-blue-600"
-                : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
-            }`}
+            type="button"
+            onClick={() => scrollToSection("sec-booth")}
+            className="py-1.5 px-2.5 rounded-lg font-bold transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap bg-white dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 border border-slate-200 dark:border-slate-700 hover:border-indigo-300 shadow-2xs"
           >
             <Building2 className="w-3.5 h-3.5" />
-            <span>Polling Station &amp; BLO</span>
+            <span>3. Polling Station &amp; BLO</span>
           </button>
 
           <button
-            onClick={() => setActiveTab("family")}
-            className={`py-2 px-3 rounded-t-lg font-bold transition-colors cursor-pointer flex items-center gap-1.5 whitespace-nowrap ${
-              activeTab === "family"
-                ? "bg-white dark:bg-slate-900 text-blue-600 border-t-2 border-blue-600"
-                : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
-            }`}
+            type="button"
+            onClick={() => scrollToSection("sec-family")}
+            className="py-1.5 px-2.5 rounded-lg font-bold transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap bg-white dark:bg-slate-800 text-purple-600 dark:text-purple-400 border border-slate-200 dark:border-slate-700 hover:border-purple-300 shadow-2xs"
           >
             <Users className="w-3.5 h-3.5" />
-            <span>Household ({familyMembers.length})</span>
+            <span>4. Household ({familyMembers.length})</span>
           </button>
 
           <button
-            onClick={() => setActiveTab("survey")}
-            className={`py-2 px-3 rounded-t-lg font-bold transition-colors cursor-pointer flex items-center gap-1.5 whitespace-nowrap ${
-              activeTab === "survey"
-                ? "bg-white dark:bg-slate-900 text-blue-600 border-t-2 border-blue-600"
-                : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
-            }`}
+            type="button"
+            onClick={() => scrollToSection("sec-survey")}
+            className="py-1.5 px-2.5 rounded-lg font-bold transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap bg-white dark:bg-slate-800 text-cyan-600 dark:text-cyan-400 border border-slate-200 dark:border-slate-700 hover:border-cyan-300 shadow-2xs"
           >
             <FileText className="w-3.5 h-3.5" />
-            <span>Survey &amp; Demands</span>
+            <span>5. Survey &amp; Demands</span>
           </button>
 
           <button
-            onClick={() => setActiveTab("activity")}
-            className={`py-2 px-3 rounded-t-lg font-bold transition-colors cursor-pointer flex items-center gap-1.5 whitespace-nowrap ${
-              activeTab === "activity"
-                ? "bg-white dark:bg-slate-900 text-blue-600 border-t-2 border-blue-600"
-                : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
-            }`}
+            type="button"
+            onClick={() => scrollToSection("sec-activity")}
+            className="py-1.5 px-2.5 rounded-lg font-bold transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap bg-white dark:bg-slate-800 text-amber-600 dark:text-amber-400 border border-slate-200 dark:border-slate-700 hover:border-amber-300 shadow-2xs"
           >
             <Clock className="w-3.5 h-3.5" />
-            <span>History ({voterActivities.length})</span>
+            <span>6. History ({voterActivities.length + voterIssues.length})</span>
           </button>
         </div>
 
         {/* ========================================================= */}
-        {/* TAB PANELS                                                */}
+        {/* CONTINUOUS PROFILE DOSSIER (ALL SUBSECTIONS DISPLAYED AT ONCE) */}
         {/* ========================================================= */}
-        <div className="p-5 overflow-y-auto flex-1 text-xs space-y-4">
-          {/* Tab 1: Personal & Identification */}
-          {activeTab === "personal" && (
+        <div className="p-5 overflow-y-auto flex-1 text-xs space-y-6 scroll-smooth">
+          {/* Subsection 1: Personal & Identification */}
+          <section id="sec-personal" className="space-y-3">
+            <div className="flex items-center justify-between pb-2 border-b border-slate-200 dark:border-slate-800">
+              <div className="flex items-center gap-2">
+                <div className="w-7 h-7 rounded-lg bg-blue-100 text-blue-600 dark:bg-blue-950/60 flex items-center justify-center font-bold">
+                  <User className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-sm text-slate-900 dark:text-white">
+                    1. Personal &amp; Electoral Identification
+                  </h3>
+                  <p className="text-[11px] text-slate-500">Official ECI electoral identification and demographic profile</p>
+                </div>
+              </div>
+              <span className="text-[10px] font-bold text-blue-600 bg-blue-50 dark:bg-blue-950/40 px-2.5 py-0.5 rounded-md border border-blue-200 dark:border-blue-800">
+                ECI Record
+              </span>
+            </div>
+
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-800 space-y-2">
                 <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
@@ -424,10 +431,27 @@ export function CentralVoterProfile({
                 </div>
               </div>
             </div>
-          )}
+          </section>
 
-          {/* Tab 2: Address & Administrative Location */}
-          {activeTab === "address" && (
+          {/* Subsection 2: Address & Administrative Location */}
+          <section id="sec-address" className="space-y-3 pt-2">
+            <div className="flex items-center justify-between pb-2 border-b border-slate-200 dark:border-slate-800">
+              <div className="flex items-center gap-2">
+                <div className="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-600 dark:bg-emerald-950/60 flex items-center justify-center font-bold">
+                  <MapPin className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-sm text-slate-900 dark:text-white">
+                    2. Address &amp; Administrative Division
+                  </h3>
+                  <p className="text-[11px] text-slate-500">Household registered location, ward demarcation, and prabhaag</p>
+                </div>
+              </div>
+              <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40 px-2.5 py-0.5 rounded-md border border-emerald-200 dark:border-emerald-800">
+                Address Verified
+              </span>
+            </div>
+
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-800 space-y-2">
                 <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block flex items-center gap-1.5">
@@ -473,10 +497,27 @@ export function CentralVoterProfile({
                 </div>
               </div>
             </div>
-          )}
+          </section>
 
-          {/* Tab 3: Polling Station & BLO Details */}
-          {activeTab === "booth" && (
+          {/* Subsection 3: Polling Station & BLO Details */}
+          <section id="sec-booth" className="space-y-3 pt-2">
+            <div className="flex items-center justify-between pb-2 border-b border-slate-200 dark:border-slate-800">
+              <div className="flex items-center gap-2">
+                <div className="w-7 h-7 rounded-lg bg-indigo-100 text-indigo-600 dark:bg-indigo-950/60 flex items-center justify-center font-bold">
+                  <Building2 className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-sm text-slate-900 dark:text-white">
+                    3. Polling Station &amp; Designated BLO
+                  </h3>
+                  <p className="text-[11px] text-slate-500">Booth building location, voter queue room, and designated BLO officer</p>
+                </div>
+              </div>
+              <span className="text-[10px] font-bold text-indigo-600 bg-indigo-50 dark:bg-indigo-950/40 px-2.5 py-0.5 rounded-md border border-indigo-200 dark:border-indigo-800">
+                Booth #{voter.boothNumber}
+              </span>
+            </div>
+
             <div className="space-y-4">
               <div className="p-4 rounded-xl bg-blue-50/60 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900/40 space-y-2.5">
                 <div className="flex items-center justify-between">
@@ -540,31 +581,46 @@ export function CentralVoterProfile({
                 </div>
               )}
             </div>
-          )}
+          </section>
 
-          {/* Tab 4: Household & Family Members */}
-          {activeTab === "family" && (
-            <div className="space-y-3">
-              <div className="flex items-center justify-between text-xs">
-                <span className="font-bold text-slate-800 dark:text-slate-200">
-                  Household Registered at {voter.houseNo} (Family ID: {voter.familyId})
-                </span>
-                <div className="flex items-center gap-2">
-                  <span className="text-slate-500">{familyMembers.length} Members</span>
-                  {onOpenFamilyTree && voter.familyId && (
-                    <button
-                      onClick={() => onOpenFamilyTree(voter.familyId)}
-                      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-purple-50 text-purple-700 hover:bg-purple-100 dark:bg-purple-950/50 dark:text-purple-300 font-bold text-xs cursor-pointer border border-purple-200 dark:border-purple-800"
-                    >
-                      <Users className="w-3.5 h-3.5" />
-                      <span>Family Tree View</span>
-                    </button>
-                  )}
+          {/* Subsection 4: Household & Family Members */}
+          <section id="sec-family" className="space-y-3 pt-2">
+            <div className="flex items-center justify-between pb-2 border-b border-slate-200 dark:border-slate-800">
+              <div className="flex items-center gap-2">
+                <div className="w-7 h-7 rounded-lg bg-purple-100 text-purple-600 dark:bg-purple-950/60 flex items-center justify-center font-bold">
+                  <Users className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-sm text-slate-900 dark:text-white">
+                    4. Household &amp; Family Members ({familyMembers.length})
+                  </h3>
+                  <p className="text-[11px] text-slate-500">Family cluster registered at same residence ({voter.houseNo})</p>
                 </div>
               </div>
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-bold text-purple-600 bg-purple-50 dark:bg-purple-950/40 px-2.5 py-0.5 rounded-md border border-purple-200 dark:border-purple-800">
+                  Family ID: {voter.familyId || "N/A"}
+                </span>
+                {onOpenFamilyTree && voter.familyId && (
+                  <button
+                    type="button"
+                    onClick={() => onOpenFamilyTree(voter.familyId!)}
+                    className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-purple-50 text-purple-700 hover:bg-purple-100 dark:bg-purple-950/50 dark:text-purple-300 font-bold text-xs cursor-pointer border border-purple-200 dark:border-purple-800"
+                  >
+                    <Users className="w-3.5 h-3.5" />
+                    <span>Family Tree View</span>
+                  </button>
+                )}
+              </div>
+            </div>
 
-              <div className="space-y-2">
-                {familyMembers.map((member) => (
+            <div className="space-y-2">
+              {familyMembers.length === 0 ? (
+                <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 text-center text-slate-400">
+                  <p>No other family members linked to this household ID.</p>
+                </div>
+              ) : (
+                familyMembers.map((member) => (
                   <div
                     key={member.id}
                     className={`p-3 rounded-xl border flex items-center justify-between gap-3 transition-colors ${
@@ -605,6 +661,7 @@ export function CentralVoterProfile({
                       </span>
                       {member.id !== voter.id && onSelectFamilyMember && (
                         <button
+                          type="button"
                           onClick={() => onSelectFamilyMember(member)}
                           className="px-2 py-1 rounded-md text-[11px] font-semibold text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-950 cursor-pointer"
                         >
@@ -613,97 +670,127 @@ export function CentralVoterProfile({
                       )}
                     </div>
                   </div>
-                ))}
-              </div>
+                ))
+              )}
             </div>
-          )}
+          </section>
 
-          {/* Tab 5: Doorstep Survey & Grievance Demands */}
-          {activeTab === "survey" && (
-            <div className="space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-800 space-y-2">
-                  <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
-                    Schemes &amp; Government Benefits
-                  </span>
-                  <p className="font-medium text-slate-800 dark:text-slate-200">
-                    {voter.scheme || "No government schemes currently tagged."}
-                  </p>
+          {/* Subsection 5: Doorstep Survey & Grievance Demands */}
+          <section id="sec-survey" className="space-y-3 pt-2">
+            <div className="flex items-center justify-between pb-2 border-b border-slate-200 dark:border-slate-800">
+              <div className="flex items-center gap-2">
+                <div className="w-7 h-7 rounded-lg bg-cyan-100 text-cyan-600 dark:bg-cyan-950/60 flex items-center justify-center font-bold">
+                  <FileText className="w-4 h-4" />
                 </div>
+                <div>
+                  <h3 className="font-bold text-sm text-slate-900 dark:text-white">
+                    5. Doorstep Survey &amp; Citizen Demands
+                  </h3>
+                  <p className="text-[11px] text-slate-500">Government schemes, local grievances, and voter aspirations</p>
+                </div>
+              </div>
+              <span className="text-[10px] font-bold text-cyan-600 bg-cyan-50 dark:bg-cyan-950/40 px-2.5 py-0.5 rounded-md border border-cyan-200 dark:border-cyan-800">
+                Field Intelligence
+              </span>
+            </div>
 
-                <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-800 space-y-2">
-                  <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
-                    Local Area Demand / Grievance
-                  </span>
-                  <p className="font-medium text-slate-800 dark:text-slate-200">
-                    {voter.demand || "No specific local demands recorded."}
-                  </p>
-                </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+              <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-800 space-y-2">
+                <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
+                  Schemes &amp; Government Benefits
+                </span>
+                <p className="font-medium text-slate-800 dark:text-slate-200">
+                  {voter.scheme || "No government schemes currently tagged."}
+                </p>
               </div>
 
               <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-800 space-y-2">
                 <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
-                  Cadre Remarks &amp; Past Candidate Assistance
+                  Local Area Demand / Grievance
                 </span>
                 <p className="font-medium text-slate-800 dark:text-slate-200">
-                  {voter.remarks || "No field remarks entered."}
+                  {voter.demand || "No specific local demands recorded."}
                 </p>
-                {voter.candidateHelp && (
-                  <p className="text-[11px] text-cyan-600 dark:text-cyan-400 pt-1 border-t border-slate-200 dark:border-slate-700">
-                    Candidate Help: {voter.candidateHelp}
-                  </p>
-                )}
               </div>
             </div>
-          )}
 
-          {/* Tab 6: Activity History & Tickets */}
-          {activeTab === "activity" && (
-            <div className="space-y-3">
-              {voterActivities.length === 0 && voterIssues.length === 0 ? (
-                <div className="p-8 text-center text-slate-400">
-                  <Clock className="w-8 h-8 mx-auto mb-2 opacity-40" />
-                  <p className="font-semibold text-xs">No activity records logged for this voter yet.</p>
-                </div>
-              ) : (
-                <div className="space-y-2">
-                  {voterActivities.map((act) => (
-                    <div
-                      key={act.id}
-                      className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-800 flex items-center justify-between"
-                    >
-                      <div>
-                        <span className="font-bold text-slate-900 dark:text-white block">
-                          {act.action}
-                        </span>
-                        <span className="text-[11px] text-slate-500">{act.details}</span>
-                      </div>
-                      <span className="text-[10px] font-mono text-slate-400">{act.timestamp}</span>
-                    </div>
-                  ))}
-
-                  {voterIssues.map((iss) => (
-                    <div
-                      key={iss.id}
-                      className="p-3 rounded-xl bg-orange-50/60 dark:bg-orange-950/30 border border-orange-200 dark:border-orange-900/40 flex items-center justify-between"
-                    >
-                      <div>
-                        <span className="font-bold text-orange-900 dark:text-orange-200 block">
-                          Issue: {iss.category} ({iss.ticketNumber})
-                        </span>
-                        <span className="text-[11px] text-orange-800 dark:text-orange-300">
-                          {iss.description}
-                        </span>
-                      </div>
-                      <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-orange-200 text-orange-800">
-                        {iss.status}
-                      </span>
-                    </div>
-                  ))}
-                </div>
+            <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-800 space-y-2">
+              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
+                Cadre Remarks &amp; Past Candidate Assistance
+              </span>
+              <p className="font-medium text-slate-800 dark:text-slate-200">
+                {voter.remarks || "No field remarks entered."}
+              </p>
+              {voter.candidateHelp && (
+                <p className="text-[11px] text-cyan-600 dark:text-cyan-400 pt-1 border-t border-slate-200 dark:border-slate-700">
+                  Candidate Help: {voter.candidateHelp}
+                </p>
               )}
             </div>
-          )}
+          </section>
+
+          {/* Subsection 6: Activity History & Tickets */}
+          <section id="sec-activity" className="space-y-3 pt-2">
+            <div className="flex items-center justify-between pb-2 border-b border-slate-200 dark:border-slate-800">
+              <div className="flex items-center gap-2">
+                <div className="w-7 h-7 rounded-lg bg-amber-100 text-amber-600 dark:bg-amber-950/60 flex items-center justify-center font-bold">
+                  <Clock className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-sm text-slate-900 dark:text-white">
+                    6. Interaction History &amp; Grievance Tickets ({voterActivities.length + voterIssues.length})
+                  </h3>
+                  <p className="text-[11px] text-slate-500">Field visits, slip delivery log, and recorded issues</p>
+                </div>
+              </div>
+              <span className="text-[10px] font-bold text-amber-600 bg-amber-50 dark:bg-amber-950/40 px-2.5 py-0.5 rounded-md border border-amber-200 dark:border-amber-800">
+                Audit Trail
+              </span>
+            </div>
+
+            {voterActivities.length === 0 && voterIssues.length === 0 ? (
+              <div className="p-8 text-center text-slate-400 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800">
+                <Clock className="w-8 h-8 mx-auto mb-2 opacity-40" />
+                <p className="font-semibold text-xs">No activity records logged for this voter yet.</p>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                {voterActivities.map((act) => (
+                  <div
+                    key={act.id}
+                    className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-800 flex items-center justify-between"
+                  >
+                    <div>
+                      <span className="font-bold text-slate-900 dark:text-white block">
+                        {act.action}
+                      </span>
+                      <span className="text-[11px] text-slate-500">{act.details}</span>
+                    </div>
+                    <span className="text-[10px] font-mono text-slate-400">{act.timestamp}</span>
+                  </div>
+                ))}
+
+                {voterIssues.map((iss) => (
+                  <div
+                    key={iss.id}
+                    className="p-3 rounded-xl bg-orange-50/60 dark:bg-orange-950/30 border border-orange-200 dark:border-orange-900/40 flex items-center justify-between"
+                  >
+                    <div>
+                      <span className="font-bold text-orange-900 dark:text-orange-200 block">
+                        Issue: {iss.category} ({iss.ticketNumber})
+                      </span>
+                      <span className="text-[11px] text-orange-800 dark:text-orange-300">
+                        {iss.description}
+                      </span>
+                    </div>
+                    <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-orange-200 text-orange-800">
+                      {iss.status}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </section>
         </div>
       </div>
     </div>

@@ -1,29 +1,27 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
   MapPin,
-  AlertCircle,
-  Users,
-  UserCheck,
-  BookOpen,
-  Filter,
-  FileEdit,
-  Shield,
-  Activity,
+  Building2,
   Vote,
-  BadgeCheck,
-  Megaphone,
-  PhoneCall,
-  Bot,
+  Contact,
+  Filter,
+  Users,
+  ChevronDown,
+  ShieldCheck,
+  Activity,
+  Radio,
   CreditCard,
   BarChart3,
+  History,
+  Settings,
+  LogOut,
   ChevronLeft,
   ChevronRight,
-  LogOut,
   X,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
@@ -37,6 +35,7 @@ export interface NavItemConfig {
   badge?: string | number;
   badgeType?: "warning" | "teal" | "violet" | "default";
   pulseDot?: boolean;
+  dotColor?: "cyan" | "amber";
 }
 
 export interface NavGroupConfig {
@@ -53,7 +52,7 @@ export interface SidebarProps {
 
 export const NAV_GROUPS: NavGroupConfig[] = [
   {
-    groupTitle: "CORE OPERATIONS",
+    groupTitle: "Core Operations",
     items: [
       {
         key: "dashboard",
@@ -72,76 +71,43 @@ export const NAV_GROUPS: NavGroupConfig[] = [
         key: "tickets",
         label: "Office & Issues",
         href: "/office/tickets",
-        icon: AlertCircle,
+        icon: Building2,
         badge: 2,
         badgeType: "warning",
       },
     ],
   },
   {
-    groupTitle: "VOTER INTELLIGENCE",
+    groupTitle: "Voter Intelligence",
     items: [
       {
         key: "voters",
         label: "Total Voters",
         href: "/voters",
-        icon: Users,
-      },
-      {
-        key: "voter-profile",
-        label: "Central Voter Profile",
-        href: "/voters/profile",
-        icon: UserCheck,
+        icon: Vote,
       },
       {
         key: "phonebook",
         label: "Phone Book",
         href: "/voters/phonebook",
-        icon: BookOpen,
-      },
-      {
-        key: "requests",
-        label: "Voter Update Requests",
-        href: "/voters/requests",
-        icon: FileEdit,
-        badge: 14,
-        badgeType: "warning",
+        icon: Contact,
       },
       {
         key: "filters",
-        label: "Filters & Segmentation",
+        label: "Filters",
         href: "/voters/filters",
         icon: Filter,
       },
     ],
   },
   {
-    groupTitle: "WORKFORCE & TEAM",
+    groupTitle: "Workforce & Team",
     items: [
-      {
-        key: "users",
-        label: "Users & Karyakarta",
-        href: "/users",
-        icon: Users,
-        pulseDot: true,
-      },
       {
         key: "blo",
         label: "BLO Information",
         href: "/blo",
-        icon: Shield,
-      },
-      {
-        key: "booths",
-        label: "Booth Management",
-        href: "/booths",
-        icon: Vote,
-      },
-      {
-        key: "members",
-        label: "Members & Cadre",
-        href: "/members",
-        icon: BadgeCheck,
+        icon: ShieldCheck,
       },
       {
         key: "activities",
@@ -152,29 +118,13 @@ export const NAV_GROUPS: NavGroupConfig[] = [
     ],
   },
   {
-    groupTitle: "CAMPAIGN & PLANS",
+    groupTitle: "Campaign & Plans",
     items: [
       {
         key: "campaigns",
         label: "Campaign Control",
         href: "/campaigns",
-        icon: Megaphone,
-      },
-      {
-        key: "ai-calling",
-        label: "AI Calling Outreach",
-        href: "/ai/calling",
-        icon: PhoneCall,
-        badge: "AI",
-        badgeType: "violet",
-      },
-      {
-        key: "ai-assistant",
-        label: "AI Strategy Advisor",
-        href: "/ai/assistant",
-        icon: Bot,
-        badge: "Bot",
-        badgeType: "violet",
+        icon: Radio,
       },
       {
         key: "subscriptions",
@@ -182,11 +132,33 @@ export const NAV_GROUPS: NavGroupConfig[] = [
         href: "/subscriptions",
         icon: CreditCard,
       },
+    ],
+  },
+  {
+    groupTitle: "Analytics & Strategy",
+    items: [
       {
         key: "reports",
-        label: "Reports & Analytics",
+        label: "Reports",
         href: "/reports",
         icon: BarChart3,
+      },
+      {
+        key: "strategy",
+        label: "Previous Election & Strategy",
+        href: "/strategy",
+        icon: History,
+      },
+    ],
+  },
+  {
+    groupTitle: "Administration",
+    items: [
+      {
+        key: "settings",
+        label: "Profile & Party Settings",
+        href: "/settings",
+        icon: Settings,
       },
     ],
   },
@@ -200,6 +172,7 @@ export function Sidebar({
 }: SidebarProps) {
   const pathname = usePathname();
   const { user, logout } = useAuth();
+  const [usersExpanded, setUsersExpanded] = useState<boolean>(true);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -229,14 +202,10 @@ export function Sidebar({
     return pathname === href || pathname.startsWith(href + "/");
   };
 
-  const candidateInitials = user?.name
-    ? user.name
-        .split(" ")
-        .map((p) => p[0])
-        .slice(0, 2)
-        .join("")
-        .toUpperCase()
-    : "VP";
+  const isUsersActive =
+    pathname.startsWith("/users") ||
+    pathname.startsWith("/members") ||
+    pathname === "/voters/requests";
 
   return (
     <>
@@ -334,6 +303,104 @@ export function Sidebar({
               )}
 
               <nav className="space-y-1">
+                {/* Workforce & Team: Users Accordion */}
+                {group.groupTitle === "Workforce & Team" && (
+                  <div className="relative group/users">
+                    <button
+                      type="button"
+                      onClick={() => setUsersExpanded(!usersExpanded)}
+                      className={`w-full flex items-center justify-between py-2.5 rounded-xl text-xs font-semibold transition-all btn-tactile ${
+                        collapsed && !mobileOpen ? "justify-center px-0" : "px-3"
+                      } ${
+                        isUsersActive
+                          ? "text-white bg-slate-800 border-l-4 border-blue-400 font-bold"
+                          : "text-slate-300 hover:text-white hover:bg-slate-800/80 font-medium"
+                      }`}
+                      title={collapsed && !mobileOpen ? "Users & Karyakarta" : undefined}
+                    >
+                      <div className="flex items-center gap-3">
+                        <Users className="w-4 h-4 shrink-0 text-teal-400" />
+                        {(!collapsed || mobileOpen) && <span>Users</span>}
+                      </div>
+                      {(!collapsed || mobileOpen) && (
+                        <div className="flex items-center gap-1.5">
+                          <span className="w-2 h-2 rounded-full bg-amber-400" />
+                          <ChevronDown
+                            className={`w-3.5 h-3.5 transition-transform duration-200 ${
+                              usersExpanded ? "rotate-180" : ""
+                            }`}
+                          />
+                        </div>
+                      )}
+                    </button>
+
+                    {/* Submenu links */}
+                    {(!collapsed || mobileOpen) && usersExpanded && (
+                      <div className="pl-9 pr-2 py-1 space-y-1 border-l border-slate-800 ml-4 my-1">
+                        <Link
+                          href="/users/dashboard"
+                          onClick={onCloseMobile}
+                          className={`w-full block py-1.5 px-2 rounded-lg text-xs btn-tactile ${
+                            pathname === "/users/dashboard"
+                              ? "text-white font-bold bg-slate-800"
+                              : "text-slate-400 hover:text-slate-200"
+                          }`}
+                        >
+                          User Dashboard
+                        </Link>
+                        <Link
+                          href="/users"
+                          onClick={onCloseMobile}
+                          className={`w-full block py-1.5 px-2 rounded-lg text-xs btn-tactile ${
+                            pathname === "/users"
+                              ? "text-white font-bold bg-slate-800"
+                              : "text-slate-400 hover:text-slate-200"
+                          }`}
+                        >
+                          All Users
+                        </Link>
+                        <Link
+                          href="/users/add"
+                          onClick={onCloseMobile}
+                          className={`w-full block py-1.5 px-2 rounded-lg text-xs btn-tactile ${
+                            pathname === "/users/add"
+                              ? "text-white font-bold bg-slate-800"
+                              : "text-slate-400 hover:text-slate-200"
+                          }`}
+                        >
+                          + Add User
+                        </Link>
+                        <Link
+                          href="/members"
+                          onClick={onCloseMobile}
+                          className={`w-full block py-1.5 px-2 rounded-lg text-xs btn-tactile ${
+                            pathname === "/members"
+                              ? "text-white font-bold bg-slate-800"
+                              : "text-slate-400 hover:text-slate-200"
+                          }`}
+                        >
+                          Members / Karyakartas
+                        </Link>
+                        <Link
+                          href="/voters/requests"
+                          onClick={onCloseMobile}
+                          className={`w-full flex items-center justify-between py-1.5 px-2 rounded-lg text-xs btn-tactile ${
+                            pathname === "/voters/requests"
+                              ? "text-white font-bold bg-slate-800"
+                              : "text-slate-400 hover:text-slate-200"
+                          }`}
+                        >
+                          <span>Update Requests</span>
+                          <span className="px-1.5 py-0.2 rounded-full text-[9px] font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30">
+                            3
+                          </span>
+                        </Link>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Group Standard Items */}
                 {group.items.map((item) => {
                   const active = isItemActive(item.href);
                   const IconComp = item.icon;
@@ -345,7 +412,7 @@ export function Sidebar({
                           href={item.href}
                           className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-150 relative group ${
                             active
-                              ? "bg-brand-600 text-white shadow-md shadow-brand-600/30"
+                              ? "bg-blue-900/50 text-white border border-blue-500 shadow-md shadow-blue-500/20"
                               : "text-slate-300 hover:text-white hover:bg-slate-800/80"
                           }`}
                           title={item.label}
@@ -385,29 +452,51 @@ export function Sidebar({
                       key={item.key}
                       href={item.href}
                       onClick={onCloseMobile}
-                      className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all ${
+                      className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all btn-tactile ${
                         active
-                          ? "bg-brand-600 text-white shadow-md shadow-brand-600/30"
-                          : "text-slate-300 hover:text-white hover:bg-slate-800/80"
+                          ? "bg-blue-900/40 text-white border border-blue-500 shadow-sm shadow-blue-500/20 font-bold"
+                          : "text-slate-300 hover:text-white hover:bg-slate-800/80 font-medium"
                       }`}
                     >
                       <IconComp
                         className={`w-4 h-4 shrink-0 ${
                           active
-                            ? "text-white"
+                            ? "text-brand-400"
                             : item.key === "dashboard"
                             ? "text-brand-400"
                             : item.key === "field-map" || item.key === "voters"
                             ? "text-cyan-400"
                             : item.key === "tickets"
                             ? "text-amber-400"
+                            : item.key === "phonebook"
+                            ? "text-purple-400"
+                            : item.key === "filters"
+                            ? "text-indigo-400"
+                            : item.key === "blo"
+                            ? "text-emerald-400"
+                            : item.key === "activities"
+                            ? "text-sky-400"
+                            : item.key === "campaigns"
+                            ? "text-rose-400"
+                            : item.key === "subscriptions"
+                            ? "text-amber-400"
+                            : item.key === "reports"
+                            ? "text-violet-400"
+                            : item.key === "strategy"
+                            ? "text-fuchsia-400"
                             : "text-slate-400"
                         }`}
                       />
                       <span className="flex-1 truncate">{item.label}</span>
 
                       {item.pulseDot && (
-                        <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
+                        <span
+                          className={`w-2 h-2 rounded-full shrink-0 ${
+                            item.dotColor === "amber"
+                              ? "bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.6)]"
+                              : "bg-cyan-400 animate-pulse shadow-[0_0_8px_rgba(34,211,238,0.6)]"
+                          }`}
+                        />
                       )}
 
                       {item.badge && (
@@ -426,74 +515,41 @@ export function Sidebar({
                     </Link>
                   );
                 })}
+
+                {/* Administration: Logout Action */}
+                {group.groupTitle === "Administration" && (
+                  <button
+                    type="button"
+                    onClick={logout}
+                    className="w-full flex items-center gap-3 py-2.5 rounded-xl text-xs font-semibold text-rose-400 hover:text-rose-300 hover:bg-rose-950/30 px-3 transition-colors btn-tactile"
+                  >
+                    <LogOut className="w-4 h-4 shrink-0 text-rose-400" />
+                    {(!collapsed || mobileOpen) && <span>Logout</span>}
+                  </button>
+                )}
               </nav>
             </div>
           ))}
         </div>
 
-        {/* BOTTOM USER PROFILE & ECI STATUS */}
-        <div className="p-3 border-t border-slate-900 bg-slate-950/90 space-y-2">
-          {collapsed && !mobileOpen ? (
-            <div className="flex justify-center">
-              <div
-                className="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-600 text-white flex items-center justify-center font-bold text-xs shadow-sm cursor-pointer relative group"
-                title={`${user?.name || "Adv. Vikram Patil"} - Candidate Admin`}
-              >
-                {candidateInitials}
-                <div
-                  role="tooltip"
-                  className="pointer-events-none absolute left-full top-1/2 -translate-y-1/2 ml-3.5 z-50 whitespace-nowrap rounded-xl bg-slate-900 border border-slate-800 text-white p-3 text-xs font-semibold shadow-xl opacity-0 transition-opacity duration-150 group-hover:opacity-100"
-                >
-                  <p className="font-bold text-slate-100">{user?.name || "Adv. Vikram Patil"}</p>
-                  <p className="text-[11px] text-slate-400 font-normal">
-                    {user?.constituencyName || "34 - Pune Constituency"}
-                  </p>
-                  <div className="mt-1 pt-1 border-t border-slate-800 text-[10px] text-emerald-400 flex items-center gap-1">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                    <span>ECI Roll Sync: Active</span>
-                  </div>
-                  <div className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-slate-900" />
-                </div>
+        {/* BOTTOM USER PROFILE PILL (EXACT SPEC MATCH) */}
+        <div className="p-3 border-t border-slate-900/80 bg-slate-950/80">
+          <div className="flex items-center gap-3 px-2 py-2 rounded-xl bg-slate-900/60 border border-slate-800/60">
+            <div className="w-8 h-8 rounded-lg bg-blue-600 text-white font-black text-xs flex items-center justify-center shrink-0">
+              VP
+            </div>
+            {(!collapsed || mobileOpen) && (
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-bold text-white truncate">
+                  {user?.name || "Adv. Vikram Patil"}
+                </p>
+                <p className="text-[10px] text-slate-400 truncate flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                  <span>{user?.constituencyName || "Pune Constituency"}</span>
+                </p>
               </div>
-            </div>
-          ) : (
-            <div className="p-2.5 rounded-2xl bg-slate-900/90 border border-slate-800 flex items-center justify-between gap-2">
-              <div className="flex items-center gap-2.5 min-w-0">
-                <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-600 text-white font-bold flex items-center justify-center text-xs shadow-sm shrink-0">
-                  {candidateInitials}
-                </div>
-                <div className="min-w-0 leading-tight">
-                  <div className="text-xs font-bold text-white truncate">
-                    {user?.name || "Adv. Vikram Patil"}
-                  </div>
-                  <div className="text-[10px] text-slate-400 truncate">
-                    {user?.constituencyName || "34 - Pune Constituency"}
-                  </div>
-                </div>
-              </div>
-
-              <button
-                type="button"
-                onClick={logout}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-slate-800 transition-colors shrink-0"
-                title="Sign out of War Room"
-                aria-label="Sign out"
-              >
-                <LogOut className="w-4 h-4" />
-              </button>
-            </div>
-          )}
-
-          {/* ECI SYNC TELEMETRY */}
-          {!collapsed && (
-            <div className="px-2 pt-0.5 flex items-center justify-between text-[10px] text-slate-400">
-              <span className="flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                <span>ECI War Room Sync</span>
-              </span>
-              <span className="font-semibold text-emerald-400">Optimal</span>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </aside>
     </>
