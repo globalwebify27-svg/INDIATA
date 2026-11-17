@@ -101,6 +101,17 @@ export const MOCK_DISTRIBUTORS: DistributorRecord[] = [
   },
 ];
 
+export interface ElectionDataPartitioning {
+  constituencyPartitionKey: string;
+  boothStart: number;
+  boothEnd: number;
+  totalAssignedBooths: number;
+  partitionStrategy: "CLUSTERED_BY_WARD" | "PRABHAAG_SEGMENTED" | "FULL_CONSTITUENCY";
+  campaignCriteria: string[];
+  isolationBoundaryStatus: "ENFORCED" | "FLEXIBLE";
+  electoralRollCap: number;
+}
+
 export interface ScopedCandidate {
   id: string;
   name: string;
@@ -118,7 +129,7 @@ export interface ScopedCandidate {
   accountType: "SALE" | "DEMO" | "Sale" | "Demo";
   status: "ACTIVE" | "PENDING_APPROVAL" | "EXPIRED" | "SUSPENDED";
   accountStatus: "Active" | "Inactive" | "Suspended";
-  subscriptionPlan: "TRIAL_5D" | "OFFICE_6M" | "OFFICE_12M" | "ELECTION_MODULE";
+  subscriptionPlan: "TRIAL_5D" | "OFFICE_6M" | "OFFICE_12M" | "ELECTION_MODULE" | "ELECTION_AI" | "ELECTION_NO_AI" | "OFFICE_6M_AI" | "OFFICE_6M_NO_AI" | "OFFICE_12M_AI" | "OFFICE_12M_NO_AI";
   subscriptionTier: string;
   subscriptionStatus: "Active" | "Expiring" | "Expired" | "Pending";
   expiryDate: string;
@@ -129,50 +140,13 @@ export interface ScopedCandidate {
   hasAi: boolean;
   hasCampaigns: boolean;
   createdDate: string;
-  email?: string;
-  registrationDate?: string;
-  gender?: "MALE" | "FEMALE" | "OTHER";
-  age?: number;
-  dateOfBirth?: string;
-  education?: string;
-  occupation?: string;
-  candidateType?: "MAIN" | "ALLIANCE" | "INDEPENDENT" | "DUMMY";
-  whatsappHelpline?: string;
-  officePhone?: string;
-  officeAddress?: string;
-  city?: string;
-  pincode?: string;
-  electionName?: string;
-  electionYear?: string;
-  pollingDate?: string;
-  seatCategory?: "GENERAL" | "SC" | "ST" | "OBC";
-  acNumber?: string;
-  acName?: string;
-  pcNumber?: string;
-  pcName?: string;
-  corporationWard?: string;
-  totalVoters?: number;
-  totalBooths?: number;
-  slogan?: string;
-  publicSlipUrl?: string;
-  facebookUrl?: string;
-  instagramUrl?: string;
-  twitterUrl?: string;
-  youtubeUrl?: string;
-  images?: {
-    profilePhotoUrl: string;
-    coverBannerUrl: string;
-    partyLogoUrl: string;
-    partySymbolUrl: string;
-    slipBannerUrl: string;
-    appIconUrl: string;
-  };
   features: {
     aiVoiceCall: boolean;
     whatsappBot: boolean;
     familyMapping: boolean;
     pdfExport: boolean;
   };
+  dataPartitioning?: ElectionDataPartitioning;
 }
 
 export const MOCK_SCOPED_CANDIDATES: ScopedCandidate[] = [
@@ -193,8 +167,8 @@ export const MOCK_SCOPED_CANDIDATES: ScopedCandidate[] = [
     accountType: "SALE",
     status: "ACTIVE",
     accountStatus: "Active",
-    subscriptionPlan: "ELECTION_MODULE",
-    subscriptionTier: "Platinum War Room (12M)",
+    subscriptionPlan: "ELECTION_AI",
+    subscriptionTier: "Election Module with AI Mode",
     subscriptionStatus: "Active",
     expiryDate: "30 Nov 2026",
     subscriptionExpiresAt: "30 Nov 2026",
@@ -209,6 +183,16 @@ export const MOCK_SCOPED_CANDIDATES: ScopedCandidate[] = [
       whatsappBot: true,
       familyMapping: true,
       pdfExport: true,
+    },
+    dataPartitioning: {
+      constituencyPartitionKey: "MH-AC214-KOTHRUD",
+      boothStart: 1,
+      boothEnd: 284,
+      totalAssignedBooths: 284,
+      partitionStrategy: "FULL_CONSTITUENCY",
+      campaignCriteria: ["Main Candidate War Room", "Full Electoral Roll Locus", "Verified Mobile Directory"],
+      isolationBoundaryStatus: "ENFORCED",
+      electoralRollCap: 342150,
     },
   },
   {
@@ -228,15 +212,15 @@ export const MOCK_SCOPED_CANDIDATES: ScopedCandidate[] = [
     accountType: "SALE",
     status: "ACTIVE",
     accountStatus: "Active",
-    subscriptionPlan: "OFFICE_12M",
-    subscriptionTier: "Gold Intelligence (6M)",
+    subscriptionPlan: "OFFICE_12M_AI",
+    subscriptionTier: "Office – 12 Months with AI Mode",
     subscriptionStatus: "Active",
     expiryDate: "15 Jan 2027",
     subscriptionExpiresAt: "15 Jan 2027",
     source: "DISTRIBUTOR",
     distributorId: "DIS-101",
     totalUsers: 68,
-    hasAi: false,
+    hasAi: true,
     hasCampaigns: true,
     createdDate: "10 Oct 2026",
     features: {
@@ -244,6 +228,16 @@ export const MOCK_SCOPED_CANDIDATES: ScopedCandidate[] = [
       whatsappBot: true,
       familyMapping: true,
       pdfExport: true,
+    },
+    dataPartitioning: {
+      constituencyPartitionKey: "MH-PMC-WARD14",
+      boothStart: 1,
+      boothEnd: 42,
+      totalAssignedBooths: 42,
+      partitionStrategy: "CLUSTERED_BY_WARD",
+      campaignCriteria: ["Ward 14 Civic Wing", "Prabhaag Incharge Access Only"],
+      isolationBoundaryStatus: "ENFORCED",
+      electoralRollCap: 48500,
     },
   },
   {
@@ -280,6 +274,16 @@ export const MOCK_SCOPED_CANDIDATES: ScopedCandidate[] = [
       familyMapping: false,
       pdfExport: true,
     },
+    dataPartitioning: {
+      constituencyPartitionKey: "MH-ZP-HAVELI",
+      boothStart: 1,
+      boothEnd: 18,
+      totalAssignedBooths: 18,
+      partitionStrategy: "PRABHAAG_SEGMENTED",
+      campaignCriteria: ["Independent Desk", "Haveli Samiti Demo"],
+      isolationBoundaryStatus: "ENFORCED",
+      electoralRollCap: 15000,
+    },
   },
   {
     id: "CAND-204",
@@ -298,22 +302,32 @@ export const MOCK_SCOPED_CANDIDATES: ScopedCandidate[] = [
     accountType: "SALE",
     status: "ACTIVE",
     accountStatus: "Active",
-    subscriptionPlan: "ELECTION_MODULE",
-    subscriptionTier: "Platinum War Room (12M)",
+    subscriptionPlan: "ELECTION_NO_AI",
+    subscriptionTier: "Election Module without AI Mode",
     subscriptionStatus: "Active",
     expiryDate: "28 Feb 2027",
     subscriptionExpiresAt: "28 Feb 2027",
     source: "DISTRIBUTOR",
     distributorId: "DIS-101",
     totalUsers: 198,
-    hasAi: true,
+    hasAi: false,
     hasCampaigns: true,
     createdDate: "20 Sep 2026",
     features: {
-      aiVoiceCall: true,
+      aiVoiceCall: false,
       whatsappBot: true,
       familyMapping: true,
       pdfExport: true,
+    },
+    dataPartitioning: {
+      constituencyPartitionKey: "MH-AC215-KASBA",
+      boothStart: 1,
+      boothEnd: 232,
+      totalAssignedBooths: 232,
+      partitionStrategy: "FULL_CONSTITUENCY",
+      campaignCriteria: ["Kasba Central War Room", "Booth Coordinators"],
+      isolationBoundaryStatus: "ENFORCED",
+      electoralRollCap: 285400,
     },
   },
   {
@@ -333,15 +347,15 @@ export const MOCK_SCOPED_CANDIDATES: ScopedCandidate[] = [
     accountType: "SALE",
     status: "PENDING_APPROVAL",
     accountStatus: "Active",
-    subscriptionPlan: "OFFICE_6M",
-    subscriptionTier: "Gold Intelligence (6M)",
+    subscriptionPlan: "OFFICE_6M_AI",
+    subscriptionTier: "Office – 6 Months with AI Mode",
     subscriptionStatus: "Pending",
     expiryDate: "15 Dec 2026",
     subscriptionExpiresAt: "15 Dec 2026",
     source: "DISTRIBUTOR",
     distributorId: "DIS-101",
     totalUsers: 0,
-    hasAi: false,
+    hasAi: true,
     hasCampaigns: false,
     createdDate: "08 Nov 2026",
     features: {
@@ -349,6 +363,16 @@ export const MOCK_SCOPED_CANDIDATES: ScopedCandidate[] = [
       whatsappBot: true,
       familyMapping: true,
       pdfExport: true,
+    },
+    dataPartitioning: {
+      constituencyPartitionKey: "MH-PMC-WARD22",
+      boothStart: 1,
+      boothEnd: 36,
+      totalAssignedBooths: 36,
+      partitionStrategy: "CLUSTERED_BY_WARD",
+      campaignCriteria: ["Ward 22 Women Front", "Youth Wing Desk"],
+      isolationBoundaryStatus: "ENFORCED",
+      electoralRollCap: 38200,
     },
   },
 ];

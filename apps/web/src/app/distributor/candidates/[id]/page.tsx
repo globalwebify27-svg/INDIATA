@@ -16,6 +16,10 @@ import {
   Phone,
   Building,
   Sparkles,
+  ShieldCheck,
+  Database,
+  Calendar,
+  CheckCircle2,
 } from "lucide-react";
 import { DistributorLayout } from "../../../../distributor/components/distributor-layout";
 import { candidateStore, CandidateProfile } from "../../../../distributor/data/candidate-store";
@@ -535,12 +539,18 @@ export default function CandidateControlPanelPage() {
           </div>
         )}
 
-        {/* TAB 5: GEOGRAPHY */}
+        {/* TAB 5: GEOGRAPHY & DATA SEGREGATION */}
         {activeTab === "geography" && (
-          <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-premium-xs space-y-4 text-xs">
-            <h3 className="text-sm font-bold text-slate-900 dark:text-white">
-              Electoral Geography &amp; Territorial Mapping
-            </h3>
+          <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-premium-xs space-y-6 text-xs">
+            <div>
+              <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                Electoral Geography &amp; Territorial Mapping
+              </h3>
+              <p className="text-xs text-slate-500 mt-0.5">
+                Administrative constituency boundaries and enforced data partition scope
+              </p>
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
                 <span className="text-slate-400 block text-[10.5px]">Assembly Constituency</span>
@@ -555,33 +565,175 @@ export default function CandidateControlPanelPage() {
                 <strong className="text-slate-900 dark:text-white text-sm block mt-0.5">{candidate.totalBooths || 284} Polling Booths</strong>
               </div>
             </div>
+
+            {/* Electoral Data Partition & Segregation Boundary */}
+            <div className="p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 dark:border-slate-700 pb-3">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-xl bg-[#2087FE] text-white flex items-center justify-center font-bold shrink-0">
+                    <Database className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h4 className="text-xs font-bold text-slate-900 dark:text-white">
+                      Electoral Data Partition &amp; Segregation Boundary
+                    </h4>
+                    <p className="text-[11px] text-slate-500">
+                      Enforced structured isolation preventing cross-constituency data leakage
+                    </p>
+                  </div>
+                </div>
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800">
+                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+                  {candidate.dataPartitioning?.isolationBoundaryStatus || "ENFORCED"}
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+                <div className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                  <span className="text-slate-500 text-[11px]">Constituency Partition Key</span>
+                  <div className="font-mono font-bold text-[#2087FE] text-sm mt-0.5">
+                    {candidate.dataPartitioning?.constituencyPartitionKey || "MH-AC214-KOTHRUD"}
+                  </div>
+                </div>
+
+                <div className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                  <span className="text-slate-500 text-[11px]">Assigned Booth Range</span>
+                  <div className="font-bold text-slate-900 dark:text-white text-sm mt-0.5">
+                    Booth #{candidate.dataPartitioning?.boothStart || 1} – #{candidate.dataPartitioning?.boothEnd || 284}
+                  </div>
+                  <span className="text-[10px] text-emerald-600 font-bold">
+                    {candidate.dataPartitioning?.totalAssignedBooths || 284} Total Booths
+                  </span>
+                </div>
+
+                <div className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                  <span className="text-slate-500 text-[11px]">Partitioning Strategy</span>
+                  <div className="font-bold text-slate-900 dark:text-white text-xs mt-0.5">
+                    {candidate.dataPartitioning?.partitionStrategy === "FULL_CONSTITUENCY"
+                      ? "Full Constituency Roll"
+                      : candidate.dataPartitioning?.partitionStrategy === "CLUSTERED_BY_WARD"
+                      ? "Clustered by Ward"
+                      : "Prabhaag Segmented"}
+                  </div>
+                </div>
+
+                <div className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                  <span className="text-slate-500 text-[11px]">Electoral Roll Cap</span>
+                  <div className="font-bold text-slate-900 dark:text-white text-sm mt-0.5">
+                    {(candidate.dataPartitioning?.electoralRollCap || 342150).toLocaleString()}
+                  </div>
+                  <span className="text-[10px] text-slate-500">Max Voters Ingest</span>
+                </div>
+              </div>
+
+              <div className="pt-1">
+                <span className="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-2">
+                  Designated Campaign Segments &amp; Access Wings:
+                </span>
+                <div className="flex flex-wrap gap-2">
+                  {(
+                    candidate.dataPartitioning?.campaignCriteria || [
+                      "Main Candidate War Room",
+                      "Full Electoral Roll Locus",
+                      "Verified Mobile Directory",
+                    ]
+                  ).map((crit, cIdx) => (
+                    <span
+                      key={cIdx}
+                      className="px-2.5 py-1 rounded-xl text-xs font-medium bg-blue-100/70 dark:bg-blue-900/40 text-[#2087FE] border border-blue-200 dark:border-blue-800 flex items-center gap-1.5"
+                    >
+                      <CheckCircle2 className="w-3.5 h-3.5 text-blue-500" />
+                      <span>{crit}</span>
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
         )}
 
         {/* TAB 6: SUBSCRIPTION */}
         {activeTab === "subscription" && (
           <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-premium-xs space-y-4 text-xs">
-            <h3 className="text-sm font-bold text-slate-900 dark:text-white">
-              Franchise Subscription &amp; Add-on Modules
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 space-y-1">
-                <span className="text-slate-400 block">Current Plan Tier</span>
-                <strong className="text-slate-900 dark:text-white text-base block">{candidate.subscriptionTier}</strong>
-                <span className="text-emerald-600 font-semibold block">Expires: {candidate.subscriptionExpiresAt}</span>
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                  Franchise Subscription &amp; Add-on Modules
+                </h3>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  Official commercial license parameters published on central price book
+                </p>
               </div>
+              <div className="flex items-center gap-2">
+                {candidate.hasAi && (
+                  <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-purple-100 text-purple-700 dark:bg-purple-950/60 dark:text-purple-300 flex items-center gap-1">
+                    <Sparkles className="w-3 h-3" />
+                    AI Mode Active
+                  </span>
+                )}
+                <Badge variant="success" size="md">
+                  {candidate.subscriptionTier}
+                </Badge>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 space-y-2">
-                <span className="text-slate-400 block font-bold uppercase tracking-wider text-[10px]">Active Add-on Modules</span>
-                <div className="flex flex-wrap gap-2">
-                  <span className="px-2 py-1 rounded-lg bg-purple-50 text-purple-700 border border-purple-200 text-[11px] font-bold">
-                    Voice AI Caller
+                <span className="text-slate-400 block font-bold uppercase tracking-wider text-[10px]">
+                  Subscription Status &amp; License
+                </span>
+                <div className="flex justify-between">
+                  <span className="text-slate-500">Plan Code:</span>
+                  <span className="font-mono font-bold text-[#2087FE]">{candidate.subscriptionPlan}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-500">Validity Period:</span>
+                  <span className="font-medium text-slate-800 dark:text-slate-200 flex items-center gap-1">
+                    <Calendar className="w-3 h-3 text-[#2087FE]" />
+                    <span>
+                      {candidate.subscriptionPlan.startsWith("ELECTION")
+                        ? "Election End Date + 15 Days Grace Period"
+                        : candidate.subscriptionPlan.startsWith("OFFICE_12M")
+                        ? "12 Months Continuous Office License"
+                        : candidate.subscriptionPlan.startsWith("OFFICE_6M")
+                        ? "6 Months Continuous Office License"
+                        : "Strict 5-Day Evaluation Window"}
+                    </span>
                   </span>
-                  <span className="px-2 py-1 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200 text-[11px] font-bold">
-                    WhatsApp Dynamic Slips
-                  </span>
-                  <span className="px-2 py-1 rounded-lg bg-blue-50 text-blue-700 border border-blue-200 text-[11px] font-bold">
-                    Family Tree AI
-                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-500">Expires At:</span>
+                  <strong className="text-emerald-600 font-semibold">{candidate.subscriptionExpiresAt}</strong>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-500">Account Type:</span>
+                  <span className="font-bold text-slate-800 dark:text-slate-200">{candidate.accountType}</span>
+                </div>
+              </div>
+
+              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 space-y-2">
+                <span className="text-slate-400 block font-bold uppercase tracking-wider text-[10px]">
+                  Enabled Modules &amp; Entitlements
+                </span>
+                <div className="space-y-1.5 text-slate-700 dark:text-slate-300">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+                    <span>Voter Roll PDF Generation &amp; Family Chits</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+                    <span>Excel Export &amp; Custom Demographic Filters</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+                    <span>Structured Electoral Data Segregation by Booth Range</span>
+                  </div>
+                  {candidate.hasAi && (
+                    <div className="flex items-center gap-2 text-purple-700 dark:text-purple-300 font-medium">
+                      <Sparkles className="w-4 h-4 text-purple-600 shrink-0" />
+                      <span>AI Family Grouping, Voice Caller DID &amp; Predictive Sentiment</span>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

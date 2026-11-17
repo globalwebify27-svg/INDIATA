@@ -19,6 +19,9 @@ import {
   Palette,
   FileCheck2,
   AlertCircle,
+  Database,
+  Building2,
+  Calendar,
 } from "lucide-react";
 import { DistributorLayout } from "../../../components/layout/distributor-layout";
 import { useDistributorAuth } from "../../../context/distributor-auth-context";
@@ -49,7 +52,7 @@ interface FormData {
   electionYear: string;
   pollingDate: string;
 
-  // Step 5: Geography
+  // Step 5: Geography & Structured Data Segregation
   state: string;
   district: string;
   acNumber: string;
@@ -60,6 +63,15 @@ interface FormData {
   wardNumber: string;
   zpName: string;
   gatName: string;
+
+  // Election Data Segregation
+  constituencyPartitionKey: string;
+  boothStart: number;
+  boothEnd: number;
+  partitionStrategy: "CLUSTERED_BY_WARD" | "PRABHAAG_SEGMENTED" | "FULL_CONSTITUENCY";
+  campaignCriteria: string[];
+  isolationBoundaryStatus: "ENFORCED" | "FLEXIBLE";
+  electoralRollCap: number;
 
   // Step 6: Application
   appName: string;
@@ -75,7 +87,8 @@ interface FormData {
   aiCallerId: string;
 
   // Step 8: Subscription Request
-  requestedPlan: "PLATINUM" | "GOLD" | "SILVER" | "TRIAL";
+  requestedPlan: "ELECTION_AI" | "ELECTION_NO_AI" | "OFFICE_12M_AI" | "OFFICE_12M_NO_AI" | "OFFICE_6M_AI" | "OFFICE_6M_NO_AI" | "TRIAL_5D";
+  requestedPlanTier: string;
   requestedDuration: string;
   estimatedPrice: string;
 
@@ -140,6 +153,14 @@ export default function NewCandidateWizardPage() {
     zpName: "Pune Zilla Parishad",
     gatName: "Haveli",
 
+    constituencyPartitionKey: "MH-AC214-KOTHRUD",
+    boothStart: 1,
+    boothEnd: 284,
+    partitionStrategy: "FULL_CONSTITUENCY",
+    campaignCriteria: ["Main Candidate War Room", "Booth Coordinators Only"],
+    isolationBoundaryStatus: "ENFORCED",
+    electoralRollCap: 342150,
+
     appName: "Rajtantra War Room",
     whatsappSupportNumber: "+91 98220 11223",
     facebookUrl: "https://facebook.com/candidate",
@@ -151,8 +172,9 @@ export default function NewCandidateWizardPage() {
     smsSenderId: "RAJTAN",
     aiCallerId: "+91 20 6789 0000",
 
-    requestedPlan: "PLATINUM",
-    requestedDuration: "12 Months",
+    requestedPlan: "ELECTION_AI",
+    requestedPlanTier: "Election Module with AI Mode",
+    requestedDuration: "Election End Date + 15 Days Grace Period",
     estimatedPrice: "₹ 1,50,000",
 
     enablePdfExport: true,
@@ -177,7 +199,7 @@ export default function NewCandidateWizardPage() {
     { id: 2, title: "Candidate Details", icon: User },
     { id: 3, title: "Party Details", icon: Flag },
     { id: 4, title: "Election Details", icon: Vote },
-    { id: 5, title: "Dynamic Geography", icon: MapPin },
+    { id: 5, title: "Geography & Segregation", icon: MapPin },
     { id: 6, title: "App & Branding", icon: Smartphone },
     { id: 7, title: "Communication", icon: PhoneCall },
     { id: 8, title: "Subscription Request", icon: CreditCard },
@@ -752,6 +774,162 @@ export default function NewCandidateWizardPage() {
                     </>
                   )}
                 </div>
+
+                {/* Structured Election Data Segregation & Partitioning Boundary */}
+                <div className="mt-6 pt-5 border-t border-slate-200 dark:border-slate-800 space-y-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3.5 rounded-2xl bg-blue-50/70 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-8 h-8 rounded-xl bg-[#2087FE] text-white flex items-center justify-center shrink-0">
+                        <Database className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <h4 className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                          Structured Election Data Segregation
+                        </h4>
+                        <p className="text-[11px] text-slate-600 dark:text-slate-300">
+                          Enforce strict data isolation boundaries to partition voter rolls by booth number, constituency, and campaign roles.
+                        </p>
+                      </div>
+                    </div>
+                    <span className="self-start sm:self-auto inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 shrink-0">
+                      <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+                      ENFORCED (Zero Cross-Leakage)
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                        Constituency Data Partition Key *
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.constituencyPartitionKey}
+                        onChange={(e) => updateField("constituencyPartitionKey", e.target.value)}
+                        placeholder="e.g. MH-AC214-KOTHRUD"
+                        className="w-full px-3.5 py-2 text-xs font-mono font-bold rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-[#2087FE] dark:text-blue-400 uppercase"
+                      />
+                      <span className="text-[10px] text-slate-500 mt-1 block">
+                        Unique database partition key mapping this candidate's voter records.
+                      </span>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                        Data Partitioning Strategy *
+                      </label>
+                      <select
+                        value={formData.partitionStrategy}
+                        onChange={(e) => updateField("partitionStrategy", e.target.value)}
+                        className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white"
+                      >
+                        <option value="FULL_CONSTITUENCY">Full Assembly / Constituency Electoral Roll</option>
+                        <option value="CLUSTERED_BY_WARD">Clustered by Ward / Prabhag Boundaries</option>
+                        <option value="PRABHAAG_SEGMENTED">Prabhaag Segmented Micro-Boundaries</option>
+                      </select>
+                      <span className="text-[10px] text-slate-500 mt-1 block">
+                        Controls how voter clusters and polling booths are segmented across teams.
+                      </span>
+                    </div>
+
+                    {/* Booth Number Partitioning Range */}
+                    <div className="md:col-span-2 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/40 space-y-3">
+                      <div className="flex items-center justify-between">
+                        <label className="text-xs font-bold text-slate-800 dark:text-slate-200">
+                          Polling Booth Number Partitioning Range
+                        </label>
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900/60 text-[#2087FE]">
+                          {Math.max(1, formData.boothEnd - formData.boothStart + 1)} Booths Assigned
+                        </span>
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div>
+                          <span className="text-[11px] text-slate-600 dark:text-slate-400 block mb-1">
+                            Start Booth #
+                          </span>
+                          <input
+                            type="number"
+                            min={1}
+                            value={formData.boothStart}
+                            onChange={(e) => updateField("boothStart", Math.max(1, parseInt(e.target.value) || 1))}
+                            className="w-full px-3 py-1.5 text-xs font-bold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900"
+                          />
+                        </div>
+                        <div>
+                          <span className="text-[11px] text-slate-600 dark:text-slate-400 block mb-1">
+                            End Booth #
+                          </span>
+                          <input
+                            type="number"
+                            min={formData.boothStart}
+                            value={formData.boothEnd}
+                            onChange={(e) => updateField("boothEnd", Math.max(formData.boothStart, parseInt(e.target.value) || formData.boothStart))}
+                            className="w-full px-3 py-1.5 text-xs font-bold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900"
+                          />
+                        </div>
+                        <div>
+                          <span className="text-[11px] text-slate-600 dark:text-slate-400 block mb-1">
+                            Maximum Voter Roll Cap
+                          </span>
+                          <input
+                            type="number"
+                            step={1000}
+                            value={formData.electoralRollCap}
+                            onChange={(e) => updateField("electoralRollCap", Math.max(1000, parseInt(e.target.value) || 1000))}
+                            className="w-full px-3 py-1.5 text-xs font-bold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Specific Campaign Data Criteria Tags */}
+                    <div className="md:col-span-2 space-y-2">
+                      <label className="block text-xs font-bold text-slate-700 dark:text-slate-300">
+                        Campaign Data Partitioning Criteria (Select Applied Segments)
+                      </label>
+                      <div className="flex flex-wrap gap-2">
+                        {[
+                          "Main Candidate War Room",
+                          "Alliance Partner Bloc",
+                          "Youth Wing Desk",
+                          "Women Front (Mahila Aghadi)",
+                          "Booth Coordinators Only",
+                          "Independent Campaign Desk",
+                          "Prabhaag Incharge Access Only",
+                        ].map((criterion) => {
+                          const isSelected = formData.campaignCriteria.includes(criterion);
+                          return (
+                            <button
+                              key={criterion}
+                              type="button"
+                              onClick={() => {
+                                if (isSelected) {
+                                  updateField(
+                                    "campaignCriteria",
+                                    formData.campaignCriteria.filter((c) => c !== criterion)
+                                  );
+                                } else {
+                                  updateField("campaignCriteria", [...formData.campaignCriteria, criterion]);
+                                }
+                              }}
+                              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${
+                                isSelected
+                                  ? "bg-[#2087FE] text-white shadow-premium-xs"
+                                  : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700"
+                              }`}
+                            >
+                              {isSelected ? <Check className="w-3.5 h-3.5" /> : null}
+                              <span>{criterion}</span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                      <p className="text-[10px] text-slate-500">
+                        Segmented campaign access ensures karyakartas only see voter chits and phone directories within their designated wing.
+                      </p>
+                    </div>
+                  </div>
+                </div>
               </div>
             )}
 
@@ -872,7 +1050,7 @@ export default function NewCandidateWizardPage() {
               </div>
             )}
 
-            {/* Step 8: Subscription Request (Read-Only / Request Mode) */}
+            {/* Step 8: Subscription Request (Official Catalog from Super Admin) */}
             {currentStep === 8 && (
               <div className="space-y-4">
                 <div className="border-b border-slate-100 dark:border-slate-800 pb-3">
@@ -880,46 +1058,193 @@ export default function NewCandidateWizardPage() {
                     <h3 className="text-base font-bold text-slate-900 dark:text-white">
                       Step 8: Subscription Package Request
                     </h3>
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-amber-100 text-amber-800">
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300">
                       Request Mode Only
                     </span>
                   </div>
                   <p className="text-xs text-slate-600 dark:text-slate-300">
-                    Distributors select candidate package requirements. Final activation is verified by Super Admin.
+                    Select official subscription tier according to central price book. Super Admin verifies and activates.
                   </p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {[
-                    { id: "PLATINUM", name: "Platinum War Room", price: "₹ 1,50,000", tag: "Full AI Suite" },
-                    { id: "GOLD", name: "Gold Intelligence", price: "₹ 95,000", tag: "Voter Analytics" },
-                    { id: "SILVER", name: "Silver Grassroots", price: "₹ 45,000", tag: "Basic Roll" },
-                  ].map((tier) => (
+                {/* Module Group 1: Election Module */}
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <Vote className="w-4 h-4 text-[#2087FE]" />
+                    <span className="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider">
+                      1. Election Module Plans (Validity: Election End Date + 15 Days Grace Period)
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {[
+                      {
+                        id: "ELECTION_AI",
+                        name: "Election Module with AI Mode",
+                        price: "₹ 1,50,000",
+                        tag: "Full AI Suite",
+                        hasAi: true,
+                        validity: "Election End Date + 15 Days Grace Period",
+                        desc: "Full AI Voice Calling Suite (15,000 mins), WhatsApp Bot, AI Family Clustering, Turnout Guard.",
+                      },
+                      {
+                        id: "ELECTION_NO_AI",
+                        name: "Election Module without AI Mode",
+                        price: "₹ 95,000",
+                        tag: "Standard Roll",
+                        hasAi: false,
+                        validity: "Election End Date + 15 Days Grace Period",
+                        desc: "Standard WhatsApp broadcast, full voter directory, slip printing, and data segregation.",
+                      },
+                    ].map((tier) => (
+                      <button
+                        key={tier.id}
+                        type="button"
+                        onClick={() => {
+                          updateField("requestedPlan", tier.id);
+                          updateField("requestedPlanTier", tier.name);
+                          updateField("estimatedPrice", tier.price);
+                          updateField("requestedDuration", tier.validity);
+                        }}
+                        className={`p-4 rounded-2xl border text-left transition ${
+                          formData.requestedPlan === tier.id
+                            ? "border-[#2087FE] bg-blue-50/70 dark:bg-blue-950/40 text-slate-900 dark:text-white ring-2 ring-[#2087FE]/20"
+                            : "border-slate-200 dark:border-slate-800 hover:border-slate-300 bg-white dark:bg-slate-900"
+                        }`}
+                      >
+                        <div className="flex justify-between items-center mb-1">
+                          <span className="text-xs font-bold">{tier.name}</span>
+                          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-100 text-[#2087FE]">
+                            {tier.tag}
+                          </span>
+                        </div>
+                        <div className="text-lg font-black text-[#2087FE]">{tier.price}</div>
+                        <div className="text-[10px] text-slate-500 mt-0.5 flex items-center gap-1">
+                          <Calendar className="w-3 h-3 text-[#2087FE]" />
+                          <span>{tier.validity}</span>
+                        </div>
+                        <p className="text-[11px] text-slate-600 dark:text-slate-300 mt-2">
+                          {tier.desc}
+                        </p>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Module Group 2: Office Module */}
+                <div className="space-y-2 pt-2">
+                  <div className="flex items-center gap-2">
+                    <Building2 className="w-4 h-4 text-purple-600 dark:text-purple-400" />
+                    <span className="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider">
+                      2. Office Module Plans (Continuous Office & Grievance Governance)
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+                    {[
+                      {
+                        id: "OFFICE_12M_AI",
+                        name: "Office – 12 Months with AI Mode",
+                        price: "₹ 1,20,000",
+                        validity: "12 Months Continuous",
+                        hasAi: true,
+                        tag: "12M + AI",
+                      },
+                      {
+                        id: "OFFICE_12M_NO_AI",
+                        name: "Office – 12 Months without AI",
+                        price: "₹ 75,000",
+                        validity: "12 Months Continuous",
+                        hasAi: false,
+                        tag: "12M Standard",
+                      },
+                      {
+                        id: "OFFICE_6M_AI",
+                        name: "Office – 6 Months with AI Mode",
+                        price: "₹ 65,000",
+                        validity: "6 Months Continuous",
+                        hasAi: true,
+                        tag: "6M + AI",
+                      },
+                      {
+                        id: "OFFICE_6M_NO_AI",
+                        name: "Office – 6 Months without AI",
+                        price: "₹ 40,000",
+                        validity: "6 Months Continuous",
+                        hasAi: false,
+                        tag: "6M Standard",
+                      },
+                    ].map((tier) => (
+                      <button
+                        key={tier.id}
+                        type="button"
+                        onClick={() => {
+                          updateField("requestedPlan", tier.id);
+                          updateField("requestedPlanTier", tier.name);
+                          updateField("estimatedPrice", tier.price);
+                          updateField("requestedDuration", tier.validity);
+                        }}
+                        className={`p-3.5 rounded-2xl border text-left transition ${
+                          formData.requestedPlan === tier.id
+                            ? "border-purple-500 bg-purple-50/70 dark:bg-purple-950/40 text-slate-900 dark:text-white ring-2 ring-purple-500/20"
+                            : "border-slate-200 dark:border-slate-800 hover:border-slate-300 bg-white dark:bg-slate-900"
+                        }`}
+                      >
+                        <div className="flex justify-between items-center mb-1">
+                          <span className="text-[11px] font-bold truncate">{tier.name}</span>
+                          {tier.hasAi && (
+                            <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-purple-100 text-purple-700">
+                              AI
+                            </span>
+                          )}
+                        </div>
+                        <div className="text-base font-black text-purple-600 dark:text-purple-400">
+                          {tier.price}
+                        </div>
+                        <div className="text-[10px] text-slate-500 mt-0.5">{tier.validity}</div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Module Group 3: Trial / Demo */}
+                <div className="space-y-2 pt-2">
+                  <div className="flex items-center gap-2">
+                    <ShieldCheck className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+                    <span className="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider">
+                      3. Evaluation Sandbox
+                    </span>
+                  </div>
+                  <div>
                     <button
-                      key={tier.id}
                       type="button"
                       onClick={() => {
-                        updateField("requestedPlan", tier.id);
-                        updateField("estimatedPrice", tier.price);
+                        updateField("requestedPlan", "TRIAL_5D");
+                        updateField("requestedPlanTier", "Trial Demo (5 Days)");
+                        updateField("estimatedPrice", "₹ 0 (Free Trial)");
+                        updateField("requestedDuration", "Strict 5-Day Evaluation Window");
                       }}
-                      className={`p-4 rounded-2xl border text-left transition ${
-                        formData.requestedPlan === tier.id
-                          ? "border-[#2087FE] bg-blue-50/60 dark:bg-blue-950/40 text-slate-900 dark:text-white ring-2 ring-[#2087FE]/20"
-                          : "border-slate-200 dark:border-slate-800 hover:border-slate-300"
+                      className={`w-full p-3.5 rounded-2xl border text-left transition flex items-center justify-between ${
+                        formData.requestedPlan === "TRIAL_5D"
+                          ? "border-amber-500 bg-amber-50/70 dark:bg-amber-950/40 text-slate-900 dark:text-white ring-2 ring-amber-500/20"
+                          : "border-slate-200 dark:border-slate-800 hover:border-slate-300 bg-white dark:bg-slate-900"
                       }`}
                     >
-                      <div className="flex justify-between items-center mb-1">
-                        <span className="text-xs font-bold">{tier.name}</span>
-                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-100 text-[#2087FE]">
-                          {tier.tag}
-                        </span>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs font-bold">Trial Demo (5 Days)</span>
+                          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-100 text-amber-800">
+                            Pitch Sandbox
+                          </span>
+                        </div>
+                        <p className="text-[11px] text-slate-600 dark:text-slate-300 mt-0.5">
+                          5-day evaluation sandbox with sample 1,000 verified voter records and watermarked slips.
+                        </p>
                       </div>
-                      <div className="text-lg font-black text-[#2087FE]">{tier.price}</div>
-                      <p className="text-[10px] text-slate-600 dark:text-slate-300 mt-1">
-                        Official Super Admin Catalog Price
-                      </p>
+                      <div className="text-right shrink-0">
+                        <div className="text-base font-black text-amber-600 dark:text-amber-400">₹ 0</div>
+                        <div className="text-[10px] text-slate-500">Free 5 Days</div>
+                      </div>
                     </button>
-                  ))}
+                  </div>
                 </div>
 
                 <div className="p-3.5 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 text-xs text-amber-800 dark:text-amber-300 flex items-start gap-2.5">
@@ -1179,7 +1504,11 @@ export default function NewCandidateWizardPage() {
                     </div>
                     <div className="flex justify-between">
                       <span className="text-slate-600 dark:text-slate-300">Package:</span>
-                      <span className="font-bold text-[#2087FE]">{formData.requestedPlan}</span>
+                      <span className="font-bold text-[#2087FE]">{formData.requestedPlanTier || formData.requestedPlan}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-slate-600 dark:text-slate-300">Validity:</span>
+                      <span className="font-medium text-slate-700 dark:text-slate-300">{formData.requestedDuration}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-slate-600 dark:text-slate-300">Est. Super Admin Quote:</span>
@@ -1205,6 +1534,49 @@ export default function NewCandidateWizardPage() {
                     <div className="flex justify-between">
                       <span className="text-slate-600 dark:text-slate-300">Territory:</span>
                       <span>{distributor?.territory || "Pune Metro"}</span>
+                    </div>
+                  </div>
+
+                  {/* Electoral Data Segregation Card */}
+                  <div className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 space-y-2 md:col-span-2 bg-blue-50/40 dark:bg-blue-950/20">
+                    <div className="flex justify-between items-center font-bold text-slate-900 dark:text-white pb-1 border-b border-slate-100 dark:border-slate-800">
+                      <span className="flex items-center gap-1.5">
+                        <Database className="w-3.5 h-3.5 text-[#2087FE]" />
+                        <span>Election Data Segregation & Boundaries</span>
+                      </span>
+                      <button
+                        onClick={() => setCurrentStep(5)}
+                        className="text-[10px] text-[#2087FE] hover:underline"
+                      >
+                        Edit
+                      </button>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+                      <div>
+                        <span className="text-slate-600 dark:text-slate-300 block">Partition Key:</span>
+                        <span className="font-mono font-bold text-[#2087FE]">{formData.constituencyPartitionKey}</span>
+                      </div>
+                      <div>
+                        <span className="text-slate-600 dark:text-slate-300 block">Assigned Booth Range:</span>
+                        <span className="font-bold">
+                          Booth #{formData.boothStart} – #{formData.boothEnd} ({formData.boothEnd - formData.boothStart + 1} Booths)
+                        </span>
+                      </div>
+                      <div>
+                        <span className="text-slate-600 dark:text-slate-300 block">Isolation Status:</span>
+                        <span className="font-bold text-emerald-600 inline-flex items-center gap-1">
+                          <ShieldCheck className="w-3.5 h-3.5" />
+                          ENFORCED
+                        </span>
+                      </div>
+                    </div>
+                    <div className="pt-1 flex flex-wrap gap-1.5">
+                      <span className="text-[10px] text-slate-500 font-medium">Applied Wings:</span>
+                      {formData.campaignCriteria.map((c, i) => (
+                        <span key={i} className="text-[10px] px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900/60 text-[#2087FE] font-medium">
+                          {c}
+                        </span>
+                      ))}
                     </div>
                   </div>
                 </div>

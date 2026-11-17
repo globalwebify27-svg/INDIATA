@@ -1,5 +1,16 @@
 "use client";
 
+export interface ElectionDataPartitioning {
+  constituencyPartitionKey: string;
+  boothStart: number;
+  boothEnd: number;
+  totalAssignedBooths: number;
+  partitionStrategy: "CLUSTERED_BY_WARD" | "PRABHAAG_SEGMENTED" | "FULL_CONSTITUENCY";
+  campaignCriteria: string[];
+  isolationBoundaryStatus: "ENFORCED" | "FLEXIBLE";
+  electoralRollCap: number;
+}
+
 export interface CandidateImageAssets {
   profilePhotoUrl: string;
   coverBannerUrl: string;
@@ -57,7 +68,7 @@ export interface CandidateProfile {
   accountType: "SALE" | "DEMO" | "Sale" | "Demo";
   status: "ACTIVE" | "PENDING_APPROVAL" | "EXPIRED" | "SUSPENDED";
   accountStatus: "Active" | "Inactive" | "Suspended";
-  subscriptionPlan: "TRIAL_5D" | "OFFICE_6M" | "OFFICE_12M" | "ELECTION_MODULE";
+  subscriptionPlan: "TRIAL_5D" | "OFFICE_6M" | "OFFICE_12M" | "ELECTION_MODULE" | "ELECTION_AI" | "ELECTION_NO_AI" | "OFFICE_6M_AI" | "OFFICE_6M_NO_AI" | "OFFICE_12M_AI" | "OFFICE_12M_NO_AI";
   subscriptionTier: string;
   subscriptionStatus: "Active" | "Expiring" | "Expired" | "Pending";
   expiryDate: string;
@@ -75,6 +86,7 @@ export interface CandidateProfile {
     familyMapping: boolean;
     pdfExport: boolean;
   };
+  dataPartitioning?: ElectionDataPartitioning;
   images: CandidateImageAssets;
 }
 
@@ -260,8 +272,8 @@ export const INITIAL_CANDIDATE_PROFILES: CandidateProfile[] = [
     accountType: "SALE",
     status: "ACTIVE",
     accountStatus: "Active",
-    subscriptionPlan: "ELECTION_MODULE",
-    subscriptionTier: "Platinum War Room (12M)",
+    subscriptionPlan: "ELECTION_AI",
+    subscriptionTier: "Election Module with AI Mode",
     subscriptionStatus: "Active",
     expiryDate: "30 Nov 2026",
     subscriptionExpiresAt: "30 Nov 2026",
@@ -277,6 +289,16 @@ export const INITIAL_CANDIDATE_PROFILES: CandidateProfile[] = [
       whatsappBot: true,
       familyMapping: true,
       pdfExport: true,
+    },
+    dataPartitioning: {
+      constituencyPartitionKey: "MH-AC214-KOTHRUD",
+      boothStart: 1,
+      boothEnd: 284,
+      totalAssignedBooths: 284,
+      partitionStrategy: "FULL_CONSTITUENCY",
+      campaignCriteria: ["Main Candidate War Room", "Full Electoral Roll Locus", "Verified Mobile Directory"],
+      isolationBoundaryStatus: "ENFORCED",
+      electoralRollCap: 342150,
     },
     images: {
       profilePhotoUrl: createPortraitSvg("VS", "Vikramaditya Shinde", ["#0F172A", "#1E3A8A"]),
@@ -329,15 +351,15 @@ export const INITIAL_CANDIDATE_PROFILES: CandidateProfile[] = [
     accountType: "SALE",
     status: "ACTIVE",
     accountStatus: "Active",
-    subscriptionPlan: "OFFICE_12M",
-    subscriptionTier: "Gold Intelligence (6M)",
+    subscriptionPlan: "OFFICE_12M_AI",
+    subscriptionTier: "Office – 12 Months with AI Mode",
     subscriptionStatus: "Active",
     expiryDate: "15 Jan 2027",
     subscriptionExpiresAt: "15 Jan 2027",
     source: "DISTRIBUTOR",
     distributorId: "DIS-101",
     totalUsers: 68,
-    hasAi: false,
+    hasAi: true,
     hasCampaigns: true,
     createdDate: "10 Oct 2026",
     registrationDate: "10 Oct 2026",
@@ -346,6 +368,16 @@ export const INITIAL_CANDIDATE_PROFILES: CandidateProfile[] = [
       whatsappBot: true,
       familyMapping: true,
       pdfExport: true,
+    },
+    dataPartitioning: {
+      constituencyPartitionKey: "MH-PMC-WARD14",
+      boothStart: 1,
+      boothEnd: 42,
+      totalAssignedBooths: 42,
+      partitionStrategy: "CLUSTERED_BY_WARD",
+      campaignCriteria: ["Ward 14 Civic Wing", "Prabhaag Incharge Access Only"],
+      isolationBoundaryStatus: "ENFORCED",
+      electoralRollCap: 48500,
     },
     images: {
       profilePhotoUrl: createPortraitSvg("SM", "Sunita Rahul More", ["#4C1D95", "#831843"]),
@@ -411,6 +443,16 @@ export const INITIAL_CANDIDATE_PROFILES: CandidateProfile[] = [
       familyMapping: false,
       pdfExport: true,
     },
+    dataPartitioning: {
+      constituencyPartitionKey: "MH-ZP-HAVELI",
+      boothStart: 1,
+      boothEnd: 18,
+      totalAssignedBooths: 18,
+      partitionStrategy: "PRABHAAG_SEGMENTED",
+      campaignCriteria: ["Independent Desk", "Haveli Samiti Demo"],
+      isolationBoundaryStatus: "ENFORCED",
+      electoralRollCap: 15000,
+    },
     images: {
       profilePhotoUrl: createPortraitSvg("BJ", "Balasaheb K. Jagtap", ["#064E3B", "#065F46"]),
       coverBannerUrl: createBannerSvg("BALASAHEB K. JAGTAP", "शेतकरी आणि ग्रामस्थांचा बुलंद आवाज!", ["#064E3B", "#16A34A"]),
@@ -466,23 +508,33 @@ export const INITIAL_CANDIDATE_PROFILES: CandidateProfile[] = [
     accountType: "SALE",
     status: "ACTIVE",
     accountStatus: "Active",
-    subscriptionPlan: "ELECTION_MODULE",
-    subscriptionTier: "Platinum War Room (12M)",
+    subscriptionPlan: "ELECTION_NO_AI",
+    subscriptionTier: "Election Module without AI Mode",
     subscriptionStatus: "Active",
     expiryDate: "28 Feb 2027",
     subscriptionExpiresAt: "28 Feb 2027",
     source: "DISTRIBUTOR",
     distributorId: "DIS-101",
     totalUsers: 198,
-    hasAi: true,
+    hasAi: false,
     hasCampaigns: true,
     createdDate: "20 Sep 2026",
     registrationDate: "20 Sep 2026",
     features: {
-      aiVoiceCall: true,
+      aiVoiceCall: false,
       whatsappBot: true,
       familyMapping: true,
       pdfExport: true,
+    },
+    dataPartitioning: {
+      constituencyPartitionKey: "MH-AC215-KASBA",
+      boothStart: 1,
+      boothEnd: 232,
+      totalAssignedBooths: 232,
+      partitionStrategy: "FULL_CONSTITUENCY",
+      campaignCriteria: ["Kasba Central War Room", "Booth Coordinators"],
+      isolationBoundaryStatus: "ENFORCED",
+      electoralRollCap: 285400,
     },
     images: {
       profilePhotoUrl: createPortraitSvg("GN", "Adv. Ganesh V. Narvekar", ["#1E1B4B", "#312E81"]),
@@ -531,15 +583,15 @@ export const INITIAL_CANDIDATE_PROFILES: CandidateProfile[] = [
     accountType: "SALE",
     status: "PENDING_APPROVAL",
     accountStatus: "Active",
-    subscriptionPlan: "OFFICE_6M",
-    subscriptionTier: "Gold Intelligence (6M)",
+    subscriptionPlan: "OFFICE_6M_AI",
+    subscriptionTier: "Office – 6 Months with AI Mode",
     subscriptionStatus: "Pending",
     expiryDate: "15 Dec 2026",
     subscriptionExpiresAt: "15 Dec 2026",
     source: "DISTRIBUTOR",
     distributorId: "DIS-101",
     totalUsers: 0,
-    hasAi: false,
+    hasAi: true,
     hasCampaigns: false,
     createdDate: "08 Nov 2026",
     registrationDate: "08 Nov 2026",
@@ -548,6 +600,16 @@ export const INITIAL_CANDIDATE_PROFILES: CandidateProfile[] = [
       whatsappBot: true,
       familyMapping: true,
       pdfExport: true,
+    },
+    dataPartitioning: {
+      constituencyPartitionKey: "MH-PMC-WARD22",
+      boothStart: 1,
+      boothEnd: 36,
+      totalAssignedBooths: 36,
+      partitionStrategy: "CLUSTERED_BY_WARD",
+      campaignCriteria: ["Ward 22 Women Front", "Youth Wing Desk"],
+      isolationBoundaryStatus: "ENFORCED",
+      electoralRollCap: 38200,
     },
     images: {
       profilePhotoUrl: createPortraitSvg("PG", "Pooja Santosh Gaikwad", ["#134E4A", "#115E59"]),
