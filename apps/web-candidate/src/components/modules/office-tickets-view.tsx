@@ -4,1196 +4,997 @@ import React, { useState } from "react";
 import {
   Search,
   Plus,
-  AlertCircle,
-  Building,
-  UserPlus,
-  Eye,
   X,
-  Sparkles,
+  AlertCircle,
+  ChevronDown,
   UserCheck,
-  MapPin,
-  Phone,
 } from "lucide-react";
 import { useToast } from "@/context/toast-context";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 
-export interface MasterElector {
-  id: string;
-  epic: string;
-  name: string;
-  marathiName: string;
-  phone: string;
-  age: number;
-  gender: "Male" | "Female" | "Other";
-  ward: string;
-  booth: string;
-  boothName: string;
-  address: string;
+// ============================================================================
+// DATA MODELS
+// ============================================================================
+
+export interface TicketComment {
+  author: string;
+  text: string;
+  timestamp: string;
 }
 
-const INITIAL_MASTER_ELECTORS: MasterElector[] = [
-  {
-    id: "el-1",
-    epic: "WXE4829102",
-    name: "Rahul Sharad Shinde",
-    marathiName: "राहुल शरद शिंदे",
-    phone: "+91 98220 11990",
-    age: 38,
-    gender: "Male",
-    ward: "Ward 12",
-    booth: "#101",
-    boothName: "Navbharat High School, Room 1",
-    address: "Flat 402, Shrikrupa Apts, Dahanukar Colony, Lane 3",
-  },
-  {
-    id: "el-2",
-    epic: "WXE3920194",
-    name: "Sunita Vilas Kulkarni",
-    marathiName: "सुनिता विलास कुलकर्णी",
-    phone: "+91 94223 88120",
-    age: 62,
-    gender: "Female",
-    ward: "Ward 12",
-    booth: "#101",
-    boothName: "Navbharat High School, Room 1",
-    address: "B-12, Mayur Colony, Kothrud",
-  },
-  {
-    id: "el-3",
-    epic: "WXE1029384",
-    name: "Amit Suresh Joshi",
-    marathiName: "अमित सुरेश जोशी",
-    phone: "+91 98900 77661",
-    age: 21,
-    gender: "Male",
-    ward: "Ward 14",
-    booth: "#108",
-    boothName: "Gokhale Memorial Hall",
-    address: "Plot 88, Near Shanipar Chowk, Kasba Peth",
-  },
-  {
-    id: "el-4",
-    epic: "WXE9821443",
-    name: "Sunita Verma",
-    marathiName: "सुनिता वर्मा",
-    phone: "+91 98221 44002",
-    age: 44,
-    gender: "Female",
-    ward: "Ward 9",
-    booth: "#88",
-    boothName: "Modern High School, Wing A",
-    address: "House 104, Gaothan Lane 2",
-  },
-];
-
-interface TicketItem {
+export interface TicketRecord {
   id: string;
-  category: "Water Supply" | "Roads & Infra" | "Pension & Welfare" | "Electricity" | "Ration Card";
-  title: string;
-  description: string;
-  ward: string;
-  booth: string;
-  reporter: string;
-  phone: string;
+  visitorName: string;
+  visitorPhone?: string;
+  visitorAddress?: string;
+  isLinkedVoter: boolean;
+  voterEpic?: string;
+  category: string;
   priority: "CRITICAL" | "HIGH" | "MEDIUM" | "LOW";
-  status: "OPEN" | "IN PROGRESS" | "RESOLVED";
-  createdDate: string;
-  assignedStaff: string;
-  linkedEpic?: string;
+  status: "OPEN" | "IN_PROGRESS" | "RESOLVED";
+  assignedTo: string;
+  createdAt: string;
+  updatedAt: string;
+  description: string;
+  resolutionNote?: string;
+  comments: TicketComment[];
 }
 
-interface VisitorItem {
+export interface LinkedVoterRecord {
   id: string;
-  name: string;
-  phone: string;
-  purpose: string;
-  handlingStaff: string;
-  visitDate: string;
-  followUpRequired: string;
-  matchedEpic?: string;
+  fullName: string;
+  epicNumber: string;
+  mobile: string;
+  address: string;
+  boothNumber: number;
 }
 
-const SAMPLE_TICKETS: TicketItem[] = [
+// Initial 4 Seed Tickets matching the reference design
+const INITIAL_TICKETS: TicketRecord[] = [
   {
     id: "TKT-9210",
+    visitorName: "Narayan Govind Joshi",
+    visitorPhone: "+91 98220 33119",
+    visitorAddress: "Plot 34, Dahanukar Colony, Kothrud",
+    isLinkedVoter: true,
+    voterEpic: "MH34091104",
     category: "Water Supply",
-    title: "Low municipal water pressure across Dahanukar Colony",
-    description: "Entire Dahanukar Colony Lane 3 has faced low municipal pressure for 5 straight days. 120 households affected.",
-    ward: "Ward 12",
-    booth: "#103",
-    reporter: "Suresh Patil",
-    phone: "+91 98220 11990",
     priority: "HIGH",
     status: "OPEN",
-    createdDate: "03 Nov 2026, 09:30 AM",
-    assignedStaff: "Ashok Shinde (Office Lead)",
-    linkedEpic: "WXE4829102",
+    assignedTo: "Sachin Babar (Prabhaag Incharge)",
+    createdAt: "2024-04-18 09:30 AM",
+    updatedAt: "2024-04-18 10:00 AM",
+    description: "Entire Dahanukar Colony Lane 3 has faced low municipal pressure for 5 straight days....",
+    comments: [
+      {
+        author: "Office Desk Registration",
+        text: "Visitor verified & linked to Voter ID MH34091104 (Booth #102).",
+        timestamp: "2024-04-18 09:30 AM",
+      },
+      {
+        author: "Sachin Babar",
+        text: "Coordinated with PMC Water Department Junior Engineer for line inspection.",
+        timestamp: "2024-04-18 10:00 AM",
+      },
+    ],
   },
   {
     id: "TKT-9208",
-    category: "Pension & Welfare",
-    title: "Sanjay Gandhi Niradhar monthly pension not credited",
-    description: "Monthly welfare pension not credited into accounts for 3 senior citizen widows in Erandwane Gaothan.",
-    ward: "Ward 14",
-    booth: "#107",
-    reporter: "Anusaya More",
-    phone: "+91 97654 33221",
+    visitorName: "Shabana Begum Mansuri",
+    visitorPhone: "+91 98220 77112",
+    visitorAddress: "Near Kothrud Stand, Pune",
+    isLinkedVoter: false,
+    category: "Pension",
     priority: "MEDIUM",
-    status: "IN PROGRESS",
-    createdDate: "02 Nov 2026, 02:15 PM",
-    assignedStaff: "Pooja Jagtap",
+    status: "IN_PROGRESS",
+    assignedTo: "Office Helpdesk (Sanjay Shinde)",
+    createdAt: "2024-04-17 03:15 PM",
+    updatedAt: "2024-04-18 08:30 AM",
+    description: "Sanjay Gandhi Niradhar Yojana monthly pension not credited into bank for 3 month...",
+    comments: [
+      {
+        author: "Office Reception Desk",
+        text: "Unverified Citizen Visitor registered at reception desk.",
+        timestamp: "2024-04-17 03:15 PM",
+      },
+      {
+        author: "Sanjay Shinde",
+        text: "Application submitted to Tehsildar Sanjay Gandhi Yojana cell for passbook verification.",
+        timestamp: "2024-04-18 08:30 AM",
+      },
+    ],
   },
   {
     id: "TKT-9195",
-    category: "Roads & Infra",
-    title: "Accident-prone deep pothole near Erandwane fire station",
-    description: "Deep pothole causing recurring two-wheeler skids and traffic slowdown near Erandwane fire crossing.",
-    ward: "Ward 14",
-    booth: "#106",
-    reporter: "Vijay Deshmukh",
-    phone: "+91 98900 44551",
+    visitorName: "Mahesh Balkrishna Kadam",
+    visitorPhone: "+91 98901 44550",
+    visitorAddress: "Near Erandwane Fire Station Crossing",
+    isLinkedVoter: true,
+    voterEpic: "MH34033418",
+    category: "Roads & Infrastructure",
     priority: "CRITICAL",
     status: "RESOLVED",
-    createdDate: "01 Nov 2026, 11:00 AM",
-    assignedStaff: "Nitin Jagtap",
+    assignedTo: "Sachin Babar",
+    createdAt: "2024-04-14 11:00 AM",
+    updatedAt: "2024-04-17 04:00 PM",
+    description: "Deep pothole causing accidents near Erandwane fire station crossing.",
+    resolutionNote: "Road patching completed by PMC road engineering squad and verified by cadre.",
+    comments: [
+      {
+        author: "Office Desk",
+        text: "Critical traffic hotspot ticket created.",
+        timestamp: "2024-04-14 11:00 AM",
+      },
+      {
+        author: "Sachin Babar",
+        text: "Hotspot inspected, PMC asphalt squad deployed.",
+        timestamp: "2024-04-16 02:00 PM",
+      },
+    ],
   },
   {
-    id: "TKT-9182",
+    id: "TKT-9180",
+    visitorName: "Savita Vijay Gaikwad",
+    visitorPhone: "+91 98222 66778",
+    visitorAddress: "Lane 5, Prabhat Road, Pune",
+    isLinkedVoter: true,
+    voterEpic: "MH34089211",
     category: "Electricity",
-    title: "Street lights non-operational in Kasba Peth Lane 4",
-    description: "Dark stretch causing safety concerns for women and senior citizens walking from Ganpati mandir.",
-    ward: "Ward 9",
-    booth: "#88",
-    reporter: "Manish Kulkarni",
-    phone: "+91 99221 33445",
     priority: "MEDIUM",
-    status: "IN PROGRESS",
-    createdDate: "30 Oct 2026, 07:45 PM",
-    assignedStaff: "Vikas Jadhav",
+    status: "RESOLVED",
+    assignedTo: "Pooja Jadhav",
+    createdAt: "2024-04-12 10:30 AM",
+    updatedAt: "2024-04-13 06:00 PM",
+    description: "Streetlights not functioning on internal society approach road for 2 weeks.",
+    resolutionNote: "MSEDCL line engineer replaced fuse in feeder box; functional testing completed.",
+    comments: [
+      {
+        author: "Reception Desk",
+        text: "Streetlight maintenance complaint logged.",
+        timestamp: "2024-04-12 10:30 AM",
+      },
+    ],
   },
 ];
 
-const SAMPLE_VISITORS: VisitorItem[] = [
+// Pre-seeded searchable electoral roll records for auto-matching
+const ELECTORAL_ROLL_DIRECTORY: LinkedVoterRecord[] = [
   {
-    id: "vis-1",
-    name: "Suresh Patil",
-    phone: "+91 98220 11990",
-    purpose: "Water supply pipeline blockage complaint in Dahanukar Colony",
-    handlingStaff: "Ashok Shinde",
-    visitDate: "Today, 09:30 AM",
-    followUpRequired: "05 Nov 2026",
-    matchedEpic: "WXE4829102",
+    id: "v-101",
+    fullName: "Narayan Govind Joshi",
+    epicNumber: "MH34091104",
+    mobile: "+91 98220 33119",
+    address: "Plot 34, Dahanukar Colony, Kothrud",
+    boothNumber: 102,
   },
   {
-    id: "vis-2",
-    name: "Sunita Verma",
-    phone: "+91 98221 44002",
-    purpose: "Inquiry on Ladki Bahin installment status and KYC update",
-    handlingStaff: "Pooja Jagtap",
-    visitDate: "Today, 11:15 AM",
-    followUpRequired: "None Required",
-    matchedEpic: "WXE9821443",
+    id: "v-102",
+    fullName: "Mahesh Balkrishna Kadam",
+    epicNumber: "MH34033418",
+    mobile: "+91 98901 44550",
+    address: "Near Erandwane Fire Station Crossing",
+    boothNumber: 104,
   },
   {
-    id: "vis-3",
-    name: "Mahesh K. Joshi",
-    phone: "+91 98900 77661",
-    purpose: "Society registration recommendation letter for PMC drainage repair",
-    handlingStaff: "Ashok Shinde",
-    visitDate: "Yesterday, 04:00 PM",
-    followUpRequired: "08 Nov 2026",
+    id: "v-103",
+    fullName: "Savita Vijay Gaikwad",
+    epicNumber: "MH34089211",
+    mobile: "+91 98222 66778",
+    address: "Lane 5, Prabhat Road, Pune",
+    boothNumber: 106,
+  },
+  {
+    id: "v-104",
+    fullName: "Rajesh Kumar Verma",
+    epicNumber: "WXE4829102",
+    mobile: "+91 98221 44001",
+    address: "Plot 14, Lane 3, Kasba Peth, Pune",
+    boothNumber: 101,
+  },
+  {
+    id: "v-105",
+    fullName: "Sunita Rajesh Verma",
+    epicNumber: "WXE0821443",
+    mobile: "+91 98221 44002",
+    address: "Plot 14, Lane 3, Kasba Peth, Pune",
+    boothNumber: 101,
+  },
+  {
+    id: "v-106",
+    fullName: "Pooja Santosh Jagtap",
+    epicNumber: "WXE4412890",
+    mobile: "+91 98901 22334",
+    address: "Lane 2, Mayur Colony, Kothrud",
+    boothNumber: 101,
   },
 ];
+
+// ============================================================================
+// MAIN COMPONENT: OfficeTicketsView
+// ============================================================================
 
 export function OfficeTicketsView() {
   const { showToast } = useToast();
-  const [activeTab, setActiveTab] = useState<"tickets" | "visitors">("tickets");
-  const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState("all");
-  const [priorityFilter, setPriorityFilter] = useState("all");
 
-  const [masterElectors, setMasterElectors] = useState<MasterElector[]>(INITIAL_MASTER_ELECTORS);
-  const [electorSearchQuery, setElectorSearchQuery] = useState("");
+  const [tickets, setTickets] = useState<TicketRecord[]>(INITIAL_TICKETS);
+  const [statusFilter, setStatusFilter] = useState("ALL");
+  const [categoryFilter, setCategoryFilter] = useState("ALL");
+  const [searchQuery, setSearchQuery] = useState("");
 
-  const [tickets, setTickets] = useState<TicketItem[]>(SAMPLE_TICKETS);
-  const [visitors, setVisitors] = useState<VisitorItem[]>(SAMPLE_VISITORS);
-  const [selectedTicket, setSelectedTicket] = useState<TicketItem | null>(SAMPLE_TICKETS[0] ?? null);
+  // Inspect Ticket Drawer / Modal
+  const [inspectTicket, setInspectTicket] = useState<TicketRecord | null>(null);
+  const [commentInput, setCommentInput] = useState("");
 
-  // Modals
-  const [showCreateTicketModal, setShowCreateTicketModal] = useState(false);
-  const [showRegisterVisitorModal, setShowRegisterVisitorModal] = useState(false);
-  const [showAddNewVoterModal, setShowAddNewVoterModal] = useState(false);
-
-  // Create Ticket Form State
-  const [newTitle, setNewTitle] = useState("");
-  const [newCategory, setNewCategory] = useState<TicketItem["category"]>("Water Supply");
-  const [newPriority, setNewPriority] = useState<TicketItem["priority"]>("HIGH");
-  const [newReporter, setNewReporter] = useState("");
-  const [newPhone, setNewPhone] = useState("");
-  const [newWard, setNewWard] = useState("Ward 12");
-  const [newBooth, setNewBooth] = useState("#101");
-  const [newDescription, setNewDescription] = useState("");
-  const [newLinkedEpic, setNewLinkedEpic] = useState<string | undefined>(undefined);
-
-  // Visitor Form & Fuzzy Match State
+  // Register Visitor / New Ticket Modal
+  const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
   const [visitorName, setVisitorName] = useState("");
   const [visitorPhone, setVisitorPhone] = useState("");
-  const [visitorPurpose, setVisitorPurpose] = useState("");
-  const [visitorFollowUp, setVisitorFollowUp] = useState("");
+  const [visitorAddress, setVisitorAddress] = useState("");
+  const [category, setCategory] = useState("Water Supply");
+  const [priority, setPriority] = useState<"CRITICAL" | "HIGH" | "MEDIUM" | "LOW">("HIGH");
+  const [assignedTo, setAssignedTo] = useState("Sachin Babar (Prabhaag Incharge)");
+  const [description, setDescription] = useState("");
 
-  // Add New Voter Onboarding Modal State (Section 9)
-  const [onboardName, setOnboardName] = useState("");
-  const [onboardMarathiName, setOnboardMarathiName] = useState("");
-  const [onboardEpic, setOnboardEpic] = useState("");
-  const [onboardPhone, setOnboardPhone] = useState("");
-  const [onboardAge, setOnboardAge] = useState("28");
-  const [onboardGender, setOnboardGender] = useState<"Male" | "Female" | "Other">("Male");
-  const [onboardWard, setOnboardWard] = useState("Ward 12");
-  const [onboardBooth, setOnboardBooth] = useState("#101");
-  const [onboardAddress, setOnboardAddress] = useState("");
+  // Electoral roll auto-match state
+  const [voterSearch, setVoterSearch] = useState("");
+  const [linkedVoter, setLinkedVoter] = useState<LinkedVoterRecord | null>(null);
 
-  const fuzzyMatch = visitorName.length > 2 && (
-    visitorName.toLowerCase().includes("rajesh") || visitorName.toLowerCase().includes("patil")
-  );
-
-  // Elector Live Search Results
-  const matchedElectors = electorSearchQuery.trim()
-    ? masterElectors.filter(
-        (e) =>
-          e.name.toLowerCase().includes(electorSearchQuery.toLowerCase()) ||
-          e.marathiName.toLowerCase().includes(electorSearchQuery.toLowerCase()) ||
-          e.epic.toLowerCase().includes(electorSearchQuery.toLowerCase()) ||
-          e.phone.includes(electorSearchQuery)
+  // Auto-search voter roll directory
+  const matchedVoters = voterSearch.trim()
+    ? ELECTORAL_ROLL_DIRECTORY.filter(
+        (v) =>
+          v.fullName.toLowerCase().includes(voterSearch.toLowerCase()) ||
+          v.epicNumber.toLowerCase().includes(voterSearch.toLowerCase()) ||
+          v.mobile.includes(voterSearch)
       )
     : [];
 
-  const handleSelectElectorForTicket = (elector: MasterElector) => {
-    setNewReporter(elector.name);
-    setNewPhone(elector.phone);
-    setNewWard(elector.ward);
-    setNewBooth(elector.booth);
-    setNewLinkedEpic(elector.epic);
-    setNewTitle(`Civic Grievance from ${elector.name} (${elector.ward}, Booth ${elector.booth})`);
-    setShowCreateTicketModal(true);
-  };
+  // Potential duplicate detection
+  const duplicateTickets =
+    visitorName.trim().length >= 3 || visitorPhone.trim().length >= 7
+      ? tickets.filter(
+          (t) =>
+            (visitorName.trim().length >= 3 &&
+              t.visitorName.toLowerCase().includes(visitorName.trim().toLowerCase())) ||
+            (visitorPhone.trim().length >= 7 &&
+              t.visitorPhone &&
+              t.visitorPhone.includes(visitorPhone.trim()))
+        )
+      : [];
 
-  const handleAddNewVoterSubmit = (e: React.FormEvent) => {
+  // Filtered tickets
+  const filteredTickets = tickets.filter((t) => {
+    const matchesStatus = statusFilter === "ALL" || t.status === statusFilter;
+    const matchesCategory = categoryFilter === "ALL" || t.category === categoryFilter;
+    const q = searchQuery.toLowerCase().trim();
+    const matchesQuery =
+      !q ||
+      t.visitorName.toLowerCase().includes(q) ||
+      t.id.toLowerCase().includes(q) ||
+      t.description.toLowerCase().includes(q) ||
+      t.assignedTo.toLowerCase().includes(q);
+
+    return matchesStatus && matchesCategory && matchesQuery;
+  });
+
+  // Handle Register New Ticket Form Submit
+  const handleRegisterTicket = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!onboardName.trim() || !onboardEpic.trim() || !onboardPhone.trim()) {
-      showToast("error", "Validation Error", "Name, EPIC ID, and Phone Number are strictly required.");
+    if (!visitorName.trim() || !description.trim()) {
+      showToast("error", "Validation Error", "Please provide visitor name and issue description.");
       return;
     }
 
-    const newVoter: MasterElector = {
-      id: `el-${Date.now()}`,
-      epic: onboardEpic.trim().toUpperCase(),
-      name: onboardName.trim(),
-      marathiName: onboardMarathiName.trim() || onboardName.trim(),
-      phone: onboardPhone.trim(),
-      age: parseInt(onboardAge, 10) || 28,
-      gender: onboardGender,
-      ward: onboardWard,
-      booth: onboardBooth,
-      boothName: `${onboardBooth} - Navbharat High School Dispatch`,
-      address: onboardAddress.trim() || "Kasba Peth Constituency",
-    };
-
-    setMasterElectors((prev) => [newVoter, ...prev]);
-    setElectorSearchQuery(newVoter.name);
-    setShowAddNewVoterModal(false);
-
-    // Reset Form
-    setOnboardName("");
-    setOnboardMarathiName("");
-    setOnboardEpic("");
-    setOnboardPhone("");
-    setOnboardAddress("");
-
-    showToast(
-      "success",
-      "Voter Onboarded to Master Roll",
-      `${newVoter.name} (EPIC: ${newVoter.epic}) registered in constituency roll. Ready for issue registration.`
-    );
-  };
-
-  const filteredTickets = tickets.filter((t) => {
-    const matchSearch =
-      t.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      t.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      t.ward.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      t.reporter.toLowerCase().includes(searchTerm.toLowerCase());
-
-    const matchStatus = statusFilter === "all" || t.status === statusFilter;
-    const matchPriority = priorityFilter === "all" || t.priority === priorityFilter;
-
-    return matchSearch && matchStatus && matchPriority;
-  });
-
-  const handleUpdateStatus = (id: string, newStatus: "OPEN" | "IN PROGRESS" | "RESOLVED") => {
-    setTickets((prev) =>
-      prev.map((t) => (t.id === id ? { ...t, status: newStatus } : t))
-    );
-    if (selectedTicket && selectedTicket.id === id) {
-      setSelectedTicket({ ...selectedTicket, status: newStatus });
-    }
-    showToast("success", "Ticket Status Updated", `Ticket ${id} marked as ${newStatus}.`);
-  };
-
-  const handleCreateTicketSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newTitle.trim()) return;
-
-    const newTicket: TicketItem = {
+    const newTicket: TicketRecord = {
       id: `TKT-${Math.floor(1000 + Math.random() * 9000)}`,
-      category: newCategory,
-      title: newTitle.trim(),
-      description: newDescription.trim() || newTitle.trim(),
-      ward: newWard,
-      booth: newBooth,
-      reporter: newReporter.trim() || "Constituent Visitor",
-      phone: newPhone.trim() || "+91 98220 00000",
-      priority: newPriority,
+      visitorName: visitorName.trim(),
+      visitorPhone: visitorPhone.trim() || undefined,
+      visitorAddress: visitorAddress.trim() || undefined,
+      isLinkedVoter: !!linkedVoter,
+      voterEpic: linkedVoter ? linkedVoter.epicNumber : undefined,
+      category,
+      priority,
       status: "OPEN",
-      createdDate: "Just now",
-      assignedStaff: "Ashok Shinde (Office Lead)",
-      linkedEpic: newLinkedEpic,
+      assignedTo,
+      createdAt: "Just now",
+      updatedAt: "Just now",
+      description: description.trim(),
+      comments: [
+        {
+          author: "Office Desk Registration",
+          text: linkedVoter
+            ? `Visitor verified & linked to Voter ID ${linkedVoter.epicNumber} (Booth #${linkedVoter.boothNumber}).`
+            : "Unverified Citizen Visitor registered at reception desk.",
+          timestamp: "Just now",
+        },
+      ],
     };
 
-    setTickets((prev) => [newTicket, ...prev]);
-    setSelectedTicket(newTicket);
-    setShowCreateTicketModal(false);
-    setNewTitle("");
-    setNewDescription("");
-    setNewLinkedEpic(undefined);
+    setTickets([newTicket, ...tickets]);
+    showToast("success", "Ticket Created", `Ticket #${newTicket.id} created and routed to ${assignedTo}.`);
+    setIsRegisterModalOpen(false);
 
-    showToast(
-      "success",
-      "Civic Grievance Ticket Created",
-      `Ticket #${newTicket.id} registered and assigned to Ashok Shinde.`
-    );
-  };
-
-  const handleRegisterVisitorSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!visitorName.trim()) return;
-
-    const newVisitor: VisitorItem = {
-      id: `vis-${Date.now()}`,
-      name: visitorName.trim(),
-      phone: visitorPhone.trim() || "+91 98000 00000",
-      purpose: visitorPurpose.trim() || "Constituent office visit",
-      handlingStaff: "Ashok Shinde",
-      visitDate: "Just now",
-      followUpRequired: visitorFollowUp.trim() || "Pending Review",
-      matchedEpic: fuzzyMatch ? "WXE4829102 (Matched)" : undefined,
-    };
-
-    setVisitors((prev) => [newVisitor, ...prev]);
-    setShowRegisterVisitorModal(false);
+    // Reset form
     setVisitorName("");
     setVisitorPhone("");
-    setVisitorPurpose("");
+    setVisitorAddress("");
+    setDescription("");
+    setLinkedVoter(null);
+    setVoterSearch("");
+  };
 
-    showToast(
-      "success",
-      "Visitor Registered",
-      `Visitor log for ${newVisitor.name} recorded. ${fuzzyMatch ? "Linked to existing ECI elector profile." : "New visitor contact created."}`
-    );
+  // Handle Post Internal Comment / Note
+  const handlePostComment = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!commentInput.trim() || !inspectTicket) return;
+
+    const updated: TicketRecord = {
+      ...inspectTicket,
+      comments: [
+        ...inspectTicket.comments,
+        {
+          author: "Candidate Office Desk",
+          text: commentInput.trim(),
+          timestamp: "Just now",
+        },
+      ],
+    };
+
+    setInspectTicket(updated);
+    setTickets((prev) => prev.map((t) => (t.id === updated.id ? updated : t)));
+    setCommentInput("");
+    showToast("info", "Note Added", "Comment appended to grievance audit trail.");
+  };
+
+  // Handle Change Ticket Status in Drawer
+  const handleUpdateStatus = (newStatus: "OPEN" | "IN_PROGRESS" | "RESOLVED") => {
+    if (!inspectTicket) return;
+
+    const updated: TicketRecord = {
+      ...inspectTicket,
+      status: newStatus,
+      updatedAt: "Just now",
+      resolutionNote:
+        newStatus === "RESOLVED"
+          ? "Issue verified resolved on field inspection."
+          : inspectTicket.resolutionNote,
+    };
+
+    setInspectTicket(updated);
+    setTickets((prev) => prev.map((t) => (t.id === updated.id ? updated : t)));
+    showToast("success", "Status Updated", `Ticket #${updated.id} marked as ${newStatus}.`);
   };
 
   return (
-    <div className="space-y-5">
-      {/* Module Title Header */}
-      <section className="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-premium-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div className="space-y-6 pb-12 animate-fade-in font-sans">
+      {/* ===================================================================== */}
+      {/* 1. TOP HEADER BAR: TITLE, TAGS & ACTION BUTTON                       */}
+      {/* ===================================================================== */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
         <div>
-          <div className="flex items-center gap-2 mb-1.5 flex-wrap">
-            <span className="text-[11px] font-bold text-brand-600 uppercase tracking-wider bg-brand-50 dark:bg-brand-950/50 dark:text-brand-400 px-2.5 py-0.5 rounded-full">
-              Module 12: Office &amp; Issues
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+              Constituency Governance
             </span>
-            <Badge variant="teal">Civic Response Center</Badge>
-            <Badge variant="warning">{tickets.filter((t) => t.status === "OPEN").length} Open Tickets</Badge>
+            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-800 border border-amber-200">
+              Citizen Grievances
+            </span>
           </div>
-          <h1 className="text-[22px] font-bold text-slate-800 dark:text-white tracking-tight">
-            Office Helpdesk &amp; Civic Grievance Management
+          <h1 className="text-xl md:text-2xl font-extrabold text-slate-900 mt-1 tracking-tight">
+            Office Desk &amp; Public Issues
           </h1>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-            Search master electoral roll, register walk-in constituents, dispatch civic grievance tickets, and onboard unlisted voters.
+          <p className="text-xs text-slate-500 mt-0.5">
+            Register visiting citizens, link them to the electoral roll, and monitor resolution workflows.
           </p>
         </div>
 
-        <div className="flex items-center gap-2.5 flex-wrap">
-          <Button variant="outline" size="md" onClick={() => setShowAddNewVoterModal(true)}>
-            <UserPlus className="w-3.5 h-3.5" />
-            <span>+ Add New Voter</span>
-          </Button>
+        <button
+          type="button"
+          onClick={() => setIsRegisterModalOpen(true)}
+          className="flex items-center gap-2 px-4 py-2.5 bg-[#2563EB] hover:bg-blue-700 text-white font-bold rounded-xl text-xs transition-colors shadow-xs shrink-0 cursor-pointer"
+        >
+          <Plus className="w-4 h-4" />
+          <span>+ Register Visitor / New Ticket</span>
+        </button>
+      </div>
 
-          <Button variant="outline" size="md" onClick={() => setShowRegisterVisitorModal(true)}>
-            <Building className="w-3.5 h-3.5" />
-            <span>Register Visitor</span>
-          </Button>
-
-          <Button variant="primary" size="md" onClick={() => setShowCreateTicketModal(true)}>
-            <Plus className="w-3.5 h-3.5" />
-            <span>Create Grievance Ticket</span>
-          </Button>
-        </div>
-      </section>
-
-      {/* SECTION 9: PROMINENT MASTER ELECTOR ROLL SEARCH & ONBOARDING BAR */}
-      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-premium-xs space-y-3">
-        <div className="flex items-center justify-between gap-2 flex-wrap">
-          <div className="flex items-center gap-2">
-            <UserCheck className="w-5 h-5 text-brand-600" />
-            <h2 className="text-sm font-bold text-slate-800 dark:text-white">
-              Search Master Electoral Roll (Voter Identification &amp; Issue Pre-load)
-            </h2>
-          </div>
-          <span className="text-xs text-slate-500">
-            {masterElectors.length.toLocaleString()} Electors in Local Constituency Database
+      {/* ===================================================================== */}
+      {/* 2. TOP 4 METRIC KPI CARDS                                             */}
+      {/* ===================================================================== */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {/* Today's Visitors */}
+        <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs">
+          <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
+            Today&apos;s Visitors
           </span>
+          <p className="text-2xl font-black text-slate-900 mt-1">28</p>
+          <p className="text-[11px] text-blue-600 font-semibold mt-1">
+            19 Linked to Voter Roll
+          </p>
         </div>
 
-        <div className="relative">
-          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+        {/* Open Tickets */}
+        <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs">
+          <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
+            Open Tickets
+          </span>
+          <p className="text-2xl font-black text-amber-500 mt-1">
+            {tickets.filter((t) => t.status === "OPEN").length}
+          </p>
+          <p className="text-[11px] text-amber-600 font-semibold mt-1">
+            Awaiting PMC department action
+          </p>
+        </div>
+
+        {/* In Progress */}
+        <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs">
+          <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
+            In Progress
+          </span>
+          <p className="text-2xl font-black text-blue-600 mt-1">
+            {tickets.filter((t) => t.status === "IN_PROGRESS").length}
+          </p>
+          <p className="text-[11px] text-blue-600 font-semibold mt-1">
+            Assigned to Ward Incharges
+          </p>
+        </div>
+
+        {/* Resolved Issues */}
+        <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs">
+          <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
+            Resolved Issues
+          </span>
+          <p className="text-2xl font-black text-slate-900 mt-1">
+            {tickets.filter((t) => t.status === "RESOLVED").length}
+          </p>
+          <p className="text-[11px] text-slate-500 font-semibold mt-1">
+            89% Satisfaction Index
+          </p>
+        </div>
+      </div>
+
+      {/* ===================================================================== */}
+      {/* 3. SEARCH & FILTERS BAR                                               */}
+      {/* ===================================================================== */}
+      <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex flex-col md:flex-row gap-3">
+        <div className="flex-1 relative">
+          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
             type="text"
-            value={electorSearchQuery}
-            onChange={(e) => setElectorSearchQuery(e.target.value)}
-            placeholder="Search elector by Name, Marathi Name, EPIC ID (e.g. 'Rahul Shinde', 'WXE4829102'), or Phone..."
-            className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60 text-xs text-slate-800 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-brand-500"
+            placeholder="Search tickets by visitor name, ID, or description..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-blue-500 focus:bg-white"
           />
         </div>
 
-        {/* Live Search Match Display */}
-        {electorSearchQuery.trim() !== "" && (
-          <div className="pt-2">
-            {matchedElectors.length > 0 ? (
-              <div className="space-y-2">
-                <span className="text-xs font-semibold text-slate-500 block">
-                  Found {matchedElectors.length} Matching Elector(s):
-                </span>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  {matchedElectors.map((elector) => (
-                    <div
-                      key={elector.id}
-                      className="p-3.5 rounded-xl border border-brand-200 dark:border-brand-900/60 bg-brand-50/40 dark:bg-brand-950/20 flex flex-col justify-between gap-3 shadow-2xs"
-                    >
-                      <div className="space-y-1">
-                        <div className="flex items-center justify-between">
-                          <span className="font-mono text-xs font-bold text-brand-600 dark:text-brand-400 bg-white dark:bg-slate-900 px-2 py-0.5 rounded border border-brand-200 dark:border-brand-800">
-                            {elector.epic}
-                          </span>
-                          <span className="text-[11px] text-slate-500">
-                            {elector.gender}, {elector.age} yrs
-                          </span>
-                        </div>
-                        <div className="font-bold text-sm text-slate-800 dark:text-white">
-                          {elector.name}{" "}
-                          <span className="text-slate-500 font-normal">({elector.marathiName})</span>
-                        </div>
-                        <div className="text-xs text-slate-600 dark:text-slate-300 flex items-center gap-1.5">
-                          <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                          <span>{elector.ward} &bull; Booth {elector.booth} ({elector.boothName})</span>
-                        </div>
-                        <div className="text-xs text-slate-600 dark:text-slate-300 flex items-center gap-1.5">
-                          <Phone className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                          <span className="font-mono font-medium">{elector.phone}</span>
-                        </div>
-                      </div>
+        {/* Status Dropdown */}
+        <div className="w-full md:w-48 relative">
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="w-full py-2 pl-3 pr-8 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-700 focus:ring-2 focus:ring-blue-500 appearance-none cursor-pointer"
+          >
+            <option value="ALL">All Statuses</option>
+            <option value="OPEN">Open</option>
+            <option value="IN_PROGRESS">In Progress</option>
+            <option value="RESOLVED">Resolved</option>
+          </select>
+          <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+        </div>
 
-                      {/* 1-Click Action: Log Grievance for this Elector */}
-                      <button
-                        type="button"
-                        onClick={() => handleSelectElectorForTicket(elector)}
-                        className="w-full py-2 px-3 rounded-lg bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-sm transition-all cursor-pointer"
-                      >
-                        <Plus className="w-3.5 h-3.5" />
-                        <span>Log Grievance / Register Issue for this Elector</span>
-                      </button>
+        {/* Category Dropdown */}
+        <div className="w-full md:w-56 relative">
+          <select
+            value={categoryFilter}
+            onChange={(e) => setCategoryFilter(e.target.value)}
+            className="w-full py-2 pl-3 pr-8 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-700 focus:ring-2 focus:ring-blue-500 appearance-none cursor-pointer"
+          >
+            <option value="ALL">All Categories</option>
+            <option value="Water Supply">Water Supply</option>
+            <option value="Roads &amp; Infrastructure">Roads &amp; Infrastructure</option>
+            <option value="Pension">Pension</option>
+            <option value="Electricity">Electricity</option>
+            <option value="Sanitation">Sanitation</option>
+            <option value="Ration &amp; Civil Supplies">Ration &amp; Civil Supplies</option>
+            <option value="Healthcare">Healthcare</option>
+          </select>
+          <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+        </div>
+      </div>
+
+      {/* ===================================================================== */}
+      {/* 4. TICKETS TABLE MATCHING REFERENCE DESIGN                             */}
+      {/* ===================================================================== */}
+      <div className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-xs border-collapse">
+            <thead>
+              <tr className="bg-slate-50 text-slate-600 font-bold border-b border-slate-200 uppercase tracking-wider text-[11px]">
+                <th className="py-3.5 px-4">Ticket ID</th>
+                <th className="py-3.5 px-4">Visitor &amp; Voter Status</th>
+                <th className="py-3.5 px-4">Category &amp; Priority</th>
+                <th className="py-3.5 px-4">Issue Description</th>
+                <th className="py-3.5 px-4">Assigned Officer</th>
+                <th className="py-3.5 px-4">Status</th>
+                <th className="py-3.5 px-4 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100 text-slate-700">
+              {filteredTickets.map((ticket) => (
+                <tr key={ticket.id} className="hover:bg-slate-50/80 transition-colors">
+                  {/* Ticket ID */}
+                  <td className="py-3.5 px-4 font-mono font-bold text-slate-900 whitespace-nowrap">
+                    {ticket.id}
+                  </td>
+
+                  {/* Visitor & Voter Status */}
+                  <td className="py-3.5 px-4">
+                    <span className="font-bold text-slate-900 block">
+                      {ticket.visitorName}
+                    </span>
+                    <div className="flex items-center gap-1.5 mt-0.5">
+                      {ticket.isLinkedVoter ? (
+                        <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200 font-mono">
+                          Verified Voter ({ticket.voterEpic})
+                        </span>
+                      ) : (
+                        <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-amber-50 text-amber-700 border border-amber-200">
+                          Unverified Visitor
+                        </span>
+                      )}
+                    </div>
+                  </td>
+
+                  {/* Category & Priority */}
+                  <td className="py-3.5 px-4 whitespace-nowrap">
+                    <span className="font-bold text-slate-800 block">
+                      {ticket.category}
+                    </span>
+                    <span
+                      className={`inline-block px-1.5 py-0.2 rounded text-[9px] font-extrabold mt-0.5 ${
+                        ticket.priority === "CRITICAL"
+                          ? "bg-rose-100 text-rose-800"
+                          : ticket.priority === "HIGH"
+                          ? "bg-amber-100 text-amber-800"
+                          : "bg-slate-100 text-slate-700"
+                      }`}
+                    >
+                      {ticket.priority}
+                    </span>
+                  </td>
+
+                  {/* Issue Description */}
+                  <td className="py-3.5 px-4 max-w-xs">
+                    <p className="text-slate-600 line-clamp-2 leading-relaxed">
+                      {ticket.description}
+                    </p>
+                    <span className="text-[10px] text-slate-400 mt-1 block">
+                      Created: {ticket.createdAt}
+                    </span>
+                  </td>
+
+                  {/* Assigned Officer */}
+                  <td className="py-3.5 px-4 font-medium text-slate-800 whitespace-nowrap">
+                    {ticket.assignedTo}
+                  </td>
+
+                  {/* Status Badge */}
+                  <td className="py-3.5 px-4 whitespace-nowrap">
+                    <span
+                      className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
+                        ticket.status === "RESOLVED"
+                          ? "bg-blue-50 text-blue-700 border border-blue-200"
+                          : ticket.status === "IN_PROGRESS"
+                          ? "bg-blue-50 text-blue-700 border border-blue-200"
+                          : "bg-amber-50 text-amber-700 border border-amber-200"
+                      }`}
+                    >
+                      {ticket.status}
+                    </span>
+                  </td>
+
+                  {/* Actions */}
+                  <td className="py-3.5 px-4 text-right whitespace-nowrap">
+                    <button
+                      type="button"
+                      onClick={() => setInspectTicket(ticket)}
+                      className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded-xl text-xs transition-colors cursor-pointer"
+                    >
+                      Inspect Ticket
+                    </button>
+                  </td>
+                </tr>
+              ))}
+
+              {filteredTickets.length === 0 && (
+                <tr>
+                  <td colSpan={7} className="py-8 text-center text-slate-400 text-xs">
+                    No tickets found matching the active filters.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* ===================================================================== */}
+      {/* 5. INSPECT TICKET RIGHT-SIDE SLIDE-OVER DRAWER                        */}
+      {/* ===================================================================== */}
+      {inspectTicket && (
+        <div className="fixed inset-0 z-50 flex items-center justify-end bg-slate-900/50 backdrop-blur-xs animate-fade-in">
+          <div className="bg-white w-full max-w-xl h-full shadow-2xl flex flex-col border-l border-slate-200 animate-slide-left">
+            {/* Drawer Header */}
+            <div className="p-4 px-6 border-b border-slate-200 flex items-center justify-between bg-slate-50">
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="font-mono font-bold text-blue-700 text-sm">
+                    {inspectTicket.id}
+                  </span>
+                  <span
+                    className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${
+                      inspectTicket.status === "RESOLVED"
+                        ? "bg-blue-100 text-blue-800"
+                        : "bg-amber-100 text-amber-800"
+                    }`}
+                  >
+                    {inspectTicket.status}
+                  </span>
+                </div>
+                <h3 className="font-bold text-slate-900 text-base mt-1">
+                  {inspectTicket.category}
+                </h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setInspectTicket(null)}
+                className="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-200 cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Drawer Content */}
+            <div className="flex-1 p-6 overflow-y-auto space-y-6 text-xs">
+              {/* Visitor Details Card */}
+              <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-slate-900 text-sm">
+                    {inspectTicket.visitorName}
+                  </span>
+                  <span
+                    className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                      inspectTicket.isLinkedVoter
+                        ? "bg-blue-100 text-blue-800"
+                        : "bg-amber-100 text-amber-800"
+                    }`}
+                  >
+                    {inspectTicket.isLinkedVoter ? "Verified Voter" : "Unverified Citizen Visitor"}
+                  </span>
+                </div>
+                <p className="text-slate-600">
+                  <strong>Contact:</strong> {inspectTicket.visitorPhone || "Not provided"}
+                </p>
+                <p className="text-slate-600">
+                  <strong>Address:</strong> {inspectTicket.visitorAddress || "Not provided"}
+                </p>
+                {inspectTicket.voterEpic && (
+                  <p className="text-blue-700 font-mono font-bold">
+                    Linked Voter ID: {inspectTicket.voterEpic}
+                  </p>
+                )}
+              </div>
+
+              {/* Status Update Actions */}
+              <div>
+                <label className="block font-bold text-slate-800 mb-2">
+                  Update Ticket Resolution Status
+                </label>
+                <div className="grid grid-cols-3 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => handleUpdateStatus("OPEN")}
+                    className={`py-2 px-3 rounded-xl font-bold border transition-all cursor-pointer ${
+                      inspectTicket.status === "OPEN"
+                        ? "bg-amber-500 text-white border-amber-600"
+                        : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100"
+                    }`}
+                  >
+                    Mark Open
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleUpdateStatus("IN_PROGRESS")}
+                    className={`py-2 px-3 rounded-xl font-bold border transition-all cursor-pointer ${
+                      inspectTicket.status === "IN_PROGRESS"
+                        ? "bg-blue-600 text-white border-blue-700"
+                        : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100"
+                    }`}
+                  >
+                    In Progress
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleUpdateStatus("RESOLVED")}
+                    className={`py-2 px-3 rounded-xl font-bold border transition-all cursor-pointer ${
+                      inspectTicket.status === "RESOLVED"
+                        ? "bg-blue-600 text-white border-blue-700"
+                        : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100"
+                    }`}
+                  >
+                    Resolved
+                  </button>
+                </div>
+              </div>
+
+              {/* Description */}
+              <div>
+                <span className="font-bold text-slate-800 block mb-1">
+                  Issue Grievance Details
+                </span>
+                <p className="p-3 bg-slate-50 rounded-xl border border-slate-200 text-slate-700 leading-relaxed">
+                  {inspectTicket.description}
+                </p>
+              </div>
+
+              {/* Resolution Note if any */}
+              {inspectTicket.resolutionNote && (
+                <div className="p-3 bg-blue-50 rounded-xl border border-blue-200 text-blue-900">
+                  <span className="font-bold block mb-0.5">Resolution Verification Note:</span>
+                  <p>{inspectTicket.resolutionNote}</p>
+                </div>
+              )}
+
+              {/* Internal Notes & Action History */}
+              <div>
+                <span className="font-bold text-slate-800 block mb-2">
+                  Internal Notes &amp; Action History
+                </span>
+                <div className="space-y-2">
+                  {inspectTicket.comments?.map((c, idx) => (
+                    <div
+                      key={idx}
+                      className="p-3 bg-slate-50 rounded-xl border border-slate-200"
+                    >
+                      <div className="flex items-center justify-between text-[11px] mb-1">
+                        <span className="font-bold text-blue-700">{c.author}</span>
+                        <span className="text-slate-400">{c.timestamp}</span>
+                      </div>
+                      <p className="text-slate-700 text-[11px]">{c.text}</p>
                     </div>
                   ))}
                 </div>
               </div>
-            ) : (
-              /* No Match Found -> Provide Onboarding Action */
-              <div className="p-4 rounded-xl border border-dashed border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/40 text-center space-y-2">
-                <span className="text-xs text-slate-500 block">
-                  No registered elector found matching &ldquo;{electorSearchQuery}&rdquo; in AC-215 roll.
-                </span>
-                <Button
-                  variant="primary"
-                  size="sm"
-                  onClick={() => {
-                    setOnboardName(electorSearchQuery);
-                    setShowAddNewVoterModal(true);
-                  }}
-                  className="bg-brand-600 hover:bg-brand-700"
-                >
-                  <UserPlus className="w-3.5 h-3.5" />
-                  <span>+ Onboard New Voter &ldquo;{electorSearchQuery}&rdquo;</span>
-                </Button>
-              </div>
-            )}
-          </div>
-        )}
-      </div>
-
-      {/* 4 Office Dashboard KPI Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-premium-xs">
-          <span className="text-xs font-semibold text-slate-500">Visitors Today</span>
-          <div className="text-2xl font-bold text-slate-800 dark:text-white mt-1 tabular-nums">
-            {visitors.length * 6}
-          </div>
-          <div className="text-[11px] text-brand-600 font-medium mt-1">Reception Counter Active</div>
-        </div>
-
-        <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-premium-xs">
-          <span className="text-xs font-semibold text-slate-500">Open Grievance Tickets</span>
-          <div className="text-2xl font-bold text-amber-600 mt-1 tabular-nums">
-            {tickets.filter((t) => t.status === "OPEN").length}
-          </div>
-          <div className="text-[11px] text-amber-600 font-medium mt-1">Assigned to Field Teams</div>
-        </div>
-
-        <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-premium-xs">
-          <span className="text-xs font-semibold text-slate-500">In Progress Resolutions</span>
-          <div className="text-2xl font-bold text-indigo-600 mt-1 tabular-nums">
-            {tickets.filter((t) => t.status === "IN PROGRESS").length}
-          </div>
-          <div className="text-[11px] text-indigo-600 font-medium mt-1">Municipal Department Follow-up</div>
-        </div>
-
-        <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-premium-xs">
-          <span className="text-xs font-semibold text-slate-500">Resolved This Week</span>
-          <div className="text-2xl font-bold text-emerald-600 mt-1 tabular-nums">
-            28
-          </div>
-          <div className="text-[11px] text-emerald-600 font-medium mt-1">94% Citizen Satisfaction</div>
-        </div>
-      </div>
-
-      {/* Tabs Selector: Tickets vs Visitors */}
-      <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-premium-xs space-y-4">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-3">
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={() => setActiveTab("tickets")}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
-                activeTab === "tickets"
-                  ? "bg-brand-600 text-white shadow-premium-xs"
-                  : "text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
-              }`}
-            >
-              <AlertCircle className="w-3.5 h-3.5" />
-              <span>Civic Grievance Tickets ({tickets.length})</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setActiveTab("visitors")}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
-                activeTab === "visitors"
-                  ? "bg-brand-600 text-white shadow-premium-xs"
-                  : "text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
-              }`}
-            >
-              <Building className="w-3.5 h-3.5" />
-              <span>Visitor Reception &amp; Interaction Log ({visitors.length})</span>
-            </button>
-          </div>
-
-          {activeTab === "tickets" && (
-            <div className="flex items-center gap-2">
-              <div className="relative w-48">
-                <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-                <input
-                  type="text"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  placeholder="Search tickets..."
-                  className="w-full pl-8 pr-2.5 py-1 text-xs rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800"
-                />
-              </div>
-
-              <select
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
-                className="py-1 px-2 text-xs rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800"
-              >
-                <option value="all">All Statuses</option>
-                <option value="OPEN">Open</option>
-                <option value="IN PROGRESS">In Progress</option>
-                <option value="RESOLVED">Resolved</option>
-              </select>
-
-              <select
-                value={priorityFilter}
-                onChange={(e) => setPriorityFilter(e.target.value)}
-                className="py-1 px-2 text-xs rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800"
-              >
-                <option value="all">All Priorities</option>
-                <option value="CRITICAL">Critical</option>
-                <option value="HIGH">High</option>
-                <option value="MEDIUM">Medium</option>
-                <option value="LOW">Low</option>
-              </select>
-            </div>
-          )}
-        </div>
-
-        {/* TAB 1: TICKETS SPLIT VIEW */}
-        {activeTab === "tickets" && (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-            {/* Left 2 Cols: Ticket Table */}
-            <div className="lg:col-span-2 overflow-x-auto">
-              <table className="w-full text-left border-collapse text-xs">
-                <thead>
-                  <tr className="bg-slate-50 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-800 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
-                    <th className="py-3 px-3">Ticket Info</th>
-                    <th className="py-3 px-3">Category</th>
-                    <th className="py-3 px-3">Priority</th>
-                    <th className="py-3 px-3">Status</th>
-                    <th className="py-3 px-3">Reporter</th>
-                    <th className="py-3 px-3 text-right">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-                  {filteredTickets.map((t) => (
-                    <tr
-                      key={t.id}
-                      onClick={() => setSelectedTicket(t)}
-                      className={`hover:bg-slate-50/50 dark:hover:bg-slate-800/40 cursor-pointer transition-colors ${
-                        selectedTicket?.id === t.id ? "bg-brand-50/40 dark:bg-brand-950/30" : ""
-                      }`}
-                    >
-                      <td className="py-3 px-3">
-                        <div className="font-mono text-[11px] font-bold text-brand-600 dark:text-brand-400">
-                          {t.id}
-                        </div>
-                        <div className="font-bold text-slate-800 dark:text-white line-clamp-1">{t.title}</div>
-                        <div className="text-[10px] text-slate-400">{t.ward} &bull; Booth {t.booth}</div>
-                      </td>
-
-                      <td className="py-3 px-3">
-                        <span className="text-[10.5px] px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-medium">
-                          {t.category}
-                        </span>
-                      </td>
-
-                      <td className="py-3 px-3">
-                        <span
-                          className={`text-[10px] font-bold px-2 py-0.5 rounded ${
-                            t.priority === "CRITICAL"
-                              ? "bg-rose-100 text-rose-700 dark:bg-rose-950 dark:text-rose-300"
-                              : t.priority === "HIGH"
-                              ? "bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300"
-                              : "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300"
-                          }`}
-                        >
-                          {t.priority}
-                        </span>
-                      </td>
-
-                      <td className="py-3 px-3">
-                        <span
-                          className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                            t.status === "OPEN"
-                              ? "bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300"
-                              : t.status === "IN PROGRESS"
-                              ? "bg-indigo-50 text-indigo-700 dark:bg-indigo-950/40 dark:text-indigo-300"
-                              : "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300"
-                          }`}
-                        >
-                          {t.status}
-                        </span>
-                      </td>
-
-                      <td className="py-3 px-3">
-                        <div className="font-semibold text-slate-800 dark:text-white">{t.reporter}</div>
-                        <div className="text-[10px] text-slate-400 font-mono">{t.phone}</div>
-                      </td>
-
-                      <td className="py-3 px-3 text-right">
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setSelectedTicket(t);
-                          }}
-                          className="p-1 rounded text-slate-400 hover:text-brand-600 cursor-pointer"
-                        >
-                          <Eye className="w-3.5 h-3.5" />
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
             </div>
 
-            {/* Right 1 Col: Detailed Inspection Card */}
-            {selectedTicket && (
-              <div className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-xl border border-slate-200 dark:border-slate-800 space-y-3 flex flex-col justify-between">
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between pb-2 border-b border-slate-200 dark:border-slate-700">
-                    <span className="font-mono text-xs font-bold text-brand-600">{selectedTicket.id}</span>
-                    <span
-                      className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                        selectedTicket.status === "OPEN"
-                          ? "bg-amber-100 text-amber-800"
-                          : selectedTicket.status === "IN PROGRESS"
-                          ? "bg-indigo-100 text-indigo-800"
-                          : "bg-emerald-100 text-emerald-800"
-                      }`}
+            {/* Post Note Form */}
+            <form
+              onSubmit={handlePostComment}
+              className="p-4 border-t border-slate-200 bg-slate-50 flex gap-2"
+            >
+              <input
+                type="text"
+                placeholder="Add departmental coordination note or update..."
+                value={commentInput}
+                onChange={(e) => setCommentInput(e.target.value)}
+                className="flex-1 px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-blue-500"
+              />
+              <button
+                type="submit"
+                disabled={!commentInput.trim()}
+                className="px-4 py-2 bg-[#2563EB] hover:bg-blue-700 text-white font-bold rounded-xl text-xs transition-colors disabled:opacity-40 cursor-pointer"
+              >
+                Post Note
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ===================================================================== */}
+      {/* 6. REGISTER VISITOR / NEW TICKET MODAL                                */}
+      {/* ===================================================================== */}
+      {isRegisterModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-fade-in">
+          <div className="bg-white rounded-3xl shadow-2xl max-w-lg w-full border border-slate-200 overflow-hidden p-6 animate-scale-up">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+              <div>
+                <h3 className="font-bold text-slate-900 text-base">
+                  Register Citizen Visitor &amp; Grievance
+                </h3>
+                <p className="text-xs text-slate-500">
+                  Log reception footfall and match with voter electoral roll.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsRegisterModalOpen(false)}
+                className="p-1 text-slate-400 hover:text-slate-600 rounded cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleRegisterTicket} className="space-y-4 text-xs">
+              {/* Match with Voter Electoral Roll Card */}
+              <div className="p-3 bg-blue-50/70 border border-blue-200 rounded-2xl space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-blue-900 flex items-center gap-1.5">
+                    <UserCheck className="w-3.5 h-3.5 text-blue-600" />
+                    <span>Match with Voter Electoral Roll</span>
+                  </span>
+                  {linkedVoter && (
+                    <button
+                      type="button"
+                      onClick={() => setLinkedVoter(null)}
+                      className="text-[10px] text-rose-600 hover:underline font-bold cursor-pointer"
                     >
-                      {selectedTicket.status}
+                      Unlink
+                    </button>
+                  )}
+                </div>
+
+                {linkedVoter ? (
+                  <div className="p-2.5 bg-white rounded-xl border border-blue-300 text-blue-950 font-medium space-y-1">
+                    <div className="flex justify-between items-center">
+                      <span className="font-bold">{linkedVoter.fullName}</span>
+                      <span className="font-mono text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded">
+                        {linkedVoter.epicNumber}
+                      </span>
+                    </div>
+                    <span className="text-[10px] text-slate-500 block">
+                      Booth #{linkedVoter.boothNumber} • {linkedVoter.address}
                     </span>
                   </div>
-
+                ) : (
                   <div>
-                    <h3 className="font-bold text-sm text-slate-800 dark:text-white">
-                      {selectedTicket.title}
-                    </h3>
-                    <p className="text-xs text-slate-600 dark:text-slate-300 mt-1 leading-relaxed">
-                      {selectedTicket.description}
-                    </p>
-                  </div>
+                    <input
+                      type="text"
+                      placeholder="Type voter name or EPIC to auto-fill..."
+                      value={voterSearch}
+                      onChange={(e) => setVoterSearch(e.target.value)}
+                      className="w-full p-2 bg-white border border-blue-200 rounded-xl focus:ring-2 focus:ring-blue-500"
+                    />
 
-                  <div className="p-3 bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800 space-y-1.5 text-xs">
-                    <div className="flex justify-between">
-                      <span className="text-slate-400">Category:</span>
-                      <span className="font-semibold">{selectedTicket.category}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-slate-400">Location:</span>
-                      <span className="font-semibold">{selectedTicket.ward}, Booth {selectedTicket.booth}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-slate-400">Reporter:</span>
-                      <span className="font-semibold">{selectedTicket.reporter}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-slate-400">Contact:</span>
-                      <span className="font-mono">{selectedTicket.phone}</span>
-                    </div>
-                    {selectedTicket.linkedEpic && (
-                      <div className="flex justify-between pt-1 border-t border-slate-100 dark:border-slate-800">
-                        <span className="text-slate-400">EPIC Link:</span>
-                        <span className="font-mono font-bold text-brand-600">{selectedTicket.linkedEpic}</span>
+                    {matchedVoters.length > 0 && (
+                      <div className="mt-2 bg-white rounded-xl border border-blue-200 shadow-sm max-h-32 overflow-y-auto divide-y divide-slate-100">
+                        {matchedVoters.map((v) => (
+                          <div
+                            key={v.id}
+                            onClick={() => {
+                              setLinkedVoter(v);
+                              setVisitorName(v.fullName);
+                              setVisitorPhone(v.mobile);
+                              setVisitorAddress(v.address);
+                              setVoterSearch("");
+                            }}
+                            className="p-2 hover:bg-blue-50 cursor-pointer flex justify-between items-center transition-colors"
+                          >
+                            <div>
+                              <span className="font-bold text-slate-900 block">
+                                {v.fullName}
+                              </span>
+                              <span className="text-[10px] text-slate-500">
+                                {v.address}
+                              </span>
+                            </div>
+                            <span className="font-mono text-[10px] font-bold text-blue-700">
+                              {v.epicNumber}
+                            </span>
+                          </div>
+                        ))}
                       </div>
                     )}
                   </div>
-                </div>
-
-                <div className="pt-3 border-t border-slate-200 dark:border-slate-700 space-y-2">
-                  <span className="text-xs font-semibold text-slate-700 dark:text-slate-300 block">
-                    Update Ticket Status:
-                  </span>
-                  <div className="grid grid-cols-3 gap-1.5">
-                    <button
-                      type="button"
-                      onClick={() => handleUpdateStatus(selectedTicket.id, "OPEN")}
-                      className="px-2 py-1 rounded text-[10px] font-bold bg-amber-50 hover:bg-amber-100 text-amber-700 border border-amber-200 transition-colors"
-                    >
-                      Open
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleUpdateStatus(selectedTicket.id, "IN PROGRESS")}
-                      className="px-2 py-1 rounded text-[10px] font-bold bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 transition-colors"
-                    >
-                      In Progress
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleUpdateStatus(selectedTicket.id, "RESOLVED")}
-                      className="px-2 py-1 rounded text-[10px] font-bold bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 transition-colors"
-                    >
-                      Resolved
-                    </button>
-                  </div>
-                </div>
+                )}
               </div>
-            )}
-          </div>
-        )}
 
-        {/* TAB 2: VISITOR RECEPTION & INTERACTION LOG */}
-        {activeTab === "visitors" && (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse text-xs">
-              <thead>
-                <tr className="bg-slate-50 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-800 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
-                  <th className="py-3 px-4">Visitor Name &amp; Contact</th>
-                  <th className="py-3 px-4">Visit Purpose / Grievance</th>
-                  <th className="py-3 px-4">Handling Staff</th>
-                  <th className="py-3 px-4">Elector Linkage</th>
-                  <th className="py-3 px-4">Follow-up Date</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-                {visitors.map((vis) => (
-                  <tr key={vis.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/40">
-                    <td className="py-3 px-4">
-                      <div className="font-bold text-slate-800 dark:text-white">{vis.name}</div>
-                      <div className="text-[11px] text-slate-500 font-mono">{vis.phone}</div>
-                    </td>
-
-                    <td className="py-3 px-4 text-slate-700 dark:text-slate-300 max-w-sm">
-                      {vis.purpose}
-                    </td>
-
-                    <td className="py-3 px-4 font-semibold text-slate-800 dark:text-white">
-                      {vis.handlingStaff}
-                    </td>
-
-                    <td className="py-3 px-4">
-                      {vis.matchedEpic ? (
-                        <span className="font-mono text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
-                          {vis.matchedEpic}
-                        </span>
-                      ) : (
-                        <span className="text-[10px] text-slate-400">New Guest Profile</span>
-                      )}
-                    </td>
-
-                    <td className="py-3 px-4 font-mono text-slate-600 dark:text-slate-400">
-                      {vis.followUpRequired}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </div>
-
-      {/* SECTION 9: ONBOARD NEW VOTER MODAL (Full Name, Marathi Name, EPIC, Phone Validation) */}
-      {showAddNewVoterModal && (
-        <div className="fixed inset-0 z-50 bg-slate-950/75 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl max-w-lg w-full shadow-2xl p-5 space-y-4 max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
-              <div>
-                <h3 className="text-base font-bold text-slate-800 dark:text-white flex items-center gap-2">
-                  <UserPlus className="w-4 h-4 text-brand-600" />
-                  <span>Onboard New Voter to Constituency Roll</span>
-                </h3>
-                <p className="text-xs text-slate-500">ECI Kasba Peth (AC-215) Master Database Enrolment</p>
-              </div>
-              <button
-                type="button"
-                onClick={() => setShowAddNewVoterModal(false)}
-                className="p-1 rounded-lg text-slate-400 hover:text-slate-700 cursor-pointer"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-
-            <form onSubmit={handleAddNewVoterSubmit} className="space-y-3.5 text-xs">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {/* Visitor Name & Mobile Phone */}
+              <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                    Full Name (English) *
+                  <label className="block font-semibold text-slate-700 mb-1">
+                    Visitor Name *
                   </label>
                   <input
                     type="text"
                     required
-                    value={onboardName}
-                    onChange={(e) => setOnboardName(e.target.value)}
-                    placeholder="e.g. Ramesh Baburao Jadhav"
-                    className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-white"
+                    value={visitorName}
+                    onChange={(e) => setVisitorName(e.target.value)}
+                    className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
-
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                    नाव (मराठी) *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={onboardMarathiName}
-                    onChange={(e) => setOnboardMarathiName(e.target.value)}
-                    placeholder="उदा. रमेश बाबुराव जाधव"
-                    className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-white"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                    EPIC ID (Voter ID Number) *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={onboardEpic}
-                    onChange={(e) => setOnboardEpic(e.target.value)}
-                    placeholder="e.g. WXE5920194"
-                    className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-white uppercase font-mono"
-                  />
-                </div>
-
-                <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                    Mobile Number (10 Digits) *
+                  <label className="block font-semibold text-slate-700 mb-1">
+                    Mobile Phone
                   </label>
                   <input
                     type="tel"
-                    required
-                    value={onboardPhone}
-                    onChange={(e) => setOnboardPhone(e.target.value)}
-                    placeholder="+91 98220 00000"
-                    className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-white font-mono"
+                    value={visitorPhone}
+                    onChange={(e) => setVisitorPhone(e.target.value)}
+                    className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Age</label>
-                  <input
-                    type="number"
-                    min="18"
-                    max="110"
-                    value={onboardAge}
-                    onChange={(e) => setOnboardAge(e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800"
-                  />
-                </div>
-
-                <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Gender</label>
-                  <select
-                    value={onboardGender}
-                    onChange={(e) => setOnboardGender(e.target.value as any)}
-                    className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800"
-                  >
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                    <option value="Other">Other</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Ward</label>
-                  <select
-                    value={onboardWard}
-                    onChange={(e) => setOnboardWard(e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800"
-                  >
-                    <option value="Ward 12">Ward 12 (Kothrud)</option>
-                    <option value="Ward 14">Ward 14 (Erandwane)</option>
-                    <option value="Ward 9">Ward 9 (Gaothan)</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Booth</label>
-                  <select
-                    value={onboardBooth}
-                    onChange={(e) => setOnboardBooth(e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800"
-                  >
-                    <option value="#101">Booth #101</option>
-                    <option value="#106">Booth #106</option>
-                    <option value="#108">Booth #108</option>
-                    <option value="#88">Booth #88</option>
-                  </select>
-                </div>
-              </div>
-
+              {/* Address / Locality */}
               <div>
-                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                  Residential / House Address
+                <label className="block font-semibold text-slate-700 mb-1">
+                  Address / Locality
                 </label>
                 <input
                   type="text"
-                  value={onboardAddress}
-                  onChange={(e) => setOnboardAddress(e.target.value)}
-                  placeholder="e.g. Flat 12, Ganpati Chowk, Kasba Peth, Pune"
-                  className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-white"
+                  value={visitorAddress}
+                  onChange={(e) => setVisitorAddress(e.target.value)}
+                  className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500"
                 />
               </div>
 
-              <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
-                <Button type="button" variant="outline" size="sm" onClick={() => setShowAddNewVoterModal(false)}>
-                  Cancel
-                </Button>
-                <Button type="submit" variant="primary" size="sm" className="bg-brand-600 hover:bg-brand-700">
-                  <UserPlus className="w-3.5 h-3.5" />
-                  <span>Onboard Voter</span>
-                </Button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* REGISTER VISITOR WITH FUZZY MATCH MODAL */}
-      {showRegisterVisitorModal && (
-        <div className="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl max-w-md w-full shadow-2xl p-5 space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
-              <div>
-                <h3 className="text-base font-bold text-slate-800 dark:text-white flex items-center gap-2">
-                  <UserPlus className="w-4 h-4 text-brand-600" />
-                  <span>Register Office Visitor &amp; ECI Lookup</span>
-                </h3>
-                <p className="text-xs text-slate-500">Automated fuzzy duplicate match against master electoral roll.</p>
-              </div>
-              <button
-                type="button"
-                onClick={() => setShowRegisterVisitorModal(false)}
-                className="p-1 rounded-lg text-slate-400 hover:text-slate-700"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-
-            <form onSubmit={handleRegisterVisitorSubmit} className="space-y-3.5 text-xs">
-              <div>
-                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Visitor Full Name *</label>
-                <input
-                  type="text"
-                  required
-                  value={visitorName}
-                  onChange={(e) => setVisitorName(e.target.value)}
-                  placeholder="e.g. Suresh Patil"
-                  className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-brand-500"
-                />
-              </div>
-
-              {/* Fuzzy Match Indicator Banner */}
-              {fuzzyMatch && (
-                <div className="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/40 text-emerald-900 dark:text-emerald-200 space-y-1">
-                  <div className="font-bold flex items-center gap-1.5 text-xs">
-                    <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
-                    <span>Fuzzy Match Found in Master Elector Roll</span>
+              {/* Potential Duplicate Grievance Alert */}
+              {duplicateTickets.length > 0 && (
+                <div className="p-3 bg-amber-50 border border-amber-300 rounded-2xl space-y-1.5 animate-fade-in">
+                  <div className="flex items-center gap-1.5 text-amber-900 font-bold text-xs">
+                    <AlertCircle className="w-4 h-4 text-amber-600 shrink-0" />
+                    <span>Potential Duplicate Grievance Detected ({duplicateTickets.length})</span>
                   </div>
-                  <p className="text-[11px] text-emerald-700 dark:text-emerald-300">
-                    Matches <strong>Rahul Sharad Shinde / Suresh Patil</strong> (Booth #101 &bull; EPIC: WXE4829102). Visitor will be linked to this constituent profile.
+                  <p className="text-[11px] text-amber-800">
+                    Existing tickets found for this citizen/contact. You may inspect the existing record or proceed to log a new ticket.
                   </p>
+                  <div className="space-y-1 max-h-24 overflow-y-auto">
+                    {duplicateTickets.map((t) => (
+                      <div
+                        key={t.id}
+                        className="p-1.5 bg-white rounded-lg border border-amber-200 flex items-center justify-between text-[11px]"
+                      >
+                        <span className="font-bold text-slate-800">
+                          {t.id}: {t.category} ({t.status})
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setInspectTicket(t);
+                            setIsRegisterModalOpen(false);
+                          }}
+                          className="px-2 py-0.5 bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold rounded text-[10px] cursor-pointer"
+                        >
+                          Inspect
+                        </button>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
 
-              <div>
-                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Mobile Contact *</label>
-                <input
-                  type="tel"
-                  required
-                  value={visitorPhone}
-                  onChange={(e) => setVisitorPhone(e.target.value)}
-                  placeholder="+91 98220 11990"
-                  className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-brand-500"
-                />
-              </div>
-
-              <div>
-                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Purpose of Visit / Grievance *</label>
-                <textarea
-                  required
-                  rows={2}
-                  value={visitorPurpose}
-                  onChange={(e) => setVisitorPurpose(e.target.value)}
-                  placeholder="Reason for visiting office (Water, roads, scheme aid, meeting)..."
-                  className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-brand-500"
-                />
-              </div>
-
-              <div>
-                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Follow-Up Date (Optional)</label>
-                <input
-                  type="date"
-                  value={visitorFollowUp}
-                  onChange={(e) => setVisitorFollowUp(e.target.value)}
-                  className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-brand-500"
-                />
-              </div>
-
-              <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
-                <Button type="button" variant="outline" size="sm" onClick={() => setShowRegisterVisitorModal(false)}>
-                  Cancel
-                </Button>
-                <Button type="submit" variant="primary" size="sm">
-                  Register &amp; Link Profile
-                </Button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* CREATE GRIEVANCE TICKET MODAL */}
-      {showCreateTicketModal && (
-        <div className="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl max-w-md w-full shadow-2xl p-5 space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
-              <div>
-                <h3 className="text-base font-bold text-slate-800 dark:text-white flex items-center gap-2">
-                  <Plus className="w-4 h-4 text-brand-600" />
-                  <span>Log Civic Grievance Ticket</span>
-                </h3>
-                <p className="text-xs text-slate-500">Dispatch issue to ward coordinator &amp; track resolution.</p>
-              </div>
-              <button
-                type="button"
-                onClick={() => setShowCreateTicketModal(false)}
-                className="p-1 rounded-lg text-slate-400 hover:text-slate-700"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-
-            <form onSubmit={handleCreateTicketSubmit} className="space-y-3.5 text-xs">
-              {newLinkedEpic && (
-                <div className="p-2.5 rounded-lg bg-brand-50 dark:bg-brand-950/40 border border-brand-200 dark:border-brand-800 flex items-center justify-between text-brand-800 dark:text-brand-300">
-                  <span className="flex items-center gap-1.5 font-semibold">
-                    <UserCheck className="w-3.5 h-3.5 text-brand-600" />
-                    <span>Pre-loaded Elector: {newReporter}</span>
-                  </span>
-                  <span className="font-mono text-[10.5px] font-bold">{newLinkedEpic}</span>
-                </div>
-              )}
-
-              <div>
-                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Issue Headline *</label>
-                <input
-                  type="text"
-                  required
-                  value={newTitle}
-                  onChange={(e) => setNewTitle(e.target.value)}
-                  placeholder="e.g. Low water pressure in Dahanukar Colony"
-                  className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-brand-500"
-                />
-              </div>
-
+              {/* Category & Priority */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Category *</label>
+                  <label className="block font-semibold text-slate-700 mb-1">
+                    Issue Category
+                  </label>
                   <select
-                    value={newCategory}
-                    onChange={(e) => setNewCategory(e.target.value as TicketItem["category"])}
-                    className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-white"
+                    value={category}
+                    onChange={(e) => setCategory(e.target.value)}
+                    className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-medium focus:ring-2 focus:ring-blue-500 cursor-pointer"
                   >
                     <option value="Water Supply">Water Supply</option>
-                    <option value="Roads & Infra">Roads &amp; Infra</option>
-                    <option value="Pension & Welfare">Pension &amp; Welfare</option>
+                    <option value="Roads &amp; Infrastructure">Roads &amp; Infrastructure</option>
+                    <option value="Pension">Pension</option>
                     <option value="Electricity">Electricity</option>
-                    <option value="Ration Card">Ration Card</option>
+                    <option value="Sanitation">Sanitation</option>
+                    <option value="Ration &amp; Civil Supplies">Ration &amp; Civil Supplies</option>
+                    <option value="Healthcare">Healthcare</option>
                   </select>
                 </div>
-
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Priority *</label>
+                  <label className="block font-semibold text-slate-700 mb-1">
+                    Priority Level
+                  </label>
                   <select
-                    value={newPriority}
-                    onChange={(e) => setNewPriority(e.target.value as TicketItem["priority"])}
-                    className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-white"
+                    value={priority}
+                    onChange={(e) =>
+                      setPriority(e.target.value as "CRITICAL" | "HIGH" | "MEDIUM" | "LOW")
+                    }
+                    className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-medium focus:ring-2 focus:ring-blue-500 cursor-pointer"
                   >
                     <option value="CRITICAL">Critical</option>
                     <option value="HIGH">High</option>
@@ -1203,61 +1004,61 @@ export function OfficeTicketsView() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Ward *</label>
-                  <input
-                    type="text"
-                    value={newWard}
-                    onChange={(e) => setNewWard(e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-white"
-                  />
-                </div>
-
-                <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Booth Number *</label>
-                  <input
-                    type="text"
-                    value={newBooth}
-                    onChange={(e) => setNewBooth(e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-white"
-                  />
-                </div>
+              {/* Assigned Officer */}
+              <div>
+                <label className="block font-semibold text-slate-700 mb-1">
+                  Assign Officer
+                </label>
+                <select
+                  value={assignedTo}
+                  onChange={(e) => setAssignedTo(e.target.value)}
+                  className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-medium focus:ring-2 focus:ring-blue-500 cursor-pointer"
+                >
+                  <option value="Sachin Babar (Prabhaag Incharge)">
+                    Sachin Babar (Prabhaag Incharge)
+                  </option>
+                  <option value="Office Helpdesk (Sanjay Shinde)">
+                    Office Helpdesk (Sanjay Shinde)
+                  </option>
+                  <option value="Pooja Jadhav (Karyakarta Lead)">
+                    Pooja Jadhav (Karyakarta Lead)
+                  </option>
+                  <option value="Amit Deshmukh (Prabhaag Incharge)">
+                    Amit Deshmukh (Prabhaag Incharge)
+                  </option>
+                </select>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Reporter Name *</label>
-                  <input
-                    type="text"
-                    required
-                    value={newReporter}
-                    onChange={(e) => setNewReporter(e.target.value)}
-                    placeholder="Constituent Name"
-                    className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-white"
-                  />
-                </div>
-
-                <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Reporter Mobile Phone *</label>
-                  <input
-                    type="tel"
-                    required
-                    value={newPhone}
-                    onChange={(e) => setNewPhone(e.target.value)}
-                    placeholder="+91 98220 00000"
-                    className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-white"
-                  />
-                </div>
+              {/* Detailed Description */}
+              <div>
+                <label className="block font-semibold text-slate-700 mb-1">
+                  Detailed Grievance Description *
+                </label>
+                <textarea
+                  rows={3}
+                  required
+                  placeholder="Describe citizen demand, problem area, and action requested..."
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500"
+                />
               </div>
 
-              <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
-                <Button type="button" variant="outline" size="sm" onClick={() => setShowCreateTicketModal(false)}>
+              {/* Actions */}
+              <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
+                <button
+                  type="button"
+                  onClick={() => setIsRegisterModalOpen(false)}
+                  className="px-4 py-2 rounded-xl text-slate-600 hover:bg-slate-100 font-semibold cursor-pointer"
+                >
                   Cancel
-                </Button>
-                <Button type="submit" variant="primary" size="sm">
-                  Create Ticket
-                </Button>
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2 bg-[#2563EB] hover:bg-blue-700 text-white font-bold rounded-xl transition-colors shadow-sm cursor-pointer"
+                >
+                  Register &amp; Assign Ticket
+                </button>
               </div>
             </form>
           </div>
