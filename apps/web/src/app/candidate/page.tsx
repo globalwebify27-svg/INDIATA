@@ -311,7 +311,7 @@ const CRITICAL_ALERTS: CriticalAlert[] = [
     affectedArea: "Prabhaag 12 & 14 (3 Polling Stations, 3,420 Electors)",
     timestamp: "12m ago",
     actionLabel: "Dispatch Surge Squad ->",
-    actionHref: "/candidate/field-map",
+    actionHref: "/field-map",
   },
   {
     id: "alt-02",
@@ -323,7 +323,7 @@ const CRITICAL_ALERTS: CriticalAlert[] = [
     affectedArea: "Dahanukar Colony, Kothrud (Booth #102 & #103)",
     timestamp: "24m ago",
     actionLabel: "Open Ticket Desk ->",
-    actionHref: "/candidate/office",
+    actionHref: "/office/tickets",
   },
   {
     id: "alt-03",
@@ -335,7 +335,7 @@ const CRITICAL_ALERTS: CriticalAlert[] = [
     affectedArea: "Ward 14 - Shivajinagar Gaothan",
     timestamp: "1h ago",
     actionLabel: "Reassign Cadre ->",
-    actionHref: "/candidate/users",
+    actionHref: "/users",
   },
 ];
 
@@ -382,7 +382,7 @@ export default function CandidateWarRoomDashboard() {
         target: "Target Indicator: 1,240 records pending review",
         classification: "Classification: Awaiting sync approval",
         actionText: "Review Update Requests ->",
-        actionHref: "/candidate/voters",
+        actionHref: "/voters",
       },
       {
         id: "sug-2",
@@ -393,7 +393,7 @@ export default function CandidateWarRoomDashboard() {
         target: "Target Indicator: 18 booths covered in records",
         classification: "Classification: Prior election blueprint",
         actionText: "View Historical Strategy ->",
-        actionHref: "/candidate/strategy",
+        actionHref: "/strategy",
       },
       {
         id: "sug-3",
@@ -404,7 +404,7 @@ export default function CandidateWarRoomDashboard() {
         target: "Target Indicator: 2,450 matching records",
         classification: "Classification: Incomplete contact roll",
         actionText: "View Filtered Voters ->",
-        actionHref: "/candidate/voters",
+        actionHref: "/voters",
       },
     ],
     []
@@ -588,7 +588,7 @@ export default function CandidateWarRoomDashboard() {
 
             {/* Register Elector CTA */}
             <Link
-              href="/candidate/voters"
+              href="/voters"
               className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-md shadow-blue-600/20 cursor-pointer transition-all"
             >
               <UserPlus className="w-4 h-4" />
@@ -715,7 +715,7 @@ export default function CandidateWarRoomDashboard() {
         </div>
 
         <Link
-          href="/candidate/field-map"
+          href="/field-map"
           className="px-4 py-2 bg-[#F59E0B] hover:bg-[#D97706] text-white rounded-xl text-xs font-bold shadow-sm shadow-amber-500/20 cursor-pointer flex items-center gap-1.5 whitespace-nowrap"
         >
           <span>Dispatch on Live Map</span>
@@ -877,7 +877,7 @@ export default function CandidateWarRoomDashboard() {
             </div>
 
             <Link
-              href="/candidate/field-map"
+              href="/field-map"
               className="text-xs font-bold text-blue-600 hover:text-blue-700 flex items-center gap-1 self-start sm:self-auto cursor-pointer"
             >
               <span>Expand Interactive Full Map</span>
@@ -1178,7 +1178,7 @@ export default function CandidateWarRoomDashboard() {
                 <Users className="w-4 h-4 text-emerald-600" />
                 <h3 className="font-bold text-slate-900 text-sm">Member Summary</h3>
               </div>
-              <Link href="/candidate/members" className="text-xs font-bold text-blue-600 hover:text-blue-700">
+              <Link href="/members" className="text-xs font-bold text-blue-600 hover:text-blue-700">
                 View Roster &rarr;
               </Link>
             </div>
@@ -1216,7 +1216,7 @@ export default function CandidateWarRoomDashboard() {
       {/* Blue Action Button Row (Screenshot 3) */}
       <div className="flex">
         <Link
-          href="/candidate/voters"
+          href="/voters"
           className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-md shadow-blue-600/20 cursor-pointer flex items-center gap-2"
         >
           <UserPlus className="w-4 h-4" />
@@ -1331,7 +1331,7 @@ export default function CandidateWarRoomDashboard() {
 
           <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
             <span className="text-slate-500">Primary Demographic: <strong>General + OBC (62.1%)</strong></span>
-            <Link href="/candidate/voters" className="font-bold text-blue-600 hover:text-blue-700">
+            <Link href="/voters" className="font-bold text-blue-600 hover:text-blue-700">
               Filter Roll by Caste &rarr;
             </Link>
           </div>
@@ -1734,7 +1734,7 @@ export default function CandidateWarRoomDashboard() {
               </div>
               <p className="text-xs text-slate-500 mt-0.5">Live delivery throughput across automated voter broadcasts.</p>
             </div>
-            <Link href="/candidate/campaigns" className="text-xs font-bold text-blue-600 hover:text-blue-700">
+            <Link href="/campaigns" className="text-xs font-bold text-blue-600 hover:text-blue-700">
               Manage Campaigns &rarr;
             </Link>
           </div>
@@ -1809,7 +1809,7 @@ export default function CandidateWarRoomDashboard() {
               </div>
               <p className="text-xs text-slate-500 mt-0.5">Constituency grievances logged via Candidate Office Helpdesk.</p>
             </div>
-            <Link href="/candidate/office" className="text-xs font-bold text-blue-600 hover:text-blue-700">
+            <Link href="/office/tickets" className="text-xs font-bold text-blue-600 hover:text-blue-700">
               Open Ticket Desk &rarr;
             </Link>
           </div>
@@ -1910,7 +1910,7 @@ export default function CandidateWarRoomDashboard() {
               Constituency voter segmentation across age cohorts, gender ratio, and social clusters.
             </p>
           </div>
-          <Link href="/candidate/voters" className="text-xs font-bold text-blue-600 hover:text-blue-700">
+          <Link href="/voters" className="text-xs font-bold text-blue-600 hover:text-blue-700">
             Explore Full Board &rarr;
           </Link>
         </div>
@@ -2110,7 +2110,7 @@ export default function CandidateWarRoomDashboard() {
               <Clock className="w-3.5 h-3.5" />
               <span>Last Refreshed: 22:50</span>
             </span>
-            <Link href="/candidate/voters" className="font-bold text-blue-600 hover:text-blue-700">
+            <Link href="/voters" className="font-bold text-blue-600 hover:text-blue-700">
               Filter Electors &rarr;
             </Link>
           </div>
@@ -2829,7 +2829,7 @@ export default function CandidateWarRoomDashboard() {
                 Chronological operational log across voter registrations, surveys, tasks, and grievances.
               </p>
             </div>
-            <Link href="/candidate/activities" className="text-xs font-bold text-blue-600 hover:text-blue-700">
+            <Link href="/activities" className="text-xs font-bold text-blue-600 hover:text-blue-700">
               View Full Audit Trail &rarr;
             </Link>
           </div>
@@ -2902,6 +2902,60 @@ export default function CandidateWarRoomDashboard() {
             </div>
           </div>
         </div>
+
+        {/* Live Feedback & Voter Sentiment Card */}
+        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="flex items-center gap-2">
+                <MessageSquare className="w-4 h-4 text-emerald-600" />
+                <h3 className="font-bold text-slate-900 text-sm">Live Feedback &amp; Citizen Reactions</h3>
+                <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping" />
+                  Live Stream
+                </span>
+              </div>
+              <p className="text-xs text-slate-500 mt-0.5">
+                Real-time feedback collected by booth karyakartas, WhatsApp citizen lines, and outbound IVR calls.
+              </p>
+            </div>
+            <Link href="/feedback" className="text-xs font-bold text-blue-600 hover:text-blue-700">
+              Open Live Feedback Hub &rarr;
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-xs">
+            <div className="p-3 bg-emerald-50/50 rounded-xl border border-emerald-100 space-y-1">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800">POSITIVE</span>
+                <span className="text-slate-400 text-[10px]">4m ago</span>
+              </div>
+              <h5 className="font-bold text-slate-900 mt-1">Ramesh N. Joshi (Booth #101)</h5>
+              <p className="text-slate-600">Voter slip delivered at home. Entire 5-member family confirmed support for our candidate.</p>
+              <p className="text-slate-400 text-[11px]">Reported by: Pooja Jadhav (Karyakarta)</p>
+            </div>
+
+            <div className="p-3 bg-rose-50/50 rounded-xl border border-rose-100 space-y-1">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-rose-100 text-rose-800">URGENT</span>
+                <span className="text-slate-400 text-[10px]">12m ago</span>
+              </div>
+              <h5 className="font-bold text-slate-900 mt-1">Sunita A. Deshmukh (Booth #102)</h5>
+              <p className="text-slate-600">Drinking water low pressure in Dahanukar Colony Lane 3. Tanker requested urgently.</p>
+              <p className="text-slate-400 text-[11px]">Via: Citizen WhatsApp Line</p>
+            </div>
+
+            <div className="p-3 bg-amber-50/50 rounded-xl border border-amber-100 space-y-1">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-100 text-amber-800">SWING</span>
+                <span className="text-slate-400 text-[10px]">28m ago</span>
+              </div>
+              <h5 className="font-bold text-slate-900 mt-1">Amit S. Kulkarni (Booth #103)</h5>
+              <p className="text-slate-600">Answered AI voice call. Expressed satisfaction with candidate, asked for Paud Phata traffic solution.</p>
+              <p className="text-slate-400 text-[11px]">Via: AI Outbound Call Survey</p>
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* ========================================================================= */}
@@ -2920,7 +2974,7 @@ export default function CandidateWarRoomDashboard() {
                 Constituency-wide throughput of printed, digital WhatsApp slips, and door-to-door handovers.
               </p>
             </div>
-            <Link href="/candidate/voters" className="text-xs font-bold text-blue-600 hover:text-blue-700">
+            <Link href="/voters" className="text-xs font-bold text-blue-600 hover:text-blue-700">
               Launch Slip Batch Generator &rarr;
             </Link>
           </div>
@@ -3028,7 +3082,7 @@ export default function CandidateWarRoomDashboard() {
                   Top karyakarta mobilizers ranked by door-to-door surveys and voter slips handed over.
                 </p>
               </div>
-              <Link href="/candidate/users" className="text-xs font-bold text-blue-600 hover:text-blue-700">
+              <Link href="/users" className="text-xs font-bold text-blue-600 hover:text-blue-700">
                 All 4,850 Cadre &rarr;
               </Link>
             </div>
@@ -3256,7 +3310,7 @@ export default function CandidateWarRoomDashboard() {
 
             {/* Bottom Button */}
             <Link
-              href="/candidate/activities"
+              href="/activities"
               className="w-full py-2.5 px-4 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold text-center block transition-all"
             >
               View Complete Activity Audit Log

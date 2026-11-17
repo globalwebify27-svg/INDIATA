@@ -45,9 +45,8 @@ import {
   Vote,
   Clock,
   User,
-  
-  
-  
+  RotateCcw,
+  Lock,
 } from "lucide-react";
 import { useToast } from "@/context/toast-context";
 
@@ -1021,6 +1020,9 @@ interface VoterProfileViewProps {
   onBack: () => void;
   communityAllocations: CommunityAllocation[];
   electorStatus?: string;
+  isElectionActive?: boolean;
+  onToggleTurnout?: (voterId: string) => void;
+  onToggleElectionActive?: () => void;
 }
 
 function ContinuousVoterProfileView({
@@ -1028,6 +1030,9 @@ function ContinuousVoterProfileView({
   onBack,
   communityAllocations,
   electorStatus,
+  isElectionActive = true,
+  onToggleTurnout,
+  onToggleElectionActive,
 }: VoterProfileViewProps) {
   const { showToast } = useToast();
 
@@ -1051,6 +1056,33 @@ function ContinuousVoterProfileView({
         </button>
 
         <div className="flex items-center gap-2">
+          {/* Turnout Toggle Action Button */}
+          <button
+            type="button"
+            onClick={() => onToggleTurnout && onToggleTurnout(voter.id)}
+            disabled={!isElectionActive}
+            title={!isElectionActive ? "Turnout recording locked: Election concluded" : "Toggle voter turnout status"}
+            className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-xl transition-all shadow-xs cursor-pointer ${
+              !isElectionActive
+                ? "bg-slate-100 text-slate-400 dark:bg-slate-800 dark:text-slate-500 cursor-not-allowed opacity-60"
+                : voter.hasVoted
+                ? "bg-emerald-600 hover:bg-emerald-700 text-white"
+                : "bg-amber-500 hover:bg-amber-600 text-white"
+            }`}
+          >
+            {voter.hasVoted ? (
+              <>
+                <CheckCircle2 className="w-3.5 h-3.5" />
+                <span>Turnout: Voted</span>
+              </>
+            ) : (
+              <>
+                <Vote className="w-3.5 h-3.5" />
+                <span>Mark as Voted</span>
+              </>
+            )}
+          </button>
+
           <button
             onClick={() => showToast("info", "Voter Slip", `Generating printable voter slip for ${voter.fullName}...`)}
             className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold rounded-xl transition-colors cursor-pointer"
@@ -1119,6 +1151,95 @@ function ContinuousVoterProfileView({
               <span className="px-3 py-1 rounded-full text-xs font-bold bg-purple-100 text-purple-800 dark:bg-purple-950 dark:text-purple-300 border border-purple-200">
                 Key Community Influencer
               </span>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* ELECTION DAY VOTER TURNOUT INTERACTIVE CARD */}
+      <div className={`rounded-2xl border p-5 shadow-xs transition-all ${
+        voter.hasVoted 
+          ? "bg-emerald-50/50 dark:bg-emerald-950/20 border-emerald-200 dark:border-emerald-800/80" 
+          : "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800"
+      }`}>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-start gap-3.5">
+            <div className={`w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 ${
+              voter.hasVoted 
+                ? "bg-emerald-600 text-white shadow-sm" 
+                : "bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300"
+            }`}>
+              {voter.hasVoted ? <CheckCircle2 className="w-6 h-6" /> : <Vote className="w-6 h-6" />}
+            </div>
+            <div>
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="text-xs font-extrabold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                  Polling Day Turnout Verification
+                </span>
+                {isElectionActive ? (
+                  <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                    Election Active: Polls Open (07:00 AM - 06:00 PM)
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border border-slate-300 dark:border-slate-700">
+                    <Lock className="w-3 h-3 text-slate-500" />
+                    Election Concluded (Read-Only)
+                  </span>
+                )}
+              </div>
+              <h3 className="text-base font-extrabold text-slate-900 dark:text-white mt-1">
+                {voter.hasVoted 
+                  ? "Turnout Recorded: Elector has cast ballot at EVM" 
+                  : "Turnout Pending: Elector has not yet voted"}
+              </h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                {voter.hasVoted
+                  ? `Verified voter turnout recorded for Booth #${voter.boothNumber} (${voter.pollingStation}).`
+                  : `Mark elector when they arrive and cast their ballot at the designated polling station.`}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3">
+            {isElectionActive ? (
+              <button
+                type="button"
+                onClick={() => onToggleTurnout && onToggleTurnout(voter.id)}
+                className={`px-4 py-2.5 rounded-xl font-extrabold text-xs flex items-center gap-2 transition-all shadow-xs cursor-pointer ${
+                  voter.hasVoted
+                    ? "bg-slate-100 hover:bg-rose-50 text-slate-700 hover:text-rose-700 dark:bg-slate-800 dark:hover:bg-rose-950/60 dark:text-slate-200 dark:hover:text-rose-300 border border-slate-200 dark:border-slate-700"
+                    : "bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-emerald-500/20"
+                }`}
+              >
+                {voter.hasVoted ? (
+                  <>
+                    <RotateCcw className="w-3.5 h-3.5" />
+                    <span>Undo / Mark Not Voted</span>
+                  </>
+                ) : (
+                  <>
+                    <CheckCircle2 className="w-4 h-4" />
+                    <span>Confirm Elector Has Voted</span>
+                  </>
+                )}
+              </button>
+            ) : (
+              <div className="px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 text-xs font-semibold flex items-center gap-2">
+                <Lock className="w-3.5 h-3.5" />
+                <span>Turnout Closed</span>
+              </div>
+            )}
+
+            {onToggleElectionActive && (
+              <button
+                type="button"
+                onClick={onToggleElectionActive}
+                className="text-[10px] text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 underline cursor-pointer"
+                title="Toggle simulation between Active Election Day and Concluded Election"
+              >
+                {isElectionActive ? "Simulate: Conclude Polls" : "Simulate: Open Polls"}
+              </button>
             )}
           </div>
         </div>
@@ -1317,11 +1438,22 @@ function ContinuousVoterProfileView({
                 {voter.isHelped ? "Helped / Resolved" : "No Open Issues"}
               </span>
             </div>
-            <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 text-center">
-              <span className="text-slate-400 block text-[10px] mb-0.5">Polling Day Turnout</span>
-              <span className={`font-bold ${voter.hasVoted ? "text-emerald-600" : "text-amber-500"}`}>
-                {voter.hasVoted ? "Voted (Confirmed)" : "Turnout Pending"}
-              </span>
+            <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 text-center flex flex-col justify-between">
+              <div>
+                <span className="text-slate-400 block text-[10px] mb-0.5">Polling Day Turnout</span>
+                <span className={`font-bold block ${voter.hasVoted ? "text-emerald-600 dark:text-emerald-400" : "text-amber-500 dark:text-amber-400"}`}>
+                  {voter.hasVoted ? "Voted (Confirmed)" : "Turnout Pending"}
+                </span>
+              </div>
+              {isElectionActive && onToggleTurnout && (
+                <button
+                  type="button"
+                  onClick={() => onToggleTurnout(voter.id)}
+                  className="mt-1 text-[10px] font-bold text-blue-600 dark:text-blue-400 hover:underline cursor-pointer"
+                >
+                  {voter.hasVoted ? "Revert Status" : "Mark Voted"}
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -1337,8 +1469,39 @@ function ContinuousVoterProfileView({
 export function VoterManagementView() {
   const { showToast } = useToast();
 
+  // Local state of electors for reactive updates
+  const [electors, setElectors] = useState<ElectorRecord[]>(SEED_ELECTORS);
+
+  // Active Election Day State (Client requirement: turnout control active during polling days)
+  const [isElectionDayActive, setIsElectionDayActive] = useState<boolean>(true);
+
   // Selected Voter for Profile View (Continuous full-page view)
   const [selectedVoter, setSelectedVoter] = useState<ElectorRecord | null>(null);
+
+  // Toggle Turnout Handler
+  const handleToggleTurnout = (voterId: string) => {
+    if (!isElectionDayActive) {
+      showToast("warning", "Election Concluded", "Voter turnout recording is restricted to active election polling days only.");
+      return;
+    }
+    setElectors((prev) =>
+      prev.map((e) => {
+        if (e.id === voterId) {
+          const nextVoted = !e.hasVoted;
+          showToast(
+            nextVoted ? "success" : "info",
+            nextVoted ? "Voter Turnout Confirmed" : "Turnout Status Reverted",
+            `${e.fullName} has been marked as ${nextVoted ? "VOTED (Confirmed at Booth #" + e.boothNumber + ")" : "NOT VOTED (Turnout Pending)"}.`
+          );
+          return { ...e, hasVoted: nextVoted };
+        }
+        return e;
+      })
+    );
+    if (selectedVoter && selectedVoter.id === voterId) {
+      setSelectedVoter((prev) => (prev ? { ...prev, hasVoted: !prev.hasVoted } : null));
+    }
+  };
 
   // Quick Filters State
   const [activeQuickFilter, setActiveQuickFilter] = useState<string>("total");
@@ -1633,40 +1796,40 @@ export function VoterManagementView() {
   // Distinct Filter Option Sets
   const uniqueConstituencies = useMemo(() => {
     const s = new Set<string>();
-    SEED_ELECTORS.forEach((e) => {
+    electors.forEach((e) => {
       if (e.constituencyNo) s.add(e.constituencyNo);
     });
     return Array.from(s).sort();
-  }, []);
+  }, [electors]);
 
   const uniqueBooths = useMemo(() => {
     const s = new Set<number>();
-    SEED_ELECTORS.forEach((e) => {
+    electors.forEach((e) => {
       if (e.boothNumber) s.add(e.boothNumber);
     });
     return Array.from(s).sort((a, b) => a - b);
-  }, []);
+  }, [electors]);
 
   const uniqueStations = useMemo(() => {
     const s = new Set<string>();
-    SEED_ELECTORS.forEach((e) => {
+    electors.forEach((e) => {
       if (e.pollingStation) s.add(e.pollingStation);
     });
     return Array.from(s).sort();
-  }, []);
+  }, [electors]);
 
   const uniqueWards = useMemo(() => {
     const s = new Set<string>();
-    SEED_ELECTORS.forEach((e) => {
+    electors.forEach((e) => {
       if (e.ward) s.add(e.ward);
       else if (e.prabhaag) s.add(e.prabhaag);
     });
     return Array.from(s).sort();
-  }, []);
+  }, [electors]);
 
   // Filter Electors
   const filteredElectors = useMemo(() => {
-    return SEED_ELECTORS.filter((e) => {
+    return electors.filter((e) => {
       // 1. Quick Filters
       if (activeQuickFilter === "male" && e.gender !== "MALE") return false;
       if (activeQuickFilter === "female" && e.gender !== "FEMALE") return false;
@@ -1936,6 +2099,9 @@ export function VoterManagementView() {
         onBack={() => setSelectedVoter(null)}
         communityAllocations={getAllocationsForElector(selectedVoter.id || selectedVoter.voterCode)}
         electorStatus={getElectorCommunityStatus(selectedVoter.id || selectedVoter.voterCode)}
+        isElectionActive={isElectionDayActive}
+        onToggleTurnout={handleToggleTurnout}
+        onToggleElectionActive={() => setIsElectionDayActive((prev) => !prev)}
       />
     );
   }
@@ -2000,6 +2166,50 @@ export function VoterManagementView() {
             className="flex items-center gap-1.5 px-3.5 py-1.5 bg-[#2563EB] hover:bg-blue-700 active:scale-95 text-white font-bold rounded-xl text-xs transition-all shadow-xs cursor-pointer"
           >
             <span>+ + Add Voter</span>
+          </button>
+        </div>
+      </div>
+
+      {/* ===================================================================== */}
+      {/* ACTIVE ELECTION DAY TURNOUT WINDOW BANNER                             */}
+      {/* ===================================================================== */}
+      <div className={`p-4 rounded-2xl border flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs transition-all ${
+        isElectionDayActive
+          ? "bg-gradient-to-r from-emerald-500/10 via-teal-500/10 to-blue-500/10 border-emerald-200 dark:border-emerald-800/80"
+          : "bg-slate-100 dark:bg-slate-900 border-slate-200 dark:border-slate-800"
+      }`}>
+        <div className="flex items-center gap-3">
+          <span className={`w-3 h-3 rounded-full shrink-0 ${isElectionDayActive ? "bg-emerald-500 animate-ping" : "bg-slate-400"}`} />
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="font-extrabold text-slate-900 dark:text-white">
+                {isElectionDayActive ? "Active Election Day Polling Turnout Window" : "Election Concluded • Polling Stations Closed"}
+              </span>
+              <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                isElectionDayActive
+                  ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300"
+                  : "bg-slate-200 text-slate-700 dark:bg-slate-800 dark:text-slate-400"
+              }`}>
+                {isElectionDayActive ? "POLLS ACTIVE (07:00 AM - 06:00 PM)" : "READ-ONLY ARCHIVE"}
+              </span>
+            </div>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+              {isElectionDayActive
+                ? "Real-time voter turnout recording enabled across all booths. Open any central voter profile to verify & toggle turnout status."
+                : "Polling has ended. Central voter profile turnout controls are locked in read-only audit mode."}
+            </p>
+          </div>
+        </div>
+        <div className="flex items-center gap-2 shrink-0">
+          <button
+            type="button"
+            onClick={() => {
+              setIsElectionDayActive((prev) => !prev);
+              showToast("info", "Election Mode Switched", !isElectionDayActive ? "Election day mode activated: Polling window opened." : "Election concluded mode: Polling window closed.");
+            }}
+            className="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold transition-all shadow-xs cursor-pointer"
+          >
+            {isElectionDayActive ? "Simulate: Close Polls" : "Simulate: Open Polls"}
           </button>
         </div>
       </div>

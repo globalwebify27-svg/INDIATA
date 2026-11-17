@@ -21,6 +21,7 @@ import {
   Settings,
   LogOut,
   X,
+  MessageSquare,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { useAuth } from "@/context/auth-context";
@@ -63,6 +64,13 @@ export const NAV_GROUPS: NavGroupConfig[] = [
         label: "Live Field Map",
         href: "/field-map",
         icon: MapPin,
+        pulseDot: true,
+      },
+      {
+        key: "feedback",
+        label: "Live Feedback",
+        href: "/feedback",
+        icon: MessageSquare,
         pulseDot: true,
       },
       {

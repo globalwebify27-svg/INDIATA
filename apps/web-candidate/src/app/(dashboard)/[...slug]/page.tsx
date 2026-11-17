@@ -15,6 +15,7 @@ import { SubscriptionPlansView } from "@/components/modules/subscription-plans-v
 import { ReportsAnalyticsView } from "@/components/modules/reports-analytics-view";
 import { PreviousElectionStrategyView } from "@/components/modules/previous-election-strategy-view";
 import { PortalSettingsView } from "@/components/modules/portal-settings-view";
+import { LiveFeedbackView } from "@/components/modules/live-feedback-view";
 
 export default function CandidateDynamicModulePage() {
   const pathname = usePathname();
@@ -55,6 +56,11 @@ export default function CandidateDynamicModulePage() {
   // Live Field Map GPS Telemetry
   if (pathname.startsWith("/field-map")) {
     return <LiveFieldMapView />;
+  }
+
+  // Live Feedback & Voter Sentiment Stream
+  if (pathname.includes("/feedback")) {
+    return <LiveFeedbackView />;
   }
 
   // Government BLO & Booth Management

@@ -21,6 +21,7 @@ import {
   LogOut,
   ChevronDown,
   X,
+  MessageSquare,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { useAuth } from "@/context/auth-context";
@@ -69,6 +70,14 @@ export const NAV_GROUPS: NavGroupConfig[] = [
         href: "/candidate/field-map",
         icon: MapPin,
         iconColor: "text-cyan-400",
+        pulseDot: true,
+      },
+      {
+        key: "feedback",
+        label: "Live Feedback",
+        href: "/candidate/feedback",
+        icon: MessageSquare,
+        iconColor: "text-emerald-400",
         pulseDot: true,
       },
       {

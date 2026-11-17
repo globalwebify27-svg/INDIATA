@@ -2902,6 +2902,60 @@ export default function CandidateWarRoomDashboard() {
             </div>
           </div>
         </div>
+
+        {/* Live Feedback & Voter Sentiment Card */}
+        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="flex items-center gap-2">
+                <MessageSquare className="w-4 h-4 text-emerald-600" />
+                <h3 className="font-bold text-slate-900 text-sm">Live Feedback &amp; Citizen Reactions</h3>
+                <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping" />
+                  Live Stream
+                </span>
+              </div>
+              <p className="text-xs text-slate-500 mt-0.5">
+                Real-time feedback collected by booth karyakartas, WhatsApp citizen lines, and outbound IVR calls.
+              </p>
+            </div>
+            <Link href="/feedback" className="text-xs font-bold text-blue-600 hover:text-blue-700">
+              Open Live Feedback Hub &rarr;
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-xs">
+            <div className="p-3 bg-emerald-50/50 rounded-xl border border-emerald-100 space-y-1">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800">POSITIVE</span>
+                <span className="text-slate-400 text-[10px]">4m ago</span>
+              </div>
+              <h5 className="font-bold text-slate-900 mt-1">Ramesh N. Joshi (Booth #101)</h5>
+              <p className="text-slate-600">Voter slip delivered at home. Entire 5-member family confirmed support for our candidate.</p>
+              <p className="text-slate-400 text-[11px]">Reported by: Pooja Jadhav (Karyakarta)</p>
+            </div>
+
+            <div className="p-3 bg-rose-50/50 rounded-xl border border-rose-100 space-y-1">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-rose-100 text-rose-800">URGENT</span>
+                <span className="text-slate-400 text-[10px]">12m ago</span>
+              </div>
+              <h5 className="font-bold text-slate-900 mt-1">Sunita A. Deshmukh (Booth #102)</h5>
+              <p className="text-slate-600">Drinking water low pressure in Dahanukar Colony Lane 3. Tanker requested urgently.</p>
+              <p className="text-slate-400 text-[11px]">Via: Citizen WhatsApp Line</p>
+            </div>
+
+            <div className="p-3 bg-amber-50/50 rounded-xl border border-amber-100 space-y-1">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-100 text-amber-800">SWING</span>
+                <span className="text-slate-400 text-[10px]">28m ago</span>
+              </div>
+              <h5 className="font-bold text-slate-900 mt-1">Amit S. Kulkarni (Booth #103)</h5>
+              <p className="text-slate-600">Answered AI voice call. Expressed satisfaction with candidate, asked for Paud Phata traffic solution.</p>
+              <p className="text-slate-400 text-[11px]">Via: AI Outbound Call Survey</p>
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* ========================================================================= */}
