@@ -1,418 +1,418 @@
 "use client";
 
 import React, { useState } from "react";
-import {
-  Search,
-  Download,
-  Eye,
-  ShieldAlert,
-  CheckCircle2,
-  AlertTriangle,
-  User,
-  Laptop,
-  X,
-} from "lucide-react";
+import { Search, Download, Eye, X } from "lucide-react";
 import { useToast } from "@/context/toast-context";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 
-interface ActivityRecord {
+export interface AuditEventRecord {
   id: string;
   timestamp: string;
-  userName: string;
-  userRole: "Candidate Admin" | "Office Lead" | "Ward Coordinator" | "Booth Captain" | "Field Canvasser";
-  actionType: "LOGIN" | "EXPORT_VOTERS" | "UPDATE_VOTER" | "APPROVE_REQUEST" | "CREATE_TICKET" | "DISPATCH_CAMPAIGN" | "SETTINGS_UPDATE";
-  module: "Total Voters" | "Office & Issues" | "Campaign Control" | "Workforce & Users" | "Settings" | "Authentication";
-  targetEntity: string;
+  actor: string;
+  role: string;
+  module: string;
+  action: string;
+  relatedRecord: string;
   ipAddress: string;
   device: string;
-  status: "SUCCESS" | "WARNING" | "BLOCKED";
-  beforeState?: Record<string, string>;
-  afterState?: Record<string, string>;
+  outcome: "SUCCESS" | "FAILED" | "WARNING";
   details: string;
 }
 
-const SAMPLE_ACTIVITIES: ActivityRecord[] = [
+export const SEED_AUDIT_LOGS: AuditEventRecord[] = [
   {
-    id: "act-101",
-    timestamp: "Today, 11:42 AM",
-    userName: "Adv. Vikram Patil",
-    userRole: "Candidate Admin",
-    actionType: "DISPATCH_CAMPAIGN",
-    module: "Campaign Control",
-    targetEntity: "Campaign #CMP-401 (WhatsApp Voter Slips)",
-    ipAddress: "103.24.182.55",
-    device: "Chrome 131 • Windows 11",
-    status: "SUCCESS",
-    details: "Dispatched automated WhatsApp voter slip broadcast to 4,500 electors across Ward 12 & 14.",
-    beforeState: { status: "SCHEDULED", queued: "4,500" },
-    afterState: { status: "ACTIVE_DISPATCH", dispatched: "4,320", delivered: "96%" },
+    id: "aud-1092",
+    timestamp: "2024-04-18 10:42:15",
+    actor: "Adv. Vikram Patil (Candidate)",
+    role: "CANDIDATE_ADMIN",
+    module: "Total Voters",
+    action: "EXPORT_VOTER_LIST_CSV",
+    relatedRecord: "Booth #101 (Navbharat High School)",
+    ipAddress: "192.168.1.105 (Pune)",
+    device: "Chrome / Windows 11",
+    outcome: "SUCCESS",
+    details: "Exported CSV containing 1,142 verified voter records for field printing.",
   },
   {
-    id: "act-102",
-    timestamp: "Today, 10:15 AM",
-    userName: "Ashok Shinde",
-    userRole: "Office Lead",
-    actionType: "APPROVE_REQUEST",
-    module: "Workforce & Users",
-    targetEntity: "Update Req #REQ-901 (Elector: Suresh Patil)",
-    ipAddress: "103.24.182.58",
-    device: "Edge 128 • Windows 10",
-    status: "SUCCESS",
-    details: "Approved mobile number correction and updated family head linkage submitted by Karyakarta Vikas Jadhav.",
-    beforeState: { phone: "Unverified", head: "Self" },
-    afterState: { phone: "+91 98220 11990", head: "Ramesh Patil" },
-  },
-  {
-    id: "act-103",
-    timestamp: "Today, 09:30 AM",
-    userName: "Ashok Shinde",
-    userRole: "Office Lead",
-    actionType: "CREATE_TICKET",
+    id: "aud-1091",
+    timestamp: "2024-04-18 10:20:00",
+    actor: "Sachin Babar (Prabhaag Incharge)",
+    role: "PRABHAAG_INCHARGE",
     module: "Office & Issues",
-    targetEntity: "Ticket #TKT-9210 (Low Municipal Water Pressure)",
-    ipAddress: "103.24.182.58",
-    device: "Edge 128 • Windows 10",
-    status: "SUCCESS",
-    details: "Logged priority grievance ticket for visitor Suresh Patil, assigned to Ward Coordinator Vikas Jadhav.",
-    beforeState: { status: "None" },
-    afterState: { status: "OPEN", priority: "HIGH", ward: "Ward 12" },
+    action: "CREATE_OFFICE_TICKET",
+    relatedRecord: "Ticket #TKT-9210 (Water Supply)",
+    ipAddress: "114.143.120.45 (Pune Mobile)",
+    device: "Mobile Safari / iOS 17",
+    outcome: "SUCCESS",
+    details: "Logged priority citizen grievance regarding municipal pipeline pressure.",
   },
   {
-    id: "act-104",
-    timestamp: "Today, 08:45 AM",
-    userName: "Pooja Jagtap",
-    userRole: "Booth Captain",
-    actionType: "LOGIN",
-    module: "Authentication",
-    targetEntity: "Karyakarta Mobile Gateway",
-    ipAddress: "49.36.128.90",
-    device: "Android 14 • Pixel 7",
-    status: "SUCCESS",
-    details: "Successfully authenticated with OTP into Karyakarta Doorstep Field App for Booth #101.",
+    id: "aud-1090",
+    timestamp: "2024-04-18 09:12:44",
+    actor: "Dr. Sameer Deshpande (War Room Head)",
+    role: "WAR_ROOM_HEAD",
+    module: "Campaign Control",
+    action: "DISPATCH_CAMPAIGN_BROADCAST",
+    relatedRecord: "CMP-01 (Voter Slip Broadcast)",
+    ipAddress: "192.168.1.120 (War Room Server)",
+    device: "Firefox / Ubuntu 22.04",
+    outcome: "SUCCESS",
+    details: "Initiated 4,500 WhatsApp message dispatches with dynamic slip payload.",
   },
   {
-    id: "act-105",
-    timestamp: "Yesterday, 06:12 PM",
-    userName: "Adv. Vikram Patil",
-    userRole: "Candidate Admin",
-    actionType: "EXPORT_VOTERS",
+    id: "aud-1089",
+    timestamp: "2024-04-18 08:35:10",
+    actor: "Ganesh Patil",
+    role: "KARYAKARTA",
+    module: "Users & Karyakarta",
+    action: "SUBMIT_UPDATE_REQUEST",
+    relatedRecord: "User ID #kar-102",
+    ipAddress: "157.34.89.210 (Jio 5G)",
+    device: "Android App / Chrome Mobile",
+    outcome: "SUCCESS",
+    details: "Submitted request to update primary mobile number.",
+  },
+  {
+    id: "aud-1088",
+    timestamp: "2024-04-17 19:40:02",
+    actor: "Pooja Jadhav",
+    role: "KARYAKARTA",
+    module: "Live Field Map",
+    action: "LOG_SURVEY_LOCATION",
+    relatedRecord: "Voter #MH34089211",
+    ipAddress: "106.213.14.77 (Airtel 4G)",
+    device: "Indata Karyakarta App",
+    outcome: "SUCCESS",
+    details: "Survey location marked at Ideal Colony coordinates.",
+  },
+  {
+    id: "aud-1087",
+    timestamp: "2024-04-17 17:15:33",
+    actor: "Mahesh Thorat",
+    role: "DATA_OPERATOR",
     module: "Total Voters",
-    targetEntity: "Booth #101-105 Filtered Elector Roll (5,420 Electors)",
-    ipAddress: "103.24.182.55",
-    device: "Chrome 131 • Windows 11",
-    status: "SUCCESS",
-    details: "Generated encrypted Excel export of 5,420 verified electors for Booth Captains field kit.",
-  },
-  {
-    id: "act-106",
-    timestamp: "Yesterday, 04:30 PM",
-    userName: "Ganesh Bhosale",
-    userRole: "Ward Coordinator",
-    actionType: "UPDATE_VOTER",
-    module: "Total Voters",
-    targetEntity: "Elector #WXE1290384 (Amit Baban Shinde)",
-    ipAddress: "49.36.140.22",
-    device: "Safari • iPhone 15",
-    status: "SUCCESS",
-    details: "Updated residential lane location and added 'Ladki Bahin Beneficiary' tag.",
-    beforeState: { houseNo: "House 88", scheme: "None" },
-    afterState: { houseNo: "House 88, Gaothan Lane 2", scheme: "Ladki Bahin" },
-  },
-  {
-    id: "act-107",
-    timestamp: "Yesterday, 02:15 PM",
-    userName: "Unknown External IP",
-    userRole: "Field Canvasser",
-    actionType: "LOGIN",
-    module: "Authentication",
-    targetEntity: "Portal Staff Portal",
-    ipAddress: "185.220.101.5",
-    device: "Firefox 120 • Linux",
-    status: "BLOCKED",
-    details: "Failed login attempt: Invalid staff security key. Blocked by firewall security policy.",
+    action: "BULK_DELETE_ATTEMPT",
+    relatedRecord: "Booth #108 Roll",
+    ipAddress: "192.168.1.189",
+    device: "Chrome / Windows 10",
+    outcome: "FAILED",
+    details: "Unauthorized bulk deletion rejected by role policy. Alert flagged to Super Admin.",
   },
 ];
 
 export function UserActivitiesAuditView() {
   const { showToast } = useToast();
+  const [logs] = useState<AuditEventRecord[]>(SEED_AUDIT_LOGS);
   const [searchTerm, setSearchTerm] = useState("");
-  const [roleFilter, setRoleFilter] = useState("all");
-  const [actionFilter, setActionFilter] = useState("all");
-  const [selectedActivity, setSelectedActivity] = useState<ActivityRecord | null>(null);
+  const [moduleFilter, setModuleFilter] = useState("ALL");
+  const [outcomeFilter, setOutcomeFilter] = useState("ALL");
+  const [selectedEvent, setSelectedEvent] = useState<AuditEventRecord | null>(null);
 
-  const filtered = SAMPLE_ACTIVITIES.filter((a) => {
-    const matchSearch =
-      a.userName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      a.details.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      a.targetEntity.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      a.ipAddress.includes(searchTerm);
+  const filteredLogs = logs.filter((item) => {
+    const matchesSearch =
+      item.actor.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.action.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.relatedRecord.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.details.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.ipAddress.toLowerCase().includes(searchTerm.toLowerCase());
 
-    const matchRole = roleFilter === "all" || a.userRole === roleFilter;
-    const matchAction = actionFilter === "all" || a.actionType === actionFilter;
+    const matchesModule = moduleFilter === "ALL" || item.module === moduleFilter;
+    const matchesOutcome = outcomeFilter === "ALL" || item.outcome === outcomeFilter;
 
-    return matchSearch && matchRole && matchAction;
+    return matchesSearch && matchesModule && matchesOutcome;
   });
 
-  const handleExport = () => {
-    showToast(
-      "success",
-      "Audit Trail Exported",
-      `Exporting ${filtered.length} cryptographically signed audit log records to Excel / CSV format.`
-    );
-  };
+  const handleExportCsv = () => {
+    const headers = [
+      "Event ID",
+      "Timestamp",
+      "Actor",
+      "Role",
+      "Module",
+      "Action",
+      "Related Record",
+      "IP",
+      "Outcome",
+      "Details",
+    ];
 
-  const getActionBadge = (type: ActivityRecord["actionType"]) => {
-    switch (type) {
-      case "DISPATCH_CAMPAIGN":
-        return <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-50 text-indigo-700 dark:bg-indigo-950/40 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">CAMPAIGN DISPATCH</span>;
-      case "APPROVE_REQUEST":
-        return <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">APPROVE UPDATE</span>;
-      case "CREATE_TICKET":
-        return <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300 border border-amber-200 dark:border-amber-800">CREATE TICKET</span>;
-      case "EXPORT_VOTERS":
-        return <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-cyan-50 text-cyan-700 dark:bg-cyan-950/40 dark:text-cyan-300 border border-cyan-200 dark:border-cyan-800">DATA EXPORT</span>;
-      case "UPDATE_VOTER":
-        return <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-50 text-blue-700 dark:bg-blue-950/40 dark:text-blue-300 border border-blue-200 dark:border-blue-800">VOTER EDIT</span>;
-      case "LOGIN":
-        return <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300">AUTH LOGIN</span>;
-      default:
-        return <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-700">{type}</span>;
-    }
+    const rows = filteredLogs.map((e) => [
+      e.id,
+      e.timestamp,
+      `"${e.actor}"`,
+      e.role,
+      e.module,
+      e.action,
+      `"${e.relatedRecord}"`,
+      e.ipAddress,
+      e.outcome,
+      `"${e.details}"`,
+    ]);
+
+    const csvContent =
+      "data:text/csv;charset=utf-8," +
+      [headers.join(","), ...rows.map((r) => r.join(","))].join("\n");
+
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute(
+      "download",
+      `Indata_Audit_Log_${new Date().toISOString().slice(0, 10)}.csv`
+    );
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    showToast("success", "Export Complete", `Exported ${filteredLogs.length} audit log events to CSV.`);
   };
 
   return (
-    <div className="space-y-5">
-      {/* Module Title Header */}
-      <section className="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-premium-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div className="space-y-6 pb-12 animate-fade-in select-none">
+      {/* HEADER CARD */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
         <div>
-          <div className="flex items-center gap-2 mb-1.5 flex-wrap">
-            <span className="text-[11px] font-bold text-brand-600 uppercase tracking-wider bg-brand-50 px-2.5 py-0.5 rounded-full">
-              Module 06: Compliance &amp; Security
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+              Compliance & Security
             </span>
-            <Badge variant="teal">Immutable Audit Ledger</Badge>
-            <Badge variant="neutral">AC-215 Bound</Badge>
+            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-sky-50 text-sky-800 border border-sky-200">
+              Sample Audit Events
+            </span>
           </div>
-          <h1 className="text-[22px] font-bold text-slate-800 dark:text-white tracking-tight">
-            User Activities &amp; Operations Audit Trail
+          <h1 className="text-xl md:text-2xl font-extrabold text-slate-900 mt-1">
+            User Activities & Security Audit Trail
           </h1>
-          <p className="text-xs text-slate-500 dark:text-[#94A3B8] mt-0.5">
-            Real-time audit logging of all portal operations: logins, voter roll queries, ticket handling, field data change approvals, and campaign broadcasts.
+          <p className="text-xs text-slate-500 mt-0.5">
+            Cryptographic ledger tracking voter lookups, CSV downloads, ticket assignments, and administrative actions.
           </p>
         </div>
 
-        <div className="flex items-center gap-2.5">
-          <Button variant="outline" size="md" onClick={handleExport}>
-            <Download className="w-3.5 h-3.5" />
-            <span>Export Audit Trail</span>
-          </Button>
+        <button
+          type="button"
+          onClick={handleExportCsv}
+          className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs transition-colors shadow-xs cursor-pointer shrink-0"
+        >
+          <Download className="w-4 h-4" />
+          <span>Export Audit Trail CSV</span>
+        </button>
+      </div>
+
+      {/* SEARCH & FILTERS BAR */}
+      <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex flex-col md:flex-row gap-3">
+        <div className="flex-1 relative">
+          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+          <input
+            type="text"
+            placeholder="Search audit trail by actor, action, IP, or details..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-blue-500 focus:bg-white text-slate-800"
+          />
         </div>
-      </section>
 
-      {/* Search & Filter Bar */}
-      <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-premium-xs space-y-3">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-3">
-          <div className="relative w-full md:max-w-md">
-            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
-            <input
-              type="text"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Search by user, action details, IP address..."
-              className="w-full pl-9 pr-3 py-2 text-xs rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-brand-500"
-            />
-          </div>
+        <div className="w-full md:w-48">
+          <select
+            value={moduleFilter}
+            onChange={(e) => setModuleFilter(e.target.value)}
+            className="w-full py-2 px-3 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-700 focus:ring-2 focus:ring-blue-500 cursor-pointer"
+          >
+            <option value="ALL">All Modules</option>
+            <option value="Total Voters">Total Voters</option>
+            <option value="Office & Issues">Office & Issues</option>
+            <option value="Campaign Control">Campaign Control</option>
+            <option value="Users & Karyakarta">Users & Karyakarta</option>
+            <option value="Live Field Map">Live Field Map</option>
+          </select>
+        </div>
 
-          <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
-            <select
-              value={roleFilter}
-              onChange={(e) => setRoleFilter(e.target.value)}
-              className="py-1.5 pl-2.5 pr-7 text-xs rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-brand-500 cursor-pointer"
-            >
-              <option value="all">All User Roles</option>
-              <option value="Candidate Admin">Candidate Admin</option>
-              <option value="Office Lead">Office Lead</option>
-              <option value="Ward Coordinator">Ward Coordinator</option>
-              <option value="Booth Captain">Booth Captain</option>
-            </select>
-
-            <select
-              value={actionFilter}
-              onChange={(e) => setActionFilter(e.target.value)}
-              className="py-1.5 pl-2.5 pr-7 text-xs rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-white focus:outline-none focus:border-brand-500 cursor-pointer"
-            >
-              <option value="all">All Action Types</option>
-              <option value="DISPATCH_CAMPAIGN">Campaign Dispatch</option>
-              <option value="APPROVE_REQUEST">Approve Update</option>
-              <option value="CREATE_TICKET">Create Ticket</option>
-              <option value="EXPORT_VOTERS">Data Export</option>
-              <option value="UPDATE_VOTER">Voter Edit</option>
-              <option value="LOGIN">Auth Login</option>
-            </select>
-          </div>
+        <div className="w-full md:w-44">
+          <select
+            value={outcomeFilter}
+            onChange={(e) => setOutcomeFilter(e.target.value)}
+            className="w-full py-2 px-3 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-700 focus:ring-2 focus:ring-blue-500 cursor-pointer"
+          >
+            <option value="ALL">All Outcomes</option>
+            <option value="SUCCESS">Success</option>
+            <option value="FAILED">Failed / Blocked</option>
+            <option value="WARNING">Warning</option>
+          </select>
         </div>
       </div>
 
-      {/* Audit Log Table */}
-      <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-premium-xs overflow-hidden">
+      {/* AUDIT LOG TABLE */}
+      <div className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
+          <table className="w-full text-left text-xs border-collapse">
             <thead>
-              <tr className="bg-slate-50/75 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-800 text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+              <tr className="bg-slate-50 text-slate-600 font-bold border-b border-slate-200 uppercase tracking-wider text-[11px]">
                 <th className="py-3 px-4">Timestamp</th>
-                <th className="py-3 px-4">User &amp; Role</th>
-                <th className="py-3 px-4">Action</th>
-                <th className="py-3 px-4">Module &amp; Entity</th>
-                <th className="py-3 px-4">Device &amp; IP</th>
-                <th className="py-3 px-4">Status</th>
-                <th className="py-3 px-4 text-right">Inspect</th>
+                <th className="py-3 px-4">User / Actor</th>
+                <th className="py-3 px-4">Module</th>
+                <th className="py-3 px-4">Action / Event</th>
+                <th className="py-3 px-4">Related Record</th>
+                <th className="py-3 px-4">IP & Device</th>
+                <th className="py-3 px-4">Outcome</th>
+                <th className="py-3 px-4 text-right">Details</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60 text-xs">
-              {filtered.map((record) => (
-                <tr key={record.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/40 transition-colors">
-                  <td className="py-3 px-4 font-mono text-[11px] text-slate-500 dark:text-slate-400 whitespace-nowrap">
-                    {record.timestamp}
+            <tbody className="divide-y divide-slate-100 text-slate-700">
+              {filteredLogs.map((item) => (
+                <tr key={item.id} className="hover:bg-slate-50 transition-colors">
+                  <td className="py-3 px-4 font-mono text-slate-500 whitespace-nowrap">
+                    {item.timestamp}
                   </td>
-
                   <td className="py-3 px-4">
-                    <div className="font-semibold text-slate-800 dark:text-white flex items-center gap-1.5">
-                      <User className="w-3.5 h-3.5 text-slate-400" />
-                      <span>{record.userName}</span>
-                    </div>
-                    <div className="text-[10px] text-slate-500">{record.userRole}</div>
+                    <span className="font-bold text-slate-900 block">{item.actor}</span>
+                    <span className="text-[10px] text-slate-400 font-semibold uppercase tracking-wide">
+                      {item.role}
+                    </span>
                   </td>
-
-                  <td className="py-3 px-4 whitespace-nowrap">
-                    {getActionBadge(record.actionType)}
-                  </td>
-
                   <td className="py-3 px-4">
-                    <div className="font-medium text-slate-700 dark:text-slate-300">
-                      {record.targetEntity}
-                    </div>
-                    <div className="text-[10px] text-slate-400 font-mono">{record.module}</div>
+                    <span className="px-2 py-0.5 rounded font-bold text-[10px] bg-slate-100 text-slate-800">
+                      {item.module}
+                    </span>
                   </td>
-
-                  <td className="py-3 px-4 text-[11px] text-slate-500 font-mono">
-                    <div className="flex items-center gap-1">
-                      <Laptop className="w-3 h-3 text-slate-400" />
-                      <span>{record.device}</span>
-                    </div>
-                    <div className="text-[10px] text-slate-400">IP: {record.ipAddress}</div>
+                  <td className="py-3 px-4 font-mono font-semibold text-blue-700">
+                    {item.action}
                   </td>
-
-                  <td className="py-3 px-4 whitespace-nowrap">
-                    {record.status === "SUCCESS" ? (
-                      <span className="flex items-center gap-1 text-emerald-600 font-bold text-[11px]">
-                        <CheckCircle2 className="w-3.5 h-3.5" />
-                        <span>Success</span>
-                      </span>
-                    ) : record.status === "WARNING" ? (
-                      <span className="flex items-center gap-1 text-amber-600 font-bold text-[11px]">
-                        <AlertTriangle className="w-3.5 h-3.5" />
-                        <span>Warning</span>
-                      </span>
-                    ) : (
-                      <span className="flex items-center gap-1 text-rose-600 font-bold text-[11px]">
-                        <ShieldAlert className="w-3.5 h-3.5" />
-                        <span>Blocked</span>
-                      </span>
-                    )}
+                  <td className="py-3 px-4 font-medium text-slate-800 max-w-xs truncate">
+                    {item.relatedRecord}
                   </td>
-
-                  <td className="py-3 px-4 text-right">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setSelectedActivity(record)}
-                      className="cursor-pointer"
+                  <td className="py-3 px-4 text-[11px] text-slate-500 whitespace-nowrap">
+                    <span className="block font-mono">{item.ipAddress}</span>
+                    <span className="text-[10px] text-slate-400">{item.device}</span>
+                  </td>
+                  <td className="py-3 px-4">
+                    <span
+                      className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                        item.outcome === "SUCCESS"
+                          ? "bg-emerald-100 text-emerald-800"
+                          : item.outcome === "FAILED"
+                          ? "bg-rose-100 text-rose-800"
+                          : "bg-amber-100 text-amber-800"
+                      }`}
                     >
-                      <Eye className="w-3 h-3" />
-                      <span>Inspect</span>
-                    </Button>
+                      {item.outcome}
+                    </span>
+                  </td>
+                  <td className="py-3 px-4 text-right">
+                    <button
+                      type="button"
+                      onClick={() => setSelectedEvent(item)}
+                      className="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
+                      title="Inspect Event Payload"
+                    >
+                      <Eye className="w-4 h-4" />
+                    </button>
                   </td>
                 </tr>
               ))}
+              {filteredLogs.length === 0 && (
+                <tr>
+                  <td colSpan={8} className="py-12 text-center text-slate-400">
+                    No audit trail events match your filter criteria.
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
       </div>
 
-      {/* Inspect Activity Payload Modal */}
-      {selectedActivity && (
-        <div className="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl max-w-lg w-full shadow-2xl p-5 space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+      {/* EVENT INSPECTOR MODAL */}
+      {selectedEvent && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-fade-in">
+          <div className="bg-white rounded-3xl shadow-xl max-w-lg w-full border border-slate-200 overflow-hidden p-6 animate-scale-up">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
               <div>
-                <h3 className="text-base font-bold text-slate-800 dark:text-white flex items-center gap-2">
-                  <span>Activity Event Inspector</span>
-                  <span className="font-mono text-xs text-brand-600 font-normal">#{selectedActivity.id}</span>
+                <span className="text-[10px] font-mono text-slate-400 block">
+                  {selectedEvent.id}
+                </span>
+                <h3 className="font-bold text-slate-900 text-base">
+                  Security Audit Event Record
                 </h3>
-                <p className="text-xs text-slate-500">{selectedActivity.timestamp}</p>
               </div>
               <button
                 type="button"
-                onClick={() => setSelectedActivity(null)}
-                className="p-1 rounded-lg text-slate-400 hover:text-slate-700"
+                onClick={() => setSelectedEvent(null)}
+                className="p-1 text-slate-400 hover:text-slate-600 rounded cursor-pointer"
               >
-                <X className="w-4 h-4" />
+                <X className="w-5 h-5" />
               </button>
             </div>
 
             <div className="space-y-3 text-xs">
-              <div className="p-3 bg-slate-50 dark:bg-slate-800/50 rounded-xl space-y-1.5 border border-slate-200 dark:border-slate-800">
-                <div className="flex justify-between">
-                  <span className="text-slate-400">User / Actor:</span>
-                  <span className="font-bold text-slate-800 dark:text-white">{selectedActivity.userName} ({selectedActivity.userRole})</span>
+              <div className="grid grid-cols-2 gap-2 bg-slate-50 p-3 rounded-xl border border-slate-200">
+                <div>
+                  <span className="text-slate-400 block text-[10px]">Actor:</span>
+                  <span className="font-bold text-slate-900">{selectedEvent.actor}</span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-slate-400">Target Entity:</span>
-                  <span className="font-semibold text-slate-700 dark:text-slate-300">{selectedActivity.targetEntity}</span>
+                <div>
+                  <span className="text-slate-400 block text-[10px]">Timestamp:</span>
+                  <span className="font-mono text-slate-800">{selectedEvent.timestamp}</span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-slate-400">Client Environment:</span>
-                  <span className="font-mono text-slate-600 dark:text-slate-400">{selectedActivity.device} • {selectedActivity.ipAddress}</span>
+                <div>
+                  <span className="text-slate-400 block text-[10px]">Module:</span>
+                  <span className="font-bold text-blue-700">{selectedEvent.module}</span>
+                </div>
+                <div>
+                  <span className="text-slate-400 block text-[10px]">Outcome:</span>
+                  <span
+                    className={`font-bold ${
+                      selectedEvent.outcome === "SUCCESS"
+                        ? "text-emerald-700"
+                        : selectedEvent.outcome === "FAILED"
+                        ? "text-rose-700"
+                        : "text-amber-700"
+                    }`}
+                  >
+                    {selectedEvent.outcome}
+                  </span>
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                  Operation Narrative
-                </label>
-                <p className="p-3 bg-slate-50 dark:bg-slate-800/40 rounded-xl text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-800">
-                  {selectedActivity.details}
+                <span className="font-bold text-slate-800 block mb-1">
+                  Action Identifier:
+                </span>
+                <p className="font-mono bg-slate-100 p-2 rounded-lg text-slate-800">
+                  {selectedEvent.action}
                 </p>
               </div>
 
-              {selectedActivity.beforeState && selectedActivity.afterState && (
-                <div className="space-y-1.5">
-                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300">
-                    Before vs. After State Diff
-                  </label>
-                  <div className="grid grid-cols-2 gap-2">
-                    <div className="p-2.5 rounded-lg bg-rose-50/50 dark:bg-rose-950/20 border border-rose-200 dark:border-rose-900/40 text-[11px]">
-                      <span className="font-bold text-rose-700 dark:text-rose-400 block mb-1">Before Change:</span>
-                      <pre className="font-mono text-slate-600 dark:text-slate-400 whitespace-pre-wrap">
-                        {JSON.stringify(selectedActivity.beforeState, null, 2)}
-                      </pre>
-                    </div>
+              <div>
+                <span className="font-bold text-slate-800 block mb-1">
+                  Related Record Context:
+                </span>
+                <p className="p-2 bg-slate-50 rounded-lg border border-slate-200 text-slate-700">
+                  {selectedEvent.relatedRecord}
+                </p>
+              </div>
 
-                    <div className="p-2.5 rounded-lg bg-emerald-50/50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-900/40 text-[11px]">
-                      <span className="font-bold text-emerald-700 dark:text-emerald-400 block mb-1">After Change:</span>
-                      <pre className="font-mono text-slate-600 dark:text-slate-400 whitespace-pre-wrap">
-                        {JSON.stringify(selectedActivity.afterState, null, 2)}
-                      </pre>
-                    </div>
-                  </div>
-                </div>
-              )}
+              <div>
+                <span className="font-bold text-slate-800 block mb-1">
+                  Payload Audit Details:
+                </span>
+                <p className="p-3 bg-slate-50 rounded-xl border border-slate-200 text-slate-600 leading-relaxed">
+                  {selectedEvent.details}
+                </p>
+              </div>
+
+              <div className="text-[11px] text-slate-400 pt-2 border-t border-slate-100">
+                <span>
+                  Client Signature: {selectedEvent.ipAddress} • {selectedEvent.device}
+                </span>
+              </div>
             </div>
 
-            <div className="flex justify-end pt-2 border-t border-slate-100 dark:border-slate-800">
-              <Button variant="outline" size="sm" onClick={() => setSelectedActivity(null)}>
+            <div className="flex justify-end pt-4 mt-2">
+              <button
+                type="button"
+                onClick={() => setSelectedEvent(null)}
+                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition-colors cursor-pointer"
+              >
                 Close Inspector
-              </Button>
+              </button>
             </div>
           </div>
         </div>

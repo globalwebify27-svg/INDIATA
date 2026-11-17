@@ -7,6 +7,7 @@ import { PhoneBookView } from "@/components/modules/phone-book-view";
 import { FiltersMasterView } from "@/components/modules/filters-master-view";
 import { KaryakartaWorkforceView } from "@/components/modules/karyakarta-workforce-view";
 import { BloDirectoryView } from "@/components/modules/blo-directory-view";
+import { UserActivitiesAuditView } from "@/components/modules/user-activities-audit-view";
 import { LiveFieldMapView } from "@/components/modules/live-field-map-view";
 import { OfficeTicketsView } from "@/components/modules/office-tickets-view";
 import { CampaignControlView } from "@/components/modules/campaign-control-view";
@@ -36,6 +37,11 @@ export default function CandidateDynamicModulePage() {
   // Voter Intelligence Modules
   if (pathname.startsWith("/voters")) {
     return <VoterManagementView />;
+  }
+
+  // User Activities & Security Audit Trail (Checked before general /users)
+  if (pathname.includes("/activities")) {
+    return <UserActivitiesAuditView />;
   }
 
   // Workforce & Field Operations
