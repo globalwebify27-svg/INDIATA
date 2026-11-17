@@ -178,7 +178,7 @@ export function KaryakartaSidebar({
       )}
 
       {/* Navigation Scroll Area */}
-      <div className="flex-1 overflow-y-auto px-2 sm:px-3 py-3 space-y-4 scrollbar-thin">
+      <div className="flex-1 overflow-y-auto px-2 sm:px-3 py-3 space-y-4 scrollbar-thin sidebar-scroller">
         {/* Primary Navigation */}
         <div>
           {!collapsed && (

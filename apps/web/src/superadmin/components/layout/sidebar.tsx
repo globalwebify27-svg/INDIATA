@@ -261,7 +261,7 @@ export function Sidebar({
 
         {/* Navigation Items Scroll Area */}
         <nav
-          className={`flex-1 overflow-y-auto space-y-1.5 custom-scroll ${
+          className={`flex-1 overflow-y-auto space-y-1.5 custom-scroll scrollbar-thin sidebar-scroller ${
             collapsed && !mobileOpen ? "px-2 py-3" : "px-3 py-4"
           }`}
         >

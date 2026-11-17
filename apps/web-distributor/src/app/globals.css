@@ -73,3 +73,50 @@ body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
 }
+
+/* Custom Sleek Sidebar Scroller - Matching Reference UI */
+.sidebar-scroller,
+.sidebar-scrollable,
+.custom-scroll,
+.scrollbar-thin,
+aside .overflow-y-auto {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent !important;
+}
+
+.sidebar-scroller::-webkit-scrollbar,
+.sidebar-scrollable::-webkit-scrollbar,
+.scrollbar-thin::-webkit-scrollbar,
+aside .overflow-y-auto::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+.sidebar-scroller::-webkit-scrollbar-track,
+.sidebar-scrollable::-webkit-scrollbar-track,
+.scrollbar-thin::-webkit-scrollbar-track,
+aside .overflow-y-auto::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar-scroller::-webkit-scrollbar-thumb,
+.sidebar-scrollable::-webkit-scrollbar-thumb,
+.scrollbar-thin::-webkit-scrollbar-thumb,
+aside .overflow-y-auto::-webkit-scrollbar-thumb,
+.dark aside .overflow-y-auto::-webkit-scrollbar-thumb,
+aside.bg-slate-950 ::-webkit-scrollbar-thumb,
+aside.bg-slate-900 ::-webkit-scrollbar-thumb {
+  background: #cbd5e1 !important;
+  border-radius: 9999px !important;
+}
+
+.sidebar-scroller::-webkit-scrollbar-thumb:hover,
+.sidebar-scrollable::-webkit-scrollbar-thumb:hover,
+.scrollbar-thin::-webkit-scrollbar-thumb:hover,
+aside .overflow-y-auto::-webkit-scrollbar-thumb:hover,
+.dark aside .overflow-y-auto::-webkit-scrollbar-thumb:hover,
+aside.bg-slate-950 ::-webkit-scrollbar-thumb:hover,
+aside.bg-slate-900 ::-webkit-scrollbar-thumb:hover {
+  background: #ffffff !important;
+}
+

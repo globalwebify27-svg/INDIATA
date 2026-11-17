@@ -116,7 +116,7 @@ export function DistributorSidebar() {
       </div>
 
       {/* Navigation Sections */}
-      <div className="flex-1 overflow-y-auto px-3 py-4 space-y-6">
+      <div className="flex-1 overflow-y-auto px-3 py-4 space-y-6 scrollbar-thin sidebar-scroller">
         {navItems.map((section, idx) => (
           <div key={idx} className="space-y-1">
             <div className="px-3 text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">

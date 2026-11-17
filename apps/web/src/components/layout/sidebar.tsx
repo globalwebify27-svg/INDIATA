@@ -352,7 +352,7 @@ export function Sidebar({
         </div>
 
         {/* MIDDLE SCROLLABLE NAVIGATION LIST */}
-        <div className="flex-1 overflow-y-auto px-3 py-4 space-y-5 scrollbar-thin">
+        <div className="flex-1 overflow-y-auto px-3 py-4 space-y-5 scrollbar-thin sidebar-scroller">
           {NAV_GROUPS.map((group) => (
             <div key={group.groupTitle} className="space-y-1">
               {!collapsed && (
