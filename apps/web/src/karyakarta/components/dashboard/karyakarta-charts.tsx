@@ -14,9 +14,10 @@ import { KaryakartaKpiStats, PollingBooth } from "../../types/karyakarta.types";
 interface KaryakartaChartsProps {
   stats: KaryakartaKpiStats;
   booths: PollingBooth[];
+  onFilterClick?: (filterType: string) => void;
 }
 
-export function KaryakartaCharts({ stats, booths }: KaryakartaChartsProps) {
+export function KaryakartaCharts({ stats, booths, onFilterClick }: KaryakartaChartsProps) {
   const total = stats.totalAssignedVoters || 1;
   const supporterPct = Math.round((stats.supportersCount / total) * 100);
   const doubtfulPct = Math.round((stats.doubtfulCount / total) * 100);
@@ -63,7 +64,11 @@ export function KaryakartaCharts({ stats, booths }: KaryakartaChartsProps) {
 
           {/* Legend Stats */}
           <div className="mt-4 grid grid-cols-2 gap-3 text-xs">
-            <div className="p-2.5 rounded-xl bg-emerald-50/50 dark:bg-emerald-950/20 border border-emerald-100 dark:border-emerald-900/30">
+            <button
+              type="button"
+              onClick={() => onFilterClick?.("visited")}
+              className="p-2.5 rounded-xl bg-emerald-50/50 dark:bg-emerald-950/20 border border-emerald-100 dark:border-emerald-900/30 text-left hover:border-emerald-400 hover:shadow-xs transition-all cursor-pointer"
+            >
               <span className="text-[11px] text-emerald-700 dark:text-emerald-400 flex items-center gap-1 font-semibold">
                 <span className="w-2 h-2 rounded-full bg-emerald-500" />
                 Visited &amp; Verified
@@ -71,9 +76,13 @@ export function KaryakartaCharts({ stats, booths }: KaryakartaChartsProps) {
               <span className="text-lg font-black text-slate-900 dark:text-white mt-1 block">
                 {stats.visitedVoters.toLocaleString()}
               </span>
-            </div>
+            </button>
 
-            <div className="p-2.5 rounded-xl bg-amber-50/50 dark:bg-amber-950/20 border border-amber-100 dark:border-amber-900/30">
+            <button
+              type="button"
+              onClick={() => onFilterClick?.("unvisited")}
+              className="p-2.5 rounded-xl bg-amber-50/50 dark:bg-amber-950/20 border border-amber-100 dark:border-amber-900/30 text-left hover:border-amber-400 hover:shadow-xs transition-all cursor-pointer"
+            >
               <span className="text-[11px] text-amber-700 dark:text-amber-400 flex items-center gap-1 font-semibold">
                 <span className="w-2 h-2 rounded-full bg-amber-500" />
                 Pending Outreach
@@ -81,7 +90,7 @@ export function KaryakartaCharts({ stats, booths }: KaryakartaChartsProps) {
               <span className="text-lg font-black text-slate-900 dark:text-white mt-1 block">
                 {stats.unvisitedVoters.toLocaleString()}
               </span>
-            </div>
+            </button>
           </div>
         </div>
 
@@ -139,7 +148,11 @@ export function KaryakartaCharts({ stats, booths }: KaryakartaChartsProps) {
 
           {/* 4 Sentiment Badges */}
           <div className="mt-4 grid grid-cols-2 gap-2 text-xs">
-            <div className="flex items-center justify-between p-2 rounded-lg bg-emerald-50/60 dark:bg-emerald-950/30 border border-emerald-100 dark:border-emerald-900/30">
+            <button
+              type="button"
+              onClick={() => onFilterClick?.("supporters")}
+              className="flex items-center justify-between p-2 rounded-lg bg-emerald-50/60 dark:bg-emerald-950/30 border border-emerald-100 dark:border-emerald-900/30 hover:border-emerald-400 hover:shadow-xs transition-all text-left cursor-pointer"
+            >
               <span className="text-emerald-700 dark:text-emerald-400 font-semibold text-[11px] flex items-center gap-1.5">
                 <span className="w-2 h-2 rounded-full bg-emerald-500" />
                 Supporter
@@ -147,9 +160,13 @@ export function KaryakartaCharts({ stats, booths }: KaryakartaChartsProps) {
               <span className="font-bold text-slate-900 dark:text-white font-mono">
                 {stats.supportersCount} ({supporterPct}%)
               </span>
-            </div>
+            </button>
 
-            <div className="flex items-center justify-between p-2 rounded-lg bg-amber-50/60 dark:bg-amber-950/30 border border-amber-100 dark:border-amber-900/30">
+            <button
+              type="button"
+              onClick={() => onFilterClick?.("doubtful")}
+              className="flex items-center justify-between p-2 rounded-lg bg-amber-50/60 dark:bg-amber-950/30 border border-amber-100 dark:border-amber-900/30 hover:border-amber-400 hover:shadow-xs transition-all text-left cursor-pointer"
+            >
               <span className="text-amber-700 dark:text-amber-400 font-semibold text-[11px] flex items-center gap-1.5">
                 <span className="w-2 h-2 rounded-full bg-amber-400" />
                 Doubtful
@@ -157,9 +174,13 @@ export function KaryakartaCharts({ stats, booths }: KaryakartaChartsProps) {
               <span className="font-bold text-slate-900 dark:text-white font-mono">
                 {stats.doubtfulCount} ({doubtfulPct}%)
               </span>
-            </div>
+            </button>
 
-            <div className="flex items-center justify-between p-2 rounded-lg bg-rose-50/60 dark:bg-rose-950/30 border border-rose-100 dark:border-rose-900/30">
+            <button
+              type="button"
+              onClick={() => onFilterClick?.("opponents")}
+              className="flex items-center justify-between p-2 rounded-lg bg-rose-50/60 dark:bg-rose-950/30 border border-rose-100 dark:border-rose-900/30 hover:border-rose-400 hover:shadow-xs transition-all text-left cursor-pointer"
+            >
               <span className="text-rose-700 dark:text-rose-400 font-semibold text-[11px] flex items-center gap-1.5">
                 <span className="w-2 h-2 rounded-full bg-rose-500" />
                 Opponent
@@ -167,9 +188,13 @@ export function KaryakartaCharts({ stats, booths }: KaryakartaChartsProps) {
               <span className="font-bold text-slate-900 dark:text-white font-mono">
                 {stats.opponentsCount} ({opponentPct}%)
               </span>
-            </div>
+            </button>
 
-            <div className="flex items-center justify-between p-2 rounded-lg bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+            <button
+              type="button"
+              onClick={() => onFilterClick?.("neutral")}
+              className="flex items-center justify-between p-2 rounded-lg bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 hover:border-slate-400 hover:shadow-xs transition-all text-left cursor-pointer"
+            >
               <span className="text-slate-600 dark:text-slate-300 font-semibold text-[11px] flex items-center gap-1.5">
                 <span className="w-2 h-2 rounded-full bg-slate-400" />
                 Neutral
@@ -177,7 +202,7 @@ export function KaryakartaCharts({ stats, booths }: KaryakartaChartsProps) {
               <span className="font-bold text-slate-900 dark:text-white font-mono">
                 {stats.neutralCount} ({neutralPct}%)
               </span>
-            </div>
+            </button>
           </div>
         </div>
 
@@ -211,7 +236,12 @@ export function KaryakartaCharts({ stats, booths }: KaryakartaChartsProps) {
 
           <div className="space-y-3">
             {booths.slice(0, 3).map((b) => (
-              <div key={b.id} className="space-y-1">
+              <button
+                key={b.id}
+                type="button"
+                onClick={() => onFilterClick?.(`booth_${b.boothNumber}`)}
+                className="w-full text-left space-y-1 p-1.5 -mx-1.5 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors cursor-pointer"
+              >
                 <div className="flex items-center justify-between text-xs">
                   <span className="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
                     <span className="font-mono px-1.5 py-0.5 rounded bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-300 text-[10px]">
@@ -235,7 +265,7 @@ export function KaryakartaCharts({ stats, booths }: KaryakartaChartsProps) {
                   <span>BLO: {b.bloName}</span>
                   <span>{b.bloPhone}</span>
                 </div>
-              </div>
+              </button>
             ))}
           </div>
         </div>

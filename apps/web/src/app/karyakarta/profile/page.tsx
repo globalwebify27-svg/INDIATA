@@ -394,6 +394,117 @@ export default function ProfilePage() {
           </div>
         </div>
       </div>
+
+      {/* Scope & Portal Roles Grid (Matching Candidate Portal Specifications) */}
+      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-xs space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-3">
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                Jurisdiction Authorization
+              </span>
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
+                Candidate Portal Specification
+              </span>
+            </div>
+            <h3 className="text-base font-extrabold text-slate-900 dark:text-white mt-0.5">
+              Scope &amp; Portal Roles Grid
+            </h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400">
+              Assigned electoral roll jurisdictions, polling stations, and serial number quotas authorized by Candidate War Room.
+            </p>
+          </div>
+          <span className="text-xs font-mono font-semibold px-2.5 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 w-fit">
+            ● 3 Polling Booths Scoped
+          </span>
+        </div>
+
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-xs border-collapse">
+            <thead>
+              <tr className="bg-slate-50 dark:bg-slate-800/60 text-slate-600 dark:text-slate-300 font-bold border-b border-slate-200 dark:border-slate-700 uppercase tracking-wider text-[11px]">
+                <th className="py-3 px-4">Role / Cadre</th>
+                <th className="py-3 px-4">Constituency</th>
+                <th className="py-3 px-4">Booth Number</th>
+                <th className="py-3 px-4">Serial Number Range</th>
+                <th className="py-3 px-4">Assigned Sector / Station</th>
+                <th className="py-3 px-4 text-center">Status</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-slate-700 dark:text-slate-300">
+              <tr className="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
+                <td className="py-3 px-4 font-semibold text-blue-700 dark:text-blue-400">
+                  <span className="block font-bold">Booth Karyakarta</span>
+                  <span className="text-[10px] text-slate-400">Door-to-Door &amp; Slip Delivery</span>
+                </td>
+                <td className="py-3 px-4 font-medium">
+                  {user?.constituencyName || "215 - Kasba Peth Assembly"}
+                </td>
+                <td className="py-3 px-4 font-mono font-bold text-slate-900 dark:text-white">
+                  Booth #101
+                </td>
+                <td className="py-3 px-4 font-mono text-slate-800 dark:text-slate-200">
+                  001 to 450
+                </td>
+                <td className="py-3 px-4">
+                  Navbharat High School, Ground Floor (Somwar Ali)
+                </td>
+                <td className="py-3 px-4 text-center">
+                  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
+                    ACTIVE
+                  </span>
+                </td>
+              </tr>
+              <tr className="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
+                <td className="py-3 px-4 font-semibold text-blue-700 dark:text-blue-400">
+                  <span className="block font-bold">Booth Karyakarta</span>
+                  <span className="text-[10px] text-slate-400">Door-to-Door &amp; Slip Delivery</span>
+                </td>
+                <td className="py-3 px-4 font-medium">
+                  {user?.constituencyName || "215 - Kasba Peth Assembly"}
+                </td>
+                <td className="py-3 px-4 font-mono font-bold text-slate-900 dark:text-white">
+                  Booth #102
+                </td>
+                <td className="py-3 px-4 font-mono text-slate-800 dark:text-slate-200">
+                  001 to 380
+                </td>
+                <td className="py-3 px-4">
+                  Navbharat High School, First Floor (Ganesh Ali)
+                </td>
+                <td className="py-3 px-4 text-center">
+                  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
+                    ACTIVE
+                  </span>
+                </td>
+              </tr>
+              <tr className="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
+                <td className="py-3 px-4 font-semibold text-blue-700 dark:text-blue-400">
+                  <span className="block font-bold">Booth Karyakarta</span>
+                  <span className="text-[10px] text-slate-400">Door-to-Door &amp; Slip Delivery</span>
+                </td>
+                <td className="py-3 px-4 font-medium">
+                  {user?.constituencyName || "215 - Kasba Peth Assembly"}
+                </td>
+                <td className="py-3 px-4 font-mono font-bold text-slate-900 dark:text-white">
+                  Booth #103
+                </td>
+                <td className="py-3 px-4 font-mono text-slate-800 dark:text-slate-200">
+                  001 to 410
+                </td>
+                <td className="py-3 px-4">
+                  Saraswati Primary School, Hall B (Raviwar Peth)
+                </td>
+                <td className="py-3 px-4 text-center">
+                  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
+                    ACTIVE
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   );
 }

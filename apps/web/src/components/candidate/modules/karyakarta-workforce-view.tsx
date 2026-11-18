@@ -1012,10 +1012,11 @@ function AllUsersView({ users, setUsers, onNavigateToAdd }: AllUsersViewProps) {
             <thead>
               <tr className="bg-slate-50 text-slate-600 font-bold border-b border-slate-200 uppercase tracking-wider text-[11px]">
                 <th className="py-3 px-4">User</th>
-                <th className="py-3 px-4">Role &amp; Jurisdiction</th>
-                <th className="py-3 px-4">Assigned Booths</th>
+                <th className="py-3 px-4">Role</th>
+                <th className="py-3 px-4">Constituency</th>
+                <th className="py-3 px-4">Booth Number</th>
+                <th className="py-3 px-4">Serial Number</th>
                 <th className="py-3 px-4">Permissions</th>
-                <th className="py-3 px-4">Data Import</th>
                 <th className="py-3 px-4">Status</th>
                 <th className="py-3 px-4 text-right">Actions</th>
               </tr>
@@ -1040,19 +1041,21 @@ function AllUsersView({ users, setUsers, onNavigateToAdd }: AllUsersViewProps) {
                   </td>
                   <td className="py-3 px-4">
                     <span className="font-semibold text-blue-700 block">{u.role.replace("_", " ")}</span>
-                    <span className="text-[11px] text-slate-500">{u.prabhaag || "All Constituencies"}</span>
+                  </td>
+                  <td className="py-3 px-4">
+                    <span className="text-slate-800 font-medium block">{u.prabhaag || "215 - Kasba Peth"}</span>
                   </td>
                   <td className="py-3 px-4">
                     <span className="font-mono font-medium text-slate-800">
                       {u.assignedBooths?.length
-                        ? `${u.assignedBooths.length} Booths (${u.assignedBooths.slice(0, 3).join(", ")}${
-                            u.assignedBooths.length > 3 ? "..." : ""
-                          })`
+                        ? `Booths: ${u.assignedBooths.join(", ")}`
                         : "None"}
                     </span>
-                    {u.voterSerialRange && (
-                      <span className="text-[10px] text-slate-400 block">Sr: {u.voterSerialRange}</span>
-                    )}
+                  </td>
+                  <td className="py-3 px-4">
+                    <span className="font-mono text-slate-700 font-medium">
+                      {u.voterSerialRange || "Full Roll Range"}
+                    </span>
                   </td>
                   <td className="py-3 px-4">
                     <span className="px-2 py-0.5 rounded bg-slate-100 text-slate-700 text-[10px] font-semibold">

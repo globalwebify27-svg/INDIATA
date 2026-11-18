@@ -75,6 +75,18 @@ export default function KaryakartaDashboardPage() {
     if (activeKpiFilter === "doubtful") return scopedVoters.filter((v) => v.classification === "Doubtful");
     if (activeKpiFilter === "opponents") return scopedVoters.filter((v) => v.classification === "Opponent");
     if (activeKpiFilter === "neutral") return scopedVoters.filter((v) => v.classification === "Neutral");
+    if (activeKpiFilter.startsWith("booth_")) {
+      const bNum = activeKpiFilter.replace("booth_", "");
+      return scopedVoters.filter((v) => v.boothNumber === bNum || v.boothNumber === `#${bNum}`);
+    }
+    if (activeKpiFilter.startsWith("caste_")) {
+      const c = activeKpiFilter.replace("caste_", "").toLowerCase();
+      return scopedVoters.filter((v) => v.caste.toLowerCase().includes(c));
+    }
+    if (activeKpiFilter.startsWith("comm_")) {
+      const g = activeKpiFilter.replace("comm_", "");
+      return scopedVoters.filter((v) => v.communityGroup === g || v.occupation.toLowerCase().includes(g.toLowerCase()));
+    }
     return scopedVoters;
   }, [scopedVoters, activeKpiFilter]);
 
@@ -187,7 +199,72 @@ export default function KaryakartaDashboardPage() {
       {/* ========================================================= */}
       {/* ANALYTICAL CHARTS (Coverage, Sentiment, Booth Workload)   */}
       {/* ========================================================= */}
-      <KaryakartaCharts stats={stats} booths={scopedBooths} />
+      <KaryakartaCharts
+        stats={stats}
+        booths={scopedBooths}
+        onFilterClick={(filterType) => {
+          setActiveKpiFilter((prev) => (prev === filterType ? "all" : filterType));
+        }}
+      />
+
+      {/* ========================================================= */}
+      {/* CULTURAL & COMMUNITY DEMOGRAPHIC CLUSTERS (INTERACTIVE)   */}
+      {/* ========================================================= */}
+      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-xs space-y-3">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-3">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-purple-500 animate-pulse" />
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">
+              Cultural &amp; Community Demographic Clusters
+            </h3>
+            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-50 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800">
+              Interactive Targeting
+            </span>
+          </div>
+          <span className="text-[11px] text-slate-500 dark:text-slate-400">
+            Click any community card to filter voters instantly
+          </span>
+        </div>
+
+        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2.5">
+          {[
+            { id: "caste_maratha", label: "Maratha / 96 Kuli", mr: "मराठा", count: scopedVoters.filter(v => v.caste.toLowerCase().includes("maratha") || v.caste.toLowerCase().includes("deshmukh")).length, color: "blue" },
+            { id: "caste_brahmin", label: "Brahmin", mr: "ब्राह्मण", count: scopedVoters.filter(v => v.caste.toLowerCase().includes("brahmin")).length, color: "indigo" },
+            { id: "caste_obc", label: "OBC Communities", mr: "इतर मागास", count: scopedVoters.filter(v => v.caste.toLowerCase().includes("obc") || v.caste.toLowerCase().includes("mali")).length, color: "cyan" },
+            { id: "caste_muslim", label: "Minorities", mr: "अल्पसंख्याक", count: scopedVoters.filter(v => v.caste.toLowerCase().includes("muslim")).length, color: "emerald" },
+            { id: "comm_Self-Help Groups", label: "Bachat Gat", mr: "महिला बचत गट", count: scopedVoters.filter(v => v.communityGroup === "Self-Help Groups" || v.occupation.includes("Self-Help")).length, color: "pink" },
+            { id: "comm_Local Organisations", label: "Vyapar Mandal", mr: "व्यापारी मंडळ", count: scopedVoters.filter(v => v.communityGroup === "Local Organisations" || v.occupation.includes("Merchant") || v.occupation.includes("Trader")).length, color: "amber" },
+            { id: "comm_Village Community", label: "Youth & Mandals", mr: "तरुण मंडळ", count: scopedVoters.filter(v => v.communityGroup === "Village Community" || v.occupation.includes("Student")).length, color: "purple" },
+            { id: "comm_Cooperatives", label: "Cooperatives / Unions", mr: "संस्था व युनियन", count: scopedVoters.filter(v => v.communityGroup === "Cooperatives" || v.occupation.includes("Driver")).length, color: "slate" },
+          ].map((item) => {
+            const isSelected = activeKpiFilter === item.id;
+            return (
+              <button
+                key={item.id}
+                type="button"
+                onClick={() => setActiveKpiFilter(prev => prev === item.id ? "all" : item.id)}
+                className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
+                  isSelected
+                    ? "bg-purple-50 dark:bg-purple-950/60 border-purple-500 ring-2 ring-purple-400 shadow-sm"
+                    : "bg-slate-50/70 dark:bg-slate-800/40 border-slate-200 dark:border-slate-800 hover:border-purple-300 dark:hover:border-purple-700 hover:bg-purple-50/30"
+                }`}
+              >
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400 truncate">
+                    {item.mr}
+                  </span>
+                  <span className="font-mono text-xs font-black text-slate-900 dark:text-white">
+                    {item.count}
+                  </span>
+                </div>
+                <div className="text-[11px] font-bold text-slate-800 dark:text-slate-200 truncate">
+                  {item.label}
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      </div>
 
       {/* ========================================================= */}
       {/* DUAL WORKSPACE SECTION: VOTER LIST & ACTIVITY LOG         */}

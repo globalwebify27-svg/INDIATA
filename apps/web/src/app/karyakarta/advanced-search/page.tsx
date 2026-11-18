@@ -105,6 +105,9 @@ export default function AdvancedSearchPage() {
       // 7. Scheme
       if (filters.scheme && !voter.scheme.includes(filters.scheme)) return false;
 
+      // 7b. Community Group (Candidate Portal Alignment)
+      if (filters.communityGroup && voter.communityGroup !== filters.communityGroup) return false;
+
       // 8. Classification / Sentiment
       if (filters.classification !== "all" && voter.classification !== filters.classification) {
         return false;
@@ -113,6 +116,21 @@ export default function AdvancedSearchPage() {
       // 9. Visited
       if (filters.visitedStatus === "visited" && !voter.isVisited) return false;
       if (filters.visitedStatus === "not_visited" && voter.isVisited) return false;
+
+      // 9b. Deceased Status
+      if (filters.deceasedStatus === "living" && voter.isDeceased) return false;
+      if (filters.deceasedStatus === "deceased" && !voter.isDeceased) return false;
+
+      // 9c. Serial Number
+      if (filters.serialNo && filters.serialNo.trim()) {
+        const srStr = voter.serialNumber ? String(voter.serialNumber) : "";
+        if (!srStr.includes(filters.serialNo.trim())) return false;
+      }
+
+      // 9d. House Number
+      if (filters.houseNo && filters.houseNo.trim()) {
+        if (!voter.houseNo.toLowerCase().includes(filters.houseNo.toLowerCase().trim())) return false;
+      }
 
       // 10. Mobile
       if (filters.mobileStatus === "available" && !voter.phone) return false;

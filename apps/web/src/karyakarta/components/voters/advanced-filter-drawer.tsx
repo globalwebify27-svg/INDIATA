@@ -50,6 +50,17 @@ const SCHEME_LIST = [
   "Senior Citizen Travel Concession",
 ];
 
+const COMMUNITY_GROUPS_LIST = [
+  { id: "Farmers", label: "Farmers / Krishi Vikas Sangh" },
+  { id: "Sugar Industry", label: "Sugar Factory Workers / Society" },
+  { id: "Childcare & Community Services", label: "Anganwadi / Balwadi / ASHA Workers" },
+  { id: "Village Community", label: "Village Community & Youth Mandals" },
+  { id: "Local Organisations", label: "Vyapar Mandals & Trade Guilds" },
+  { id: "Cooperatives", label: "Cooperative Societies & Transport Unions" },
+  { id: "Self-Help Groups", label: "Self-Help Groups (Mahila Bachat Gat)" },
+  { id: "Other", label: "Other Civic & Cultural Collectives" },
+];
+
 export function AdvancedFilterDrawer({
   isOpen,
   onClose,
@@ -237,6 +248,34 @@ export function AdvancedFilterDrawer({
                 ))}
               </select>
             </div>
+
+            {/* Serial Number & House Number (Candidate Portal Spec) */}
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <label className="block text-[11px] font-semibold text-slate-600 dark:text-slate-400 mb-1">
+                  Serial Number Range
+                </label>
+                <input
+                  type="text"
+                  value={filters.serialNo || ""}
+                  onChange={(e) => update({ serialNo: e.target.value })}
+                  placeholder="e.g. 101 or 1-250"
+                  className="w-full p-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-xs font-mono"
+                />
+              </div>
+              <div>
+                <label className="block text-[11px] font-semibold text-slate-600 dark:text-slate-400 mb-1">
+                  House Number
+                </label>
+                <input
+                  type="text"
+                  value={filters.houseNo || ""}
+                  onChange={(e) => update({ houseNo: e.target.value })}
+                  placeholder="e.g. 14, 52/A"
+                  className="w-full p-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-xs font-mono"
+                />
+              </div>
+            </div>
           </div>
 
           {/* GROUP 3: CONTACT & MOBILE VERIFICATION */}
@@ -295,13 +334,40 @@ export function AdvancedFilterDrawer({
                 </button>
               ))}
             </div>
+
+            {/* Deceased / Living Status (Candidate Portal Spec) */}
+            <div className="pt-2">
+              <label className="block text-[11px] font-semibold text-slate-600 dark:text-slate-400 mb-1">
+                Elector Vital Status
+              </label>
+              <div className="grid grid-cols-3 gap-1.5">
+                {[
+                  { id: "all", label: "All Vitality" },
+                  { id: "living", label: "Living Only" },
+                  { id: "deceased", label: "Deceased" },
+                ].map((d) => (
+                  <button
+                    key={d.id}
+                    type="button"
+                    onClick={() => update({ deceasedStatus: d.id as any })}
+                    className={`py-1.5 px-2 rounded-lg text-xs font-semibold border transition-all cursor-pointer ${
+                      (filters.deceasedStatus || "all") === d.id
+                        ? "bg-slate-900 text-white border-slate-900 dark:bg-white dark:text-slate-900 shadow-xs"
+                        : "bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700"
+                    }`}
+                  >
+                    {d.label}
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
 
-          {/* GROUP 5: POLITICAL SENTIMENT & WELFARE */}
+          {/* GROUP 5: POLITICAL SENTIMENT, WELFARE & COMMUNITY GROUPS */}
           <div className="space-y-3 pt-3 border-t border-slate-100 dark:border-slate-800">
             <span className="font-bold text-[11px] text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
               <FileText className="w-3.5 h-3.5 text-amber-600" />
-              <span>5. Sentiment &amp; Welfare Schemes</span>
+              <span>5. Sentiment, Schemes &amp; Community Groups</span>
             </span>
 
             {/* Sentiment dropdown */}
@@ -319,6 +385,25 @@ export function AdvancedFilterDrawer({
                 <option value="Doubtful">Doubtful (साशंक)</option>
                 <option value="Opponent">Opponent (विरोधी)</option>
                 <option value="Neutral">Neutral (तटस्थ)</option>
+              </select>
+            </div>
+
+            {/* Community Groups (Candidate Portal Spec) */}
+            <div>
+              <label className="block text-[11px] font-semibold text-slate-600 dark:text-slate-400 mb-1">
+                Community Group / Stakeholder Category
+              </label>
+              <select
+                value={filters.communityGroup || ""}
+                onChange={(e) => update({ communityGroup: e.target.value })}
+                className="w-full p-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-xs font-medium"
+              >
+                <option value="">All Community Groups</option>
+                {COMMUNITY_GROUPS_LIST.map((cg) => (
+                  <option key={cg.id} value={cg.id}>
+                    {cg.label}
+                  </option>
+                ))}
               </select>
             </div>
 

@@ -110,6 +110,8 @@ class VoterItem {
   final String houseNo;
   final String boothNo;
   final String phone;
+  final String serialNo;
+  final String communityGroup;
   String classification; // Supporter, Doubtful, Opponent, Neutral
   bool isVisited;
   bool isImportant;
@@ -126,7 +128,9 @@ class VoterItem {
     required this.houseNo,
     required this.boothNo,
     required this.phone,
-    required this.classification,
+    this.serialNo = "101",
+    this.communityGroup = "Village Community",
+    this.classification = "Neutral",
     this.isVisited = false,
     this.isImportant = false,
     this.caste = "Maratha",
@@ -259,6 +263,11 @@ class _MainMobileScaffoldState extends State<MainMobileScaffold> {
   String _filterAgeGroup = "All";
   String _filterGender = "All";
   String _filterSentiment = "All";
+  String _filterContact = "All";
+  String _filterVisited = "All";
+  String _filterCommunity = "All";
+  String _filterScheme = "All";
+  String _filterSerial = "";
 
   @override
   void initState() {
@@ -277,12 +286,14 @@ class _MainMobileScaffoldState extends State<MainMobileScaffold> {
         gender: "M",
         houseNo: "142",
         boothNo: "101",
+        serialNo: "101",
         phone: "+91 98221 11221",
-        classification: "Supporter",
+        classification: "Neutral",
         isVisited: true,
         isImportant: true,
         caste: "Maratha",
         scheme: "PM Awas Yojana",
+        communityGroup: "Local Organisations",
       ),
       VoterItem(
         id: "v-02",
@@ -293,11 +304,13 @@ class _MainMobileScaffoldState extends State<MainMobileScaffold> {
         gender: "F",
         houseNo: "142",
         boothNo: "101",
+        serialNo: "102",
         phone: "+91 98221 11222",
-        classification: "Supporter",
+        classification: "Neutral",
         isVisited: true,
         caste: "Maratha",
         scheme: "Ladki Bahin Yojana",
+        communityGroup: "Self-Help Groups",
       ),
       VoterItem(
         id: "v-03",
@@ -308,11 +321,13 @@ class _MainMobileScaffoldState extends State<MainMobileScaffold> {
         gender: "M",
         houseNo: "142",
         boothNo: "101",
+        serialNo: "103",
         phone: "+91 98221 11223",
-        classification: "Doubtful",
+        classification: "Neutral",
         isVisited: false,
         caste: "Maratha",
         scheme: "Youth Skill Voucher",
+        communityGroup: "Village Community",
       ),
       VoterItem(
         id: "v-04",
@@ -323,12 +338,14 @@ class _MainMobileScaffoldState extends State<MainMobileScaffold> {
         gender: "M",
         houseNo: "145",
         boothNo: "101",
+        serialNo: "104",
         phone: "+91 98221 11224",
-        classification: "Supporter",
+        classification: "Neutral",
         isVisited: true,
         isImportant: true,
         caste: "Brahmin",
         scheme: "Sanjay Gandhi Niradhar",
+        communityGroup: "Village Community",
       ),
       VoterItem(
         id: "v-05",
@@ -339,11 +356,13 @@ class _MainMobileScaffoldState extends State<MainMobileScaffold> {
         gender: "F",
         houseNo: "88-B",
         boothNo: "102",
+        serialNo: "105",
         phone: "+91 98221 11225",
         classification: "Neutral",
         isVisited: false,
         caste: "Maratha",
         scheme: "Ladki Bahin Yojana",
+        communityGroup: "Self-Help Groups",
       ),
       VoterItem(
         id: "v-06",
@@ -354,11 +373,13 @@ class _MainMobileScaffoldState extends State<MainMobileScaffold> {
         gender: "M",
         houseNo: "90",
         boothNo: "102",
+        serialNo: "106",
         phone: "+91 98221 11226",
-        classification: "Doubtful",
+        classification: "Neutral",
         isVisited: true,
         caste: "Maratha",
         scheme: "Kisan Samman",
+        communityGroup: "Local Organisations",
       ),
       VoterItem(
         id: "v-07",
@@ -369,11 +390,13 @@ class _MainMobileScaffoldState extends State<MainMobileScaffold> {
         gender: "F",
         houseNo: "90",
         boothNo: "102",
+        serialNo: "107",
         phone: "+91 98221 11227",
-        classification: "Opponent",
+        classification: "Neutral",
         isVisited: true,
         caste: "Maratha",
         scheme: "None",
+        communityGroup: "Self-Help Groups",
       ),
       VoterItem(
         id: "v-08",
@@ -384,11 +407,13 @@ class _MainMobileScaffoldState extends State<MainMobileScaffold> {
         gender: "M",
         houseNo: "12/A",
         boothNo: "103",
+        serialNo: "108",
         phone: "+91 98221 11228",
-        classification: "Supporter",
+        classification: "Neutral",
         isVisited: true,
         caste: "Muslim",
         scheme: "PMAY",
+        communityGroup: "Local Organisations",
       ),
     ];
 
@@ -522,10 +547,22 @@ class _MainMobileScaffoldState extends State<MainMobileScaffold> {
       list = list.where((v) => v.classification == "Doubtful").toList();
     } else if (_activeKpiFilter == "opponents") {
       list = list.where((v) => v.classification == "Opponent").toList();
+    } else if (_activeKpiFilter == "neutral") {
+      list = list.where((v) => v.classification == "Neutral").toList();
+    } else if (_activeKpiFilter == "visited") {
+      list = list.where((v) => v.isVisited).toList();
     } else if (_activeKpiFilter == "unvisited") {
       list = list.where((v) => !v.isVisited).toList();
     } else if (_activeKpiFilter == "important") {
       list = list.where((v) => v.isImportant).toList();
+    } else if (_activeKpiFilter == "mobile_has") {
+      list = list.where((v) => v.phone.isNotEmpty).toList();
+    } else if (_activeKpiFilter.startsWith("caste_")) {
+      final c = _activeKpiFilter.replaceFirst("caste_", "").toLowerCase();
+      list = list.where((v) => v.caste.toLowerCase().contains(c)).toList();
+    } else if (_activeKpiFilter.startsWith("comm_")) {
+      final g = _activeKpiFilter.replaceFirst("comm_", "");
+      list = list.where((v) => v.communityGroup == g).toList();
     }
 
     // Advanced Filters
@@ -544,6 +581,25 @@ class _MainMobileScaffoldState extends State<MainMobileScaffold> {
       list = list.where((v) => v.age >= 30 && v.age <= 50).toList();
     } else if (_filterAgeGroup == "50+") {
       list = list.where((v) => v.age > 50).toList();
+    }
+    if (_filterContact == "Has Mobile") {
+      list = list.where((v) => v.phone.isNotEmpty).toList();
+    } else if (_filterContact == "No Mobile") {
+      list = list.where((v) => v.phone.isEmpty).toList();
+    }
+    if (_filterVisited == "Visited") {
+      list = list.where((v) => v.isVisited).toList();
+    } else if (_filterVisited == "Unvisited") {
+      list = list.where((v) => !v.isVisited).toList();
+    }
+    if (_filterCommunity != "All") {
+      list = list.where((v) => v.communityGroup == _filterCommunity).toList();
+    }
+    if (_filterScheme != "All") {
+      list = list.where((v) => v.scheme.toLowerCase().contains(_filterScheme.toLowerCase())).toList();
+    }
+    if (_filterSerial.trim().isNotEmpty) {
+      list = list.where((v) => v.serialNo.contains(_filterSerial.trim())).toList();
     }
 
     return list;
@@ -1079,6 +1135,8 @@ class _MainMobileScaffoldState extends State<MainMobileScaffold> {
         return IndicAiCopilotScreen(
           c: c,
           isDark: isDark,
+          voters: _voters,
+          onNavigateToVoters: () => _navigateTo("voters"),
           onLogout: () => setState(() => _isActivated = false),
         );
 
@@ -1090,13 +1148,23 @@ class _MainMobileScaffoldState extends State<MainMobileScaffold> {
           selectedSentiment: _filterSentiment,
           selectedAgeGroup: _filterAgeGroup,
           selectedGender: _filterGender,
+          selectedContact: _filterContact,
+          selectedVisited: _filterVisited,
+          selectedCommunity: _filterCommunity,
+          selectedScheme: _filterScheme,
+          selectedSerial: _filterSerial,
           matchingCount: filteredVoters.length,
-          onApplyFilter: (booth, sentiment, age, gender) {
+          onApplyFilter: (booth, sentiment, age, gender, contact, visited, community, scheme, serial) {
             setState(() {
               _filterBooth = booth;
               _filterSentiment = sentiment;
               _filterAgeGroup = age;
               _filterGender = gender;
+              _filterContact = contact;
+              _filterVisited = visited;
+              _filterCommunity = community;
+              _filterScheme = scheme;
+              _filterSerial = serial;
               _navigateTo("voters");
             });
           },
@@ -1106,6 +1174,11 @@ class _MainMobileScaffoldState extends State<MainMobileScaffold> {
               _filterSentiment = "All";
               _filterAgeGroup = "All";
               _filterGender = "All";
+              _filterContact = "All";
+              _filterVisited = "All";
+              _filterCommunity = "All";
+              _filterScheme = "All";
+              _filterSerial = "";
               _activeKpiFilter = "all";
             });
           },
@@ -1197,8 +1270,10 @@ class DashboardScreen extends StatelessWidget {
     final supporters = voters.where((v) => v.classification == "Supporter").length;
     final doubtful = voters.where((v) => v.classification == "Doubtful").length;
     final opponents = voters.where((v) => v.classification == "Opponent").length;
+    final neutral = voters.where((v) => v.classification == "Neutral").length;
     final visited = voters.where((v) => v.isVisited).length;
     final unvisited = voters.where((v) => !v.isVisited).length;
+    final mobileHas = voters.where((v) => v.phone.isNotEmpty).length;
 
     return ListView(
       padding: const EdgeInsets.all(14),
@@ -1305,6 +1380,45 @@ class DashboardScreen extends StatelessWidget {
 
         const SizedBox(height: 16),
 
+        // SECTION: CULTURAL & COMMUNITY DEMOGRAPHIC CLUSTERS (INTERACTIVE)
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              "CULTURAL & COMMUNITY CLUSTERS",
+              style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: c.textSecondary, letterSpacing: 1),
+            ),
+            Text(
+              "Click to Target",
+              style: TextStyle(fontSize: 9, color: c.primary, fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        SizedBox(
+          height: 38,
+          child: ListView(
+            scrollDirection: Axis.horizontal,
+            children: [
+              _communityChip("मराठा (Maratha)", c.primary, () => onKpiTap("caste_maratha")),
+              const SizedBox(width: 6),
+              _communityChip("ब्राह्मण (Brahmin)", Colors.indigo, () => onKpiTap("caste_brahmin")),
+              const SizedBox(width: 6),
+              _communityChip("इतर मागास (OBC)", c.cyan, () => onKpiTap("caste_obc")),
+              const SizedBox(width: 6),
+              _communityChip("अल्पसंख्याक (Minority)", c.green, () => onKpiTap("caste_muslim")),
+              const SizedBox(width: 6),
+              _communityChip("महिला बचत गट (SHG)", Colors.pink, () => onKpiTap("comm_Self-Help Groups")),
+              const SizedBox(width: 6),
+              _communityChip("व्यापारी मंडळ (Traders)", c.amber, () => onKpiTap("comm_Local Organisations")),
+              const SizedBox(width: 6),
+              _communityChip("तरुण मंडळ (Youth)", c.purple, () => onKpiTap("comm_Village Community")),
+            ],
+          ),
+        ),
+
+        const SizedBox(height: 16),
+
         // SECTION: 15 FIELD PERFORMANCE TELEMETRY KPIS
         Text(
           "FIELD PERFORMANCE TELEMETRY (15 METRICS)",
@@ -1321,14 +1435,15 @@ class DashboardScreen extends StatelessWidget {
           childAspectRatio: 1.8,
           children: [
             _kpiCard("Assigned Voters", "${voters.length}", "3 Polling Booths", c.primary, () => onKpiTap("all")),
-            _kpiCard("Total Visited", "$visited", "${((visited / voters.length) * 100).toInt()}% Doorstep", c.green, () => onKpiTap("all")),
+            _kpiCard("Total Visited", "$visited", "${((visited / (voters.isEmpty ? 1 : voters.length)) * 100).toInt()}% Doorstep", c.green, () => onKpiTap("visited")),
             _kpiCard("Not Visited", "$unvisited", "Target pending", c.amber, () => onKpiTap("unvisited")),
-            _kpiCard("Surveys Done", "$visited", "100% data captured", c.purple, () => onKpiTap("all")),
+            _kpiCard("Surveys Done", "$visited", "100% data captured", c.purple, () => onKpiTap("visited")),
             _kpiCard("Important Contacts", "2", "Key influencers", Colors.amber, () => onKpiTap("important")),
-            _kpiCard("Mobile Available", "${voters.length - 1}", "SMS reachable", c.cyan, () => onKpiTap("all")),
+            _kpiCard("Mobile Available", "$mobileHas", "SMS reachable", c.cyan, () => onKpiTap("mobile_has")),
             _kpiCard("Supporters (Green)", "$supporters", "Strong vote cadre", c.green, () => onKpiTap("supporters")),
             _kpiCard("Doubtful / Swing", "$doubtful", "Follow-up required", c.amber, () => onKpiTap("doubtful")),
             _kpiCard("Opponents (Red)", "$opponents", "Leanings recorded", c.red, () => onKpiTap("opponents")),
+            _kpiCard("Neutral (Slate)", "$neutral", "Persuasion target", Colors.blueGrey, () => onKpiTap("neutral")),
             _kpiCard("Open Grievances", "2", "Action in booths", Colors.orange, () => onQuickActionTap("issues")),
           ],
         ),
@@ -1363,6 +1478,29 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 
+  Widget _communityChip(String label, Color color, VoidCallback onTap) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(10),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        decoration: BoxDecoration(
+          color: c.cardBg,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: color.withOpacity(0.4)),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(width: 6, height: 6, decoration: BoxDecoration(color: color, shape: BoxShape.circle)),
+            const SizedBox(width: 6),
+            Text(label, style: TextStyle(color: c.textPrimary, fontSize: 10, fontWeight: FontWeight.bold)),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _kpiCard(String title, String count, String sub, Color color, VoidCallback onTap) {
     return InkWell(
       onTap: onTap,
@@ -1390,7 +1528,7 @@ class DashboardScreen extends StatelessWidget {
 }
 
 // ==============================================================================
-// 2. ADVANCED FILTER SCREEN
+// 2. ADVANCED FILTER SCREEN (ALIGNED WITH CANDIDATE TOTAL VOTERS SECTION)
 // ==============================================================================
 class AdvancedFilterScreen extends StatefulWidget {
   final AppThemeColors c;
@@ -1399,8 +1537,23 @@ class AdvancedFilterScreen extends StatefulWidget {
   final String selectedSentiment;
   final String selectedAgeGroup;
   final String selectedGender;
+  final String selectedContact;
+  final String selectedVisited;
+  final String selectedCommunity;
+  final String selectedScheme;
+  final String selectedSerial;
   final int matchingCount;
-  final Function(String, String, String, String) onApplyFilter;
+  final Function(
+    String booth,
+    String sentiment,
+    String age,
+    String gender,
+    String contact,
+    String visited,
+    String community,
+    String scheme,
+    String serial,
+  ) onApplyFilter;
   final VoidCallback onResetFilter;
 
   const AdvancedFilterScreen({
@@ -1411,6 +1564,11 @@ class AdvancedFilterScreen extends StatefulWidget {
     required this.selectedSentiment,
     required this.selectedAgeGroup,
     required this.selectedGender,
+    required this.selectedContact,
+    required this.selectedVisited,
+    required this.selectedCommunity,
+    required this.selectedScheme,
+    required this.selectedSerial,
     required this.matchingCount,
     required this.onApplyFilter,
     required this.onResetFilter,
@@ -1425,6 +1583,11 @@ class _AdvancedFilterScreenState extends State<AdvancedFilterScreen> {
   late String _sentiment;
   late String _age;
   late String _gender;
+  late String _contact;
+  late String _visited;
+  late String _community;
+  late String _scheme;
+  late TextEditingController _serialController;
 
   @override
   void initState() {
@@ -1433,6 +1596,17 @@ class _AdvancedFilterScreenState extends State<AdvancedFilterScreen> {
     _sentiment = widget.selectedSentiment;
     _age = widget.selectedAgeGroup;
     _gender = widget.selectedGender;
+    _contact = widget.selectedContact;
+    _visited = widget.selectedVisited;
+    _community = widget.selectedCommunity;
+    _scheme = widget.selectedScheme;
+    _serialController = TextEditingController(text: widget.selectedSerial);
+  }
+
+  @override
+  void dispose() {
+    _serialController.dispose();
+    super.dispose();
   }
 
   @override
@@ -1444,9 +1618,18 @@ class _AdvancedFilterScreenState extends State<AdvancedFilterScreen> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              "Advanced Voter Targeting",
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: c.textPrimary),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Advanced Voter Targeting",
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: c.textPrimary),
+                ),
+                Text(
+                  "Mirrored with Candidate Portal filters",
+                  style: TextStyle(fontSize: 11, color: c.textSecondary),
+                ),
+              ],
             ),
             TextButton(
               onPressed: () {
@@ -1455,6 +1638,11 @@ class _AdvancedFilterScreenState extends State<AdvancedFilterScreen> {
                   _sentiment = "All";
                   _age = "All";
                   _gender = "All";
+                  _contact = "All";
+                  _visited = "All";
+                  _community = "All";
+                  _scheme = "All";
+                  _serialController.clear();
                 });
                 widget.onResetFilter();
               },
@@ -1462,7 +1650,6 @@ class _AdvancedFilterScreenState extends State<AdvancedFilterScreen> {
             ),
           ],
         ),
-        Text("Multi-parameter demographic and sentiment filtering", style: TextStyle(fontSize: 11, color: c.textSecondary)),
         const SizedBox(height: 16),
 
         _filterSectionTitle("Assigned Polling Booth", c),
@@ -1471,7 +1658,7 @@ class _AdvancedFilterScreenState extends State<AdvancedFilterScreen> {
           children: ["All", "101", "102", "103"].map((b) {
             final sel = _booth == b;
             return ChoiceChip(
-              label: Text("Booth #$b"),
+              label: Text(b == "All" ? "All Booths" : "Booth #$b"),
               selected: sel,
               onSelected: (val) => setState(() => _booth = b),
               selectedColor: c.primary,
@@ -1481,19 +1668,120 @@ class _AdvancedFilterScreenState extends State<AdvancedFilterScreen> {
         ),
 
         const SizedBox(height: 16),
-        _filterSectionTitle("Voter Classification Sentiment", c),
+        _filterSectionTitle("Voter Classification Sentiment (Default Neutral)", c),
         Wrap(
           spacing: 8,
-          children: ["All", "Supporter", "Doubtful", "Opponent"].map((s) {
+          runSpacing: 6,
+          children: ["All", "Supporter", "Doubtful", "Opponent", "Neutral"].map((s) {
             final sel = _sentiment == s;
+            Color chipColor = c.primary;
+            if (s == "Supporter") chipColor = c.green;
+            if (s == "Doubtful") chipColor = c.amber;
+            if (s == "Opponent") chipColor = Colors.redAccent;
+            if (s == "Neutral") chipColor = Colors.blueGrey;
+
             return ChoiceChip(
               label: Text(s),
               selected: sel,
               onSelected: (val) => setState(() => _sentiment = s),
-              selectedColor: s == "Supporter" ? c.green : (s == "Doubtful" ? c.amber : c.primary),
+              selectedColor: chipColor,
+              labelStyle: TextStyle(color: sel ? Colors.white : c.textPrimary, fontSize: 11, fontWeight: sel ? FontWeight.bold : FontWeight.normal),
+            );
+          }).toList(),
+        ),
+
+        const SizedBox(height: 16),
+        _filterSectionTitle("Contact Availability", c),
+        Wrap(
+          spacing: 8,
+          children: ["All", "Has Mobile", "No Mobile"].map((opt) {
+            final sel = _contact == opt;
+            return ChoiceChip(
+              label: Text(opt),
+              selected: sel,
+              onSelected: (val) => setState(() => _contact = opt),
+              selectedColor: c.primary,
               labelStyle: TextStyle(color: sel ? Colors.white : c.textPrimary, fontSize: 11),
             );
           }).toList(),
+        ),
+
+        const SizedBox(height: 16),
+        _filterSectionTitle("Field Outreach Status", c),
+        Wrap(
+          spacing: 8,
+          children: ["All", "Visited", "Unvisited"].map((opt) {
+            final sel = _visited == opt;
+            return ChoiceChip(
+              label: Text(opt),
+              selected: sel,
+              onSelected: (val) => setState(() => _visited = opt),
+              selectedColor: c.primary,
+              labelStyle: TextStyle(color: sel ? Colors.white : c.textPrimary, fontSize: 11),
+            );
+          }).toList(),
+        ),
+
+        const SizedBox(height: 16),
+        _filterSectionTitle("Community & Cultural Groups", c),
+        Wrap(
+          spacing: 8,
+          runSpacing: 6,
+          children: [
+            "All",
+            "Local Organisations",
+            "Self-Help Groups",
+            "Village Community",
+            "Farmers",
+            "Youth Mandals",
+            "Vyapar Mandals"
+          ].map((grp) {
+            final sel = _community == grp;
+            return ChoiceChip(
+              label: Text(grp),
+              selected: sel,
+              onSelected: (val) => setState(() => _community = grp),
+              selectedColor: c.primary,
+              labelStyle: TextStyle(color: sel ? Colors.white : c.textPrimary, fontSize: 11),
+            );
+          }).toList(),
+        ),
+
+        const SizedBox(height: 16),
+        _filterSectionTitle("Government Scheme Beneficiaries", c),
+        Wrap(
+          spacing: 8,
+          runSpacing: 6,
+          children: ["All", "Ladki Bahin", "Kisan Samman", "PMAY", "Ayushman"].map((sch) {
+            final sel = _scheme == sch;
+            return ChoiceChip(
+              label: Text(sch),
+              selected: sel,
+              onSelected: (val) => setState(() => _scheme = sch),
+              selectedColor: c.primary,
+              labelStyle: TextStyle(color: sel ? Colors.white : c.textPrimary, fontSize: 11),
+            );
+          }).toList(),
+        ),
+
+        const SizedBox(height: 16),
+        _filterSectionTitle("Serial Number Search", c),
+        TextField(
+          controller: _serialController,
+          keyboardType: TextInputType.number,
+          style: TextStyle(color: c.textPrimary, fontSize: 12),
+          decoration: InputDecoration(
+            hintText: "Enter voter serial number (e.g. 101, 102)...",
+            hintStyle: TextStyle(color: c.textSecondary, fontSize: 11),
+            isDense: true,
+            filled: true,
+            fillColor: c.cardBg,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide(color: c.borderColor),
+            ),
+            prefixIcon: Icon(Icons.pin, size: 16, color: c.textSecondary),
+          ),
         ),
 
         const SizedBox(height: 16),
@@ -1531,7 +1819,17 @@ class _AdvancedFilterScreenState extends State<AdvancedFilterScreen> {
         const SizedBox(height: 28),
         ElevatedButton(
           onPressed: () {
-            widget.onApplyFilter(_booth, _sentiment, _age, _gender);
+            widget.onApplyFilter(
+              _booth,
+              _sentiment,
+              _age,
+              _gender,
+              _contact,
+              _visited,
+              _community,
+              _scheme,
+              _serialController.text.trim(),
+            );
           },
           style: ElevatedButton.styleFrom(
             backgroundColor: c.primary,
@@ -2250,6 +2548,50 @@ class ProfileSettingsScreen extends StatelessWidget {
         ),
 
         const SizedBox(height: 16),
+        _sectionTitle("SCOPE & PORTAL ROLES MATRIX (CANDIDATE WORKFORCE SPECIFICATION)", c),
+        Container(
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            color: c.cardBg,
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: c.borderColor),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      Icon(Icons.verified_user, size: 16, color: c.green),
+                      const SizedBox(width: 6),
+                      Text("Active Scope Assignment", style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: c.textPrimary)),
+                    ],
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                    decoration: BoxDecoration(
+                      color: c.green.withOpacity(0.12),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: c.green.withOpacity(0.3)),
+                    ),
+                    child: Text("Candidate Aligned", style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.bold, color: c.green)),
+                  ),
+                ],
+              ),
+              const Divider(height: 20),
+              _scopeGridRow("Role / Cadre", "Field Worker (Karyakarta)", c),
+              _scopeGridRow("Constituency", "215 - Kasba Peth Assembly", c),
+              _scopeGridRow("Booth Number", "Booth #101, #102, #103", c),
+              _scopeGridRow("Serial Number Range", "Part 101: 001-450\nPart 102: 001-380\nPart 103: 001-310", c),
+              _scopeGridRow("Assigned Sector / Station", "Prabhaag 18 - Shaniwar Peth", c),
+              _scopeGridRow("Authorization Status", "Active & Cadre Assigned", c, statusColor: c.green),
+            ],
+          ),
+        ),
+
+        const SizedBox(height: 16),
         _sectionTitle("APPLICATION & HARDWARE BINDING", c),
         Container(
           padding: const EdgeInsets.all(14),
@@ -2323,6 +2665,35 @@ class ProfileSettingsScreen extends StatelessWidget {
         children: [
           Text(label, style: TextStyle(fontSize: 11, color: c.textSecondary)),
           Text(value, style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: c.textPrimary)),
+        ],
+      ),
+    );
+  }
+
+  Widget _scopeGridRow(String label, String value, AppThemeColors c, {Color? statusColor}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 5),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 130,
+            child: Text(
+              label,
+              style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: c.textSecondary),
+            ),
+          ),
+          const Text(": ", style: TextStyle(fontSize: 11, color: Colors.grey)),
+          Expanded(
+            child: Text(
+              value,
+              style: TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.bold,
+                color: statusColor ?? c.textPrimary,
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -2847,49 +3218,407 @@ class SlipsPrintScreen extends StatelessWidget {
 }
 
 // ==============================================================================
-// 14. INDIC AI COPILOT
+// 14. INDIC AI FIELD ASSISTANT (POPULATED WITH SUGGESTED PROMPTS & REAL-TIME GROUND INTELLIGENCE)
 // ==============================================================================
-class IndicAiCopilotScreen extends StatelessWidget {
+class IndicAiCopilotScreen extends StatefulWidget {
   final AppThemeColors c;
   final bool isDark;
+  final List<VoterItem> voters;
+  final VoidCallback onNavigateToVoters;
   final VoidCallback onLogout;
 
   const IndicAiCopilotScreen({
     super.key,
     required this.c,
     required this.isDark,
+    required this.voters,
+    required this.onNavigateToVoters,
     required this.onLogout,
   });
 
   @override
+  State<IndicAiCopilotScreen> createState() => _IndicAiCopilotScreenState();
+}
+
+class _IndicAiCopilotScreenState extends State<IndicAiCopilotScreen> {
+  final TextEditingController _queryController = TextEditingController();
+  List<VoterItem> _matchingResults = [];
+  String _aiSummary = "";
+  bool _hasSearched = false;
+
+  final List<Map<String, String>> _suggestedPrompts = [
+    {
+      "title": "संशयित (Swing) मतदार",
+      "prompt": "कस्बा पेठ मधील संशयित (Swing) मतदार दाखवा",
+      "category": "Sentiment",
+    },
+    {
+      "title": "लाडकी बहीण लाभार्थी",
+      "prompt": "लाडकी बहीण योजनेचे लाभार्थी कोण आहेत?",
+      "category": "Schemes",
+    },
+    {
+      "title": "महिला बचत गट",
+      "prompt": "महिला बचत गट मतदारांची यादी द्या",
+      "category": "Community",
+    },
+    {
+      "title": "आज भेट न दिलेले",
+      "prompt": "आज भेट न दिलेल्या मतदारांची यादी दाखवा",
+      "category": "Outreach",
+    },
+    {
+      "title": "ज्येष्ठ नागरिक (६०+)",
+      "prompt": "६० वर्षांवरील ज्येष्ठ मतदारांची यादी आणि फोन नंबर",
+      "category": "Age Scope",
+    },
+    {
+      "title": "Uncontacted Voters",
+      "prompt": "Show voters in Booth 101 without phone numbers",
+      "category": "Contact",
+    },
+    {
+      "title": "Neutral Voters",
+      "prompt": "Show neutral voters in Shaniwar Peth",
+      "category": "Sentiment",
+    },
+    {
+      "title": "58mm Slip Targets",
+      "prompt": "Generate 58mm thermal slip delivery list",
+      "category": "Slips",
+    },
+  ];
+
+  @override
+  void dispose() {
+    _queryController.dispose();
+    super.dispose();
+  }
+
+  void _executeAiQuery(String query) {
+    if (query.trim().isEmpty) return;
+    final q = query.toLowerCase();
+    List<VoterItem> results = [];
+    String summary = "";
+
+    if (q.contains("संशयित") || q.contains("swing") || q.contains("doubtful")) {
+      results = widget.voters.where((v) => v.classification == "Doubtful").toList();
+      summary = "संशयित (Doubtful / Swing) मतदार: ${results.length} मतदार आढळले. यांना विशेष भेट देण्याची आवश्यकता आहे.";
+    } else if (q.contains("लाडकी बहीण") || q.contains("ladki") || q.contains("bahin")) {
+      results = widget.voters.where((v) => v.scheme.toLowerCase().contains("ladki") || v.scheme.toLowerCase().contains("bahin")).toList();
+      summary = "लाडकी बहीण योजना लाभार्थी: ${results.length} महिला मतदार आढळल्या.";
+    } else if (q.contains("बचत गट") || q.contains("self-help") || q.contains("bachat")) {
+      results = widget.voters.where((v) => v.communityGroup.toLowerCase().contains("self-help")).toList();
+      summary = "महिला बचत गट (Self-Help Groups): ${results.length} मतदार आढळले.";
+    } else if (q.contains("भेट न दिलेले") || q.contains("unvisited") || q.contains("not visited")) {
+      results = widget.voters.where((v) => !v.isVisited).toList();
+      summary = "अद्याप भेट न दिलेले (Pending Visits): ${results.length} मतदार शिल्लक आहेत.";
+    } else if (q.contains("६०") || q.contains("60") || q.contains("ज्येष्ठ") || q.contains("senior")) {
+      results = widget.voters.where((v) => v.age >= 60).toList();
+      summary = "ज्येष्ठ नागरिक (६०+ वर्षे): ${results.length} मतदार सापडले.";
+    } else if (q.contains("phone") || q.contains("number") || q.contains("without") || q.contains("फोन")) {
+      results = widget.voters.where((v) => v.phone.isEmpty).toList();
+      summary = "मोबाईल नंबर नसलेले मतदार: ${results.length} मतदार आढळले.";
+    } else if (q.contains("neutral") || q.contains("तटस्थ")) {
+      results = widget.voters.where((v) => v.classification == "Neutral").toList();
+      summary = "तटस्थ (Neutral) मतदार: ${results.length} मतदार आढळले. मतपरिवर्तनासाठी प्राधान्य द्या.";
+    } else if (q.contains("slip") || q.contains("thermal") || q.contains("पावती")) {
+      results = widget.voters.where((v) => v.isVisited).toList();
+      summary = "५८ मिमी थर्मल स्लिप वितरण यादी: ${results.length} मतदार तयार आहेत.";
+    } else {
+      results = widget.voters.where((v) =>
+        v.name.toLowerCase().contains(q) ||
+        v.marathiName.contains(query) ||
+        v.epicId.toLowerCase().contains(q) ||
+        v.caste.toLowerCase().contains(q) ||
+        v.communityGroup.toLowerCase().contains(q)
+      ).toList();
+      summary = results.isNotEmpty
+        ? "\"$query\" साठी ${results.length} मतदार आढळले."
+        : "\"$query\" साठी कोणताही थेट मतदार आढळला नाही. सर्व मतदार दाखवत आहोत.";
+      if (results.isEmpty) results = widget.voters;
+    }
+
+    setState(() {
+      _queryController.text = query;
+      _matchingResults = results;
+      _aiSummary = summary;
+      _hasSearched = true;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final c = widget.c;
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
+        // AI Header Banner
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: isDark
+              colors: widget.isDark
                   ? [const Color(0xFF1E1B4B), const Color(0xFF0B1527)]
                   : [const Color(0xFFEDE9FE), Colors.white],
             ),
             borderRadius: BorderRadius.circular(18),
-            border: Border.all(color: isDark ? const Color(0xFF4338CA) : const Color(0xFFC4B5FD)),
+            border: Border.all(color: widget.isDark ? const Color(0xFF4338CA) : const Color(0xFFC4B5FD)),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("Indic Election AI Copilot", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: c.textPrimary)),
-              Text("Marathi & English Ground Campaign Assistant", style: TextStyle(fontSize: 11, color: c.primary)),
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: c.primary,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: const Icon(Icons.auto_awesome, color: Colors.white, size: 20),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("Indic Election AI Field Assistant", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: c.textPrimary)),
+                        Text("Marathi & English Ground Campaign Intelligence", style: TextStyle(fontSize: 11, color: c.primary, fontWeight: FontWeight.w600)),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
               const SizedBox(height: 12),
               Text(
-                "\"कस्बा पेठ मधील संशयित (Swing) मतदार दाखवा\"",
-                style: TextStyle(fontStyle: FontStyle.italic, color: c.textSecondary, fontSize: 11),
+                "कृत्रिम बुद्धिमत्ता (AI) द्वारे मतदार यादी, संशयित मतदार, योजना लाभार्थी आणि बूथ व्यवस्थापनाचे जलद विश्लेषण.",
+                style: TextStyle(fontSize: 11, color: c.textSecondary, height: 1.4),
               ),
             ],
           ),
         ),
+
+        const SizedBox(height: 16),
+        // Search & Input bar
+        Row(
+          children: [
+            Expanded(
+              child: TextField(
+                controller: _queryController,
+                style: TextStyle(color: c.textPrimary, fontSize: 13),
+                decoration: InputDecoration(
+                  hintText: "उदा. संशयित मतदार, लाडकी बहीण लाभार्थी...",
+                  hintStyle: TextStyle(color: c.textSecondary, fontSize: 11),
+                  isDense: true,
+                  filled: true,
+                  fillColor: c.cardBg,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: c.borderColor),
+                  ),
+                  prefixIcon: Icon(Icons.psychology, size: 20, color: c.primary),
+                  suffixIcon: _queryController.text.isNotEmpty
+                      ? IconButton(
+                          icon: const Icon(Icons.clear, size: 16),
+                          onPressed: () {
+                            _queryController.clear();
+                            setState(() {
+                              _hasSearched = false;
+                              _matchingResults.clear();
+                              _aiSummary = "";
+                            });
+                          },
+                        )
+                      : null,
+                ),
+                onSubmitted: _executeAiQuery,
+              ),
+            ),
+            const SizedBox(width: 8),
+            ElevatedButton(
+              onPressed: () => _executeAiQuery(_queryController.text),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: c.primary,
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              ),
+              child: const Icon(Icons.arrow_forward, color: Colors.white, size: 18),
+            ),
+          ],
+        ),
+
+        const SizedBox(height: 18),
+        // Section Title: Suggested Prompts
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              "SUGGESTED AI PROMPTS (क्लिक करा व शोधा)",
+              style: TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: c.textSecondary, letterSpacing: 0.8),
+            ),
+            Text(
+              "${_suggestedPrompts.length} Prompts",
+              style: TextStyle(fontSize: 10, color: c.primary, fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: _suggestedPrompts.map((item) {
+            return InkWell(
+              onTap: () => _executeAiQuery(item["prompt"]!),
+              borderRadius: BorderRadius.circular(12),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                decoration: BoxDecoration(
+                  color: c.cardBg,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: c.borderColor),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.bolt, size: 14, color: c.amber),
+                    const SizedBox(width: 4),
+                    Text(
+                      item["title"]!,
+                      style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: c.textPrimary),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }).toList(),
+        ),
+
+        if (_hasSearched) ...[
+          const SizedBox(height: 20),
+          // AI Summary Box
+          Container(
+            padding: const EdgeInsets.all(14),
+            decoration: BoxDecoration(
+              color: c.primary.withOpacity(0.08),
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(color: c.primary.withOpacity(0.3)),
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(Icons.insights, size: 18, color: c.primary),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("AI Field Assessment", style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: c.primary)),
+                      const SizedBox(height: 4),
+                      Text(_aiSummary, style: TextStyle(fontSize: 12, color: c.textPrimary, height: 1.3)),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 14),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "Matching Electors (${_matchingResults.length})",
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: c.textPrimary),
+              ),
+              TextButton(
+                onPressed: widget.onNavigateToVoters,
+                child: const Text("Open in Voters Directory →", style: TextStyle(fontSize: 11)),
+              ),
+            ],
+          ),
+
+          // Matching voters list
+          ..._matchingResults.map((voter) {
+            Color sentimentColor = c.textSecondary;
+            if (voter.classification == "Supporter") sentimentColor = c.green;
+            if (voter.classification == "Doubtful") sentimentColor = c.amber;
+            if (voter.classification == "Opponent") sentimentColor = Colors.redAccent;
+            if (voter.classification == "Neutral") sentimentColor = Colors.blueGrey;
+
+            return Container(
+              margin: const EdgeInsets.only(bottom: 8),
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: c.cardBg,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: c.borderColor),
+              ),
+              child: Row(
+                children: [
+                  CircleAvatar(
+                    radius: 18,
+                    backgroundColor: sentimentColor.withOpacity(0.15),
+                    child: Text(
+                      voter.serialNo,
+                      style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: sentimentColor),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Text(voter.marathiName, style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: c.textPrimary)),
+                            const SizedBox(width: 6),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1.5),
+                              decoration: BoxDecoration(
+                                color: sentimentColor.withOpacity(0.12),
+                                borderRadius: BorderRadius.circular(6),
+                              ),
+                              child: Text(voter.classification, style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.bold, color: sentimentColor)),
+                            ),
+                          ],
+                        ),
+                        Text("${voter.name} • Age ${voter.age} • ${voter.gender} • Booth #${voter.boothNo}", style: TextStyle(fontSize: 10.5, color: c.textSecondary)),
+                        if (voter.scheme.isNotEmpty && voter.scheme != "None")
+                          Text("योजना: ${voter.scheme} • ${voter.communityGroup}", style: TextStyle(fontSize: 10, color: c.primary, fontWeight: FontWeight.w600)),
+                      ],
+                    ),
+                  ),
+                  if (voter.phone.isNotEmpty)
+                    Icon(Icons.phone, size: 16, color: c.green),
+                ],
+              ),
+            );
+          }),
+        ] else ...[
+          const SizedBox(height: 20),
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: c.cardBg,
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(color: c.borderColor),
+            ),
+            child: Column(
+              children: [
+                Icon(Icons.lightbulb_outline, size: 32, color: c.amber),
+                const SizedBox(height: 8),
+                Text("How to use AI Field Assistant", style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: c.textPrimary)),
+                const SizedBox(height: 4),
+                Text(
+                  "Tap any suggested prompt above or type your question in Marathi or English. The assistant will immediately segment your booth electors, identify swing clusters, filter government schemes, and prepare your daily outreach list.",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 11, color: c.textSecondary, height: 1.4),
+                ),
+              ],
+            ),
+          ),
+        ],
       ],
     );
   }

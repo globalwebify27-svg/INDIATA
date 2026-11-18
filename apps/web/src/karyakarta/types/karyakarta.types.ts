@@ -10,8 +10,11 @@ export interface KaryakartaUser {
   organizationId: string;
   candidateName: string;
   constituencyName: string;
+  role?: string;
+  prabhaag?: string;
   assignedBooths: string[];
   assignedArea: string;
+  serialNumberRange?: string;
   status: KaryakartaStatus;
   hasAiSeat: boolean;
   deviceUuid: string;
@@ -47,6 +50,7 @@ export interface VoterRecord {
   occupation: string;
   qualification: string;
   scheme: string;
+  communityGroup?: string;
   demand: string;
   candidateHelp: string;
   extraInfo: string;
@@ -208,10 +212,14 @@ export interface FilterState {
   caste: string;
   occupation: string;
   scheme: string;
+  communityGroup?: string;
   classification: string;
   visitedStatus: "all" | "visited" | "not_visited";
   votedStatus: "all" | "voted" | "non_voted";
   mobileStatus: "all" | "available" | "unavailable";
+  deceasedStatus?: "all" | "living" | "deceased";
+  houseNo?: string;
+  serialNo?: string;
   isImportant: boolean | null;
   isFavourite: boolean | null;
 }

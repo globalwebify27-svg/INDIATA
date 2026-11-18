@@ -30,6 +30,26 @@ interface SamplePrompt {
 
 const SAMPLE_PROMPTS: SamplePrompt[] = [
   {
+    label: "संशयित (Swing) मतदार (मराठी)",
+    query: "कस्बा पेठ मधील संशयित (Swing) मतदार दाखवा",
+    category: "मतदार मन वळवणे",
+  },
+  {
+    label: "लाडकी बहीण लाभार्थी (मराठी)",
+    query: "Booth 101 मधील लाडकी बहीण योजनेचे लाभार्थी किती आहेत?",
+    category: "शासकीय योजना",
+  },
+  {
+    label: "भेट न झालेले मतदार (मराठी)",
+    query: "आज भेट न दिलेल्या मतदारांची यादी द्या",
+    category: "गृहभेट नियोजन",
+  },
+  {
+    label: "६०+ ज्येष्ठ नागरिक व संपर्क (मराठी)",
+    query: "६० वर्षांवरील ज्येष्ठ मतदारांची यादी आणि फोन नंबर",
+    category: "ज्येष्ठ नागरिक सहाय्य",
+  },
+  {
     label: "Senior Citizens Unvisited (Age 60+)",
     query: "Show unvisited senior citizen voters aged 60 and above in Booth 101",
     category: "Outreach Priority",
@@ -50,9 +70,14 @@ const SAMPLE_PROMPTS: SamplePrompt[] = [
     category: "Voter Retention",
   },
   {
-    label: "बूथ १०१ मधील संपर्क न झालेले मतदार (मराठी)",
-    query: "बूथ १०१ मधील अद्याप भेट न घेतलेले सर्व मतदार दाखवा",
-    category: "मराठी क्वेरी",
+    label: "Thermal Slip Delivery Route (58mm)",
+    query: "Generate 58mm thermal slip delivery list for Lane 4",
+    category: "Slip Logistics",
+  },
+  {
+    label: "Bachat Gat & Women SHG Mobilization",
+    query: "List key influencers and Bachat Gat leaders in Shaniwar Peth",
+    category: "Community Network",
   },
 ];
 
@@ -93,14 +118,16 @@ export default function AiModePage() {
     }
 
     const q = activeQuery.toLowerCase();
-    const isSenior = q.includes("senior") || q.includes("60") || q.includes("वयस्कर") || q.includes("वृद्ध");
-    const isUnvisited = q.includes("unvisited") || q.includes("not visited") || q.includes("भेट न घेतलेले") || q.includes("बाकी");
-    const isDoubtful = q.includes("doubtful") || q.includes("साशंक");
+    const isSenior = q.includes("senior") || q.includes("60") || q.includes("वयस्कर") || q.includes("वृद्ध") || q.includes("ज्येष्ठ");
+    const isUnvisited = q.includes("unvisited") || q.includes("not visited") || q.includes("भेट न घेतलेले") || q.includes("बाकी") || q.includes("भेट न दिलेल्या");
+    const isDoubtful = q.includes("doubtful") || q.includes("साशंक") || q.includes("swing") || q.includes("संशयित");
     const isSupporter = q.includes("supporter") || q.includes("अनुकूल");
     const isOpponent = q.includes("opponent") || q.includes("विरोधी");
-    const hasPhoneReq = q.includes("phone") || q.includes("mobile") || q.includes("मोबाइल") || q.includes("संपर्क");
+    const hasPhoneReq = q.includes("phone") || q.includes("mobile") || q.includes("मोबाइल") || q.includes("संपर्क") || q.includes("नंबर");
     const hasGrievance = q.includes("water") || q.includes("road") || q.includes("पाणी") || q.includes("रस्ते") || q.includes("repair") || q.includes("issue");
     const hasScheme = q.includes("scheme") || q.includes("pmay") || q.includes("योजना") || q.includes("pension");
+    const isLadkiBahin = q.includes("ladki") || q.includes("लाडकी") || q.includes("बहीण");
+    const isBachatGat = q.includes("bachat") || q.includes("बचत") || q.includes("shg");
     const booth101 = q.includes("101") || q.includes("१०१");
     const booth102 = q.includes("102") || q.includes("१०२");
 
@@ -114,7 +141,9 @@ export default function AiModePage() {
       if (isOpponent && v.classification !== "Opponent") return false;
       if (hasPhoneReq && !v.phone) return false;
       if (hasGrievance && !v.demand.toLowerCase().includes("water") && !v.demand.toLowerCase().includes("road") && !v.remarks.toLowerCase().includes("water")) return false;
-      if (hasScheme && !v.scheme) return false;
+      if (isLadkiBahin && !v.scheme.toLowerCase().includes("ladki")) return false;
+      if (isBachatGat && v.communityGroup !== "Self-Help Groups" && !v.occupation.toLowerCase().includes("self-help")) return false;
+      if (hasScheme && !isLadkiBahin && !v.scheme) return false;
       return true;
     });
 
@@ -123,11 +152,13 @@ export default function AiModePage() {
     if (booth102) parsedFilters.push("Booth #102");
     if (isSenior) parsedFilters.push("Age ≥ 60 (Senior Citizens)");
     if (isUnvisited) parsedFilters.push("Outreach Status: Unvisited");
-    if (isDoubtful) parsedFilters.push("Sentiment: Doubtful");
+    if (isDoubtful) parsedFilters.push("Sentiment: Swing / Doubtful");
     if (isSupporter) parsedFilters.push("Sentiment: Supporter");
+    if (isLadkiBahin) parsedFilters.push("Scheme: Ladki Bahin Yojana Beneficiaries");
+    if (isBachatGat) parsedFilters.push("Community: Mahila Bachat Gat Leaders");
     if (hasPhoneReq) parsedFilters.push("Phone: Verified Available");
     if (hasGrievance) parsedFilters.push("Demands: Water / Road Infrastructure");
-    if (hasScheme) parsedFilters.push("Schemes: Active Beneficiaries");
+    if (hasScheme && !isLadkiBahin) parsedFilters.push("Schemes: Active Beneficiaries");
 
     if (parsedFilters.length === 0) {
       parsedFilters.push(`Keyword match: "${activeQuery}"`);
