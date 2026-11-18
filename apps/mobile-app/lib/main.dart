@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'candidate_experience/app/candidate_app.dart';
 import 'candidate_experience/core/theme/candidate_theme.dart';
 import 'candidate_experience/features/auth/services/auth_service.dart';
+import 'candidate_experience/features/auth/screens/login_screen.dart';
 import 'candidate_experience/navigation/main_navigation_scaffold.dart';
 import 'karyakarta_experience/karyakarta_experience.dart';
 
@@ -24,6 +25,8 @@ class _RajtantraUnifiedAppState extends State<RajtantraUnifiedApp> {
   // Active role portal: 'select', 'candidate', 'karyakarta'
   String _activePortal = 'select';
   ThemeMode _themeMode = ThemeMode.dark;
+  bool _candidateLoggedIn = false;
+  bool _karyakartaActivated = false;
 
   void _selectPortal(String portal) {
     setState(() {
@@ -53,11 +56,27 @@ class _RajtantraUnifiedAppState extends State<RajtantraUnifiedApp> {
         themeMode: _themeMode,
         theme: CandidateTheme.buildLightTheme(),
         darkTheme: CandidateTheme.buildDarkTheme(),
-        home: CandidateExperienceWrapper(
-          themeMode: _themeMode,
-          onToggleTheme: _toggleTheme,
-          onSignOut: () => _selectPortal('select'),
-        ),
+        home: _candidateLoggedIn
+            ? CandidateExperienceWrapper(
+                themeMode: _themeMode,
+                onToggleTheme: _toggleTheme,
+                onSignOut: () {
+                  setState(() {
+                    _candidateLoggedIn = false;
+                    _activePortal = 'select';
+                  });
+                },
+              )
+            : LoginScreen(
+                isDark: _themeMode == ThemeMode.dark,
+                onToggleTheme: _toggleTheme,
+                onLoginSuccess: () {
+                  setState(() {
+                    _candidateLoggedIn = true;
+                  });
+                },
+                onSwitchPortal: () => _selectPortal('select'),
+              ),
       );
     }
 
@@ -103,12 +122,27 @@ class _RajtantraUnifiedAppState extends State<RajtantraUnifiedApp> {
             elevation: 0,
           ),
         ),
-        home: KaryakartaExperienceWrapper(
-          themeMode: _themeMode,
-          onToggleTheme: _toggleTheme,
-          onSetTheme: _setTheme,
-          onSignOut: () => _selectPortal('select'),
-        ),
+        home: _karyakartaActivated
+            ? KaryakartaExperienceWrapper(
+                themeMode: _themeMode,
+                onToggleTheme: _toggleTheme,
+                onSetTheme: _setTheme,
+                onSignOut: () {
+                  setState(() {
+                    _karyakartaActivated = false;
+                    _activePortal = 'select';
+                  });
+                },
+              )
+            : ActivationScreen(
+                isDark: _themeMode == ThemeMode.dark,
+                onActivated: () {
+                  setState(() {
+                    _karyakartaActivated = true;
+                  });
+                },
+                onSwitchPortal: () => _selectPortal('select'),
+              ),
       );
     }
 
@@ -184,6 +218,7 @@ class KaryakartaExperienceWrapper extends StatelessWidget {
         themeMode: themeMode,
         onToggleTheme: onToggleTheme,
         onSetTheme: onSetTheme,
+        onSignOut: onSignOut,
       ),
     );
   }
@@ -298,7 +333,7 @@ class UnifiedPortalGateway extends StatelessWidget {
                 icon: Icons.dashboard_customize_rounded,
                 description:
                     'War Room Dashboard, Constituency Voters, Turnout Analytics, Karyakarta Fleet, AI Strategy Copilot, and Reports.',
-                colorSchemeText: 'Exact UI & Theme: Vibrant Violet (#6256D9) & Executive Charcoal',
+                colorSchemeText: 'Login requires: Candidate Mobile / ID & Security Passcode',
                 cardBg: cardBg,
                 borderColor: borderColor,
                 textPrimary: textPrimary,
@@ -317,7 +352,7 @@ class UnifiedPortalGateway extends StatelessWidget {
                 icon: Icons.how_to_vote_rounded,
                 description:
                     'Assigned Polling Booths, 6-Char Key Activation, Offline Voter Search, Doorstep Surveys, and 58mm Thermal Slip Printing.',
-                colorSchemeText: 'Exact UI & Theme: Royal Blue (#2087FE) & Obsidian Navy',
+                colorSchemeText: 'Activation requires: 6-Character Key & Registered Mobile',
                 cardBg: cardBg,
                 borderColor: borderColor,
                 textPrimary: textPrimary,

@@ -221,12 +221,14 @@ class MainMobileScaffold extends StatefulWidget {
   final ThemeMode themeMode;
   final VoidCallback onToggleTheme;
   final Function(ThemeMode) onSetTheme;
+  final VoidCallback? onSignOut;
 
   const MainMobileScaffold({
     super.key,
     required this.themeMode,
     required this.onToggleTheme,
     required this.onSetTheme,
+    this.onSignOut,
   });
 
   @override
@@ -567,6 +569,7 @@ class _MainMobileScaffoldState extends State<MainMobileScaffold> {
     if (!_isActivated) {
       return ActivationScreen(
         isDark: isDark,
+        onSwitchPortal: widget.onSignOut,
         onActivated: () {
           setState(() {
             _isActivated = true;
@@ -906,6 +909,9 @@ class _MainMobileScaffoldState extends State<MainMobileScaffold> {
               onTap: () {
                 Navigator.pop(context);
                 setState(() => _isActivated = false);
+                if (widget.onSignOut != null) {
+                  widget.onSignOut!();
+                }
               },
             ),
           ],
@@ -2895,8 +2901,14 @@ class IndicAiCopilotScreen extends StatelessWidget {
 class ActivationScreen extends StatefulWidget {
   final bool isDark;
   final VoidCallback onActivated;
+  final VoidCallback? onSwitchPortal;
 
-  const ActivationScreen({super.key, required this.isDark, required this.onActivated});
+  const ActivationScreen({
+    super.key,
+    required this.isDark,
+    required this.onActivated,
+    this.onSwitchPortal,
+  });
 
   @override
   State<ActivationScreen> createState() => _ActivationScreenState();
@@ -2907,17 +2919,64 @@ class _ActivationScreenState extends State<ActivationScreen> {
   final _phoneController = TextEditingController(text: "9822100001");
 
   @override
+  void dispose() {
+    _keyController.dispose();
+    _phoneController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final c = AppThemeColors(widget.isDark);
     return Scaffold(
       backgroundColor: c.scaffoldBg,
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              // Top Back / Change Role Button
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  if (widget.onSwitchPortal != null)
+                    InkWell(
+                      onTap: widget.onSwitchPortal,
+                      borderRadius: BorderRadius.circular(8),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.arrow_back_rounded, size: 18, color: c.textSecondary),
+                            const SizedBox(width: 4),
+                            Text(
+                              "Change Portal",
+                              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: c.textSecondary),
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                  else
+                    const SizedBox.shrink(),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                    decoration: BoxDecoration(
+                      color: c.primary.withOpacity(0.12),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: c.primary.withOpacity(0.3)),
+                    ),
+                    child: Text(
+                      "KARYAKARTA",
+                      style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w900, color: c.primary, letterSpacing: 0.8),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 24),
+
               Center(
                 child: Container(
                   width: 64,
@@ -2927,6 +2986,13 @@ class _ActivationScreenState extends State<ActivationScreen> {
                       colors: [Color(0xFF2563EB), Color(0xFF4F46E5), Color(0xFF9333EA)],
                     ),
                     borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color(0xFF2563EB).withOpacity(0.3),
+                        blurRadius: 14,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
                   ),
                   child: const Center(
                     child: Text(
@@ -2986,6 +3052,24 @@ class _ActivationScreenState extends State<ActivationScreen> {
                   style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                 ),
               ),
+
+              if (widget.onSwitchPortal != null) ...[
+                const SizedBox(height: 12),
+                OutlinedButton.icon(
+                  onPressed: widget.onSwitchPortal,
+                  icon: const Icon(Icons.swap_horiz_rounded, size: 18),
+                  label: const Text(
+                    "Switch to Candidate Portal (उमेदवार पोर्टल निवडा)",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                  ),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: c.primary,
+                    side: BorderSide(color: c.borderColor, width: 1.2),
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                  ),
+                ),
+              ],
             ],
           ),
         ),

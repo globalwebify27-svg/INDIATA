@@ -10,12 +10,14 @@ class LoginScreen extends StatefulWidget {
   final VoidCallback onLoginSuccess;
   final VoidCallback onToggleTheme;
   final bool isDark;
+  final VoidCallback? onSwitchPortal;
 
   const LoginScreen({
     super.key,
     required this.onLoginSuccess,
     required this.onToggleTheme,
     required this.isDark,
+    this.onSwitchPortal,
   });
 
   @override
@@ -99,43 +101,83 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Top Bar with Theme Switcher & App Title
+              // Top Bar with Theme Switcher, Back/Switch option & App Title
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  if (widget.onSwitchPortal != null)
+                    InkWell(
+                      onTap: widget.onSwitchPortal,
+                      borderRadius: BorderRadius.circular(8),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.arrow_back_rounded, size: 18, color: c.textSecondary),
+                            const SizedBox(width: 4),
+                            Text(
+                              "Change Portal",
+                              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: c.textSecondary),
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                  else
+                    Row(
+                      children: [
+                        Container(
+                          width: 34,
+                          height: 34,
+                          decoration: BoxDecoration(
+                            gradient: const LinearGradient(
+                              colors: [Color(0xFF2563EB), Color(0xFF4F46E5), Color(0xFF9333EA)],
+                            ),
+                            borderRadius: BorderRadius.circular(9),
+                          ),
+                          alignment: Alignment.center,
+                          child: const Text(
+                            "IN",
+                            style: TextStyle(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 13),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          "INDATA",
+                          style: TextStyle(
+                            fontSize: 17,
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: 0.5,
+                            color: c.textPrimary,
+                          ),
+                        ),
+                      ],
+                    ),
                   Row(
                     children: [
                       Container(
-                        width: 38,
-                        height: 38,
+                        padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
                         decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: const Color(0xFF4F46E5),
-                          border: Border.all(color: const Color(0xFFF59E0B), width: 1.5),
+                          color: const Color(0xFF6366F1).withOpacity(0.12),
+                          borderRadius: BorderRadius.circular(6),
+                          border: Border.all(color: const Color(0xFF6366F1).withOpacity(0.3)),
                         ),
-                        child: const Center(
-                          child: Icon(Icons.military_tech_rounded, size: 20, color: Color(0xFFFBBF24)),
+                        child: const Text(
+                          "CANDIDATE",
+                          style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, color: Color(0xFF6366F1), letterSpacing: 0.8),
                         ),
                       ),
-                      const SizedBox(width: 10),
-                      Text(
-                        AppConstants.appName,
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w900,
-                          letterSpacing: 1.5,
-                          color: c.textPrimary,
+                      const SizedBox(width: 4),
+                      IconButton(
+                        icon: Icon(
+                          isDark ? Icons.light_mode_outlined : Icons.dark_mode_outlined,
+                          color: c.textSecondary,
                         ),
+                        onPressed: widget.onToggleTheme,
+                        tooltip: "Toggle Theme",
                       ),
                     ],
-                  ),
-                  IconButton(
-                    icon: Icon(
-                      isDark ? Icons.light_mode_outlined : Icons.dark_mode_outlined,
-                      color: c.textSecondary,
-                    ),
-                    onPressed: widget.onToggleTheme,
-                    tooltip: "Toggle Theme",
                   ),
                 ],
               ),
@@ -312,7 +354,28 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                 ),
               ),
-              const SizedBox(height: 32),
+
+              if (widget.onSwitchPortal != null) ...[
+                const SizedBox(height: 12),
+                SizedBox(
+                  width: double.infinity,
+                  height: 48,
+                  child: OutlinedButton.icon(
+                    onPressed: widget.onSwitchPortal,
+                    icon: const Icon(Icons.swap_horiz_rounded, size: 18),
+                    label: const Text(
+                      "Switch to Karyakarta Portal (कार्यकर्ता पोर्टल निवडा)",
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                    ),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: const Color(0xFF6366F1),
+                      side: BorderSide(color: c.cardBorder, width: 1.2),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                    ),
+                  ),
+                ),
+              ],
+              const SizedBox(height: 24),
 
               // Quick Preset Tester (To demo Active, Pending Approval, and Suspended Status Gates)
               Container(
