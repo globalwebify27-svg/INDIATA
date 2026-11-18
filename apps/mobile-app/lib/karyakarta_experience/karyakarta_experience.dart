@@ -32,7 +32,7 @@ class IndiataKaryakartaApp extends StatefulWidget {
 }
 
 class _IndiataKaryakartaAppState extends State<IndiataKaryakartaApp> {
-  ThemeMode _themeMode = ThemeMode.dark;
+  ThemeMode _themeMode = ThemeMode.light;
 
   void _toggleTheme() {
     setState(() {

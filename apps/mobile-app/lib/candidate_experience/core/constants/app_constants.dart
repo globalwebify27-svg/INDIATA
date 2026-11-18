@@ -1,5 +1,5 @@
 class AppConstants {
-  static const String appName = "RAJTANTRA";
+  static const String appName = "INDIATA";
   static const String appSubtitle = "Candidate War Room & Campaign Intelligence";
   static const String appVersion = "v2.4.0";
   

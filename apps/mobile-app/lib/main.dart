@@ -24,7 +24,7 @@ class RajtantraUnifiedApp extends StatefulWidget {
 class _RajtantraUnifiedAppState extends State<RajtantraUnifiedApp> {
   // Active role portal: 'select', 'candidate', 'karyakarta'
   String _activePortal = 'select';
-  ThemeMode _themeMode = ThemeMode.dark;
+  ThemeMode _themeMode = ThemeMode.light;
   bool _candidateLoggedIn = false;
   bool _karyakartaActivated = false;
 
@@ -51,7 +51,7 @@ class _RajtantraUnifiedAppState extends State<RajtantraUnifiedApp> {
     // 1. If Candidate Admin selected: render Candidate Theme & exact Candidate Experience
     if (_activePortal == 'candidate') {
       return MaterialApp(
-        title: 'RAJTANTRA - Candidate War Room',
+        title: 'INDIATA - Candidate War Room',
         debugShowCheckedModeBanner: false,
         themeMode: _themeMode,
         theme: CandidateTheme.buildLightTheme(),
@@ -83,7 +83,7 @@ class _RajtantraUnifiedAppState extends State<RajtantraUnifiedApp> {
     // 2. If Karyakarta selected: render Karyakarta Theme & exact Karyakarta Experience
     if (_activePortal == 'karyakarta') {
       return MaterialApp(
-        title: 'RAJTANTRA - Karyakarta Field Worker',
+        title: 'INDIATA - Karyakarta Field Worker',
         debugShowCheckedModeBanner: false,
         themeMode: _themeMode,
         theme: ThemeData(
@@ -148,7 +148,7 @@ class _RajtantraUnifiedAppState extends State<RajtantraUnifiedApp> {
 
     // 3. Root Role Gateway: Select between Candidate and Karyakarta workspaces
     return MaterialApp(
-      title: 'RAJTANTRA - Unified Mobile App',
+      title: 'INDIATA - Unified Mobile App',
       debugShowCheckedModeBanner: false,
       themeMode: _themeMode,
       theme: ThemeData.light(useMaterial3: true),
@@ -276,14 +276,14 @@ class UnifiedPortalGateway extends StatelessWidget {
                 height: 72,
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
-                    colors: [Color(0xFF6256D9), Color(0xFF2087FE)],
+                    colors: [Color(0xFF2563EB), Color(0xFF4F46E5), Color(0xFF9333EA)],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(22),
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0xFF6256D9).withOpacity(0.3),
+                      color: const Color(0xFF4F46E5).withOpacity(0.35),
                       blurRadius: 18,
                       offset: const Offset(0, 6),
                     ),
@@ -291,35 +291,61 @@ class UnifiedPortalGateway extends StatelessWidget {
                 ),
                 child: const Center(
                   child: Text(
-                    'RT',
+                    'IN',
                     style: TextStyle(
-                      fontFamily: 'monospace',
-                      fontSize: 30,
+                      fontSize: 32,
                       fontWeight: FontWeight.w900,
                       color: Colors.white,
+                      letterSpacing: 0.5,
                     ),
                   ),
                 ),
               ),
               const SizedBox(height: 18),
 
-              Text(
-                'RAJTANTRA',
-                style: TextStyle(
-                  fontSize: 26,
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: 2,
-                  color: textPrimary,
-                ),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'INDIATA',
+                    style: TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: 1.5,
+                      color: textPrimary,
+                    ),
+                  ),
+                  const SizedBox(width: 6),
+                  Container(
+                    width: 8,
+                    height: 8,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF22D3EE),
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color(0xFF22D3EE).withOpacity(0.8),
+                          blurRadius: 6,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 4),
-              Text(
-                'Role-Based Election Management Mobile App',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w500,
-                  color: textSecondary,
+              ShaderMask(
+                shaderCallback: (bounds) => const LinearGradient(
+                  colors: [Color(0xFFFBBF24), Color(0xFFF472B6), Color(0xFF22D3EE)],
+                ).createShader(bounds),
+                child: const Text(
+                  'UNIFIED ELECTION MANAGEMENT PLATFORM',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 1.2,
+                    color: Colors.white,
+                  ),
                 ),
               ),
               const SizedBox(height: 36),

@@ -21,6 +21,9 @@ import '../features/audit_log/screens/audit_log_screen.dart';
 import '../features/settings/screens/settings_screen.dart';
 import '../features/subscriptions/screens/subscriptions_screen.dart';
 import '../features/filters/screens/filters_management_screen.dart';
+import '../features/feedback/screens/live_feedback_screen.dart';
+import '../features/karyakartas/screens/karyakarta_list_screen.dart';
+import '../features/karyakartas/screens/add_karyakarta_sheet.dart';
 
 class MainNavigationScaffold extends StatefulWidget {
   final CandidateColors c;
@@ -52,6 +55,39 @@ class _MainNavigationScaffoldState extends State<MainNavigationScaffold> {
   }
 
   void _handleOpenModule(String moduleKey) {
+    if (moduleKey == "feedback" || moduleKey == "Live Feedback" || moduleKey == "live_feedback") {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => LiveFeedbackScreen(c: widget.c, isDark: widget.isDark),
+        ),
+      );
+      return;
+    }
+
+    if (moduleKey == "all_users" ||
+        moduleKey == "user_dashboard" ||
+        moduleKey == "members" ||
+        moduleKey == "users" ||
+        moduleKey == "Users & Karyakarta") {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => KaryakartaListScreen(c: widget.c, isDark: widget.isDark),
+        ),
+      );
+      return;
+    }
+
+    if (moduleKey == "add_user" || moduleKey == "+ Add User") {
+      AddKaryakartaSheet.show(context, widget.c, (newWorker) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("User ${newWorker.name} added to cadre successfully.")),
+        );
+      });
+      return;
+    }
+
     if (moduleKey == "update_requests" || moduleKey == "Update Requests") {
       Navigator.push(
         context,
@@ -248,7 +284,7 @@ class _MainNavigationScaffoldState extends State<MainNavigationScaffold> {
               const Divider(),
               const SizedBox(height: 10),
               Text(
-                "RAJTANTRA Candidate War Room Module Active",
+                "INDIATA Candidate War Room Module Active",
                 style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: widget.c.textPrimary),
               ),
               const SizedBox(height: 8),
