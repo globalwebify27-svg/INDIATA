@@ -7,6 +7,9 @@ import {
   AuditRecord,
   NotificationItem,
   OrganizationRecord,
+  RolePortalSettingsConfig,
+  NotificationDeliveryConfig,
+  NotificationTemplateConfig,
 } from "../types/superadmin.types";
 import {
   OrganizationPlanType,
@@ -593,6 +596,244 @@ export const MOCK_ORGANIZATIONS: OrganizationRecord[] = [
     maxWorkersLimit: 10,
     createdAt: "2024-01-05",
     updatedAt: "2024-02-15",
+  },
+];
+
+// ============================================================================
+// Granular Multi-Role & Cross-Portal System Configurations
+// ============================================================================
+
+export const MOCK_ROLE_SETTINGS: RolePortalSettingsConfig = {
+  superAdmin: {
+    sessionTimeoutMinutes: 60,
+    enforceStrict2FA: true,
+    maxConcurrentSessions: 3,
+    auditRetentionDays: 365,
+    emergencyLockdown: false,
+  },
+  candidate: {
+    maxSubUsersLimit: 50,
+    allowVoterRollCsvExport: true,
+    allowVoterRollExcelExport: true,
+    allowVoterRollPdfExport: true,
+    voterSlipQuotaPerDay: 5000,
+    telemetryRefreshSeconds: 15,
+    aiCopilotDailyPromptLimit: 250,
+  },
+  distributor: {
+    showCommissionTiers: true,
+    selfOnboardingLeadLimit: 20,
+    autoApproveTrialLicenses: false,
+    allowQuotaReallocation: true,
+  },
+  karyakarta: {
+    gpsGeofenceRadiusMeters: 500,
+    offlineSyncFrequencyMinutes: 10,
+    bluetoothThermalPrintingEnabled: true,
+    allowDirectSentimentEdit: true,
+    maxAudioNoteDurationSeconds: 120,
+  },
+  citizen: {
+    rateLimitPerMinute: 30,
+    enforceSearchCaptcha: true,
+    enableDirectWhatsAppSharing: true,
+    maskPhoneNumberDigits: true,
+  },
+};
+
+// ============================================================================
+// Notification Delivery Frequency & Throttle Settings
+// ============================================================================
+
+export const MOCK_NOTIFICATION_DELIVERY_CONFIG: NotificationDeliveryConfig = {
+  globalFrequency: "REAL_TIME",
+  quietHoursEnabled: true,
+  quietHoursStart: "22:00",
+  quietHoursEnd: "07:00",
+  maxSmsPerHour: 1000,
+  maxWhatsAppPerDay: 5000,
+  maxPushPerHour: 3000,
+};
+
+// ============================================================================
+// Notification Templates with Dynamic Interpolation & Deep Redirections
+// ============================================================================
+
+export const MOCK_NOTIFICATION_TEMPLATES: NotificationTemplateConfig[] = [
+  {
+    id: "TMPL-01",
+    type: "CANDIDATE_ONBOARDING_WELCOME",
+    category: "candidate",
+    name: "Candidate Onboarding & Access Provisioned",
+    description: "Sent immediately after Super Admin approves or provisions a candidate campaign war room.",
+    channels: {
+      inApp: true,
+      push: true,
+      sms: true,
+      whatsapp: true,
+      email: true,
+    },
+    frequency: "REAL_TIME",
+    templateSubject: "Welcome to RAJTANTRA War Room — {candidate_name} ({constituency})",
+    templateBody: "Namaskar {candidate_name}, your official campaign war room for {constituency} ({election_type}) has been activated. Access your war room commands and workforce roster now.",
+    availablePlaceholders: ["{candidate_name}", "{constituency}", "{election_type}", "{war_room_url}", "{login_id}"],
+    redirection: {
+      targetPortal: "CANDIDATE",
+      routePath: "/candidate",
+      fallbackRoute: "/login",
+      passParameters: true,
+    },
+    isActive: true,
+  },
+  {
+    id: "TMPL-02",
+    type: "QUOTA_EXHAUSTION_WARNING",
+    category: "billing",
+    name: "Voter Roll & Messaging Quota Threshold Alert",
+    description: "Triggers when candidate voter allocation or SMS/WhatsApp gateway credit reaches 85% capacity.",
+    channels: {
+      inApp: true,
+      push: true,
+      sms: false,
+      whatsapp: true,
+      email: true,
+    },
+    frequency: "REAL_TIME",
+    templateSubject: "Urgent: Quota Nearing Capacity ({quota_percentage}%) for {candidate_name}",
+    templateBody: "Attention: Campaign {candidate_name} has utilized {quota_used} of {quota_allowed} allocated records ({quota_percentage}%). Renew or top up quota to avoid field dispatch delays.",
+    availablePlaceholders: ["{candidate_name}", "{quota_used}", "{quota_allowed}", "{quota_percentage}", "{expiry_date}"],
+    redirection: {
+      targetPortal: "SUPER_ADMIN",
+      routePath: "/super-admin/subscriptions",
+      fallbackRoute: "/super-admin",
+      passParameters: true,
+    },
+    isActive: true,
+  },
+  {
+    id: "TMPL-03",
+    type: "SWING_VOTER_CLUSTER_ALERT",
+    category: "voters",
+    name: "High-Priority Swing Booth Voter Surge",
+    description: "Informs candidate admin and coordinators when high concentrations of undecided electors are detected.",
+    channels: {
+      inApp: true,
+      push: true,
+      sms: false,
+      whatsapp: true,
+      email: false,
+    },
+    frequency: "HOURLY_DIGEST",
+    templateSubject: "Field Intelligence: {swing_count} Swing Electors in Booth #{booth_no}",
+    templateBody: "Real-time field update: Doorstep survey analytics indicate {swing_count} doubtful electors in Booth #{booth_no} ({station_name}). Immediate karyakarta slip distribution surge recommended.",
+    availablePlaceholders: ["{booth_no}", "{station_name}", "{swing_count}", "{sector_name}"],
+    redirection: {
+      targetPortal: "CANDIDATE",
+      routePath: "/candidate?tab=voters&filter=doubtful",
+      fallbackRoute: "/candidate",
+      passParameters: true,
+    },
+    isActive: true,
+  },
+  {
+    id: "TMPL-04",
+    type: "KARYAKARTA_ACTIVATION_KEY",
+    category: "operations",
+    name: "Field Cadre Hardware Binding Activation Key",
+    description: "Dispatches device authorization OTP and 6-character activation key to field worker mobile device.",
+    channels: {
+      inApp: false,
+      push: false,
+      sms: true,
+      whatsapp: true,
+      email: false,
+    },
+    frequency: "REAL_TIME",
+    templateSubject: "INDIATA Field Worker Activation — Booth #{booth_no}",
+    templateBody: "Namaskar {worker_name}, your INDIATA activation key is {activation_key}. Registered Mobile: {phone}. Valid for 24 hours to bind your authorized field device.",
+    availablePlaceholders: ["{worker_name}", "{activation_key}", "{booth_no}", "{phone}", "{expiry_hours}"],
+    redirection: {
+      targetPortal: "KARYAKARTA",
+      routePath: "/karyakarta/profile",
+      fallbackRoute: "/karyakarta/dashboard",
+      passParameters: false,
+    },
+    isActive: true,
+  },
+  {
+    id: "TMPL-05",
+    type: "DISTRIBUTOR_COMMISSION_SETTLEMENT",
+    category: "distributor",
+    name: "Distributor Partner Commission Payout Approval",
+    description: "Notifies franchise distributor when franchise onboarding settlement is credited.",
+    channels: {
+      inApp: true,
+      push: true,
+      sms: true,
+      whatsapp: false,
+      email: true,
+    },
+    frequency: "DAILY_SUMMARY",
+    templateSubject: "Settlement Approved: ₹{settlement_amount} credited for {distributor_name}",
+    templateBody: "Payout batch {settlement_id} for ₹{settlement_amount} across {candidate_count} provisioned war rooms has been processed and credited to your verified bank account.",
+    availablePlaceholders: ["{distributor_name}", "{settlement_amount}", "{settlement_id}", "{candidate_count}"],
+    redirection: {
+      targetPortal: "DISTRIBUTOR",
+      routePath: "/distributor",
+      fallbackRoute: "/super-admin/distributors",
+      passParameters: true,
+    },
+    isActive: true,
+  },
+  {
+    id: "TMPL-06",
+    type: "SECURITY_ANOMALOUS_LOGIN",
+    category: "security",
+    name: "Security Audit: Multiple Failed Logins / Unknown IP",
+    description: "Emergency administrative security alert when brute-force login attempts or geo-anomaly occurs.",
+    channels: {
+      inApp: true,
+      push: true,
+      sms: true,
+      whatsapp: true,
+      email: true,
+    },
+    frequency: "REAL_TIME",
+    templateSubject: "SECURITY WARNING: Anomalous Login Attempt for {username}",
+    templateBody: "Security Alert: {failed_attempts} failed login attempts from IP {ip_address} ({location}) for account {username}. Multi-factor verification enforced.",
+    availablePlaceholders: ["{username}", "{ip_address}", "{location}", "{failed_attempts}", "{timestamp}"],
+    redirection: {
+      targetPortal: "SUPER_ADMIN",
+      routePath: "/super-admin/audit",
+      fallbackRoute: "/super-admin",
+      passParameters: true,
+    },
+    isActive: true,
+  },
+  {
+    id: "TMPL-07",
+    type: "CITIZEN_VOTER_SLIP_READY",
+    category: "voters",
+    name: "Citizen Digital Voter Information Slip Ready",
+    description: "Sends digital voter information slip link via WhatsApp/SMS to citizen electors before polling day.",
+    channels: {
+      inApp: false,
+      push: false,
+      sms: true,
+      whatsapp: true,
+      email: false,
+    },
+    frequency: "REAL_TIME",
+    templateSubject: "Your Official Voter Information Slip — Booth #{booth_no}",
+    templateBody: "Namaskar {voter_name}, your official voter polling slip for election day is ready. Polling Station: {polling_station}. Serial No: {serial_no}. Download or print your slip here: {slip_url}",
+    availablePlaceholders: ["{voter_name}", "{booth_no}", "{polling_station}", "{serial_no}", "{slip_url}"],
+    redirection: {
+      targetPortal: "CITIZEN",
+      routePath: "/voter-slip",
+      fallbackRoute: "/",
+      passParameters: true,
+    },
+    isActive: true,
   },
 ];
 

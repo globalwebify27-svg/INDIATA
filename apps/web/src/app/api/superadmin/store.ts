@@ -7,6 +7,9 @@ import {
   MOCK_ORGANIZATIONS,
   MOCK_CANDIDATE_REQUESTS,
   MOCK_DISTRIBUTOR_REQUESTS,
+  MOCK_ROLE_SETTINGS,
+  MOCK_NOTIFICATION_DELIVERY_CONFIG,
+  MOCK_NOTIFICATION_TEMPLATES,
 } from "@/superadmin/data/mock-superadmin-data";
 import {
   CandidateRecord,
@@ -17,6 +20,9 @@ import {
   AuditRecord,
   NotificationItem,
   OrganizationRecord,
+  RolePortalSettingsConfig,
+  NotificationDeliveryConfig,
+  NotificationTemplateConfig,
 } from "@/superadmin/types/superadmin.types";
 import { OrganizationStatus, DistributorStatus } from "@rajtantra/common-types";
 
@@ -298,6 +304,10 @@ class SuperAdminDataStore {
     redisTelemetry: "Redis Sentinel Cluster UP",
     smsDltRelay: "National DLT Multi-Gateway UP",
   };
+
+  private roleSettings: RolePortalSettingsConfig = { ...MOCK_ROLE_SETTINGS };
+  private notificationDelivery: NotificationDeliveryConfig = { ...MOCK_NOTIFICATION_DELIVERY_CONFIG };
+  private notificationTemplates: NotificationTemplateConfig[] = [...MOCK_NOTIFICATION_TEMPLATES];
 
   // -------------------------------------------------------------
   // Audit Logger Helper
@@ -739,16 +749,85 @@ class SuperAdminDataStore {
   }
 
   // -------------------------------------------------------------
-  // Platform Settings
+  // Platform Settings & Multi-Role Policies
   // -------------------------------------------------------------
   public getSettings() {
-    return this.settings;
+    return {
+      ...this.settings,
+      roleSettings: this.roleSettings,
+      notificationDelivery: this.notificationDelivery,
+      notificationTemplates: this.notificationTemplates,
+    };
   }
 
-  public updateSettings(partial: Partial<typeof this.settings>) {
-    this.settings = { ...this.settings, ...partial };
+  public updateSettings(partial: any) {
+    if (partial.generalElectionCadence !== undefined) this.settings.generalElectionCadence = partial.generalElectionCadence;
+    if (partial.pricingPublic !== undefined) this.settings.pricingPublic = partial.pricingPublic;
+    if (partial.highAvailabilityReplicas !== undefined) this.settings.highAvailabilityReplicas = partial.highAvailabilityReplicas;
+    if (partial.maintenanceMode !== undefined) this.settings.maintenanceMode = partial.maintenanceMode;
+
+    if (partial.roleSettings) {
+      this.updateRoleSettings(partial.roleSettings);
+    }
+    if (partial.notificationDelivery) {
+      this.updateNotificationDeliveryConfig(partial.notificationDelivery);
+    }
+    if (partial.notificationTemplates && Array.isArray(partial.notificationTemplates)) {
+      this.notificationTemplates = partial.notificationTemplates;
+    }
+
     this.logAudit("PLATFORM_CONFIG_UPDATED", "System Settings", "Global Parameters", "SETTINGS-01");
-    return this.settings;
+    return this.getSettings();
+  }
+
+  public getRoleSettings() {
+    return this.roleSettings;
+  }
+
+  public updateRoleSettings(partial: Partial<RolePortalSettingsConfig>) {
+    this.roleSettings = {
+      superAdmin: { ...this.roleSettings.superAdmin, ...(partial.superAdmin || {}) },
+      candidate: { ...this.roleSettings.candidate, ...(partial.candidate || {}) },
+      distributor: { ...this.roleSettings.distributor, ...(partial.distributor || {}) },
+      karyakarta: { ...this.roleSettings.karyakarta, ...(partial.karyakarta || {}) },
+      citizen: { ...this.roleSettings.citizen, ...(partial.citizen || {}) },
+    };
+    this.logAudit("ROLE_PORTAL_CONFIG_UPDATED", "System Settings", "Multi-Role Granular Policies", "SETTINGS-ROLE");
+    return this.roleSettings;
+  }
+
+  public getNotificationDeliveryConfig() {
+    return this.notificationDelivery;
+  }
+
+  public updateNotificationDeliveryConfig(partial: Partial<NotificationDeliveryConfig>) {
+    this.notificationDelivery = { ...this.notificationDelivery, ...partial };
+    this.logAudit("NOTIFICATION_DELIVERY_UPDATED", "Notification Engine", "Delivery Frequency & Rate Limits", "SETTINGS-NOTIF");
+    return this.notificationDelivery;
+  }
+
+  public getNotificationTemplates() {
+    return this.notificationTemplates;
+  }
+
+  public updateNotificationTemplate(id: string, partial: Partial<NotificationTemplateConfig>) {
+    const idx = this.notificationTemplates.findIndex((t) => t.id === id);
+    if (idx !== -1) {
+      const existing = this.notificationTemplates[idx]!;
+      const updated: NotificationTemplateConfig = {
+        ...existing,
+        ...partial,
+        id: existing.id,
+        redirection: {
+          ...existing.redirection,
+          ...(partial.redirection || {}),
+        },
+      };
+      this.notificationTemplates[idx] = updated;
+      this.logAudit("NOTIFICATION_TEMPLATE_UPDATED", "Notification Engine", `Template: ${updated.name}`, id);
+      return updated;
+    }
+    return null;
   }
 
   public getNotifications() {

@@ -1,7 +1,8 @@
 "use client";
 
 import React from "react";
-import { X, Check, Bell, Shield, Users, CreditCard } from "lucide-react";
+import Link from "next/link";
+import { X, Check, Bell, Shield, Users, CreditCard, ExternalLink } from "lucide-react";
 import { NotificationItem } from "../../types/superadmin.types";
 
 export interface NotificationDrawerProps {
@@ -109,6 +110,19 @@ export function NotificationDrawer({
               </div>
             ))
           )}
+        </div>
+
+        {/* Footer Link to Notification Management */}
+        <div className="p-3 border-t border-[#ACB9D1] dark:border-[#0e3554] bg-[#E0EDFE]/30 dark:bg-[#072439]/50 flex items-center justify-between text-xs">
+          <span className="text-[10.5px] text-[#717785] dark:text-[#94A3B8]">Telecom DLT &amp; Routing Active</span>
+          <Link
+            href="/super-admin/settings"
+            onClick={onClose}
+            className="flex items-center gap-1 text-[11px] font-bold text-[#2087FE] dark:text-[#0D79FD] hover:underline"
+          >
+            <span>Configure Delivery &amp; Redirections</span>
+            <ExternalLink className="w-3 h-3" />
+          </Link>
         </div>
       </div>
     </>

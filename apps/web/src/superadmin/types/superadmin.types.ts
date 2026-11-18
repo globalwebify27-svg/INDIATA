@@ -175,3 +175,121 @@ export type NavKey =
   | "settings"
   | "profile"
   | "components";
+
+// ============================================================================
+// Granular Multi-Role & Cross-Portal System Configuration Types
+// ============================================================================
+
+export interface SuperAdminRoleConfig {
+  sessionTimeoutMinutes: number;
+  enforceStrict2FA: boolean;
+  maxConcurrentSessions: number;
+  auditRetentionDays: number;
+  emergencyLockdown: boolean;
+}
+
+export interface CandidatePortalConfig {
+  maxSubUsersLimit: number;
+  allowVoterRollCsvExport: boolean;
+  allowVoterRollExcelExport: boolean;
+  allowVoterRollPdfExport: boolean;
+  voterSlipQuotaPerDay: number;
+  telemetryRefreshSeconds: number;
+  aiCopilotDailyPromptLimit: number;
+}
+
+export interface DistributorPortalConfig {
+  showCommissionTiers: boolean;
+  selfOnboardingLeadLimit: number;
+  autoApproveTrialLicenses: boolean;
+  allowQuotaReallocation: boolean;
+}
+
+export interface KaryakartaPortalConfig {
+  gpsGeofenceRadiusMeters: number;
+  offlineSyncFrequencyMinutes: number;
+  bluetoothThermalPrintingEnabled: boolean;
+  allowDirectSentimentEdit: boolean;
+  maxAudioNoteDurationSeconds: number;
+}
+
+export interface CitizenPortalConfig {
+  rateLimitPerMinute: number;
+  enforceSearchCaptcha: boolean;
+  enableDirectWhatsAppSharing: boolean;
+  maskPhoneNumberDigits: boolean;
+}
+
+export interface RolePortalSettingsConfig {
+  superAdmin: SuperAdminRoleConfig;
+  candidate: CandidatePortalConfig;
+  distributor: DistributorPortalConfig;
+  karyakarta: KaryakartaPortalConfig;
+  citizen: CitizenPortalConfig;
+}
+
+// ============================================================================
+// Notification & Redirection Management Types
+// ============================================================================
+
+export type NotificationFrequency =
+  | "REAL_TIME"
+  | "HOURLY_DIGEST"
+  | "DAILY_SUMMARY"
+  | "WEEKLY_BRIEF"
+  | "MUTED";
+
+export interface NotificationDeliveryConfig {
+  globalFrequency: NotificationFrequency;
+  quietHoursEnabled: boolean;
+  quietHoursStart: string;
+  quietHoursEnd: string;
+  maxSmsPerHour: number;
+  maxWhatsAppPerDay: number;
+  maxPushPerHour: number;
+}
+
+export type TargetPortalType =
+  | "SUPER_ADMIN"
+  | "CANDIDATE"
+  | "DISTRIBUTOR"
+  | "KARYAKARTA"
+  | "CITIZEN";
+
+export interface NotificationRedirectionConfig {
+  targetPortal: TargetPortalType;
+  routePath: string;
+  fallbackRoute: string;
+  passParameters: boolean;
+}
+
+export interface NotificationTemplateConfig {
+  id: string;
+  type: string;
+  category: "candidate" | "distributor" | "security" | "billing" | "operations" | "voters";
+  name: string;
+  description: string;
+  channels: {
+    inApp: boolean;
+    push: boolean;
+    sms: boolean;
+    whatsapp: boolean;
+    email: boolean;
+  };
+  frequency: NotificationFrequency;
+  templateSubject: string;
+  templateBody: string;
+  availablePlaceholders: string[];
+  redirection: NotificationRedirectionConfig;
+  isActive: boolean;
+}
+
+export interface FullPlatformSettingsState {
+  generalElectionCadence: string;
+  highAvailabilityReplicas: number;
+  pricingPublic: boolean;
+  maintenanceMode: boolean;
+  roleSettings: RolePortalSettingsConfig;
+  notificationDelivery: NotificationDeliveryConfig;
+  notificationTemplates: NotificationTemplateConfig[];
+}
