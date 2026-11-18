@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import '../core/theme/candidate_theme.dart';
 import '../core/constants/app_constants.dart';
-import '../core/components/status_pill.dart';
 import '../features/auth/services/auth_service.dart';
 
-class CandidateDrawer extends StatelessWidget {
+class CandidateDrawer extends StatefulWidget {
   final CandidateColors c;
   final bool isDark;
   final VoidCallback onToggleTheme;
   final Function(int) onNavigateTab;
   final Function(String) onOpenModule;
   final VoidCallback onLogout;
+  final int currentTab;
 
   const CandidateDrawer({
     super.key,
@@ -20,162 +20,387 @@ class CandidateDrawer extends StatelessWidget {
     required this.onNavigateTab,
     required this.onOpenModule,
     required this.onLogout,
+    this.currentTab = 2,
   });
+
+  @override
+  State<CandidateDrawer> createState() => _CandidateDrawerState();
+}
+
+class _CandidateDrawerState extends State<CandidateDrawer> {
+  bool _usersExpanded = true;
 
   @override
   Widget build(BuildContext context) {
     final user = CandidateAuthService().currentUser ?? CandidateAuthService.demoActive;
     final initials = user.name.split(" ").map((w) => w.isNotEmpty ? w[0] : "").take(2).join();
 
+    const slate950 = Color(0xFF020617);
+    const slate900 = Color(0xFF0F172A);
+    const slate800 = Color(0xFF1E293B);
+    const slate400 = Color(0xFF94A3B8);
+    const slate300 = Color(0xFFCBD5E1);
+
     return Drawer(
-      backgroundColor: c.cardBg,
+      backgroundColor: slate950,
       child: SafeArea(
-        child: ListView(
-          padding: EdgeInsets.zero,
+        child: Column(
           children: [
-            // Drawer Header
+            // BRAND HEADER BAR (MATCHES EXACT WEB SIDEBAR SPEC)
             Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: isDark ? const Color(0xFF0F223D) : const Color(0xFFEEF2FF),
-                border: Border(bottom: BorderSide(color: c.borderColor)),
+              height: 64,
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              decoration: const BoxDecoration(
+                color: slate950,
+                border: Border(bottom: BorderSide(color: slate900, width: 1.2)),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              child: Row(
                 children: [
-                  Row(
-                    children: [
-                      CircleAvatar(
-                        radius: 22,
-                        backgroundColor: c.primary,
-                        child: Text(
-                          initials.isEmpty ? "VP" : initials,
-                          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 15),
-                        ),
+                  Container(
+                    width: 36,
+                    height: 36,
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        colors: [Color(0xFF2563EB), Color(0xFF4F46E5), Color(0xFF9333EA)],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
                       ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                      borderRadius: BorderRadius.circular(10),
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color(0xFF4F46E5).withOpacity(0.35),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    alignment: Alignment.center,
+                    child: const Text(
+                      "IN",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w900,
+                        fontSize: 14,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
                           children: [
-                            Text(
-                              user.name,
-                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: c.textPrimary),
+                            const Text(
+                              "INDATA",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w900,
+                                fontSize: 15,
+                                letterSpacing: -0.2,
+                              ),
                             ),
-                            Text(
-                              user.partyName,
-                              style: TextStyle(fontSize: 10, color: c.primary, fontWeight: FontWeight.w600),
-                            ),
-                            Text(
-                              "${user.constituencyCode} - ${user.constituencyName}",
-                              style: TextStyle(fontSize: 9.5, color: c.textSecondary),
+                            const SizedBox(width: 5),
+                            Container(
+                              width: 6,
+                              height: 6,
+                              decoration: BoxDecoration(
+                                color: const Color(0xFF22D3EE),
+                                shape: BoxShape.circle,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: const Color(0xFF22D3EE).withOpacity(0.8),
+                                    blurRadius: 6,
+                                  ),
+                                ],
+                              ),
                             ),
                           ],
                         ),
-                      ),
-                    ],
+                        const SizedBox(height: 1),
+                        ShaderMask(
+                          shaderCallback: (bounds) => const LinearGradient(
+                            colors: [Color(0xFFFBBF24), Color(0xFFF472B6), Color(0xFF22D3EE)],
+                          ).createShader(bounds),
+                          child: const Text(
+                            "CANDIDATE PORTAL",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 9.5,
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: 0.8,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                  const SizedBox(height: 10),
-                  Row(
-                    children: [
-                      StatusPill(label: "WAR ROOM L-9 ACTIVE", color: c.green),
-                      const SizedBox(width: 6),
-                      StatusPill(label: "SLA 99.98%", color: c.primary),
-                    ],
+                  IconButton(
+                    icon: const Icon(Icons.close_rounded, color: slate400, size: 20),
+                    tooltip: "Close drawer",
+                    onPressed: () => Navigator.pop(context),
                   ),
                 ],
               ),
             ),
 
-            // NAVIGATION SECTIONS
-            _drawerHeader("WAR ROOM CORE"),
-            _drawerTile(Icons.dashboard_rounded, "Main Dashboard", () {
-              Navigator.pop(context);
-              onNavigateTab(2); // Slot 3 (Center Anchor): Home Dashboard
-            }),
-            _drawerTile(Icons.how_to_reg_rounded, "Total Voters Directory", () {
-              Navigator.pop(context);
-              onNavigateTab(0); // Slot 1: Voter Directory
-            }),
-            _drawerTile(Icons.map_rounded, "Live Field Map & Booths", () {
-              Navigator.pop(context);
-              onNavigateTab(1); // Slot 2: Field Tracking
-            }),
-            _drawerTile(Icons.campaign_rounded, "Campaign Broadcasts", () {
-              Navigator.pop(context);
-              onNavigateTab(3); // Slot 4: Broadcasts
-            }),
+            // MIDDLE SCROLLABLE NAVIGATION LIST (6 EXACT WEB GROUPS)
+            Expanded(
+              child: ListView(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                children: [
+                  // 1. CORE OPERATIONS
+                  _groupHeader("CORE OPERATIONS"),
+                  _navItem(
+                    icon: Icons.dashboard_rounded,
+                    label: "War Room Dashboard",
+                    isActive: widget.currentTab == 2,
+                    iconColor: const Color(0xFF3B82F6),
+                    onTap: () {
+                      Navigator.pop(context);
+                      widget.onNavigateTab(2);
+                    },
+                  ),
+                  _navItem(
+                    icon: Icons.location_on_rounded,
+                    label: "Live Field Map",
+                    isActive: widget.currentTab == 1,
+                    iconColor: const Color(0xFF22D3EE),
+                    pulseDot: true,
+                    onTap: () {
+                      Navigator.pop(context);
+                      widget.onNavigateTab(1);
+                    },
+                  ),
+                  _navItem(
+                    icon: Icons.chat_bubble_rounded,
+                    label: "Live Feedback",
+                    iconColor: const Color(0xFF22D3EE),
+                    pulseDot: true,
+                    onTap: () {
+                      Navigator.pop(context);
+                      widget.onOpenModule("feedback");
+                    },
+                  ),
+                  _navItem(
+                    icon: Icons.domain_rounded,
+                    label: "Office & Issues",
+                    iconColor: const Color(0xFFFBBF24),
+                    badge: "2",
+                    badgeBg: const Color(0x33F59E0B),
+                    badgeText: const Color(0xFFFBBF24),
+                    onTap: () {
+                      Navigator.pop(context);
+                      widget.onOpenModule("office_issues");
+                    },
+                  ),
 
-            _drawerHeader("INTELLIGENCE & STRATEGY"),
-            _drawerTile(Icons.auto_awesome_rounded, "Agentic AI Mode", () {
-              Navigator.pop(context);
-              onOpenModule("ai_mode");
-            }, badge: "AI", badgeColor: c.indigo),
-            _drawerTile(Icons.history_edu_rounded, "Previous Election Strategy", () {
-              Navigator.pop(context);
-              onOpenModule("previous_election");
-            }),
-            _drawerTile(Icons.assessment_rounded, "Reports & Analytics", () {
-              Navigator.pop(context);
-              onOpenModule("reports");
-            }),
-            _drawerTile(Icons.receipt_long_rounded, "Office & Issues", () {
-              Navigator.pop(context);
-              onOpenModule("office_issues");
-            }, badge: "18 Open", badgeColor: c.red),
+                  // 2. VOTER INTELLIGENCE
+                  _groupHeader("VOTER INTELLIGENCE"),
+                  _navItem(
+                    icon: Icons.how_to_vote_rounded,
+                    label: "Total Voters",
+                    isActive: widget.currentTab == 0,
+                    iconColor: const Color(0xFF22D3EE),
+                    onTap: () {
+                      Navigator.pop(context);
+                      widget.onNavigateTab(0);
+                    },
+                  ),
+                  _navItem(
+                    icon: Icons.contact_phone_rounded,
+                    label: "Phone Book",
+                    iconColor: const Color(0xFFA855F7),
+                    onTap: () {
+                      Navigator.pop(context);
+                      widget.onOpenModule("phone_book");
+                    },
+                  ),
+                  _navItem(
+                    icon: Icons.filter_list_rounded,
+                    label: "Filters",
+                    iconColor: const Color(0xFF818CF8),
+                    onTap: () {
+                      Navigator.pop(context);
+                      widget.onOpenModule("filters");
+                    },
+                  ),
 
-            _drawerHeader("ADMINISTRATION & SETTINGS"),
-            _drawerTile(Icons.contacts_rounded, "BLO Directory", () {
-              Navigator.pop(context);
-              onOpenModule("blo");
-            }),
-            _drawerTile(Icons.notifications_rounded, "Notifications (4 Streams)", () {
-              Navigator.pop(context);
-              onOpenModule("notifications");
-            }),
-            _drawerTile(Icons.workspace_premium_rounded, "Subscriptions & Plans", () {
-              Navigator.pop(context);
-              onOpenModule("subscriptions");
-            }),
-            _drawerTile(Icons.settings_suggest_rounded, "Profile & App Appearance", () {
-              Navigator.pop(context);
-              onOpenModule("settings");
-            }),
+                  // 3. WORKFORCE & TEAM
+                  _groupHeader("WORKFORCE & TEAM"),
+                  _buildUsersAccordion(context),
+                  _navItem(
+                    icon: Icons.verified_user_rounded,
+                    label: "BLO Information",
+                    iconColor: const Color(0xFF34D399),
+                    onTap: () {
+                      Navigator.pop(context);
+                      widget.onOpenModule("blo");
+                    },
+                  ),
+                  _navItem(
+                    icon: Icons.query_stats_rounded,
+                    label: "User Activities",
+                    iconColor: const Color(0xFF38BDF8),
+                    onTap: () {
+                      Navigator.pop(context);
+                      widget.onOpenModule("audit_log");
+                    },
+                  ),
 
-            const Divider(),
+                  // 4. CAMPAIGN & PLANS
+                  _groupHeader("CAMPAIGN & PLANS"),
+                  _navItem(
+                    icon: Icons.campaign_rounded,
+                    label: "Campaign Control",
+                    isActive: widget.currentTab == 3,
+                    iconColor: const Color(0xFFFB7185),
+                    onTap: () {
+                      Navigator.pop(context);
+                      widget.onNavigateTab(3);
+                    },
+                  ),
+                  _navItem(
+                    icon: Icons.credit_card_rounded,
+                    label: "Subscription Plans",
+                    iconColor: const Color(0xFFFBBF24),
+                    onTap: () {
+                      Navigator.pop(context);
+                      widget.onOpenModule("subscriptions");
+                    },
+                  ),
 
-            // Theme Toggle
-            ListTile(
-              dense: true,
-              leading: Icon(isDark ? Icons.light_mode : Icons.dark_mode, size: 20, color: c.amber),
-              title: Text("Theme Mode", style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: c.textPrimary)),
-              trailing: Text(isDark ? "Dark 🌙" : "Light ☀️", style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: c.primary)),
-              onTap: () {
-                Navigator.pop(context);
-                onToggleTheme();
-              },
+                  // 5. ANALYTICS & STRATEGY
+                  _groupHeader("ANALYTICS & STRATEGY"),
+                  _navItem(
+                    icon: Icons.bar_chart_rounded,
+                    label: "Reports",
+                    iconColor: const Color(0xFFA78BFA),
+                    onTap: () {
+                      Navigator.pop(context);
+                      widget.onOpenModule("reports");
+                    },
+                  ),
+                  _navItem(
+                    icon: Icons.history_rounded,
+                    label: "Previous Election & Strategy",
+                    iconColor: const Color(0xFFE879F9),
+                    onTap: () {
+                      Navigator.pop(context);
+                      widget.onOpenModule("previous_election");
+                    },
+                  ),
+
+                  // 6. ADMINISTRATION
+                  _groupHeader("ADMINISTRATION"),
+                  _navItem(
+                    icon: Icons.settings_suggest_rounded,
+                    label: "Profile & Party Settings",
+                    iconColor: slate400,
+                    onTap: () {
+                      Navigator.pop(context);
+                      widget.onOpenModule("settings");
+                    },
+                  ),
+                  _navItem(
+                    icon: Icons.logout_rounded,
+                    label: "Logout",
+                    iconColor: const Color(0xFFF43F5E),
+                    textColor: const Color(0xFFF43F5E),
+                    onTap: () {
+                      Navigator.pop(context);
+                      widget.onLogout();
+                    },
+                  ),
+                  const SizedBox(height: 12),
+                ],
+              ),
             ),
 
-            // Switch Portal
-            ListTile(
-              dense: true,
-              leading: const Icon(Icons.swap_horiz_rounded, size: 20, color: Color(0xFF2087FE)),
-              title: const Text("Switch to Karyakarta Mode", style: TextStyle(fontSize: 12, color: Color(0xFF2087FE), fontWeight: FontWeight.bold)),
-              onTap: () {
-                Navigator.pop(context);
-                onLogout();
-              },
-            ),
-
-            // Logout
-            ListTile(
-              dense: true,
-              leading: const Icon(Icons.logout, size: 20, color: Colors.red),
-              title: const Text("Sign Out of War Room", style: TextStyle(fontSize: 12, color: Colors.red, fontWeight: FontWeight.bold)),
-              onTap: () {
-                Navigator.pop(context);
-                onLogout();
-              },
+            // BOTTOM USER PROFILE PILL (EXACT SPEC MATCH FROM WEB SIDEBAR)
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: const BoxDecoration(
+                color: Color(0xFF030712),
+                border: Border(top: BorderSide(color: slate900, width: 1.2)),
+              ),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF0F172A).withOpacity(0.8),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: slate800, width: 1),
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 32,
+                      height: 32,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF2563EB),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      alignment: Alignment.center,
+                      child: Text(
+                        initials.isEmpty ? "VP" : initials,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w900,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            user.name,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 1.5),
+                          Row(
+                            children: [
+                              Container(
+                                width: 5,
+                                height: 5,
+                                decoration: const BoxDecoration(
+                                  color: Color(0xFF10B981),
+                                  shape: BoxShape.circle,
+                                ),
+                              ),
+                              const SizedBox(width: 4),
+                              Expanded(
+                                child: Text(
+                                  "${user.constituencyCode} - ${user.constituencyName}",
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                    color: slate400,
+                                    fontSize: 9.5,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
           ],
         ),
@@ -183,36 +408,270 @@ class CandidateDrawer extends StatelessWidget {
     );
   }
 
-  Widget _drawerHeader(String label) {
+  Widget _groupHeader(String title) {
     return Padding(
-      padding: const EdgeInsets.only(left: 16, top: 12, bottom: 4),
+      padding: const EdgeInsets.only(left: 10, top: 14, bottom: 4),
       child: Text(
-        label,
-        style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w900, color: c.textSecondary, letterSpacing: 1.1),
+        title,
+        style: const TextStyle(
+          color: Color(0xFF64748B),
+          fontSize: 9.5,
+          fontWeight: FontWeight.w800,
+          letterSpacing: 1.1,
+        ),
       ),
     );
   }
 
-  Widget _drawerTile(IconData icon, String title, VoidCallback onTap, {String? badge, Color? badgeColor}) {
-    return ListTile(
-      dense: true,
-      leading: Icon(icon, size: 19, color: c.textPrimary),
-      title: Text(title, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: c.textPrimary)),
-      trailing: badge != null
-          ? Container(
-              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-              decoration: BoxDecoration(
-                color: (badgeColor ?? c.primary).withOpacity(0.18),
-                borderRadius: BorderRadius.circular(6),
-                border: Border.all(color: badgeColor ?? c.primary, width: 0.8),
+  Widget _navItem({
+    required IconData icon,
+    required String label,
+    required VoidCallback onTap,
+    bool isActive = false,
+    Color? iconColor,
+    Color? textColor,
+    bool pulseDot = false,
+    String? badge,
+    Color? badgeBg,
+    Color? badgeText,
+  }) {
+    const activeBg = Color(0xFF132347);
+    const activeBorder = Color(0x663B82F6);
+    const slate300 = Color(0xFFCBD5E1);
+
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 1.5),
+      decoration: BoxDecoration(
+        color: isActive ? activeBg : Colors.transparent,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: isActive ? activeBorder : Colors.transparent,
+          width: 1,
+        ),
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(12),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8.5),
+            child: Row(
+              children: [
+                if (isActive)
+                  Container(
+                    width: 3.5,
+                    height: 18,
+                    margin: const EdgeInsets.only(right: 7),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF38BDF8),
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                Icon(
+                  icon,
+                  size: 18,
+                  color: isActive ? const Color(0xFF60A5FA) : (iconColor ?? slate300),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    label,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: textColor ?? (isActive ? Colors.white : slate300),
+                      fontSize: 12,
+                      fontWeight: isActive ? FontWeight.bold : FontWeight.w600,
+                    ),
+                  ),
+                ),
+                if (pulseDot)
+                  Container(
+                    width: 6,
+                    height: 6,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF22D3EE),
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color(0xFF22D3EE).withOpacity(0.8),
+                          blurRadius: 5,
+                        ),
+                      ],
+                    ),
+                  ),
+                if (badge != null)
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1.5),
+                    decoration: BoxDecoration(
+                      color: badgeBg ?? const Color(0xFF1E293B),
+                      borderRadius: BorderRadius.circular(6),
+                      border: Border.all(
+                        color: badgeText ?? Colors.transparent,
+                        width: 0.8,
+                      ),
+                    ),
+                    child: Text(
+                      badge,
+                      style: TextStyle(
+                        fontSize: 9,
+                        fontWeight: FontWeight.bold,
+                        color: badgeText ?? Colors.white,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildUsersAccordion(BuildContext context) {
+    const slate300 = Color(0xFFCBD5E1);
+
+    return Column(
+      children: [
+        Container(
+          margin: const EdgeInsets.symmetric(vertical: 1.5),
+          decoration: BoxDecoration(
+            color: Colors.transparent,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: () {
+                setState(() {
+                  _usersExpanded = !_usersExpanded;
+                });
+              },
+              borderRadius: BorderRadius.circular(12),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8.5),
+                child: Row(
+                  children: [
+                    const Icon(
+                      Icons.people_alt_rounded,
+                      size: 18,
+                      color: Color(0xFF2DD4BF),
+                    ),
+                    const SizedBox(width: 10),
+                    const Expanded(
+                      child: Text(
+                        "Users",
+                        style: TextStyle(
+                          color: slate300,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                    Container(
+                      width: 6,
+                      height: 6,
+                      margin: const EdgeInsets.only(right: 6),
+                      decoration: const BoxDecoration(
+                        color: Color(0xFFFBBF24),
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    Icon(
+                      _usersExpanded ? Icons.keyboard_arrow_up_rounded : Icons.keyboard_arrow_down_rounded,
+                      size: 18,
+                      color: const Color(0xFF94A3B8),
+                    ),
+                  ],
+                ),
               ),
-              child: Text(
-                badge,
-                style: TextStyle(fontSize: 8.5, fontWeight: FontWeight.bold, color: badgeColor ?? c.primary),
+            ),
+          ),
+        ),
+        if (_usersExpanded)
+          Container(
+            margin: const EdgeInsets.only(left: 20, top: 2, bottom: 4),
+            padding: const EdgeInsets.only(left: 10),
+            decoration: const BoxDecoration(
+              border: Border(
+                left: BorderSide(color: Color(0xFF334155), width: 1.2),
               ),
-            )
-          : null,
-      onTap: onTap,
+            ),
+            child: Column(
+              children: [
+                _subMenuItem("User Dashboard", () {
+                  Navigator.pop(context);
+                  widget.onOpenModule("user_dashboard");
+                }),
+                _subMenuItem("All Users", () {
+                  Navigator.pop(context);
+                  widget.onOpenModule("all_users");
+                }),
+                _subMenuItem("+ Add User", () {
+                  Navigator.pop(context);
+                  widget.onOpenModule("add_user");
+                }),
+                _subMenuItem("Members / Karyakartas", () {
+                  Navigator.pop(context);
+                  widget.onOpenModule("members");
+                }),
+                _subMenuItem(
+                  "Update Requests",
+                  () {
+                    Navigator.pop(context);
+                    widget.onOpenModule("update_requests");
+                  },
+                  badge: "3",
+                ),
+              ],
+            ),
+          ),
+      ],
+    );
+  }
+
+  Widget _subMenuItem(String title, VoidCallback onTap, {String? badge}) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(8),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  title,
+                  style: const TextStyle(
+                    color: Color(0xFF94A3B8),
+                    fontSize: 11,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+              if (badge != null)
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
+                  decoration: BoxDecoration(
+                    color: const Color(0x33F59E0B),
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: const Color(0xFFFBBF24), width: 0.8),
+                  ),
+                  child: Text(
+                    badge,
+                    style: const TextStyle(
+                      fontSize: 8.5,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFFFBBF24),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

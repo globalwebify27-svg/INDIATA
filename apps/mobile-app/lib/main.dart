@@ -56,7 +56,6 @@ class _RajtantraUnifiedAppState extends State<RajtantraUnifiedApp> {
         home: CandidateExperienceWrapper(
           themeMode: _themeMode,
           onToggleTheme: _toggleTheme,
-          onSwitchToKaryakarta: () => _selectPortal('karyakarta'),
           onSignOut: () => _selectPortal('select'),
         ),
       );
@@ -108,7 +107,6 @@ class _RajtantraUnifiedAppState extends State<RajtantraUnifiedApp> {
           themeMode: _themeMode,
           onToggleTheme: _toggleTheme,
           onSetTheme: _setTheme,
-          onSwitchToCandidate: () => _selectPortal('candidate'),
           onSignOut: () => _selectPortal('select'),
         ),
       );
@@ -137,14 +135,12 @@ class _RajtantraUnifiedAppState extends State<RajtantraUnifiedApp> {
 class CandidateExperienceWrapper extends StatelessWidget {
   final ThemeMode themeMode;
   final VoidCallback onToggleTheme;
-  final VoidCallback onSwitchToKaryakarta;
   final VoidCallback onSignOut;
 
   const CandidateExperienceWrapper({
     super.key,
     required this.themeMode,
     required this.onToggleTheme,
-    required this.onSwitchToKaryakarta,
     required this.onSignOut,
   });
 
@@ -154,50 +150,11 @@ class CandidateExperienceWrapper extends StatelessWidget {
     final c = CandidateColors(isDark);
 
     return Scaffold(
-      body: Stack(
-        children: [
-          MainNavigationScaffold(
-            c: c,
-            isDark: isDark,
-            onToggleTheme: onToggleTheme,
-            onLogout: onSignOut,
-          ),
-          // Floating Quick Switch Role Pill (accessible from screen)
-          Positioned(
-            top: 48,
-            right: 56,
-            child: Material(
-              color: Colors.transparent,
-              child: InkWell(
-                onTap: onSwitchToKaryakarta,
-                borderRadius: BorderRadius.circular(20),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF2087FE).withOpacity(0.18),
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: const Color(0xFF2087FE), width: 1),
-                  ),
-                  child: const Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(Icons.swap_horiz_rounded, size: 14, color: Color(0xFF2087FE)),
-                      SizedBox(width: 4),
-                      Text(
-                        'Karyakarta Mode',
-                        style: TextStyle(
-                          fontSize: 10.5,
-                          fontWeight: FontWeight.w800,
-                          color: Color(0xFF2087FE),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
+      body: MainNavigationScaffold(
+        c: c,
+        isDark: isDark,
+        onToggleTheme: onToggleTheme,
+        onLogout: onSignOut,
       ),
     );
   }
@@ -210,7 +167,6 @@ class KaryakartaExperienceWrapper extends StatelessWidget {
   final ThemeMode themeMode;
   final VoidCallback onToggleTheme;
   final Function(ThemeMode) onSetTheme;
-  final VoidCallback onSwitchToCandidate;
   final VoidCallback onSignOut;
 
   const KaryakartaExperienceWrapper({
@@ -218,56 +174,16 @@ class KaryakartaExperienceWrapper extends StatelessWidget {
     required this.themeMode,
     required this.onToggleTheme,
     required this.onSetTheme,
-    required this.onSwitchToCandidate,
     required this.onSignOut,
   });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          MainMobileScaffold(
-            themeMode: themeMode,
-            onToggleTheme: onToggleTheme,
-            onSetTheme: onSetTheme,
-          ),
-          // Floating Quick Switch Role Pill (accessible from screen)
-          Positioned(
-            top: 48,
-            right: 56,
-            child: Material(
-              color: Colors.transparent,
-              child: InkWell(
-                onTap: onSwitchToCandidate,
-                borderRadius: BorderRadius.circular(20),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF6256D9).withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: const Color(0xFFA855F7), width: 1),
-                  ),
-                  child: const Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(Icons.swap_horiz_rounded, size: 14, color: Color(0xFFA855F7)),
-                      SizedBox(width: 4),
-                      Text(
-                        'Candidate Mode',
-                        style: TextStyle(
-                          fontSize: 10.5,
-                          fontWeight: FontWeight.w800,
-                          color: Color(0xFFA855F7),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
+      body: MainMobileScaffold(
+        themeMode: themeMode,
+        onToggleTheme: onToggleTheme,
+        onSetTheme: onSetTheme,
       ),
     );
   }

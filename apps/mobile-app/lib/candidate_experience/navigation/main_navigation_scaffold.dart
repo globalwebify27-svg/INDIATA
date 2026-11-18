@@ -307,6 +307,7 @@ class _MainNavigationScaffoldState extends State<MainNavigationScaffold> {
       drawer: CandidateDrawer(
         c: c,
         isDark: widget.isDark,
+        currentTab: _currentTab,
         onToggleTheme: widget.onToggleTheme,
         onNavigateTab: _navigateToTab,
         onOpenModule: _handleOpenModule,
