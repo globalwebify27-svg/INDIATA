@@ -236,9 +236,14 @@ export function CandidateProfileView({
                   <span className="text-[#717785] dark:text-[#94A3B8]">Full Name (Marathi)</span>
                   <span className="font-medium text-[#010627] dark:text-[#F5F6F6]">{candidate.marathiName}</span>
                 </div>
-                <div className="flex justify-between py-1 border-b border-[#ACB9D1]/30 dark:border-[#0e3554]/50">
-                  <span className="text-[#717785] dark:text-[#94A3B8]">Registered Phone</span>
-                  <span className="font-mono text-[#010627] dark:text-[#F5F6F6]">{candidate.phone}</span>
+                <div className="flex justify-between items-center py-1 border-b border-[#ACB9D1]/30 dark:border-[#0e3554]/50">
+                  <span className="text-[#717785] dark:text-[#94A3B8]">WhatsApp / Phone</span>
+                  <div className="flex items-center gap-1.5">
+                    <span className="font-mono text-[#010627] dark:text-[#F5F6F6]">{candidate.phone}</span>
+                    <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20" title="Immutable WhatsApp Integration">
+                      <Lock className="w-2.5 h-2.5" /> Immutable
+                    </span>
+                  </div>
                 </div>
                 <div className="flex justify-between py-1">
                   <span className="text-[#717785] dark:text-[#94A3B8]">Email Address</span>
@@ -277,6 +282,24 @@ export function CandidateProfileView({
             <h3 className="text-sm font-semibold text-[#010627] dark:text-[#F5F6F6]">
               Personal & Account Details
             </h3>
+
+            <div className="p-3.5 rounded-xl border border-blue-200 dark:border-[#0e3554] bg-blue-50/50 dark:bg-[#072439] flex items-start gap-3">
+              <Lock className="w-4 h-4 text-[#2087FE] shrink-0 mt-0.5" />
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <span className="font-semibold text-slate-900 dark:text-[#F5F6F6]">
+                    Immutable WhatsApp Automation Integration
+                  </span>
+                  <span className="text-[10px] font-bold px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-400">
+                    {candidate.whatsAppApiStatus || "INTEGRATED"}
+                  </span>
+                </div>
+                <p className="text-[11px] text-[#717785] dark:text-[#94A3B8] leading-relaxed">
+                  Registered WhatsApp: <strong className="font-mono text-slate-900 dark:text-white">{candidate.phone}</strong>. Once assigned to a candidate ID package and configured with the WhatsApp API gateway, the contact number is locked to maintain automated voter message delivery compliance.
+                </p>
+              </div>
+            </div>
+
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <span className="text-[#717785] dark:text-[#94A3B8] block mb-1">Administrative Username</span>

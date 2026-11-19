@@ -9,6 +9,7 @@ import {
 import { superAdminApi } from "../../services/superadmin-api";
 import { useToast } from "@/context/toast-context";
 import { DistributorRecord, DistributorRequestItem } from "../../types/superadmin.types";
+import { DistributorStatus } from "@rajtantra/common-types";
 import { SettlementBatch } from "@/app/api/superadmin/store";
 
 export function DistributorDirectory() {
@@ -193,9 +194,13 @@ export function DistributorDirectory() {
                     <td className="p-4">
                       <span
                         className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                          dist.status === "ACTIVE"
+                          dist.status === DistributorStatus.ACTIVE
                             ? "bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400"
-                            : "bg-rose-100 dark:bg-rose-950/60 text-rose-700 dark:text-rose-400"
+                            : dist.status === DistributorStatus.PENDING
+                            ? "bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-400"
+                            : dist.status === DistributorStatus.BLOCKED
+                            ? "bg-rose-100 dark:bg-rose-950/60 text-rose-700 dark:text-rose-400 border border-rose-300 dark:border-rose-800"
+                            : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300"
                         }`}
                       >
                         {dist.status}

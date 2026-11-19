@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { Lock, ShieldCheck } from "lucide-react";
 import { Dialog } from "../ui/dialog";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
@@ -70,6 +71,10 @@ export function OrganizationFormDialog({
   onSave,
 }: OrganizationFormDialogProps) {
   const isEditing = Boolean(organizationToEdit);
+  const isWhatsAppLocked = Boolean(
+    organizationToEdit &&
+      (organizationToEdit.isWhatsAppBound !== false || organizationToEdit.id)
+  );
 
   // Form State
   const [name, setName] = useState("");
@@ -212,6 +217,8 @@ export function OrganizationFormDialog({
         clientContactName: clientContactName.trim(),
         clientEmail: clientEmail.trim().toLowerCase(),
         clientPhone: clientPhone.trim(),
+        isWhatsAppBound: organizationToEdit ? (organizationToEdit.isWhatsAppBound ?? true) : true,
+        whatsAppApiStatus: organizationToEdit?.whatsAppApiStatus ?? "INTEGRATED",
         state: state.trim(),
         district: district.trim(),
         constituencyName: constituencyName.trim(),
@@ -311,11 +318,30 @@ export function OrganizationFormDialog({
           </div>
         </div>
 
-        {/* Section 2: Contact Information */}
+        {/* Section 2: Contact Information & WhatsApp Integration */}
         <div className="space-y-3 pb-3 border-b border-slate-200 dark:border-[#0e3554]">
-          <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-[#94A3B8]">
-            2. Client Contact Details
-          </h4>
+          <div className="flex items-center justify-between">
+            <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-[#94A3B8]">
+              2. Client Contact Details &amp; WhatsApp Integration
+            </h4>
+            {isWhatsAppLocked && (
+              <span className="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                <Lock className="w-3 h-3" /> Immutable WhatsApp Integration
+              </span>
+            )}
+          </div>
+
+          {isWhatsAppLocked && (
+            <div className="flex items-start gap-2.5 p-3 rounded-lg bg-blue-50/70 dark:bg-[#072439] border border-blue-200 dark:border-[#0e3554] text-xs text-slate-600 dark:text-slate-300">
+              <ShieldCheck className="w-4 h-4 text-[#2087FE] shrink-0 mt-0.5" />
+              <div className="space-y-0.5">
+                <span className="font-semibold text-slate-900 dark:text-white">Permanent WhatsApp Binding Active</span>
+                <p className="text-[11px] text-slate-500 dark:text-[#94A3B8]">
+                  Once an organization is provisioned and linked to an account package / WhatsApp API for automated broadcasts, the contact phone cannot be altered or reassigned.
+                </p>
+              </div>
+            </div>
+          )}
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <Input
@@ -326,14 +352,22 @@ export function OrganizationFormDialog({
               placeholder="Full name"
               error={errors.clientContactName}
             />
-            <Input
-              label="Contact Phone"
-              required
-              value={clientPhone}
-              onChange={(e) => setClientPhone(e.target.value)}
-              placeholder="+91 98220 00000"
-              error={errors.clientPhone}
-            />
+            <div>
+              <Input
+                label="Contact Phone / WhatsApp"
+                required
+                value={clientPhone}
+                onChange={(e) => setClientPhone(e.target.value)}
+                placeholder="+91 98220 00000"
+                error={errors.clientPhone}
+                disabled={isWhatsAppLocked}
+                helperText={
+                  isWhatsAppLocked
+                    ? "Locked: Bound to automated WhatsApp delivery gateway."
+                    : undefined
+                }
+              />
+            </div>
             <Input
               label="Contact Email"
               type="email"

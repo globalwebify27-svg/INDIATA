@@ -447,6 +447,29 @@ class SuperAdminDataStore {
     return org;
   }
 
+  public updateOrganization(id: string, updates: Partial<OrganizationRecord>) {
+    const org = this.organizations.find((o) => o.id === id);
+    if (!org) return null;
+
+    // Immutable WhatsApp Integration Rule:
+    // Once a contact/WhatsApp number is added, assigned to a created ID or account package,
+    // and integrated with the WhatsApp API for automation, it cannot be changed or edited.
+    if (org.isWhatsAppBound !== false && updates.clientPhone && updates.clientPhone !== org.clientPhone) {
+      this.logAudit(
+        "PHONE_MUTATION_BLOCKED",
+        "Organization Module",
+        `Attempt to mutate bound WhatsApp number (${org.clientPhone}) for ${org.name} was rejected.`,
+        id,
+        "Failed"
+      );
+      delete updates.clientPhone;
+    }
+
+    Object.assign(org, updates, { updatedAt: new Date().toISOString().slice(0, 10) });
+    this.logAudit("ORGANIZATION_UPDATED", "Organization Module", org.name, org.id);
+    return org;
+  }
+
   // -------------------------------------------------------------
   // Candidates
   // -------------------------------------------------------------
@@ -525,6 +548,29 @@ class SuperAdminDataStore {
     if (!cand) return null;
     cand.status = cand.status === "Active" ? "Suspended" : "Active";
     this.logAudit("CANDIDATE_STATUS_TOGGLED", "Candidate Management", `${cand.name} (${cand.status})`, cand.id);
+    return cand;
+  }
+
+  public updateCandidate(id: string, updates: Partial<CandidateRecord>) {
+    const cand = this.candidates.find((c) => c.id === id);
+    if (!cand) return null;
+
+    // Immutable WhatsApp Integration Rule:
+    // Once a contact/WhatsApp number is added, assigned to a created ID or account package,
+    // and integrated with the WhatsApp API for automation, it cannot be changed or edited.
+    if (cand.isWhatsAppBound !== false && updates.phone && updates.phone !== cand.phone) {
+      this.logAudit(
+        "PHONE_MUTATION_BLOCKED",
+        "Candidate Management",
+        `Attempt to mutate bound WhatsApp number (${cand.phone}) for ${cand.name} was rejected.`,
+        id,
+        "Failed"
+      );
+      delete updates.phone;
+    }
+
+    Object.assign(cand, updates);
+    this.logAudit("CANDIDATE_UPDATED", "Candidate Management", cand.name, cand.id);
     return cand;
   }
 

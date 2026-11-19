@@ -14,6 +14,7 @@ import {
   Layers,
   Edit2,
   ExternalLink,
+  Lock,
 } from "lucide-react";
 import { OrganizationRecord } from "../../types/superadmin.types";
 import { OrganizationStatus } from "@rajtantra/common-types";
@@ -75,6 +76,8 @@ export function OrganizationDetailsDrawer({
                       ? "success"
                       : organization.status === OrganizationStatus.PENDING
                       ? "warning"
+                      : organization.status === OrganizationStatus.BLOCKED
+                      ? "danger"
                       : organization.status === OrganizationStatus.SUSPENDED
                       ? "danger"
                       : "neutral"
@@ -148,14 +151,19 @@ export function OrganizationDetailsDrawer({
                   </span>
                 </div>
                 <div className="flex justify-between items-center py-1 border-b border-[#ACB9D1]/30 dark:border-[#0e3554]/50">
-                  <span className="text-[#717785] dark:text-[#94A3B8]">Contact Phone</span>
-                  <a
-                    href={`tel:${organization.clientPhone}`}
-                    className="text-[#2087FE] dark:text-[#0D79FD] hover:underline flex items-center gap-1"
-                  >
-                    <Phone className="w-3 h-3" />
-                    {organization.clientPhone}
-                  </a>
+                  <span className="text-[#717785] dark:text-[#94A3B8]">WhatsApp / Phone</span>
+                  <div className="flex items-center gap-1.5">
+                    <a
+                      href={`tel:${organization.clientPhone}`}
+                      className="text-[#2087FE] dark:text-[#0D79FD] hover:underline flex items-center gap-1 font-mono"
+                    >
+                      <Phone className="w-3 h-3" />
+                      {organization.clientPhone}
+                    </a>
+                    <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20" title="Immutable WhatsApp Integration">
+                      <Lock className="w-2.5 h-2.5" /> Immutable
+                    </span>
+                  </div>
                 </div>
                 <div className="flex justify-between items-center py-1">
                   <span className="text-[#717785] dark:text-[#94A3B8]">Contact Email</span>

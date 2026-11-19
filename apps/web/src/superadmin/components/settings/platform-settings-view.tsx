@@ -153,11 +153,15 @@ export function PlatformSettingsView() {
       {/* Header Banner */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs">
         <div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2.5">
             <Settings className="w-5 h-5 text-[#2087FE]" />
             <h2 className="text-base font-bold text-slate-900 dark:text-white">
               System Configuration &amp; Governance Center
             </h2>
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-[#2087FE]/10 text-[#2087FE] border border-[#2087FE]/20">
+              <Sliders className="w-3.5 h-3.5" />
+              42 Total System Settings Configured
+            </span>
           </div>
           <p className="text-xs text-slate-500 mt-1">
             Global election cadence deployment, multi-role granular policies, notification delivery engine, and deep-link routing.
@@ -187,6 +191,15 @@ export function PlatformSettingsView() {
         >
           <Server className="w-4 h-4" />
           <span>Global SLA &amp; Cluster Health</span>
+          <span
+            className={`px-1.5 py-0.2 rounded-md text-[10px] font-black ${
+              activeTab === "global"
+                ? "bg-white/20 text-white"
+                : "bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200"
+            }`}
+          >
+            4
+          </span>
         </button>
 
         <button
@@ -200,6 +213,15 @@ export function PlatformSettingsView() {
         >
           <Sliders className="w-4 h-4" />
           <span>Multi-Role &amp; Portal Policies</span>
+          <span
+            className={`px-1.5 py-0.2 rounded-md text-[10px] font-black ${
+              activeTab === "roles"
+                ? "bg-white/20 text-white"
+                : "bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200"
+            }`}
+          >
+            25
+          </span>
         </button>
 
         <button
@@ -213,6 +235,15 @@ export function PlatformSettingsView() {
         >
           <Bell className="w-4 h-4" />
           <span>Notification &amp; Redirection Management</span>
+          <span
+            className={`px-1.5 py-0.2 rounded-md text-[10px] font-black ${
+              activeTab === "notifications"
+                ? "bg-white/20 text-white"
+                : "bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200"
+            }`}
+          >
+            13
+          </span>
         </button>
       </div>
 

@@ -923,26 +923,29 @@ export function PreviousElectionStrategyView() {
                     </p>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-2 text-left">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-left">
                     {[
-                      { cat: "Historical Comparison", q: "Compare the previous two elections in my constituency." },
-                      { cat: "Booth Performance", q: "Show me the major historical changes across booths." },
-                      { cat: "Strategy Intelligence", q: "What strategies and campaign activities were documented in the previous election?" },
-                      { cat: "Constituency Overview", q: "Prepare an overall historical analysis for my constituency." },
-                      { cat: "Voter Demographics", q: "Show voter distribution by age and gender across booths." },
-                      { cat: "Candidate Comparison", q: "Compare candidate vote totals and victory margins." },
+                      { cat: "Historical Comparison", q: "Compare the previous two elections in my constituency.", mr: "माझ्या मतदारसंघातील मागील दोन निवडणुकांची तुलना करा." },
+                      { cat: "Booth Vulnerability", q: "Identify swing booths where victory margin was under 500 votes.", mr: "५०० पेक्षा कमी मताधिक्य असलेले स्विंग बूथ दाखवा." },
+                      { cat: "Turnout Optimization", q: "Analyze morning vs afternoon turnout trends across booths.", mr: "सकाळच्या विरूद्ध दुपारच्या मतदानाच्या टक्केवारीचे विश्लेषण करा." },
+                      { cat: "Strategy Intelligence", q: "What strategies and campaign activities were documented in the previous election?", mr: "मागील निवडणुकीत कोणत्या प्रचार रणनीतींची नोंद होती?" },
+                      { cat: "Constituency Overview", q: "Prepare an overall historical analysis for my constituency.", mr: "मतदारसंघाचा सर्वांगीण ऐतिहासिक विश्लेषण अहवाल तयार करा." },
+                      { cat: "Voter Demographics", q: "Show voter distribution by age and gender across booths.", mr: "वय आणि लिंगानुसार मतदारांचे बूथनिहाय वितरण दाखवा." },
                     ].map((item, idx) => (
                       <div
                         key={idx}
                         onClick={() => handleSendMessage(item.q)}
-                        className="cursor-pointer p-3 rounded-xl border border-slate-200 dark:border-slate-800 hover:border-purple-400 bg-slate-50 dark:bg-slate-800/40 transition"
+                        className="cursor-pointer p-3 rounded-xl border border-slate-200 dark:border-slate-800 hover:border-purple-400 bg-slate-50 dark:bg-slate-800/40 transition space-y-0.5"
                       >
                         <span className="text-[9px] uppercase font-bold text-purple-600 block">
                           {item.cat}
                         </span>
-                        <span className="text-xs font-semibold text-slate-800 dark:text-slate-200">
+                        <div className="text-xs font-semibold text-slate-800 dark:text-slate-200">
                           &ldquo;{item.q}&rdquo;
-                        </span>
+                        </div>
+                        <div className="text-[10px] text-slate-400 font-medium">
+                          &ldquo;{item.mr}&rdquo;
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -1044,6 +1047,29 @@ export function PreviousElectionStrategyView() {
                   <span>{aiLoadingStep}</span>
                 </div>
               )}
+            </div>
+
+            {/* Suggested Prompts Quick Bar */}
+            <div className="px-3 pt-2 pb-1 border-t border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/80 flex items-center gap-1.5 overflow-x-auto text-[11px] scrollbar-none">
+              <span className="font-bold text-[10px] uppercase text-purple-600 dark:text-purple-400 shrink-0 flex items-center gap-1">
+                <Sparkles className="w-3 h-3" /> Suggested:
+              </span>
+              {[
+                "Identify swing booths with under 500 victory margin",
+                "Compare 2014 vs 2019 party vote share in Kasba Peth",
+                "Analyze voter distribution by age and gender across booths",
+                "Suggest karyakarta allocation for low-turnout morning booths",
+                "Review documented outreach strategies from previous election",
+              ].map((p, idx) => (
+                <button
+                  key={idx}
+                  type="button"
+                  onClick={() => handleSendMessage(p)}
+                  className="px-2.5 py-1 rounded-full whitespace-nowrap bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-purple-400 hover:text-purple-600 dark:hover:text-purple-400 transition text-[10px] font-medium text-slate-700 dark:text-slate-300 shrink-0"
+                >
+                  &ldquo;{p}&rdquo;
+                </button>
+              ))}
             </div>
 
             {/* Bottom Prompt Box */}

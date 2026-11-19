@@ -47,7 +47,7 @@ export interface PortalUser {
   email: string;
   phone: string;
   role: UserRole;
-  status: "ACTIVE" | "INACTIVE";
+  status: "ACTIVE" | "INACTIVE" | "PENDING" | "BLOCKED";
   prabhaag?: string;
   assignedBooths: number[];
   voterSerialRange?: string;
@@ -65,7 +65,7 @@ export interface KaryakartaCadre {
   assignedBooth: number;
   surveysCompleted: number;
   voterSlipsDelivered: number;
-  status: "APPROVED" | "PENDING" | "REJECTED";
+  status: "APPROVED" | "PENDING" | "REJECTED" | "BLOCKED";
   joinedDate: string;
   isOnline: boolean;
   currentLocation?: { lat: number; lng: number; label: string };
@@ -1079,6 +1079,10 @@ function AllUsersView({ users, setUsers, onNavigateToAdd }: AllUsersViewProps) {
                       className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold transition-colors ${
                         u.status === "ACTIVE"
                           ? "bg-blue-100 text-blue-800 hover:bg-blue-200"
+                          : u.status === "PENDING"
+                          ? "bg-amber-100 text-amber-800 hover:bg-amber-200"
+                          : u.status === "BLOCKED"
+                          ? "bg-rose-100 text-rose-800 hover:bg-rose-200"
                           : "bg-slate-200 text-slate-600 hover:bg-slate-300"
                       }`}
                     >
@@ -1181,11 +1185,18 @@ function AllUsersView({ users, setUsers, onNavigateToAdd }: AllUsersViewProps) {
                   <label className="block font-semibold text-slate-700 mb-1">Account Status</label>
                   <select
                     value={editingUser.status}
-                    onChange={(e) => setEditingUser({ ...editingUser, status: e.target.value as "ACTIVE" | "INACTIVE" })}
+                    onChange={(e) =>
+                      setEditingUser({
+                        ...editingUser,
+                        status: e.target.value as "ACTIVE" | "INACTIVE" | "PENDING" | "BLOCKED",
+                      })
+                    }
                     className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-medium focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="ACTIVE">Active</option>
+                    <option value="PENDING">Pending</option>
                     <option value="INACTIVE">Inactive</option>
+                    <option value="BLOCKED">Blocked</option>
                   </select>
                 </div>
               </div>

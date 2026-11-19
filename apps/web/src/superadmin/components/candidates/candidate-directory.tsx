@@ -249,9 +249,10 @@ export function CandidateDirectory({
               options={[
                 { value: "ALL", label: "All Statuses" },
                 { value: "Active", label: "Active" },
-                { value: "Inactive", label: "Inactive" },
-                { value: "Suspended", label: "Suspended" },
                 { value: "Pending", label: "Pending" },
+                { value: "Blocked", label: "Blocked" },
+                { value: "Suspended", label: "Suspended" },
+                { value: "Inactive", label: "Inactive" },
               ]}
             />
           </div>
@@ -340,6 +341,11 @@ export function CandidateDirectory({
                             </button>
                             <div className="text-[11px] text-[#717785] dark:text-[#94A3B8] flex items-center gap-1 font-mono">
                               <span>{cand.id}</span> • <span>{cand.marathiName}</span>
+                              {cand.isWhatsAppBound && (
+                                <span className="inline-flex items-center gap-0.5 text-[9px] text-emerald-600 dark:text-emerald-400 font-semibold px-1 py-0.2 rounded bg-emerald-500/10 border border-emerald-500/20" title="Immutable WhatsApp Integration">
+                                  <Lock className="w-2.5 h-2.5" /> WA
+                                </span>
+                              )}
                             </div>
                           </div>
                         </div>
@@ -425,6 +431,10 @@ export function CandidateDirectory({
                               ? "success"
                               : cand.status === "Pending"
                               ? "warning"
+                              : cand.status === "Blocked"
+                              ? "danger"
+                              : cand.status === "Suspended"
+                              ? "danger"
                               : "neutral"
                           }
                           withDot

@@ -5,6 +5,7 @@ import {
   Smartphone,
   ExternalLink,
   CreditCard,
+  Lock,
 } from "lucide-react";
 import { CandidateRecord } from "../../types/superadmin.types";
 import { Dialog } from "../ui/dialog";
@@ -102,6 +103,23 @@ export function CandidateDetailModal({
             <div className="text-[11px] text-emerald-600 dark:text-[#01C588]">
               {candidate.aiAccess ? "Agentic Bot Enabled" : "Standard Engine"}
             </div>
+          </div>
+        </div>
+
+        {/* Contact & Immutable WhatsApp Binding */}
+        <div className="p-3 rounded-lg border border-slate-200 dark:border-[#0e3554] bg-white dark:bg-[#062237] flex items-center justify-between">
+          <div className="space-y-0.5">
+            <span className="text-[10px] text-slate-400 dark:text-[#94A3B8] uppercase font-semibold">Registered Phone & WhatsApp</span>
+            <div className="flex items-center gap-2">
+              <span className="font-mono font-bold text-slate-900 dark:text-white">{candidate.phone}</span>
+              <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                <Lock className="w-2.5 h-2.5" /> Immutable Integration
+              </span>
+            </div>
+          </div>
+          <div className="text-right space-y-0.5">
+            <span className="text-[10px] text-slate-400 dark:text-[#94A3B8] uppercase font-semibold">Administrative Email</span>
+            <div className="font-mono text-slate-700 dark:text-slate-300">{candidate.email}</div>
           </div>
         </div>
 

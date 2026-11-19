@@ -8,15 +8,87 @@ import {
   Cpu,
   Zap,
   RefreshCw,
+  MessageSquareText,
+  Copy,
+  Check,
 } from "lucide-react";
 import { superAdminApi } from "../../services/superadmin-api";
 import { useToast } from "@/context/toast-context";
 import { AiTenantUsage } from "@/app/api/superadmin/store";
 
+const SYSTEM_SUGGESTED_PROMPTS = [
+  {
+    id: "PR-01",
+    category: "Voter Sentiment & Swing",
+    title: "Swing Booth Vulnerability Scan",
+    promptEn: "Identify swing booths in Kasba Peth where the victory margin in the previous election was below 500 votes, and correlate with current voter sentiment.",
+    promptMr: "मागील निवडणुकीत ५०० पेक्षा कमी मताधिक्य असलेले कसबा पेठेतील स्विंग बूथ ओळखा आणि चालू जनभावनेशी त्यांची सांगड घाला.",
+    targetPortals: ["Candidate War Room", "Super Admin"],
+  },
+  {
+    id: "PR-02",
+    category: "Voter Sentiment & Swing",
+    title: "Ward Sentiment Shift Analysis",
+    promptEn: "Analyze sentiment shifts among uncontacted vs visited voters in Ward 14 over the past 30 days and highlight negative-to-neutral movements.",
+    promptMr: "गेल्या ३० दिवसांतील प्रभाग १४ मधील संपर्क झालेल्या विरूद्ध न झालेल्या मतदारांच्या भावनांचा बदल तपासा.",
+    targetPortals: ["Candidate War Room"],
+  },
+  {
+    id: "PR-03",
+    category: "Door-to-Door & Cadre Outreach",
+    title: "Doorstep Youth Pitch (Marathi)",
+    promptEn: "Generate a persuasive 3-minute Marathi door-to-door pitch tailored for first-time youth voters focusing on local skill centers and IT parks.",
+    promptMr: "पहिल्यांदा मतदान करणाऱ्या तरुणांसाठी स्थानिक कौशल्य केंद्रे आणि आयटी पार्कवर भर देणारा ३ मिनिटांचा प्रभावी मराठी संवाद तयार करा.",
+    targetPortals: ["Karyakarta App", "Candidate War Room"],
+  },
+  {
+    id: "PR-04",
+    category: "Door-to-Door & Cadre Outreach",
+    title: "Doorstep Civic Grievance Handling",
+    promptEn: "Provide calm, factual objection-handling talking points for karyakartas addressing delays in the municipal drinking water pipeline scheme.",
+    promptMr: "महापालिका पाणीपुरवठा योजनेतील विलंबाबाबत नागरिकांच्या प्रश्नांना शांतपणे व पुराव्यानिशी उत्तरे देण्यासाठी कार्यकर्त्यांसाठी मुद्दे द्या.",
+    targetPortals: ["Karyakarta App"],
+  },
+  {
+    id: "PR-05",
+    category: "Welfare Schemes & Beneficiaries",
+    title: "Ladki Bahin Yojana Beneficiary Audit",
+    promptEn: "Map Mukhyamantri Majhi Ladki Bahin Yojana registered female electors against booth turnout records to evaluate outreach penetration.",
+    promptMr: "मुख्यमंत्री माझी लाडकी बहीण योजनेच्या महिला लाभार्थींची संख्या आणि बूथवरील मतदान टक्केवारी यांची तुलना करा.",
+    targetPortals: ["Candidate War Room", "Karyakarta App"],
+  },
+  {
+    id: "PR-06",
+    category: "Welfare Schemes & Beneficiaries",
+    title: "PMAY Eligibility Guide in Simple Marathi",
+    promptEn: "Summarize Pradhan Mantri Awas Yojana (Urban) eligibility requirements and needed documentation in 4 easy bullet points for booth-level distribution.",
+    promptMr: "पंतप्रधान आवास योजनेची (शहरी) पात्रता आणि आवश्यक कागदपत्रे बूथ स्तरावर वाटण्यासाठी ४ सोप्या मुद्द्यांमध्ये सांगा.",
+    targetPortals: ["Karyakarta App"],
+  },
+  {
+    id: "PR-07",
+    category: "Booth Turnout Strategy",
+    title: "Low Morning Turnout Intervention",
+    promptEn: "Detect polling booths with morning voter turnout under 22% by 11:00 AM and generate prioritized auto-call audio dispatch lists.",
+    promptMr: "सकाळी ११:०० वाजेपर्यंत २२% पेक्षा कमी मतदान झालेल्या केंद्रांची यादी तयार करा आणि प्राधान्याने व्हॉइस कॉल संदेश पाठवा.",
+    targetPortals: ["Candidate War Room", "Super Admin"],
+  },
+  {
+    id: "PR-08",
+    category: "Model Code of Conduct Compliance",
+    title: "ECI Loudspeaker & Permission Check",
+    promptEn: "Cross-check proposed public corner meeting schedule and loudspeaker sound decibels against current Election Commission guidelines and quiet hours.",
+    promptMr: "निवडणूक आयोगाच्या नियमांनुसार कॉर्नर सभेच्या वेळा आणि लाऊडस्पीकर डेसिबल मर्यादा तपासून खात्री करा.",
+    targetPortals: ["Candidate War Room", "Super Admin"],
+  },
+];
+
 export function AiGovernanceView() {
   const { toast } = useToast();
   const [stats, setStats] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [selectedPromptCategory, setSelectedPromptCategory] = useState<string>("ALL");
 
   const loadData = async () => {
     setLoading(true);
@@ -47,6 +119,19 @@ export function AiGovernanceView() {
       toast("Failed to update AI seats.", "error");
     }
   };
+
+  const handleCopyPrompt = (id: string, text: string) => {
+    navigator.clipboard.writeText(text);
+    setCopiedId(id);
+    toast("Suggested AI prompt copied to clipboard.", "success");
+    setTimeout(() => setCopiedId(null), 2000);
+  };
+
+  const categories = ["ALL", ...Array.from(new Set(SYSTEM_SUGGESTED_PROMPTS.map((p) => p.category)))];
+
+  const filteredPrompts = selectedPromptCategory === "ALL"
+    ? SYSTEM_SUGGESTED_PROMPTS
+    : SYSTEM_SUGGESTED_PROMPTS.filter((p) => p.category === selectedPromptCategory);
 
   return (
     <div className="space-y-6">
@@ -207,6 +292,130 @@ export function AiGovernanceView() {
           </table>
         </div>
       )}
+
+      {/* System-Wide Suggested AI Prompts Repository & Prompt Library */}
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-xs space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-4">
+          <div>
+            <div className="flex items-center gap-2">
+              <MessageSquareText className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+              <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                System-Wide Suggested AI Prompts Repository &amp; Prompt Library
+              </h3>
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-100 text-purple-700 dark:bg-purple-950/60 dark:text-purple-300">
+                {SYSTEM_SUGGESTED_PROMPTS.length} Curated Prompts
+              </span>
+            </div>
+            <p className="text-xs text-slate-500 mt-1">
+              Bilingual (English &amp; Marathi) prompt templates accessible in AI fields across Candidate War Room, Karyakarta App, and Super Admin.
+            </p>
+          </div>
+
+          {/* Category Filter Pills */}
+          <div className="flex flex-wrap items-center gap-1.5">
+            {categories.map((cat) => (
+              <button
+                key={cat}
+                type="button"
+                onClick={() => setSelectedPromptCategory(cat)}
+                className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition ${
+                  selectedPromptCategory === cat
+                    ? "bg-purple-600 text-white shadow-xs"
+                    : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700"
+                }`}
+              >
+                {cat === "ALL" ? "All Categories" : cat}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Prompt Cards Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+          {filteredPrompts.map((p) => (
+            <div
+              key={p.id}
+              className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 hover:border-purple-300 dark:hover:border-purple-700/60 transition space-y-2.5"
+            >
+              <div className="flex items-start justify-between gap-2">
+                <div>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-purple-600 dark:text-purple-400">
+                    {p.category}
+                  </span>
+                  <h4 className="text-xs font-bold text-slate-900 dark:text-white mt-0.5">
+                    {p.title}
+                  </h4>
+                </div>
+
+                <div className="flex items-center gap-1">
+                  {p.targetPortals.map((portal) => (
+                    <span
+                      key={portal}
+                      className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-blue-50 dark:bg-blue-950/50 text-[#2087FE] dark:text-[#0D79FD] border border-blue-200/50 dark:border-blue-800/50"
+                    >
+                      {portal}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* English Prompt */}
+              <div className="p-2.5 rounded-lg bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 text-xs">
+                <div className="flex items-center justify-between text-[10px] text-slate-400 font-bold mb-1">
+                  <span>English Prompt</span>
+                  <button
+                    onClick={() => handleCopyPrompt(`${p.id}-en`, p.promptEn)}
+                    className="flex items-center gap-1 text-[#2087FE] hover:underline"
+                    title="Copy English prompt"
+                  >
+                    {copiedId === `${p.id}-en` ? (
+                      <>
+                        <Check className="w-3 h-3 text-emerald-500" />
+                        <span className="text-emerald-500 font-bold">Copied</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="w-3 h-3" />
+                        <span>Copy</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+                <p className="text-slate-700 dark:text-slate-300 italic">
+                  &ldquo;{p.promptEn}&rdquo;
+                </p>
+              </div>
+
+              {/* Marathi Prompt */}
+              <div className="p-2.5 rounded-lg bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 text-xs">
+                <div className="flex items-center justify-between text-[10px] text-slate-400 font-bold mb-1">
+                  <span>मराठी सूचना (Marathi Prompt)</span>
+                  <button
+                    onClick={() => handleCopyPrompt(`${p.id}-mr`, p.promptMr)}
+                    className="flex items-center gap-1 text-[#2087FE] hover:underline"
+                    title="Copy Marathi prompt"
+                  >
+                    {copiedId === `${p.id}-mr` ? (
+                      <>
+                        <Check className="w-3 h-3 text-emerald-500" />
+                        <span className="text-emerald-500 font-bold">Copied</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="w-3 h-3" />
+                        <span>Copy</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+                <p className="text-slate-700 dark:text-slate-300 font-medium">
+                  &ldquo;{p.promptMr}&rdquo;
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

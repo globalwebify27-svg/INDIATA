@@ -16,6 +16,7 @@ export enum OrganizationStatus {
   ACTIVE = "ACTIVE",
   SUSPENDED = "SUSPENDED",
   EXPIRED = "EXPIRED",
+  BLOCKED = "BLOCKED",
 }
 
 /**
@@ -27,4 +28,5 @@ export enum DistributorStatus {
   SUSPENDED = "SUSPENDED",
   PENDING = "PENDING",
   REJECTED = "REJECTED",
+  BLOCKED = "BLOCKED",
 }

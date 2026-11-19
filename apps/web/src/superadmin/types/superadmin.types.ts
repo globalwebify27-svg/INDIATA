@@ -30,6 +30,8 @@ export interface OrganizationRecord {
   clientContactName: string;
   clientEmail: string;
   clientPhone: string;
+  isWhatsAppBound?: boolean;
+  whatsAppApiStatus?: "INTEGRATED" | "PENDING" | "UNBOUND";
   state: string;
   district: string;
   constituencyName: string;
@@ -54,6 +56,8 @@ export interface CandidateRecord {
   username: string;
   email: string;
   phone: string;
+  isWhatsAppBound?: boolean;
+  whatsAppApiStatus?: "INTEGRATED" | "PENDING" | "UNBOUND";
   party: string;
   partyMarathi: string;
   symbol: string;
@@ -62,7 +66,7 @@ export interface CandidateRecord {
   electionYear: string;
   geography: string;
   accountType: AccountType;
-  status: "Active" | "Inactive" | "Suspended" | "Pending";
+  status: "Active" | "Inactive" | "Suspended" | "Pending" | "Blocked";
   subscriptionStatus: "Active" | "Trial Expiring" | "Expired" | "Pending Renewal";
   planName: string;
   planType: OrganizationPlanType;
@@ -90,6 +94,8 @@ export interface DistributorRecord {
   contactPerson: string;
   email: string;
   phone: string;
+  isWhatsAppBound?: boolean;
+  whatsAppApiStatus?: "INTEGRATED" | "PENDING" | "UNBOUND";
   city: string;
   state: string;
   status: DistributorStatus;

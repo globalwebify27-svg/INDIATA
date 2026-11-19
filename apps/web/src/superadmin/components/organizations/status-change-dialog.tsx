@@ -38,8 +38,9 @@ export function StatusChangeDialog({
   if (!organization) return null;
 
   const isSuspension = selectedStatus === OrganizationStatus.SUSPENDED;
+  const isBlocked = selectedStatus === OrganizationStatus.BLOCKED;
   const isExpiration = selectedStatus === OrganizationStatus.EXPIRED;
-  const isDestructive = isSuspension || isExpiration;
+  const isDestructive = isSuspension || isBlocked || isExpiration;
   const isUnchanged = selectedStatus === organization.status;
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -93,6 +94,8 @@ export function StatusChangeDialog({
                   ? "success"
                   : organization.status === OrganizationStatus.PENDING
                   ? "warning"
+                  : organization.status === OrganizationStatus.BLOCKED
+                  ? "danger"
                   : organization.status === OrganizationStatus.SUSPENDED
                   ? "danger"
                   : "neutral"
@@ -133,6 +136,11 @@ export function StatusChangeDialog({
                 desc: "Immediate lockout",
               },
               {
+                status: OrganizationStatus.BLOCKED,
+                label: "Blocked",
+                desc: "Permanent blacklist",
+              },
+              {
                 status: OrganizationStatus.EXPIRED,
                 label: "Expired",
                 desc: "Subscription lapsed",
@@ -146,6 +154,8 @@ export function StatusChangeDialog({
                   selectedStatus === opt.status
                     ? opt.status === OrganizationStatus.ACTIVE
                       ? "border-emerald-500 bg-emerald-50/50 dark:bg-[#01C588]/15 dark:border-[#01C588]/40 text-emerald-900 dark:text-[#01C588]"
+                      : opt.status === OrganizationStatus.BLOCKED
+                      ? "border-rose-600 bg-rose-100/60 dark:bg-rose-950/40 dark:border-rose-700 text-rose-950 dark:text-rose-300"
                       : opt.status === OrganizationStatus.SUSPENDED
                       ? "border-rose-500 bg-rose-50/50 dark:bg-[#F48637]/15 dark:border-[#F48637]/40 text-rose-900 dark:text-[#F48637]"
                       : opt.status === OrganizationStatus.PENDING
@@ -169,6 +179,18 @@ export function StatusChangeDialog({
         </div>
 
         {/* Operational Impact Warning */}
+        {isBlocked && (
+          <div className="p-3 rounded-lg bg-rose-50 dark:bg-rose-950/20 border border-rose-300 dark:border-rose-800 flex items-start gap-2.5 text-rose-800 dark:text-rose-300">
+            <ShieldAlert className="w-4 h-4 mt-0.5 flex-shrink-0 text-rose-600 dark:text-rose-400" />
+            <div className="text-xs space-y-1">
+              <span className="font-semibold block">Critical Compliance Block</span>
+              <p className="text-[11px] leading-relaxed text-rose-700 dark:text-rose-300/90">
+                Blocking this organization immediately blacklists the tenant, disables all WhatsApp automations and voter slips, revokes field worker mobile logins, and records an audit flag.
+              </p>
+            </div>
+          </div>
+        )}
+
         {isSuspension && (
           <div className="p-3 rounded-lg bg-rose-50 dark:bg-[#F48637]/10 border border-rose-200 dark:border-[#F48637]/30 flex items-start gap-2.5 text-rose-800 dark:text-[#F48637]">
             <ShieldAlert className="w-4 h-4 mt-0.5 flex-shrink-0 text-rose-600 dark:text-[#F48637]" />

@@ -87,8 +87,12 @@ export function OrganizationDirectory({
   const totalOrgs = organizations.length;
   const activeCount = organizations.filter((o) => o.status === OrganizationStatus.ACTIVE).length;
   const pendingCount = organizations.filter((o) => o.status === OrganizationStatus.PENDING).length;
+  const blockedCount = organizations.filter((o) => o.status === OrganizationStatus.BLOCKED).length;
   const suspendedOrExpiredCount = organizations.filter(
-    (o) => o.status === OrganizationStatus.SUSPENDED || o.status === OrganizationStatus.EXPIRED
+    (o) =>
+      o.status === OrganizationStatus.SUSPENDED ||
+      o.status === OrganizationStatus.EXPIRED ||
+      o.status === OrganizationStatus.BLOCKED
   ).length;
 
   // Filtered & Sorted Records
@@ -225,14 +229,14 @@ export function OrganizationDirectory({
 
         <div className="p-4 rounded-xl border border-[#ACB9D1] dark:border-[#0e3554] bg-[#FDFEFE] dark:bg-[#062237] shadow-xs">
           <div className="flex items-center justify-between text-xs text-[#717785] dark:text-[#94A3B8] mb-1">
-            <span>Suspended / Expired</span>
+            <span>Suspended / Blocked</span>
             <ShieldAlert className="w-3.5 h-3.5 text-[#FC7C36] dark:text-[#F48637]" />
           </div>
           <div className="text-2xl font-bold text-[#010627] dark:text-[#F5F6F6]">
             {suspendedOrExpiredCount}
           </div>
           <div className="text-[11px] text-[#717785] dark:text-[#94A3B8] mt-1">
-            Restricted field write access
+            {blockedCount > 0 ? `${blockedCount} blocked & ` : ""}Restricted write access
           </div>
         </div>
       </div>
@@ -292,6 +296,7 @@ export function OrganizationDirectory({
                 { value: "ALL", label: "All Statuses" },
                 { value: OrganizationStatus.ACTIVE, label: "Active" },
                 { value: OrganizationStatus.PENDING, label: "Pending" },
+                { value: OrganizationStatus.BLOCKED, label: "Blocked" },
                 { value: OrganizationStatus.SUSPENDED, label: "Suspended" },
                 { value: OrganizationStatus.EXPIRED, label: "Expired" },
               ]}
@@ -478,6 +483,8 @@ export function OrganizationDirectory({
                               ? "success"
                               : org.status === OrganizationStatus.PENDING
                               ? "warning"
+                              : org.status === OrganizationStatus.BLOCKED
+                              ? "danger"
                               : org.status === OrganizationStatus.SUSPENDED
                               ? "danger"
                               : "neutral"
