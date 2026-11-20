@@ -1519,6 +1519,14 @@ export default function CandidateWarRoomDashboard() {
                 className="pl-8 pr-3 py-1.5 rounded-xl border border-slate-200 bg-slate-50 text-xs w-48 sm:w-64 focus:outline-none focus:ring-1 focus:ring-blue-500"
               />
             </div>
+
+            <Link
+              href="/candidate/live-polling"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-700 font-bold text-xs border border-blue-200 transition-colors shadow-2xs"
+            >
+              <span>View More Turnout</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
           </div>
         </div>
 
@@ -1580,6 +1588,18 @@ export default function CandidateWarRoomDashboard() {
               ))}
             </tbody>
           </table>
+        </div>
+
+        {/* View More Voter Turnout Callout (Client Specification Requirement) */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-2 px-1 text-xs text-slate-500 border-t border-slate-100">
+          <span>Showing 8 polling stations in Kasba Peth constituency</span>
+          <Link
+            href="/candidate/live-polling"
+            className="inline-flex items-center gap-1.5 font-bold text-blue-600 hover:text-blue-700 hover:underline cursor-pointer"
+          >
+            <span>View More — Open Detailed Voter Turnout Dashboard</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </Link>
         </div>
       </section>
 

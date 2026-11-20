@@ -22,6 +22,7 @@ import {
   ChevronDown,
   X,
   MessageSquare,
+  Radio,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { useAuth } from "@/context/auth-context";
@@ -77,6 +78,14 @@ export const NAV_GROUPS: NavGroupConfig[] = [
         label: "Live Feedback",
         href: "/candidate/feedback",
         icon: MessageSquare,
+        iconColor: "text-emerald-400",
+        pulseDot: true,
+      },
+      {
+        key: "live-polling",
+        label: "Live Polling",
+        href: "/candidate/live-polling",
+        icon: Radio,
         iconColor: "text-emerald-400",
         pulseDot: true,
       },

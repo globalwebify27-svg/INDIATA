@@ -119,6 +119,10 @@ class VoterItem {
   final String scheme;
   String surveyFeedback;
   String surveyTimestamp;
+  bool hasVoted;
+  String? votedAt;
+  String? votedBy;
+  List<Map<String, String>> votingAuditTrail;
 
   VoterItem({
     required this.id,
@@ -139,7 +143,11 @@ class VoterItem {
     this.scheme = "Ladki Bahin Yojana",
     this.surveyFeedback = "",
     this.surveyTimestamp = "",
-  });
+    this.hasVoted = false,
+    this.votedAt,
+    this.votedBy,
+    List<Map<String, String>>? votingAuditTrail,
+  }) : votingAuditTrail = votingAuditTrail ?? [];
 }
 
 class IssueItem {
@@ -3725,6 +3733,144 @@ class _CentralVoterDossierScreenState extends State<CentralVoterDossierScreen> {
     );
   }
 
+  void _markAsVoted() {
+    final c = widget.c;
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: c.cardBg,
+        title: Row(
+          children: [
+            Icon(Icons.how_to_vote_rounded, color: c.green, size: 22),
+            const SizedBox(width: 8),
+            Text("Confirm Voter Turnout", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: c.textPrimary)),
+          ],
+        ),
+        content: Text(
+          "Are you sure you want to mark ${_voter.name} (${_voter.epicId}) as VOTED at Booth #${_voter.boothNo}?\n\n• Live voting timestamp will be logged.\n• Turnout percentage will update automatically in War Room.",
+          style: TextStyle(fontSize: 12, color: c.textSecondary),
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text("Cancel")),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(ctx);
+              final nowTime = "Today, 11:20 AM";
+              setState(() {
+                _voter.hasVoted = true;
+                _voter.votedAt = nowTime;
+                _voter.votedBy = "Karyakarta (Field Cadre)";
+                _voter.votingAuditTrail.add({
+                  "status": "VOTED",
+                  "timestamp": nowTime,
+                  "updatedBy": "Karyakarta (Field Cadre)",
+                  "reason": "Polling Booth Slip Verification",
+                });
+              });
+              widget.onVoterUpdated(_voter);
+              widget.onAddActivity?.call(
+                ActivityItem(
+                  title: "Turnout Recorded: Voted",
+                  target: "${_voter.name} (${_voter.epicId})",
+                  timestamp: "Just Now",
+                  status: "SUCCESS",
+                  details: "Marked as Voted at Booth #${_voter.boothNo}. Synced to Live Polling Engine.",
+                  icon: Icons.how_to_vote_rounded,
+                ),
+              );
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  backgroundColor: c.green,
+                  content: Text("✓ ${_voter.name} marked as VOTED! Synced to Live Polling Engine."),
+                ),
+              );
+            },
+            style: ElevatedButton.styleFrom(backgroundColor: c.green),
+            child: const Text("Yes, Mark Voted", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _correctVotingStatus() {
+    final c = widget.c;
+    String selectedReason = "Wrong EPIC verified at booth";
+    showDialog(
+      context: context,
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setDialogState) => AlertDialog(
+          backgroundColor: c.cardBg,
+          title: Row(
+            children: [
+              Icon(Icons.history_rounded, color: c.amber, size: 22),
+              const SizedBox(width: 8),
+              Text("Correct Turnout Status", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: c.textPrimary)),
+            ],
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Select verification justification to revert voting record for ${_voter.name}:",
+                style: TextStyle(fontSize: 12, color: c.textSecondary),
+              ),
+              const SizedBox(height: 12),
+              DropdownButtonFormField<String>(
+                value: selectedReason,
+                dropdownColor: c.cardBg,
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: c.scaffoldBg,
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: c.borderColor)),
+                ),
+                items: [
+                  "Wrong EPIC verified at booth",
+                  "Clerical / double-entry mistake",
+                  "Elector left before ballot casting",
+                  "Presiding officer correction",
+                ].map((r) => DropdownMenuItem(value: r, child: Text(r, style: TextStyle(fontSize: 11, color: c.textPrimary)))).toList(),
+                onChanged: (val) {
+                  if (val != null) setDialogState(() => selectedReason = val);
+                },
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(onPressed: () => Navigator.pop(ctx), child: const Text("Cancel")),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(ctx);
+                final nowTime = "Today, 11:35 AM";
+                setState(() {
+                  _voter.hasVoted = false;
+                  _voter.votedAt = null;
+                  _voter.votingAuditTrail.add({
+                    "status": "NOT_VOTED",
+                    "timestamp": nowTime,
+                    "updatedBy": "Karyakarta (Field Cadre)",
+                    "reason": selectedReason,
+                  });
+                });
+                widget.onVoterUpdated(_voter);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    backgroundColor: c.amber,
+                    content: Text("Turnout status reverted for ${_voter.name}. Audit log updated."),
+                  ),
+                );
+              },
+              style: ElevatedButton.styleFrom(backgroundColor: c.amber),
+              child: const Text("Revert Status", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   void _showAddressModal() {
     final c = widget.c;
     showModalBottomSheet(
@@ -3971,6 +4117,73 @@ class _CentralVoterDossierScreenState extends State<CentralVoterDossierScreen> {
                     ),
                   ),
                 ),
+              ],
+            ),
+          ),
+
+          // ELECTION DAY POLLING DAY TURNOUT CALLOUT (LPIANE)
+          Container(
+            margin: const EdgeInsets.only(top: 10),
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: _voter.hasVoted ? c.green.withOpacity(0.08) : c.amber.withOpacity(0.08),
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(color: _voter.hasVoted ? c.green.withOpacity(0.4) : c.amber.withOpacity(0.4)),
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  _voter.hasVoted ? Icons.check_circle_rounded : Icons.how_to_vote_rounded,
+                  color: _voter.hasVoted ? c.green : c.amber,
+                  size: 24,
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        _voter.hasVoted ? "VOTED (मतदान पूर्ण)" : "NOT VOTED (मतदान बाकी)",
+                        style: TextStyle(
+                          fontSize: 12.5,
+                          fontWeight: FontWeight.bold,
+                          color: _voter.hasVoted ? c.green : c.amber,
+                        ),
+                      ),
+                      Text(
+                        _voter.hasVoted
+                            ? "Recorded: ${_voter.votedAt ?? 'Today'} by ${_voter.votedBy ?? 'Cadre'}"
+                            : "Elector has not yet cast their vote at Booth #${_voter.boothNo}",
+                        style: TextStyle(fontSize: 10, color: c.textSecondary),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 8),
+                if (!_voter.hasVoted)
+                  ElevatedButton.icon(
+                    onPressed: _markAsVoted,
+                    icon: const Icon(Icons.touch_app_rounded, size: 14),
+                    label: const Text("Mark Voted", style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: c.green,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    ),
+                  )
+                else
+                  OutlinedButton.icon(
+                    onPressed: _correctVotingStatus,
+                    icon: const Icon(Icons.history_rounded, size: 13),
+                    label: const Text("Correct", style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: c.amber,
+                      side: BorderSide(color: c.amber),
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    ),
+                  ),
               ],
             ),
           ),
@@ -4374,6 +4587,70 @@ class _CentralVoterDossierScreenState extends State<CentralVoterDossierScreen> {
                   style: ElevatedButton.styleFrom(backgroundColor: c.primary),
                   child: const Text("Propose to War Room Quarantine", style: TextStyle(color: Colors.white, fontSize: 11)),
                 ),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 16),
+
+          // 9. POLLING DAY AUDIT & TURNOUT HISTORY (LPIANE)
+          _sectionHeader("POLLING DAY AUDIT & TURNOUT HISTORY (LPIANE)", c),
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: c.cardBg,
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(color: c.borderColor),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text("Turnout Status Audit Log", style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: c.textPrimary)),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                      decoration: BoxDecoration(color: c.primary.withOpacity(0.1), borderRadius: BorderRadius.circular(6)),
+                      child: Text("ECI AUDIT SYNC", style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: c.primary)),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                if (_voter.votingAuditTrail.isEmpty)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    child: Text("No previous polling status modifications recorded. Standing ready.", style: TextStyle(fontSize: 11, fontStyle: FontStyle.italic, color: c.textSecondary)),
+                  )
+                else
+                  ..._voter.votingAuditTrail.map((log) => Container(
+                    margin: const EdgeInsets.only(bottom: 6),
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: c.scaffoldBg,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: c.borderColor.withOpacity(0.6)),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Status: ${log['status']} • ${log['reason'] ?? 'Turnout Record'}",
+                              style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.bold, color: c.textPrimary),
+                            ),
+                            Text(
+                              "Updated by ${log['updatedBy']} • ${log['timestamp']}",
+                              style: TextStyle(fontSize: 9.5, color: c.textSecondary),
+                            ),
+                          ],
+                        ),
+                        Icon(Icons.verified_user_rounded, size: 14, color: c.green),
+                      ],
+                    ),
+                  )),
               ],
             ),
           ),

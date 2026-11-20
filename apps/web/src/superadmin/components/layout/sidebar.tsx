@@ -20,6 +20,7 @@ import {
   ChevronRight,
   X,
   Activity,
+  Radio,
 } from "lucide-react";
 import { NavKey } from "../../types/superadmin.types";
 
@@ -144,6 +145,12 @@ export function Sidebar({
       key: "campaigns",
       label: "Broadcast Campaigns",
       icon: <Megaphone className="w-5 h-5 flex-shrink-0" />,
+    },
+    {
+      key: "live-polling",
+      label: "Live Polling Management",
+      icon: <Radio className="w-5 h-5 flex-shrink-0 text-emerald-500 animate-pulse" />,
+      badge: "LIVE",
     },
     {
       key: "ai-dashboard",

@@ -180,7 +180,39 @@ export type NavKey =
   | "audit"
   | "settings"
   | "profile"
-  | "components";
+  | "components"
+  | "live-polling";
+
+// ============================================================================
+// Live Polling Intelligence & Automated Notification Engine (LPIANE) Types
+// ============================================================================
+
+export interface LivePollingConstituencyRef {
+  constituencyId: string;
+  constituencyNo: string;
+  name: string;
+  district: string;
+}
+
+export interface LivePollingSchedule {
+  id: string;
+  title: string;
+  electionType: ElectionType;
+  isEnabled: boolean; // Master schedule switch
+  pollingDate: string; // "YYYY-MM-DD"
+  startTime: string; // "07:00"
+  endTime: string; // "18:00"
+  timezone: string; // "Asia/Kolkata"
+  targetConstituencies: LivePollingConstituencyRef[];
+  eligibleCandidateIds: string[]; // List of Candidate IDs (e.g. "CAN-8091", "CAN-8092")
+  eligibleCandidateNames: string[];
+  status: "UPCOMING" | "LIVE_ACTIVE" | "CONCLUDED_ARCHIVED";
+  totalBooths: number;
+  totalElectors: number;
+  lastUpdatedBy: string;
+  createdAt: string;
+  updatedAt: string;
+}
 
 // ============================================================================
 // Granular Multi-Role & Cross-Portal System Configuration Types

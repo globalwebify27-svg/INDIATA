@@ -16,9 +16,15 @@ import { SubscriptionPlansView } from "@/components/candidate/modules/subscripti
 import { ReportsAnalyticsView } from "@/components/candidate/modules/reports-analytics-view";
 import { PortalSettingsView } from "@/components/candidate/modules/portal-settings-view";
 import { LiveFeedbackView } from "@/components/candidate/modules/live-feedback-view";
+import { LivePollingView } from "@/components/candidate/modules/live-polling-view";
 
 export default function CandidateDynamicModulePage() {
   const pathname = usePathname();
+
+  // Live Polling Intelligence & Automated Notification Engine (LPIANE)
+  if (pathname.includes("/live-polling") || pathname.includes("/polling")) {
+    return <LivePollingView />;
+  }
 
   // Module 04: Master Classification & Taxonomy
   if (pathname.includes("/filters")) {

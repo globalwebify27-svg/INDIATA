@@ -10,6 +10,7 @@ import {
   RolePortalSettingsConfig,
   NotificationDeliveryConfig,
   NotificationTemplateConfig,
+  LivePollingSchedule,
 } from "../types/superadmin.types";
 import {
   OrganizationPlanType,
@@ -990,4 +991,108 @@ export const MOCK_NOTIFICATION_TEMPLATES: NotificationTemplateConfig[] = [
     isActive: true,
   },
 ];
+
+export const MOCK_POLLING_SCHEDULES: LivePollingSchedule[] = [
+  {
+    id: "SCHED-2026-01",
+    title: "Maharashtra Assembly General Election 2026 - Phase 2 (Pune Urban)",
+    electionType: "Vidhan Sabha",
+    isEnabled: true,
+    pollingDate: "2026-11-20",
+    startTime: "07:00",
+    endTime: "18:00",
+    timezone: "Asia/Kolkata",
+    targetConstituencies: [
+      {
+        constituencyId: "CONST-215",
+        constituencyNo: "215",
+        name: "Kasba Peth",
+        district: "Pune",
+      },
+      {
+        constituencyId: "CONST-214",
+        constituencyNo: "214",
+        name: "Pune Cantonment",
+        district: "Pune",
+      },
+      {
+        constituencyId: "CONST-210",
+        constituencyNo: "210",
+        name: "Kothrud",
+        district: "Pune",
+      },
+    ],
+    eligibleCandidateIds: ["CAN-8091", "CAN-8092", "CAN-8093"],
+    eligibleCandidateNames: [
+      "Anand Shinde (Kasba Peth)",
+      "Rameshwar Patil (Pune Cantonment)",
+      "Vikram Deshmukh (Kothrud)",
+    ],
+    status: "LIVE_ACTIVE",
+    totalBooths: 248,
+    totalElectors: 284500,
+    lastUpdatedBy: "Super Admin (Sanjay Mehta)",
+    createdAt: "2026-11-01T10:00:00+05:30",
+    updatedAt: "2026-11-20T06:30:00+05:30",
+  },
+  {
+    id: "SCHED-2027-02",
+    title: "Pune Municipal Corporation (PMC) General Ward Elections 2027",
+    electionType: "Municipal Corporation",
+    isEnabled: true,
+    pollingDate: "2027-02-15",
+    startTime: "07:30",
+    endTime: "17:30",
+    timezone: "Asia/Kolkata",
+    targetConstituencies: [
+      {
+        constituencyId: "PMC-WARD-12",
+        constituencyNo: "W-12",
+        name: "Shivajinagar - Model Colony",
+        district: "Pune",
+      },
+      {
+        constituencyId: "PMC-WARD-14",
+        constituencyNo: "W-14",
+        name: "Deccan Gymkhana - Kothrud",
+        district: "Pune",
+      },
+    ],
+    eligibleCandidateIds: ["CAN-8091"],
+    eligibleCandidateNames: ["Anand Shinde (Shivajinagar)"],
+    status: "UPCOMING",
+    totalBooths: 180,
+    totalElectors: 198000,
+    lastUpdatedBy: "Super Admin (Sanjay Mehta)",
+    createdAt: "2026-11-15T14:20:00+05:30",
+    updatedAt: "2026-11-15T14:20:00+05:30",
+  },
+  {
+    id: "SCHED-2024-03",
+    title: "18th Lok Sabha General Parliamentary Elections 2024 - Pune PC",
+    electionType: "Lok Sabha",
+    isEnabled: false,
+    pollingDate: "2024-05-13",
+    startTime: "07:00",
+    endTime: "18:00",
+    timezone: "Asia/Kolkata",
+    targetConstituencies: [
+      {
+        constituencyId: "PC-34",
+        constituencyNo: "34",
+        name: "Pune Parliamentary Constituency",
+        district: "Pune",
+      },
+    ],
+    eligibleCandidateIds: ["CAN-8091", "CAN-8092"],
+    eligibleCandidateNames: ["Anand Shinde", "Rameshwar Patil"],
+    status: "CONCLUDED_ARCHIVED",
+    totalBooths: 1982,
+    totalElectors: 2045000,
+    lastUpdatedBy: "Super Admin (Sanjay Mehta)",
+    createdAt: "2024-04-01T09:00:00+05:30",
+    updatedAt: "2024-05-15T20:00:00+05:30",
+  },
+];
+
 

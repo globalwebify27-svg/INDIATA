@@ -16,6 +16,7 @@ import { SubscriptionsView } from "@/superadmin/components/subscriptions/subscri
 import { SecurityAuditView } from "@/superadmin/components/audit/security-audit-view";
 import { PlatformSettingsView } from "@/superadmin/components/settings/platform-settings-view";
 import { DesignSystemShowcase } from "@/superadmin/components/prototype/design-system-showcase";
+import { LivePollingManagementView } from "@/superadmin/components/polling/live-polling-management";
 import { superAdminApi } from "@/superadmin/services/superadmin-api";
 import { useToast } from "@/context/toast-context";
 import {
@@ -53,9 +54,11 @@ export const NAV_KEY_TO_ROUTE: Record<NavKey, string> = {
   settings: "/super-admin/settings",
   profile: "/super-admin/settings",
   components: "/super-admin/design-system",
+  "live-polling": "/super-admin/live-polling",
 };
 
 export function getNavKeyFromPathname(pathname: string): NavKey {
+  if (pathname.includes("/live-polling") || pathname.includes("/polling")) return "live-polling";
   if (pathname.includes("/organizations")) return "organizations";
   if (pathname.includes("/candidates/new") || pathname.includes("/onboard")) return "add-candidate";
   if (pathname.includes("/candidates/requests")) return "candidate-requests";
@@ -291,6 +294,11 @@ export function SuperAdminPortal() {
       {/* 12. UI Design System Showcase */}
       {activeNav === "components" && (
         <DesignSystemShowcase />
+      )}
+
+      {/* 13. Live Polling Management & Scheduling Engine (LPIANE) */}
+      {activeNav === "live-polling" && (
+        <LivePollingManagementView />
       )}
     </AppShell>
   );

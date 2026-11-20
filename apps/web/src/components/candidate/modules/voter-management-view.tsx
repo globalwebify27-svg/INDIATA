@@ -43,9 +43,10 @@ import {
   
   
   Vote,
+  RotateCcw,
   Clock,
   User,
-  RotateCcw,
+  History,
   Lock,
 } from "lucide-react";
 import { useToast } from "@/context/toast-context";
@@ -105,6 +106,18 @@ export interface ElectorRecord {
   voterSlipStatus: "DELIVERED" | "PRINTED" | "GENERATED" | "NOT_GENERATED";
   verified: boolean;
   hasVoted: boolean;
+  votedAt?: string;
+  votedByUserId?: string;
+  votedByUserName?: string;
+  votingAuditTrail?: {
+    id: string;
+    previousStatus: "NOT_VOTED" | "VOTED";
+    newStatus: "NOT_VOTED" | "VOTED";
+    updatedBy: string;
+    userId: string;
+    timestamp: string;
+    reason?: string;
+  }[];
   isVisited: boolean;
   isFavorite: boolean;
   isHelped: boolean;
@@ -340,6 +353,20 @@ export const SEED_ELECTORS: ElectorRecord[] = [
     voterSlipStatus: "DELIVERED",
     verified: true,
     hasVoted: true,
+    votedAt: "10:24 AM, 20 Nov",
+    votedByUserName: "Vikas M. Patil (Booth Agent #101)",
+    votedByUserId: "CADRE-101-01",
+    votingAuditTrail: [
+      {
+        id: "aud-init-01",
+        previousStatus: "NOT_VOTED",
+        newStatus: "VOTED",
+        updatedBy: "Vikas M. Patil (Booth Agent #101)",
+        userId: "CADRE-101-01",
+        timestamp: "10:24 AM, 20 Nov",
+        reason: "Polling Booth Queue Verification & Slip Handover",
+      },
+    ],
     isVisited: true,
     isFavorite: true,
     isHelped: true,
@@ -384,6 +411,20 @@ export const SEED_ELECTORS: ElectorRecord[] = [
     voterSlipStatus: "DELIVERED",
     verified: true,
     hasVoted: true,
+    votedAt: "10:24 AM, 20 Nov",
+    votedByUserName: "Vikas M. Patil (Booth Agent #101)",
+    votedByUserId: "CADRE-101-01",
+    votingAuditTrail: [
+      {
+        id: "aud-init-01",
+        previousStatus: "NOT_VOTED",
+        newStatus: "VOTED",
+        updatedBy: "Vikas M. Patil (Booth Agent #101)",
+        userId: "CADRE-101-01",
+        timestamp: "10:24 AM, 20 Nov",
+        reason: "Polling Booth Queue Verification & Slip Handover",
+      },
+    ],
     isVisited: true,
     isFavorite: false,
     isHelped: true,
@@ -517,6 +558,20 @@ export const SEED_ELECTORS: ElectorRecord[] = [
     voterSlipStatus: "DELIVERED",
     verified: true,
     hasVoted: true,
+    votedAt: "10:24 AM, 20 Nov",
+    votedByUserName: "Vikas M. Patil (Booth Agent #101)",
+    votedByUserId: "CADRE-101-01",
+    votingAuditTrail: [
+      {
+        id: "aud-init-01",
+        previousStatus: "NOT_VOTED",
+        newStatus: "VOTED",
+        updatedBy: "Vikas M. Patil (Booth Agent #101)",
+        userId: "CADRE-101-01",
+        timestamp: "10:24 AM, 20 Nov",
+        reason: "Polling Booth Queue Verification & Slip Handover",
+      },
+    ],
     isVisited: true,
     isFavorite: true,
     isHelped: true,
@@ -562,6 +617,20 @@ export const SEED_ELECTORS: ElectorRecord[] = [
     voterSlipStatus: "DELIVERED",
     verified: true,
     hasVoted: true,
+    votedAt: "10:24 AM, 20 Nov",
+    votedByUserName: "Vikas M. Patil (Booth Agent #101)",
+    votedByUserId: "CADRE-101-01",
+    votingAuditTrail: [
+      {
+        id: "aud-init-01",
+        previousStatus: "NOT_VOTED",
+        newStatus: "VOTED",
+        updatedBy: "Vikas M. Patil (Booth Agent #101)",
+        userId: "CADRE-101-01",
+        timestamp: "10:24 AM, 20 Nov",
+        reason: "Polling Booth Queue Verification & Slip Handover",
+      },
+    ],
     isVisited: true,
     isFavorite: false,
     isHelped: false,
@@ -606,6 +675,20 @@ export const SEED_ELECTORS: ElectorRecord[] = [
     voterSlipStatus: "DELIVERED",
     verified: true,
     hasVoted: true,
+    votedAt: "10:24 AM, 20 Nov",
+    votedByUserName: "Vikas M. Patil (Booth Agent #101)",
+    votedByUserId: "CADRE-101-01",
+    votingAuditTrail: [
+      {
+        id: "aud-init-01",
+        previousStatus: "NOT_VOTED",
+        newStatus: "VOTED",
+        updatedBy: "Vikas M. Patil (Booth Agent #101)",
+        userId: "CADRE-101-01",
+        timestamp: "10:24 AM, 20 Nov",
+        reason: "Polling Booth Queue Verification & Slip Handover",
+      },
+    ],
     isVisited: true,
     isFavorite: true,
     isHelped: true,
@@ -649,6 +732,20 @@ export const SEED_ELECTORS: ElectorRecord[] = [
     voterSlipStatus: "DELIVERED",
     verified: true,
     hasVoted: true,
+    votedAt: "10:24 AM, 20 Nov",
+    votedByUserName: "Vikas M. Patil (Booth Agent #101)",
+    votedByUserId: "CADRE-101-01",
+    votingAuditTrail: [
+      {
+        id: "aud-init-01",
+        previousStatus: "NOT_VOTED",
+        newStatus: "VOTED",
+        updatedBy: "Vikas M. Patil (Booth Agent #101)",
+        userId: "CADRE-101-01",
+        timestamp: "10:24 AM, 20 Nov",
+        reason: "Polling Booth Queue Verification & Slip Handover",
+      },
+    ],
     isVisited: true,
     isFavorite: true,
     isHelped: false,
@@ -1021,7 +1118,7 @@ interface VoterProfileViewProps {
   communityAllocations: CommunityAllocation[];
   electorStatus?: string;
   isElectionActive?: boolean;
-  onToggleTurnout?: (voterId: string) => void;
+  onToggleTurnout?: (voterId: string, customTimestamp?: string, reason?: string) => void;
   onToggleElectionActive?: () => void;
 }
 
@@ -1036,11 +1133,34 @@ function ContinuousVoterProfileView({
 }: VoterProfileViewProps) {
   const { showToast } = useToast();
 
+  // Confirmation & Correction Modal States (LPIANE)
+  const [isConfirmVoteOpen, setIsConfirmVoteOpen] = useState(false);
+  const [isCorrectionOpen, setIsCorrectionOpen] = useState(false);
+  const [correctionReason, setCorrectionReason] = useState("Wrong EPIC identity verified at booth");
+  const [correctionCustomNote, setCorrectionCustomNote] = useState("");
+
   const handleCopyEpic = () => {
     if (navigator?.clipboard) {
       navigator.clipboard.writeText(voter.epicNumber);
       showToast("info", "EPIC Copied", `EPIC ID ${voter.epicNumber} copied to clipboard!`);
     }
+  };
+
+  const handleConfirmVote = () => {
+    const timeStr = new Date().toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" }) + ", " + new Date().toLocaleDateString("en-IN", { day: "2-digit", month: "short" });
+    if (onToggleTurnout) {
+      onToggleTurnout(voter.id, timeStr);
+    }
+    setIsConfirmVoteOpen(false);
+  };
+
+  const handleExecuteCorrection = () => {
+    const finalReason = correctionCustomNote.trim() ? `${correctionReason} — ${correctionCustomNote.trim()}` : correctionReason;
+    if (onToggleTurnout) {
+      onToggleTurnout(voter.id, undefined, finalReason);
+    }
+    setIsCorrectionOpen(false);
+    setCorrectionCustomNote("");
   };
 
   return (
@@ -1056,32 +1176,44 @@ function ContinuousVoterProfileView({
         </button>
 
         <div className="flex items-center gap-2">
-          {/* Turnout Toggle Action Button */}
-          <button
-            type="button"
-            onClick={() => onToggleTurnout && onToggleTurnout(voter.id)}
-            disabled={!isElectionActive}
-            title={!isElectionActive ? "Turnout recording locked: Election concluded" : "Toggle voter turnout status"}
-            className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-xl transition-all shadow-xs cursor-pointer ${
-              !isElectionActive
-                ? "bg-slate-100 text-slate-400 dark:bg-slate-800 dark:text-slate-500 cursor-not-allowed opacity-60"
-                : voter.hasVoted
-                ? "bg-emerald-600 hover:bg-emerald-700 text-white"
-                : "bg-amber-500 hover:bg-amber-600 text-white"
-            }`}
-          >
-            {voter.hasVoted ? (
-              <>
-                <CheckCircle2 className="w-3.5 h-3.5" />
-                <span>Turnout: Voted</span>
-              </>
-            ) : (
-              <>
-                <Vote className="w-3.5 h-3.5" />
-                <span>Mark as Voted</span>
-              </>
-            )}
-          </button>
+          {/* Turnout Action Controls (LPIANE Specification) */}
+          {!isElectionActive ? (
+            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 text-slate-400 dark:bg-slate-800 dark:text-slate-500 text-xs font-bold rounded-xl border border-slate-200 dark:border-slate-700 cursor-not-allowed">
+              <Clock className="w-3.5 h-3.5" />
+              <span>Turnout Locked (Pre-Poll/Closed)</span>
+            </span>
+          ) : !voter.hasVoted ? (
+            <button
+              type="button"
+              onClick={() => setIsConfirmVoteOpen(true)}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-xl transition-all shadow-xs bg-emerald-600 hover:bg-emerald-700 text-white cursor-pointer"
+            >
+              <Vote className="w-3.5 h-3.5" />
+              <span>Mark as Voted</span>
+            </button>
+          ) : (
+            <div className="flex items-center gap-1.5">
+              <button
+                type="button"
+                disabled
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700 shadow-2xs"
+                title={`Vote recorded at ${voter.votedAt || "10:45 AM"} by ${voter.votedByUserName || "Candidate Admin"}`}
+              >
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+                <span>Turnout: Voted ({voter.votedAt || "Confirmed"})</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setIsCorrectionOpen(true)}
+                className="inline-flex items-center gap-1 px-2.5 py-1.5 text-[11px] font-bold rounded-xl border border-amber-300 dark:border-amber-700 bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900/50 transition-colors cursor-pointer"
+                title="Authorized Status Correction"
+              >
+                <RotateCcw className="w-3 h-3" />
+                <span>Correct Status</span>
+              </button>
+            </div>
+          )}
 
           <button
             onClick={() => showToast("info", "Voter Slip", `Generating printable voter slip for ${voter.fullName}...`)}
@@ -1442,22 +1574,244 @@ function ContinuousVoterProfileView({
               <div>
                 <span className="text-slate-400 block text-[10px] mb-0.5">Polling Day Turnout</span>
                 <span className={`font-bold block ${voter.hasVoted ? "text-emerald-600 dark:text-emerald-400" : "text-amber-500 dark:text-amber-400"}`}>
-                  {voter.hasVoted ? "Voted (Confirmed)" : "Turnout Pending"}
+                  {voter.hasVoted ? `Voted (${voter.votedAt || "Confirmed"})` : "Turnout Pending"}
                 </span>
               </div>
-              {isElectionActive && onToggleTurnout && (
+              {isElectionActive && (
                 <button
                   type="button"
-                  onClick={() => onToggleTurnout(voter.id)}
+                  onClick={() => (!voter.hasVoted ? setIsConfirmVoteOpen(true) : setIsCorrectionOpen(true))}
                   className="mt-1 text-[10px] font-bold text-blue-600 dark:text-blue-400 hover:underline cursor-pointer"
                 >
-                  {voter.hasVoted ? "Revert Status" : "Mark Voted"}
+                  {voter.hasVoted ? "Correct Status" : "Mark as Voted"}
                 </button>
               )}
             </div>
           </div>
         </div>
+
+        {/* Subsection 7: Live Polling Turnout Telemetry & ECI Audit Ledger (LPIANE) */}
+        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-xs space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-3">
+            <div className="flex items-center gap-2">
+              <Vote className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+              <h3 className="font-bold text-slate-900 dark:text-white text-sm">7. Live Polling Turnout Telemetry &amp; ECI Audit Ledger</h3>
+            </div>
+            <div className="flex items-center gap-2">
+              <span
+                className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider ${
+                  voter.hasVoted
+                    ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-300"
+                    : "bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 border border-amber-300"
+                }`}
+              >
+                {voter.hasVoted ? "● Voted (Vote Recorded)" : "○ Not Voted (Pending Turnout)"}
+              </span>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+            <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800">
+              <span className="text-slate-400 block text-[10px] mb-1">Voting Timestamp</span>
+              <span className="font-bold text-slate-800 dark:text-slate-200">
+                {voter.votedAt || "Pending Polling Station Visit"}
+              </span>
+            </div>
+
+            <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800">
+              <span className="text-slate-400 block text-[10px] mb-1">Recorded By Cadre / Admin</span>
+              <span className="font-bold text-slate-800 dark:text-slate-200">
+                {voter.votedByUserName || "Not yet recorded"}
+              </span>
+              {voter.votedByUserId && (
+                <span className="text-[10px] text-slate-400 block font-mono">ID: {voter.votedByUserId}</span>
+              )}
+            </div>
+
+            <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800">
+              <span className="text-slate-400 block text-[10px] mb-1">Polling Station &amp; Room</span>
+              <span className="font-bold text-slate-800 dark:text-slate-200">Booth #{voter.boothNumber}</span>
+              <span className="text-[10px] text-slate-400 block truncate">{voter.pollingStation}</span>
+            </div>
+          </div>
+
+          {/* Audit History Table */}
+          <div className="space-y-2 pt-2">
+            <h4 className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
+              <History className="w-3.5 h-3.5 text-blue-500" />
+              <span>Turnout Status Audit History</span>
+            </h4>
+            <div className="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-800">
+              <table className="w-full text-left text-xs">
+                <thead className="bg-slate-50 dark:bg-slate-800/80 text-slate-500 uppercase text-[10px] font-bold">
+                  <tr>
+                    <th className="py-2 px-3">Date &amp; Time</th>
+                    <th className="py-2 px-3">Transition</th>
+                    <th className="py-2 px-3">Updated By</th>
+                    <th className="py-2 px-3">Reason / Audit Remark</th>
+                    <th className="py-2 px-3 text-right">Verification</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                  {voter.votingAuditTrail && voter.votingAuditTrail.length > 0 ? (
+                    voter.votingAuditTrail.map((log) => (
+                      <tr key={log.id} className="hover:bg-slate-50/50">
+                        <td className="py-2 px-3 font-mono font-medium text-slate-600 dark:text-slate-300">{log.timestamp}</td>
+                        <td className="py-2 px-3">
+                          <span
+                            className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                              log.newStatus === "VOTED"
+                                ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                                : "bg-amber-50 text-amber-700 border border-amber-200"
+                            }`}
+                          >
+                            {log.previousStatus} &rarr; {log.newStatus}
+                          </span>
+                        </td>
+                        <td className="py-2 px-3">
+                          <span className="font-semibold text-slate-800 dark:text-slate-200">{log.updatedBy}</span>
+                          <span className="text-[10px] text-slate-400 block font-mono">{log.userId}</span>
+                        </td>
+                        <td className="py-2 px-3 text-slate-600 dark:text-slate-400">{log.reason || "Standard Check-in"}</td>
+                        <td className="py-2 px-3 text-right">
+                          <span className="inline-flex items-center gap-1 text-[10px] text-emerald-600 font-bold">
+                            <ShieldCheck className="w-3 h-3" />
+                            <span>ECI Synced</span>
+                          </span>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={5} className="py-3 px-3 text-center text-slate-400 italic">
+                        No previous status changes. Awaiting polling station activity.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
       </div>
+
+      {/* CONFIRMATION MODAL BEFORE MARKING AS VOTED (LPIANE Requirement) */}
+      {isConfirmVoteOpen && (
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 max-w-md w-full p-6 shadow-2xl space-y-4 animate-scaleUp">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 flex items-center justify-center text-emerald-600">
+                <Vote className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="font-extrabold text-slate-900 dark:text-white text-sm">
+                  Confirm Voter Turnout Entry
+                </h3>
+                <p className="text-[11px] text-slate-500">Record immutable polling day voting status</p>
+              </div>
+            </div>
+
+            <p className="text-xs text-slate-700 dark:text-slate-300">
+              Are you sure you want to mark <strong>{voter.fullName}</strong> (EPIC:{" "}
+              <span className="font-mono font-bold text-blue-600">{voter.epicNumber}</span>) as{" "}
+              <strong className="text-emerald-600">VOTED</strong> at Booth #{voter.boothNumber}?
+            </p>
+
+            <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800 text-[11px] text-slate-500 space-y-1">
+              <div>• Exact voting timestamp will be recorded.</div>
+              <div>• Your user identity will be appended to the ECI audit log.</div>
+              <div>• Live turnout calculations across the constituency will update immediately.</div>
+            </div>
+
+            <div className="flex items-center justify-end gap-2 pt-2">
+              <button
+                type="button"
+                onClick={() => setIsConfirmVoteOpen(false)}
+                className="px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-xs hover:bg-slate-50 cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleConfirmVote}
+                className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-xs cursor-pointer flex items-center gap-1.5"
+              >
+                <Check className="w-3.5 h-3.5" />
+                <span>Yes, Confirm Voted</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* AUTHORIZED STATUS CORRECTION MODAL (LPIANE Requirement) */}
+      {isCorrectionOpen && (
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 max-w-md w-full p-6 shadow-2xl space-y-4 animate-scaleUp">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800 flex items-center justify-center text-amber-600">
+                <RotateCcw className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="font-extrabold text-slate-900 dark:text-white text-sm">
+                  Authorized Turnout Status Correction
+                </h3>
+                <p className="text-[11px] text-slate-500">Revert or correct voting record with audit reasoning</p>
+              </div>
+            </div>
+
+            <div className="space-y-3 text-xs">
+              <div>
+                <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">
+                  Justification for Status Correction *
+                </label>
+                <select
+                  value={correctionReason}
+                  onChange={(e) => setCorrectionReason(e.target.value)}
+                  className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white font-medium"
+                >
+                  <option value="Wrong EPIC identity verified at booth">Wrong EPIC identity verified at booth</option>
+                  <option value="Clerical / accidental double-tap entry">Clerical / accidental double-tap entry</option>
+                  <option value="Elector left booth before casting ballot">Elector left booth before casting ballot</option>
+                  <option value="Presiding officer audit correction">Presiding officer audit correction</option>
+                  <option value="Other administrative adjustment">Other administrative adjustment</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">
+                  Additional Audit Notes (Optional)
+                </label>
+                <textarea
+                  rows={2}
+                  value={correctionCustomNote}
+                  onChange={(e) => setCorrectionCustomNote(e.target.value)}
+                  placeholder="Provide any specific verification reference or presiding officer note..."
+                  className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white font-medium focus:outline-none focus:ring-1 focus:ring-blue-500"
+                />
+              </div>
+            </div>
+
+            <div className="flex items-center justify-end gap-2 pt-2">
+              <button
+                type="button"
+                onClick={() => setIsCorrectionOpen(false)}
+                className="px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold text-xs hover:bg-slate-50 cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleExecuteCorrection}
+                className="px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs shadow-xs cursor-pointer flex items-center gap-1.5"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+                <span>Revert to Not Voted</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -1478,28 +1832,76 @@ export function VoterManagementView() {
   // Selected Voter for Profile View (Continuous full-page view)
   const [selectedVoter, setSelectedVoter] = useState<ElectorRecord | null>(null);
 
-  // Toggle Turnout Handler
-  const handleToggleTurnout = (voterId: string) => {
+  // Toggle Turnout Handler (Enhanced with LPIANE Timestamps & Audit Logs)
+  const handleToggleTurnout = (voterId: string, customTimestamp?: string, reason?: string) => {
     if (!isElectionDayActive) {
       showToast("warning", "Election Concluded", "Voter turnout recording is restricted to active election polling days only.");
       return;
     }
+    const currentTimestamp =
+      customTimestamp ||
+      new Date().toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" }) +
+        ", " +
+        new Date().toLocaleDateString("en-IN", { day: "2-digit", month: "short" });
+
     setElectors((prev) =>
       prev.map((e) => {
         if (e.id === voterId) {
           const nextVoted = !e.hasVoted;
+          const auditEntry = {
+            id: `aud-${Date.now()}`,
+            previousStatus: (e.hasVoted ? "VOTED" : "NOT_VOTED") as "VOTED" | "NOT_VOTED",
+            newStatus: (nextVoted ? "VOTED" : "NOT_VOTED") as "VOTED" | "NOT_VOTED",
+            updatedBy: "Candidate Admin (Anand Shinde)",
+            userId: "USR-CADMIN-01",
+            timestamp: currentTimestamp,
+            reason: reason || (nextVoted ? "Polling Booth Turnout Verification" : "Authorized Status Correction"),
+          };
+          const nextAudit = [...(e.votingAuditTrail || []), auditEntry];
+
           showToast(
             nextVoted ? "success" : "info",
             nextVoted ? "Voter Turnout Confirmed" : "Turnout Status Reverted",
-            `${e.fullName} has been marked as ${nextVoted ? "VOTED (Confirmed at Booth #" + e.boothNumber + ")" : "NOT VOTED (Turnout Pending)"}.`
+            `${e.fullName} has been marked as ${
+              nextVoted
+                ? "VOTED at " + currentTimestamp + " (Booth #" + e.boothNumber + ")"
+                : "NOT VOTED (" + (reason || "Clerical correction") + ")"
+            }.`
           );
-          return { ...e, hasVoted: nextVoted };
+          return {
+            ...e,
+            hasVoted: nextVoted,
+            votedAt: nextVoted ? currentTimestamp : undefined,
+            votedByUserName: nextVoted ? "Candidate Admin (Anand Shinde)" : undefined,
+            votedByUserId: nextVoted ? "USR-CADMIN-01" : undefined,
+            votingAuditTrail: nextAudit,
+          };
         }
         return e;
       })
     );
     if (selectedVoter && selectedVoter.id === voterId) {
-      setSelectedVoter((prev) => (prev ? { ...prev, hasVoted: !prev.hasVoted } : null));
+      setSelectedVoter((prev) => {
+        if (!prev) return null;
+        const nextVoted = !prev.hasVoted;
+        const auditEntry = {
+          id: `aud-${Date.now()}`,
+          previousStatus: (prev.hasVoted ? "VOTED" : "NOT_VOTED") as "VOTED" | "NOT_VOTED",
+          newStatus: (nextVoted ? "VOTED" : "NOT_VOTED") as "VOTED" | "NOT_VOTED",
+          updatedBy: "Candidate Admin (Anand Shinde)",
+          userId: "USR-CADMIN-01",
+          timestamp: currentTimestamp,
+          reason: reason || (nextVoted ? "Polling Booth Turnout Verification" : "Authorized Status Correction"),
+        };
+        return {
+          ...prev,
+          hasVoted: nextVoted,
+          votedAt: nextVoted ? currentTimestamp : undefined,
+          votedByUserName: nextVoted ? "Candidate Admin (Anand Shinde)" : undefined,
+          votedByUserId: nextVoted ? "USR-CADMIN-01" : undefined,
+          votingAuditTrail: [...(prev.votingAuditTrail || []), auditEntry],
+        };
+      });
     }
   };
 
