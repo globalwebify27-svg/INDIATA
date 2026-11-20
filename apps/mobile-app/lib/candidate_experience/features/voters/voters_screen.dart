@@ -158,6 +158,10 @@ class _VotersScreenState extends State<VotersScreen> {
       return true;
     }).toList()
       ..sort((a, b) {
+        if (_sortBy == "Booth") {
+          final cmp = a.boothNumber.compareTo(b.boothNumber);
+          return cmp != 0 ? cmp : a.serialNumber.compareTo(b.serialNumber);
+        }
         if (_sortBy == "Name") return a.name.compareTo(b.name);
         if (_sortBy == "Age") return a.age.compareTo(b.age);
         if (_sortBy == "House") return a.houseNumber.compareTo(b.houseNumber);
@@ -192,6 +196,7 @@ class _VotersScreenState extends State<VotersScreen> {
         backgroundColor: widget.c.cardBg,
         title: Text("Sort Electorate By", style: TextStyle(color: widget.c.textPrimary)),
         children: [
+          _sortOption("Booth Number", "Booth"),
           _sortOption("Serial Number (Electoral Roll)", "Serial"),
           _sortOption("Voter Name (A to Z)", "Name"),
           _sortOption("Voter Age (Ascending)", "Age"),

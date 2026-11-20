@@ -156,7 +156,7 @@ export const SEED_PORTAL_USERS: PortalUser[] = [
     prabhaag: "Prabhaag 12 - Kothrud West",
     assignedBooths: [101],
     voterSerialRange: "1 to 250",
-    modulePermissions: ["VOTER_SEARCH", "SURVEY", "SLIP_DISTRIBUTION"],
+    modulePermissions: ["VOTER_SEARCH", "SURVEY", "SLIP_DISTRIBUTION", "AI_ASSISTANT"],
     canImportData: false,
     lastActive: "1 hour ago",
   },
@@ -548,6 +548,7 @@ export const SYSTEM_MODULES = [
   { id: "VOTER_SEARCH", name: "Total Voters & Search" },
   { id: "SURVEY", name: "Field Survey Entry" },
   { id: "SLIP_DISTRIBUTION", name: "Voter Slip Delivery & Print" },
+  { id: "AI_ASSISTANT", name: "Indic AI Field Assistant Copilot" },
   { id: "OFFICE", name: "Office Grievance & Visitors" },
   { id: "CAMPAIGN", name: "Campaign Control & Broadcast" },
   { id: "REPORTS", name: "Analytical Reports Export" },
@@ -1309,7 +1310,7 @@ function AddUserView({ onBack, onUserCreated }: AddUserViewProps) {
     prabhaag: "Prabhaag 12 - Kothrud West",
     assignedBooths: [101],
     voterSerialRange: "1 to 250",
-    modulePermissions: ["VOTER_SEARCH", "SURVEY", "SLIP_DISTRIBUTION"],
+    modulePermissions: ["VOTER_SEARCH", "SURVEY", "SLIP_DISTRIBUTION", "AI_ASSISTANT"],
     canImportData: false,
   });
 

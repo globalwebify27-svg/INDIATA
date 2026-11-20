@@ -12,7 +12,6 @@ import {
   PieChart,
   History,
   MapPin,
-  Download,
   ChevronRight,
   Target,
   TrendingUp,
@@ -75,8 +74,39 @@ export function PreviousElectionStrategyView() {
   const [selectedSource, setSelectedSource] = useState("HISTORICAL_ELECTIONS");
   const [selectedMetric, setSelectedMetric] = useState("Vote Share (%)");
   const [selectedDimension, setSelectedDimension] = useState("By Booth");
-  const [selectedScope, setSelectedScope] = useState("2019 Lok Sabha");
+  const [subscriptionTier, setSubscriptionTier] = useState<1 | 2 | 3 | 4>(3);
+  const [selectedScope, setSelectedScope] = useState("2019 Lok Sabha (General Polls)");
   const [selectedFormat, setSelectedFormat] = useState("BAR");
+
+  const tierElectionScopes: Record<1 | 2 | 3 | 4, string[]> = {
+    1: ["2024 Lok Sabha (General Polls)"],
+    2: ["2024 Lok Sabha (General Polls)", "2023 Municipal By-Polls"],
+    3: ["2024 Lok Sabha (General Polls)", "2019 Lok Sabha (General Polls)", "2019 Assembly Polls"],
+    4: [
+      "2024 Lok Sabha (General Polls)",
+      "2019 Lok Sabha (General Polls)",
+      "2014 Lok Sabha (General Polls)",
+      "2009 Lok Sabha (General Polls)",
+      "Multi-Year Cross Comparison (Full Archives)",
+    ],
+  };
+
+  const tierNames: Record<1 | 2 | 3 | 4, string> = {
+    1: "Tier 1: 2024 Only",
+    2: "Tier 2: 2023–2024",
+    3: "Tier 3: 2019–2024",
+    4: "Tier 4: Full Archives",
+  };
+
+  const cycleTier = () => {
+    const nextTier = ((subscriptionTier % 4) + 1) as 1 | 2 | 3 | 4;
+    setSubscriptionTier(nextTier);
+    const available = tierElectionScopes[nextTier];
+    if (!available.includes(selectedScope)) {
+      setSelectedScope(available[0] || "2024 Lok Sabha (General Polls)");
+    }
+    notify(`Switched plan entitlement to ${tierNames[nextTier]}`, "info");
+  };
 
   const [panels, setPanels] = useState<CanvasPanel[]>([
     {
@@ -208,7 +238,7 @@ export function PreviousElectionStrategyView() {
           followUpActions: [
             "Inspect Booth #101 Demographics",
             "View Historical Turnout Trend",
-            "Download PDF Dossier",
+            "Deep Dive Cross-Election Margins",
           ],
         };
       } else if (lower.includes("strategy") || lower.includes("plan")) {
@@ -231,7 +261,7 @@ export function PreviousElectionStrategyView() {
           },
           followUpActions: [
             "Open Strategy Documents",
-            "Export Operational Priorities",
+            "Review Operational Priorities",
             "Compare Other Wards",
           ],
         };
@@ -326,7 +356,7 @@ export function PreviousElectionStrategyView() {
               Previous Election & Strategy
             </span>
             <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800/60 ml-1">
-              Active Tier
+              {tierNames[subscriptionTier]}
             </span>
           </div>
           <h1 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
@@ -353,6 +383,14 @@ export function PreviousElectionStrategyView() {
               <span>Module Home</span>
             </button>
           )}
+          <button
+            onClick={cycleTier}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800/60 hover:bg-blue-100 dark:hover:bg-blue-900/50 transition"
+            title="Cycle Active Subscription Plan Tier (Tier 1: 2024 only, Tier 4: Full Archives)"
+          >
+            <Sparkles className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+            <span>Tier {subscriptionTier}</span>
+          </button>
           <button
             onClick={() => setIsLocked(true)}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:white border border-slate-200 dark:border-slate-700 transition"
@@ -661,13 +699,6 @@ export function PreviousElectionStrategyView() {
                     <Plus className="w-3.5 h-3.5" />
                     <span>Add Panel to Canvas</span>
                   </button>
-                  <button
-                    onClick={() => notify("Exporting complete dashboard as formatted PDF report...", "info")}
-                    className="flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition"
-                  >
-                    <Download className="w-3.5 h-3.5" />
-                    <span>Export Dashboard</span>
-                  </button>
                 </div>
               </div>
 
@@ -709,17 +740,18 @@ export function PreviousElectionStrategyView() {
 
                 <div>
                   <label className="block text-[10px] uppercase font-bold text-slate-400 mb-1">
-                    Historical Scope
+                    Historical Scope ({tierNames[subscriptionTier]})
                   </label>
                   <select
                     value={selectedScope}
                     onChange={(e) => setSelectedScope(e.target.value)}
                     className="w-full p-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 font-semibold"
                   >
-                    <option>2019 Lok Sabha (General Polls)</option>
-                    <option>2014 Lok Sabha (General Polls)</option>
-                    <option>2009 Lok Sabha (General Polls)</option>
-                    <option>Multi-Year Cross Comparison</option>
+                    {tierElectionScopes[subscriptionTier].map((scope) => (
+                      <option key={scope} value={scope}>
+                        {scope}
+                      </option>
+                    ))}
                   </select>
                 </div>
 
@@ -756,7 +788,7 @@ export function PreviousElectionStrategyView() {
             <div className="flex-1 overflow-y-auto p-5 space-y-4">
               <div className="flex items-center justify-between text-xs text-slate-500">
                 <span>Dashboard Canvas ({panels.length} Active Panels)</span>
-                <span>Click panel controls to switch chart types, drill down, or export.</span>
+                <span>Click panel controls to switch chart types, drill down, or reorder.</span>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -771,13 +803,6 @@ export function PreviousElectionStrategyView() {
                           {p.dataset}
                         </span>
                         <div className="flex items-center gap-1">
-                          <button
-                            onClick={() => notify(`Exporting ${p.title} as image...`, "info")}
-                            className="p-1 text-slate-400 hover:text-blue-600 transition"
-                            title="Export"
-                          >
-                            <Download className="w-3.5 h-3.5" />
-                          </button>
                           <button
                             onClick={() => setPanels((prev) => prev.filter((item) => item.id !== p.id))}
                             className="p-1 text-slate-400 hover:text-rose-600 transition"

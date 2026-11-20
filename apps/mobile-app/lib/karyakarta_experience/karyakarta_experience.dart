@@ -117,6 +117,8 @@ class VoterItem {
   bool isImportant;
   final String caste;
   final String scheme;
+  String surveyFeedback;
+  String surveyTimestamp;
 
   VoterItem({
     required this.id,
@@ -135,6 +137,8 @@ class VoterItem {
     this.isImportant = false,
     this.caste = "Maratha",
     this.scheme = "Ladki Bahin Yojana",
+    this.surveyFeedback = "",
+    this.surveyTimestamp = "",
   });
 }
 
@@ -188,6 +192,7 @@ class SlipHistoryItem {
   final String timestamp;
   final String mode; // Thermal Printed, WhatsApp Digital
   final String serialNo;
+  final String status; // Delivered, Printed, Pending, Failed
 
   SlipHistoryItem({
     required this.voterName,
@@ -197,6 +202,7 @@ class SlipHistoryItem {
     required this.timestamp,
     required this.mode,
     required this.serialNo,
+    this.status = "Delivered",
   });
 }
 
@@ -242,7 +248,8 @@ class MainMobileScaffold extends StatefulWidget {
 class _MainMobileScaffoldState extends State<MainMobileScaffold> {
   // Navigation & View Routing State
   String _currentView = "dashboard";
-  int _currentTab = 0; // 0=Dashboard, 1=Voters, 2=Surveys, 3=Slips, 4=Copilot
+  int _currentTab = 0; // 0=Dashboard, 1=Voters, 2=Slips, 3=Copilot
+  bool _isAiEnabled = true; // Admin Gated per Karyakarta
 
   // Hardware Activation & Testing States
   bool _isActivated = true;
@@ -487,6 +494,7 @@ class _MainMobileScaffoldState extends State<MainMobileScaffold> {
         timestamp: "Today, 10:45 AM",
         mode: "Thermal Printed (58mm)",
         serialNo: "042",
+        status: "Printed",
       ),
       SlipHistoryItem(
         voterName: "Sunita Rajesh Patil",
@@ -496,6 +504,7 @@ class _MainMobileScaffoldState extends State<MainMobileScaffold> {
         timestamp: "Today, 10:47 AM",
         mode: "WhatsApp Digital",
         serialNo: "043",
+        status: "Delivered",
       ),
       SlipHistoryItem(
         voterName: "Ganesh Anant Kulkarni",
@@ -505,6 +514,27 @@ class _MainMobileScaffoldState extends State<MainMobileScaffold> {
         timestamp: "Yesterday, 04:12 PM",
         mode: "Thermal Printed (58mm)",
         serialNo: "038",
+        status: "Printed",
+      ),
+      SlipHistoryItem(
+        voterName: "Pooja Santosh Shinde",
+        marathiName: "पूजा संतोष शिंदे",
+        boothNo: "102",
+        epicId: "MH/04/102/00118",
+        timestamp: "Yesterday, 02:30 PM",
+        mode: "WhatsApp Digital",
+        serialNo: "105",
+        status: "Delivered",
+      ),
+      SlipHistoryItem(
+        voterName: "Vikram R. Deshmukh",
+        marathiName: "विक्रम आर. देशमुख",
+        boothNo: "102",
+        epicId: "MH/04/102/00119",
+        timestamp: "07 Feb 2026, 11:15 AM",
+        mode: "WhatsApp Digital",
+        serialNo: "106",
+        status: "Pending",
       ),
     ];
 
@@ -610,9 +640,8 @@ class _MainMobileScaffoldState extends State<MainMobileScaffold> {
       _currentView = viewName;
       if (viewName == "dashboard") _currentTab = 0;
       if (viewName == "voters") _currentTab = 1;
-      if (viewName == "surveys") _currentTab = 2;
-      if (viewName == "slips") _currentTab = 3;
-      if (viewName == "copilot") _currentTab = 4;
+      if (viewName == "slips") _currentTab = 2;
+      if (viewName == "copilot") _currentTab = _isAiEnabled ? 3 : 0;
     });
   }
 
@@ -782,7 +811,7 @@ class _MainMobileScaffoldState extends State<MainMobileScaffold> {
       body: _buildCurrentView(c, isDark),
 
       // ========================================================================
-      // PERSISTENT 5-TAB BOTTOM NAVIGATION BAR (CORE FIELD CADRE ACTIONS)
+      // PERSISTENT 4-TAB BOTTOM NAVIGATION BAR (CORE FIELD CADRE ACTIONS)
       // ========================================================================
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
@@ -790,15 +819,14 @@ class _MainMobileScaffoldState extends State<MainMobileScaffold> {
           border: Border(top: BorderSide(color: c.borderColor, width: 1)),
         ),
         child: BottomNavigationBar(
-          currentIndex: _currentTab,
+          currentIndex: _currentTab > (_isAiEnabled ? 3 : 2) ? 0 : _currentTab,
           onTap: (index) {
             setState(() {
               _currentTab = index;
               if (index == 0) _currentView = "dashboard";
               if (index == 1) _currentView = "voters";
-              if (index == 2) _currentView = "surveys";
-              if (index == 3) _currentView = "slips";
-              if (index == 4) _currentView = "copilot";
+              if (index == 2) _currentView = "slips";
+              if (index == 3 && _isAiEnabled) _currentView = "copilot";
             });
           },
           backgroundColor: Colors.transparent,
@@ -808,27 +836,24 @@ class _MainMobileScaffoldState extends State<MainMobileScaffold> {
           unselectedItemColor: c.textSecondary,
           selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 10),
           unselectedLabelStyle: const TextStyle(fontSize: 10),
-          items: const [
-            BottomNavigationBarItem(
+          items: [
+            const BottomNavigationBarItem(
               icon: Icon(Icons.dashboard_rounded),
               label: "Dashboard",
             ),
-            BottomNavigationBarItem(
+            const BottomNavigationBarItem(
               icon: Icon(Icons.people_alt_rounded),
               label: "Voters",
             ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.assignment_turned_in_rounded),
-              label: "Surveys",
-            ),
-            BottomNavigationBarItem(
+            const BottomNavigationBarItem(
               icon: Icon(Icons.print_rounded),
               label: "Slips",
             ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.auto_awesome_rounded),
-              label: "Copilot",
-            ),
+            if (_isAiEnabled)
+              const BottomNavigationBarItem(
+                icon: Icon(Icons.auto_awesome_rounded),
+                label: "Copilot",
+              ),
           ],
         ),
       ),
@@ -908,7 +933,8 @@ class _MainMobileScaffoldState extends State<MainMobileScaffold> {
             _drawerItem(Icons.search_rounded, "Search Voter & Dossier", "voters", c),
             _drawerItem(Icons.tune_rounded, "Advanced Filter", "advancedFilter", c),
             _drawerItem(Icons.report_problem_rounded, "Voter Issues & Tickets", "issues", c, badge: "${_issues.where((i) => i.status == 'Open').length} Open", badgeColor: c.red),
-            _drawerItem(Icons.auto_awesome_rounded, "AI Field Assistant", "copilot", c, badge: "AI", badgeColor: c.purple),
+            if (_isAiEnabled)
+              _drawerItem(Icons.auto_awesome_rounded, "AI Field Assistant", "copilot", c, badge: "AI", badgeColor: c.purple),
             _drawerItem(Icons.call_rounded, "Phone Book Directory", "phoneBook", c),
             _drawerItem(Icons.location_city_rounded, "Booth & BLO Directory", "boothInfo", c),
             _drawerItem(Icons.assessment_rounded, "Reports & Exports", "reports", c),
@@ -1069,6 +1095,9 @@ class _MainMobileScaffoldState extends State<MainMobileScaffold> {
           c: c,
           isDark: isDark,
           voters: filteredVoters,
+          allVoters: _voters,
+          issues: _issues,
+          slipHistory: _slipHistory,
           activeFilter: _activeKpiFilter,
           onResetFilter: () => setState(() => _activeKpiFilter = "all"),
           onVoterUpdated: (updated) {
@@ -1078,6 +1107,15 @@ class _MainMobileScaffoldState extends State<MainMobileScaffold> {
             });
           },
           onOpenAdvancedFilter: () => _navigateTo("advancedFilter"),
+          onAddActivity: (act) {
+            setState(() => _activities.insert(0, act));
+          },
+          onAddSlip: (slip) {
+            setState(() => _slipHistory.insert(0, slip));
+          },
+          onAddIssue: (issue) {
+            setState(() => _issues.insert(0, issue));
+          },
         );
 
       case "surveys":
@@ -1106,6 +1144,7 @@ class _MainMobileScaffoldState extends State<MainMobileScaffold> {
               SnackBar(backgroundColor: c.green, content: const Text("Survey saved with GPS_VERIFIED geotag!")),
             );
           },
+          onNavigateToVoters: () => _navigateTo("voters"),
         );
 
       case "slips":
@@ -1125,6 +1164,7 @@ class _MainMobileScaffoldState extends State<MainMobileScaffold> {
                   timestamp: "Just Now",
                   mode: mode,
                   serialNo: "04${_slipHistory.length + 1}",
+                  status: mode.contains("Thermal") ? "Printed" : "Delivered",
                 ),
               );
             });
@@ -1132,6 +1172,44 @@ class _MainMobileScaffoldState extends State<MainMobileScaffold> {
         );
 
       case "copilot":
+        if (!_isAiEnabled) {
+          return Center(
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: Container(
+                padding: const EdgeInsets.all(22),
+                decoration: BoxDecoration(
+                  color: c.cardBg,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: c.borderColor),
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.lock_rounded, size: 44, color: c.amber),
+                    const SizedBox(height: 12),
+                    Text(
+                      "AI Field Assistant Disabled",
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: c.textPrimary),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      "Access to the Indic AI Copilot has been disabled for this Karyakarta by the Main Candidate Admin. Please contact your campaign administrator to re-enable AI Field Assistant privileges.",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 12, color: c.textSecondary, height: 1.4),
+                    ),
+                    const SizedBox(height: 16),
+                    ElevatedButton(
+                      onPressed: () => _navigateTo("dashboard"),
+                      style: ElevatedButton.styleFrom(backgroundColor: c.primary),
+                      child: const Text("Return to Dashboard", style: TextStyle(color: Colors.white)),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        }
         return IndicAiCopilotScreen(
           c: c,
           isDark: isDark,
@@ -1235,6 +1313,8 @@ class _MainMobileScaffoldState extends State<MainMobileScaffold> {
           c: c,
           isDark: isDark,
           qaState: _qaState,
+          isAiEnabled: _isAiEnabled,
+          onToggleAi: () => setState(() => _isAiEnabled = !_isAiEnabled),
           onToggleTheme: widget.onToggleTheme,
           onQaStateChanged: (s) => setState(() => _qaState = s),
           onLogout: () => setState(() => _isActivated = false),
@@ -2300,9 +2380,9 @@ class BoothDirectoryScreen extends StatelessWidget {
 }
 
 // ==============================================================================
-// 6. REPORTS & EXPORTS SCREEN
+// 6. REPORTS & EXPORTS SCREEN (CUSTOM FILTERING & MULTI-FORMAT EXPORTS)
 // ==============================================================================
-class ReportsScreen extends StatelessWidget {
+class ReportsScreen extends StatefulWidget {
   final AppThemeColors c;
   final bool isDark;
   final List<VoterItem> voters;
@@ -2319,14 +2399,88 @@ class ReportsScreen extends StatelessWidget {
   });
 
   @override
+  State<ReportsScreen> createState() => _ReportsScreenState();
+}
+
+class _ReportsScreenState extends State<ReportsScreen> {
+  String _selectedFilter = "All Allocated Electors";
+  final String _customTitle = "Kasba Peth Cadre Audit & Electorate Report";
+
+  final List<String> _filterScopes = [
+    "All Allocated Electors",
+    "Newly Added Voters",
+    "Newly Added Female Voters",
+    "Youth Electors (<30)",
+    "Senior Citizens (60+)",
+    "Confirmed Supporters (🟢)",
+    "Swing / Doubtful Voters (🟡)",
+    "Opposition Lean (🔴)",
+    "Open Voter Issues & Tickets",
+    "Daily Cadre Activity Audit",
+  ];
+
+  List<VoterItem> get _filteredVoters {
+    switch (_selectedFilter) {
+      case "Newly Added Voters":
+        return widget.voters.where((v) => int.tryParse(v.serialNo) != null && int.parse(v.serialNo) >= 105).toList();
+      case "Newly Added Female Voters":
+        return widget.voters.where((v) => v.gender == "F" && (int.tryParse(v.serialNo) ?? 0) >= 102).toList();
+      case "Youth Electors (<30)":
+        return widget.voters.where((v) => v.age < 30).toList();
+      case "Senior Citizens (60+)":
+        return widget.voters.where((v) => v.age >= 60).toList();
+      case "Confirmed Supporters (🟢)":
+        return widget.voters.where((v) => v.classification == "Supporter").toList();
+      case "Swing / Doubtful Voters (🟡)":
+        return widget.voters.where((v) => v.classification == "Doubtful").toList();
+      case "Opposition Lean (🔴)":
+        return widget.voters.where((v) => v.classification == "Opponent").toList();
+      default:
+        return widget.voters;
+    }
+  }
+
+  void _triggerExport(String format) {
+    final count = _filteredVoters.length;
+    final fileName = "${_customTitle.replaceAll(' ', '_')}_${_selectedFilter.replaceAll(' ', '_')}";
+    String ext = format == "PDF" ? "pdf" : (format == "CSV" ? "csv" : "xlsx");
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: const Color(0xFF10B981),
+        content: Row(
+          children: [
+            const Icon(Icons.check_circle_rounded, color: Colors.white, size: 18),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                "Exported $count records as '$fileName.$ext' ($format format)!",
+                style: const TextStyle(color: Colors.white, fontSize: 12),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final visited = voters.where((v) => v.isVisited).length;
+    final c = widget.c;
+    final filtered = _filteredVoters;
+    final visited = widget.voters.where((v) => v.isVisited).length;
 
     return ListView(
       padding: const EdgeInsets.all(14),
       children: [
-        Text("Daily Cadre Performance Audit", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: c.textPrimary)),
-        Text("Consolidated telemetry synced with Candidate War Room", style: TextStyle(fontSize: 11, color: c.textSecondary)),
+        Text(
+          "Field Reports & Custom Export Builder",
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: c.textPrimary),
+        ),
+        Text(
+          "Extract authenticated voter intelligence, doorstep audits, and delivery logs",
+          style: TextStyle(fontSize: 11, color: c.textSecondary),
+        ),
         const SizedBox(height: 14),
 
         // Summary Card
@@ -2339,32 +2493,148 @@ class ReportsScreen extends StatelessWidget {
           ),
           child: Column(
             children: [
-              _metricRow("Total Allocated Voters", "${voters.length}", c),
-              _metricRow("Doorstep Surveys Completed", "$visited (${((visited / voters.length) * 100).toInt()}%)", c),
-              _metricRow("Voter Chits Dispatched", "${slipHistory.length}", c),
-              _metricRow("Grievance Tickets Raised", "${issues.length}", c),
-              _metricRow("Unresolved Grievances", "${issues.where((i) => i.status == 'Open').length}", c),
+              _metricRow("Total Allocated Voters", "${widget.voters.length}", c),
+              _metricRow("Doorstep Surveys Completed", "$visited (${((visited / widget.voters.length) * 100).toInt()}%)", c),
+              _metricRow("Voter Chits Dispatched", "${widget.slipHistory.length}", c),
+              _metricRow("Grievance Tickets Raised", "${widget.issues.length}", c),
+              _metricRow("Unresolved Grievances", "${widget.issues.where((i) => i.status == 'Open').length}", c),
+            ],
+          ),
+        ),
+
+        const SizedBox(height: 16),
+        Text(
+          "FILTER SCOPE (SELECT TARGET DATASET)",
+          style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w900, color: c.textSecondary, letterSpacing: 1.0),
+        ),
+        const SizedBox(height: 8),
+
+        // Filter Scopes Chips
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: _filterScopes.map((scope) {
+              final isSel = _selectedFilter == scope;
+              return Padding(
+                padding: const EdgeInsets.only(right: 6),
+                child: ChoiceChip(
+                  label: Text(scope),
+                  selected: isSel,
+                  selectedColor: c.primary,
+                  backgroundColor: c.cardBg,
+                  labelStyle: TextStyle(
+                    fontSize: 11,
+                    fontWeight: isSel ? FontWeight.bold : FontWeight.normal,
+                    color: isSel ? Colors.white : c.textPrimary,
+                  ),
+                  side: BorderSide(color: isSel ? c.primary : c.borderColor),
+                  onSelected: (val) {
+                    if (val) setState(() => _selectedFilter = scope);
+                  },
+                ),
+              );
+            }).toList(),
+          ),
+        ),
+
+        const SizedBox(height: 16),
+
+        // Pre-Download Report Preview Container
+        Container(
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            color: c.cardBg,
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: c.borderColor),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      Icon(Icons.preview_rounded, size: 16, color: c.primary),
+                      const SizedBox(width: 6),
+                      Text(
+                        "Pre-Download Report Preview",
+                        style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: c.textPrimary),
+                      ),
+                    ],
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                    decoration: BoxDecoration(
+                      color: c.primary.withOpacity(0.12),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+                      "${filtered.length} Records",
+                      style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: c.primary),
+                    ),
+                  ),
+                ],
+              ),
+              const Divider(height: 18),
+              _previewRow("Active Filter Scope", _selectedFilter, c),
+              _previewRow("Electoral Roll Base", "Assembly 215 - Kasba Peth (Booths #101-#103)", c),
+              _previewRow("Included Schema Fields", "Name, Marathi, EPIC, Phone, Booth, Age, Stance", c),
+              _previewRow("Telemetry Audit Tag", "GPS_VERIFIED • War Room Sync Commited", c),
             ],
           ),
         ),
 
         const SizedBox(height: 20),
-        ElevatedButton.icon(
-          onPressed: () {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                backgroundColor: Colors.green,
-                content: Text("Export Generated: 'Kasba_Peth_Cadre_Audit_2026.csv' saved!"),
+
+        // Multi-Format Export Buttons (PDF, CSV, Excel XLSX)
+        Text(
+          "REQUIRED EXPORT FORMATS",
+          style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w900, color: c.textSecondary, letterSpacing: 1.0),
+        ),
+        const SizedBox(height: 8),
+
+        Row(
+          children: [
+            Expanded(
+              child: ElevatedButton.icon(
+                onPressed: () => _triggerExport("PDF"),
+                icon: const Icon(Icons.picture_as_pdf_rounded, size: 15, color: Colors.white),
+                label: const Text("Export PDF", style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Colors.white)),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFEF4444),
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                ),
               ),
-            );
-          },
-          icon: const Icon(Icons.download, color: Colors.white),
-          label: const Text("Export Daily Audit CSV", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: c.primary,
-            padding: const EdgeInsets.symmetric(vertical: 14),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-          ),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: ElevatedButton.icon(
+                onPressed: () => _triggerExport("CSV"),
+                icon: const Icon(Icons.table_chart_rounded, size: 15, color: Colors.white),
+                label: const Text("Export CSV", style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Colors.white)),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF10B981),
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                ),
+              ),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: ElevatedButton.icon(
+                onPressed: () => _triggerExport("Excel XLSX"),
+                icon: const Icon(Icons.grid_on_rounded, size: 15, color: Colors.white),
+                label: const Text("Export XLSX", style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Colors.white)),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: c.primary,
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                ),
+              ),
+            ),
+          ],
         ),
       ],
     );
@@ -2372,12 +2642,31 @@ class ReportsScreen extends StatelessWidget {
 
   Widget _metricRow(String label, String value, AppThemeColors c) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
+      padding: const EdgeInsets.symmetric(vertical: 5),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: TextStyle(fontSize: 12, color: c.textSecondary)),
+          Text(label, style: TextStyle(fontSize: 11.5, color: c.textSecondary)),
           Text(value, style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: c.textPrimary)),
+        ],
+      ),
+    );
+  }
+
+  Widget _previewRow(String label, String value, AppThemeColors c) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(label, style: TextStyle(fontSize: 10.5, color: c.textSecondary)),
+          Flexible(
+            child: Text(
+              value,
+              textAlign: TextAlign.end,
+              style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.w600, color: c.textPrimary),
+            ),
+          ),
         ],
       ),
     );
@@ -2385,9 +2674,9 @@ class ReportsScreen extends StatelessWidget {
 }
 
 // ==============================================================================
-// 7. SLIP HISTORY SCREEN
+// 7. SLIP HISTORY SCREEN (DEDICATED KARYAKARTA DASHBOARD & KPIS)
 // ==============================================================================
-class SlipHistoryScreen extends StatelessWidget {
+class SlipHistoryScreen extends StatefulWidget {
   final AppThemeColors c;
   final bool isDark;
   final List<SlipHistoryItem> slips;
@@ -2395,44 +2684,207 @@ class SlipHistoryScreen extends StatelessWidget {
   const SlipHistoryScreen({super.key, required this.c, required this.isDark, required this.slips});
 
   @override
+  State<SlipHistoryScreen> createState() => _SlipHistoryScreenState();
+}
+
+class _SlipHistoryScreenState extends State<SlipHistoryScreen> {
+  String _selectedMethod = "All";
+  String _selectedStatus = "All";
+
+  List<SlipHistoryItem> get _filteredSlips {
+    return widget.slips.where((s) {
+      if (_selectedMethod != "All") {
+        if (_selectedMethod == "WhatsApp" && !s.mode.contains("WhatsApp")) return false;
+        if (_selectedMethod == "Thermal" && !s.mode.contains("Thermal")) return false;
+      }
+      if (_selectedStatus != "All" && s.status != _selectedStatus) {
+        return false;
+      }
+      return true;
+    }).toList();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: slips.length,
-      padding: const EdgeInsets.all(12),
-      itemBuilder: (ctx, idx) {
-        final s = slips[idx];
-        return Container(
-          margin: const EdgeInsets.only(bottom: 8),
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: c.cardBg,
-            borderRadius: BorderRadius.circular(14),
-            border: Border.all(color: c.borderColor),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    final c = widget.c;
+    final total = widget.slips.length;
+    final waCount = widget.slips.where((s) => s.mode.contains("WhatsApp")).length;
+    final thermalCount = widget.slips.where((s) => s.mode.contains("Thermal")).length;
+    final deliveredCount = widget.slips.where((s) => s.status == "Delivered" || s.status == "Printed").length;
+    final pendingCount = widget.slips.where((s) => s.status == "Pending").length;
+    final displayList = _filteredSlips;
+
+    return Column(
+      children: [
+        // KPI Summary Cards
+        Padding(
+          padding: const EdgeInsets.fromLTRB(12, 12, 12, 6),
+          child: Column(
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              Row(
                 children: [
-                  Text(s.marathiName, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: c.textPrimary)),
-                  Text("${s.voterName} • Booth #${s.boothNo}", style: TextStyle(fontSize: 10, color: c.textSecondary)),
-                  Text("Serial #${s.serialNo} • ${s.timestamp}", style: TextStyle(fontSize: 9, color: c.textSecondary)),
+                  _kpiMiniCard("Total Slips", "$total", Icons.receipt_long, c.primary, c),
+                  const SizedBox(width: 8),
+                  _kpiMiniCard("WhatsApp Sent", "$waCount", Icons.chat_bubble, const Color(0xFF10B981), c),
+                  const SizedBox(width: 8),
+                  _kpiMiniCard("Thermal Print", "$thermalCount", Icons.print, const Color(0xFF6366F1), c),
                 ],
               ),
-              IconButton(
-                icon: Icon(Icons.print, color: c.primary),
-                tooltip: "Reprint Slip",
-                onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text("Reprinting thermal chit for ${s.voterName}...")),
-                  );
-                },
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  _kpiMiniCard("Successful Delivery", "$deliveredCount", Icons.check_circle, const Color(0xFF10B981), c),
+                  const SizedBox(width: 8),
+                  _kpiMiniCard("Pending Dispatch", "$pendingCount", Icons.hourglass_top, const Color(0xFFF59E0B), c),
+                ],
               ),
             ],
           ),
-        );
-      },
+        ),
+
+        // Filter Bar (Method & Status)
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                _filterChip("All", _selectedMethod == "All", (v) => setState(() => _selectedMethod = "All"), c),
+                const SizedBox(width: 6),
+                _filterChip("WhatsApp Only", _selectedMethod == "WhatsApp", (v) => setState(() => _selectedMethod = "WhatsApp"), c),
+                const SizedBox(width: 6),
+                _filterChip("Thermal Print Only", _selectedMethod == "Thermal", (v) => setState(() => _selectedMethod = "Thermal"), c),
+                const SizedBox(width: 10),
+                Container(height: 20, width: 1, color: c.borderColor),
+                const SizedBox(width: 10),
+                _filterChip("Delivered", _selectedStatus == "Delivered", (v) => setState(() => _selectedStatus = _selectedStatus == "Delivered" ? "All" : "Delivered"), c),
+                const SizedBox(width: 6),
+                _filterChip("Printed", _selectedStatus == "Printed", (v) => setState(() => _selectedStatus = _selectedStatus == "Printed" ? "All" : "Printed"), c),
+                const SizedBox(width: 6),
+                _filterChip("Pending", _selectedStatus == "Pending", (v) => setState(() => _selectedStatus = _selectedStatus == "Pending" ? "All" : "Pending"), c),
+              ],
+            ),
+          ),
+        ),
+
+        // Slip History List
+        Expanded(
+          child: displayList.isNotEmpty
+              ? ListView.builder(
+                  itemCount: displayList.length,
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  itemBuilder: (ctx, idx) {
+                    final s = displayList[idx];
+                    Color statusColor = c.green;
+                    if (s.status == "Pending") statusColor = c.amber;
+                    if (s.status == "Failed") statusColor = c.red;
+
+                    return Container(
+                      margin: const EdgeInsets.only(bottom: 8),
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: c.cardBg,
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(color: c.borderColor),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Text(s.marathiName, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: c.textPrimary)),
+                                    const SizedBox(width: 8),
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                      decoration: BoxDecoration(
+                                        color: statusColor.withOpacity(0.12),
+                                        borderRadius: BorderRadius.circular(6),
+                                        border: Border.all(color: statusColor.withOpacity(0.4)),
+                                      ),
+                                      child: Text(
+                                        s.status,
+                                        style: TextStyle(color: statusColor, fontSize: 8.5, fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 2),
+                                Text("${s.voterName} • Booth #${s.boothNo} • Serial #${s.serialNo}", style: TextStyle(fontSize: 10, color: c.textSecondary)),
+                                Text("${s.mode} • ${s.timestamp}", style: TextStyle(fontSize: 9, color: c.textSecondary)),
+                              ],
+                            ),
+                          ),
+                          IconButton(
+                            icon: Icon(s.mode.contains("WhatsApp") ? Icons.chat_bubble_outline : Icons.print, color: c.primary, size: 20),
+                            tooltip: s.mode.contains("WhatsApp") ? "Resend WhatsApp Slip" : "Reprint Slip",
+                            onPressed: () {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  backgroundColor: c.primary,
+                                  content: Text(s.mode.contains("WhatsApp")
+                                      ? "Resending WhatsApp ECI slip chit to ${s.voterName}..."
+                                      : "Reprinting thermal chit for ${s.voterName}..."),
+                                ),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                )
+              : Center(
+                  child: Text("No slip records matching the selected filter.", style: TextStyle(color: c.textSecondary, fontSize: 12)),
+                ),
+        ),
+      ],
+    );
+  }
+
+  Widget _kpiMiniCard(String label, String value, IconData icon, Color color, AppThemeColors c) {
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: c.cardBg,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: c.borderColor),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(value, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: c.textPrimary)),
+                Icon(icon, size: 16, color: color),
+              ],
+            ),
+            const SizedBox(height: 2),
+            Text(label, style: TextStyle(fontSize: 9, color: c.textSecondary), maxLines: 1, overflow: TextOverflow.ellipsis),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _filterChip(String label, bool isSelected, Function(bool) onSelected, AppThemeColors c) {
+    return ChoiceChip(
+      label: Text(label),
+      selected: isSelected,
+      selectedColor: c.primary,
+      backgroundColor: c.cardBg,
+      labelStyle: TextStyle(
+        fontSize: 10,
+        fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+        color: isSelected ? Colors.white : c.textPrimary,
+      ),
+      side: BorderSide(color: isSelected ? c.primary : c.borderColor),
+      onSelected: onSelected,
     );
   }
 }
@@ -2503,6 +2955,8 @@ class ProfileSettingsScreen extends StatelessWidget {
   final AppThemeColors c;
   final bool isDark;
   final String qaState;
+  final bool isAiEnabled;
+  final VoidCallback onToggleAi;
   final VoidCallback onToggleTheme;
   final Function(String) onQaStateChanged;
   final VoidCallback onLogout;
@@ -2512,6 +2966,8 @@ class ProfileSettingsScreen extends StatelessWidget {
     required this.c,
     required this.isDark,
     required this.qaState,
+    required this.isAiEnabled,
+    required this.onToggleAi,
     required this.onToggleTheme,
     required this.onQaStateChanged,
     required this.onLogout,
@@ -2618,6 +3074,23 @@ class ProfileSettingsScreen extends StatelessWidget {
           title: Text("Toggle Dark / Light Theme", style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: c.textPrimary)),
           subtitle: Text("Switch between high-contrast daylight & night theme", style: TextStyle(fontSize: 10, color: c.textSecondary)),
           onTap: onToggleTheme,
+        ),
+
+        const SizedBox(height: 12),
+        ListTile(
+          tileColor: c.cardBg,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          leading: Icon(Icons.auto_awesome_rounded, color: isAiEnabled ? c.purple : c.textSecondary),
+          title: Text("Indic AI Field Assistant", style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: c.textPrimary)),
+          subtitle: Text(
+            isAiEnabled ? "Enabled by Candidate Admin (Copilot Active)" : "Disabled by Candidate Admin (Copilot Hidden)",
+            style: TextStyle(fontSize: 10, color: isAiEnabled ? c.green : c.red),
+          ),
+          trailing: Switch(
+            value: isAiEnabled,
+            activeColor: c.primary,
+            onChanged: (val) => onToggleAi(),
+          ),
         ),
 
         const SizedBox(height: 12),
@@ -2800,26 +3273,38 @@ class BlockedAccountScreen extends StatelessWidget {
 }
 
 // ==============================================================================
-// 11. VOTER SEARCH SCREEN & 6-TAB CENTRAL DOSSIER MODAL
+// 11. VOTER SEARCH SCREEN & CENTRAL VOTER PROFILE / DOSSIER
 // ==============================================================================
 class VoterSearchScreen extends StatefulWidget {
   final AppThemeColors c;
   final bool isDark;
   final List<VoterItem> voters;
+  final List<VoterItem> allVoters;
+  final List<IssueItem> issues;
+  final List<SlipHistoryItem> slipHistory;
   final String activeFilter;
   final VoidCallback onResetFilter;
   final Function(VoterItem) onVoterUpdated;
   final VoidCallback onOpenAdvancedFilter;
+  final Function(ActivityItem)? onAddActivity;
+  final Function(SlipHistoryItem)? onAddSlip;
+  final Function(IssueItem)? onAddIssue;
 
   const VoterSearchScreen({
     super.key,
     required this.c,
     required this.isDark,
     required this.voters,
+    required this.allVoters,
+    required this.issues,
+    required this.slipHistory,
     required this.activeFilter,
     required this.onResetFilter,
     required this.onVoterUpdated,
     required this.onOpenAdvancedFilter,
+    this.onAddActivity,
+    this.onAddSlip,
+    this.onAddIssue,
   });
 
   @override
@@ -2828,6 +3313,26 @@ class VoterSearchScreen extends StatefulWidget {
 
 class _VoterSearchScreenState extends State<VoterSearchScreen> {
   String _searchQuery = "";
+
+  void _openDossier(VoterItem v) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => CentralVoterDossierScreen(
+          c: widget.c,
+          isDark: widget.isDark,
+          voter: v,
+          allVoters: widget.allVoters,
+          issues: widget.issues,
+          slipHistory: widget.slipHistory,
+          onVoterUpdated: widget.onVoterUpdated,
+          onAddActivity: widget.onAddActivity,
+          onAddSlip: widget.onAddSlip,
+          onAddIssue: widget.onAddIssue,
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -2838,12 +3343,13 @@ class _VoterSearchScreenState extends State<VoterSearchScreen> {
       return v.name.toLowerCase().contains(q) ||
           v.marathiName.contains(q) ||
           v.epicId.toLowerCase().contains(q) ||
-          v.houseNo.contains(q);
+          v.houseNo.contains(q) ||
+          v.phone.contains(q);
     }).toList();
 
     return Column(
       children: [
-        // Search & Filter header
+        // 1. Search Bar & Filter Header
         Padding(
           padding: const EdgeInsets.all(12),
           child: Row(
@@ -2853,7 +3359,7 @@ class _VoterSearchScreenState extends State<VoterSearchScreen> {
                   onChanged: (val) => setState(() => _searchQuery = val),
                   style: TextStyle(color: c.textPrimary, fontSize: 13),
                   decoration: InputDecoration(
-                    hintText: "Search English / मराठी / EPIC / House...",
+                    hintText: "Search Name, मराठी, EPIC, House, Phone...",
                     hintStyle: TextStyle(color: c.textSecondary, fontSize: 12),
                     prefixIcon: Icon(Icons.search, size: 20, color: c.textSecondary),
                     filled: true,
@@ -2874,182 +3380,1099 @@ class _VoterSearchScreenState extends State<VoterSearchScreen> {
           ),
         ),
 
-        if (widget.activeFilter != "all")
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 14),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text("Filtered by: ${widget.activeFilter}", style: TextStyle(color: c.amber, fontSize: 11, fontWeight: FontWeight.bold)),
-                TextButton(
-                  onPressed: widget.onResetFilter,
-                  child: const Text("Reset Filter", style: TextStyle(fontSize: 11)),
-                ),
-              ],
-            ),
+        // 2. Prominent Total Voter Count Banner
+        Container(
+          margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          decoration: BoxDecoration(
+            color: c.cardBg,
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: c.borderColor),
           ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "Showing ${displayList.length} of ${widget.voters.length} Allocated Electors",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 11.5, color: c.textPrimary),
+              ),
+              if (widget.activeFilter != "all")
+                InkWell(
+                  onTap: widget.onResetFilter,
+                  child: Text(
+                    "Reset (${widget.activeFilter})",
+                    style: TextStyle(color: c.primary, fontSize: 11, fontWeight: FontWeight.bold),
+                  ),
+                ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 4),
 
-        // Voter Cards List
+        // 3. Structured Voter Cards List
         Expanded(
-          child: ListView.builder(
-            itemCount: displayList.length,
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            itemBuilder: (context, idx) {
-              final v = displayList[idx];
-              Color pillColor = Colors.grey;
-              if (v.classification == "Supporter") pillColor = c.green;
-              if (v.classification == "Doubtful") pillColor = c.amber;
-              if (v.classification == "Opponent") pillColor = c.red;
+          child: displayList.isNotEmpty
+              ? ListView.builder(
+                  itemCount: displayList.length,
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                  itemBuilder: (context, idx) {
+                    final v = displayList[idx];
+                    Color pillColor = Colors.grey;
+                    if (v.classification == "Supporter") pillColor = c.green;
+                    if (v.classification == "Doubtful") pillColor = c.amber;
+                    if (v.classification == "Opponent") pillColor = c.red;
 
-              return Container(
-                margin: const EdgeInsets.only(bottom: 8),
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: c.cardBg,
-                  borderRadius: BorderRadius.circular(14),
-                  border: Border.all(color: c.borderColor),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(v.name, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: c.textPrimary)),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                          decoration: BoxDecoration(
-                            color: pillColor.withOpacity(0.18),
-                            borderRadius: BorderRadius.circular(6),
-                            border: Border.all(color: pillColor),
-                          ),
-                          child: Text(
-                            v.classification,
-                            style: TextStyle(color: pillColor, fontSize: 9, fontWeight: FontWeight.bold),
+                    return Container(
+                      margin: const EdgeInsets.only(bottom: 8),
+                      decoration: BoxDecoration(
+                        color: c.cardBg,
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(color: c.borderColor),
+                      ),
+                      child: InkWell(
+                        onTap: () => _openDossier(v),
+                        borderRadius: BorderRadius.circular(14),
+                        child: Padding(
+                          padding: const EdgeInsets.all(12),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Row 1: Name, Badges & 3-Dot Menu
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: Row(
+                                      children: [
+                                        Flexible(
+                                          child: Text(
+                                            v.name,
+                                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: c.textPrimary),
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ),
+                                        const SizedBox(width: 6),
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1.5),
+                                          decoration: BoxDecoration(
+                                            color: c.primary.withOpacity(0.12),
+                                            borderRadius: BorderRadius.circular(6),
+                                          ),
+                                          child: Text(
+                                            "${v.gender} • ${v.age}",
+                                            style: TextStyle(color: c.primary, fontSize: 9, fontWeight: FontWeight.bold),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Row(
+                                    children: [
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                        decoration: BoxDecoration(
+                                          color: pillColor.withOpacity(0.18),
+                                          borderRadius: BorderRadius.circular(6),
+                                          border: Border.all(color: pillColor),
+                                        ),
+                                        child: Text(
+                                          v.classification,
+                                          style: TextStyle(color: pillColor, fontSize: 8.5, fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 4),
+                                      PopupMenuButton<String>(
+                                        icon: Icon(Icons.more_vert, size: 18, color: c.textSecondary),
+                                        padding: EdgeInsets.zero,
+                                        constraints: const BoxConstraints(),
+                                        onSelected: (action) {
+                                          if (action == "dossier" || action == "survey") {
+                                            _openDossier(v);
+                                          } else if (action == "call") {
+                                            ScaffoldMessenger.of(context).showSnackBar(
+                                              SnackBar(content: Text("Calling ${v.name} (${v.phone})...")),
+                                            );
+                                          } else if (action == "whatsapp") {
+                                            ScaffoldMessenger.of(context).showSnackBar(
+                                              SnackBar(content: Text("Dispatching WhatsApp Voter Slip to ${v.name}...")),
+                                            );
+                                          } else if (action == "print") {
+                                            ScaffoldMessenger.of(context).showSnackBar(
+                                              SnackBar(content: Text("Printing thermal slip for ${v.name}...")),
+                                            );
+                                          }
+                                        },
+                                        itemBuilder: (ctx) => [
+                                          const PopupMenuItem(
+                                            value: "dossier",
+                                            child: Row(
+                                              children: [
+                                                Icon(Icons.badge_outlined, size: 16),
+                                                SizedBox(width: 8),
+                                                Text("Open Central Dossier", style: TextStyle(fontSize: 12)),
+                                              ],
+                                            ),
+                                          ),
+                                          const PopupMenuItem(
+                                            value: "survey",
+                                            child: Row(
+                                              children: [
+                                                Icon(Icons.assignment_turned_in_rounded, size: 16),
+                                                SizedBox(width: 8),
+                                                Text("Doorstep Survey & Stance", style: TextStyle(fontSize: 12)),
+                                              ],
+                                            ),
+                                          ),
+                                          const PopupMenuItem(
+                                            value: "call",
+                                            child: Row(
+                                              children: [
+                                                Icon(Icons.phone_rounded, size: 16),
+                                                SizedBox(width: 8),
+                                                Text("Call Voter", style: TextStyle(fontSize: 12)),
+                                              ],
+                                            ),
+                                          ),
+                                          const PopupMenuItem(
+                                            value: "whatsapp",
+                                            child: Row(
+                                              children: [
+                                                Icon(Icons.chat_bubble_outline_rounded, size: 16),
+                                                SizedBox(width: 8),
+                                                Text("WhatsApp Slip", style: TextStyle(fontSize: 12)),
+                                              ],
+                                            ),
+                                          ),
+                                          const PopupMenuItem(
+                                            value: "print",
+                                            child: Row(
+                                              children: [
+                                                Icon(Icons.print_rounded, size: 16),
+                                                SizedBox(width: 8),
+                                                Text("Print Thermal Slip", style: TextStyle(fontSize: 12)),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              Text(v.marathiName, style: TextStyle(fontSize: 11, color: c.textSecondary)),
+                              const SizedBox(height: 6),
+                              // Row 2: EPIC, Booth, House No
+                              Text(
+                                "EPIC: ${v.epicId}  •  Booth #${v.boothNo}  •  H.No ${v.houseNo}",
+                                style: TextStyle(fontSize: 10, color: c.textSecondary),
+                              ),
+                              const SizedBox(height: 4),
+                              // Row 3: Phone & Doorstep status
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "📞 ${v.phone.isNotEmpty ? v.phone : 'Not Registered'}",
+                                    style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: c.primary),
+                                  ),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                    decoration: BoxDecoration(
+                                      color: (v.isVisited ? c.green : c.amber).withOpacity(0.12),
+                                      borderRadius: BorderRadius.circular(6),
+                                    ),
+                                    child: Text(
+                                      v.isVisited ? "✓ Doorstep Survey Done" : "⏳ Survey Pending",
+                                      style: TextStyle(
+                                        fontSize: 8.5,
+                                        fontWeight: FontWeight.bold,
+                                        color: v.isVisited ? c.green : c.amber,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
                         ),
-                      ],
-                    ),
-                    Text(v.marathiName, style: TextStyle(fontSize: 11, color: c.textSecondary)),
-                    const SizedBox(height: 4),
-                    Text(
-                      "Age ${v.age} • ${v.gender} • H.No ${v.houseNo} • Booth ${v.boothNo} • EPIC: ${v.epicId}",
-                      style: TextStyle(fontSize: 10, color: c.textSecondary),
-                    ),
-                    const Divider(height: 16),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        TextButton(
-                          onPressed: () {
-                            _showDossierModal(context, v, c);
-                          },
-                          child: Text("Open 6-Tab Profile", style: TextStyle(fontSize: 11, color: c.primary, fontWeight: FontWeight.bold)),
-                        ),
-                      ],
-                    ),
-                  ],
+                      ),
+                    );
+                  },
+                )
+              : Center(
+                  child: Text("No matching voters found.", style: TextStyle(color: c.textSecondary, fontSize: 12)),
                 ),
-              );
-            },
-          ),
         ),
       ],
     );
   }
+}
 
-  void _showDossierModal(BuildContext context, VoterItem voter, AppThemeColors c) {
+// ==============================================================================
+// CENTRAL VOTER PROFILE / DOSSIER (UNIFIED SINGLE-SCREEN ARCHITECTURE)
+// ==============================================================================
+class CentralVoterDossierScreen extends StatefulWidget {
+  final AppThemeColors c;
+  final bool isDark;
+  final VoterItem voter;
+  final List<VoterItem> allVoters;
+  final List<IssueItem> issues;
+  final List<SlipHistoryItem> slipHistory;
+  final Function(VoterItem) onVoterUpdated;
+  final Function(ActivityItem)? onAddActivity;
+  final Function(SlipHistoryItem)? onAddSlip;
+  final Function(IssueItem)? onAddIssue;
+
+  const CentralVoterDossierScreen({
+    super.key,
+    required this.c,
+    required this.isDark,
+    required this.voter,
+    required this.allVoters,
+    required this.issues,
+    required this.slipHistory,
+    required this.onVoterUpdated,
+    this.onAddActivity,
+    this.onAddSlip,
+    this.onAddIssue,
+  });
+
+  @override
+  State<CentralVoterDossierScreen> createState() => _CentralVoterDossierScreenState();
+}
+
+class _CentralVoterDossierScreenState extends State<CentralVoterDossierScreen> {
+  late VoterItem _voter;
+  late TextEditingController _surveyNotesController;
+  late TextEditingController _proposeEditController;
+  late String _selectedScheme;
+  bool _isStar = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _voter = widget.voter;
+    _surveyNotesController = TextEditingController(text: _voter.surveyFeedback);
+    _proposeEditController = TextEditingController();
+    _selectedScheme = _voter.scheme.isNotEmpty ? _voter.scheme : "Ladki Bahin Yojana";
+    _isStar = _voter.isImportant;
+  }
+
+  @override
+  void dispose() {
+    _surveyNotesController.dispose();
+    _proposeEditController.dispose();
+    super.dispose();
+  }
+
+  void _updateStance(String stance) {
+    setState(() {
+      _voter.classification = stance;
+    });
+    widget.onVoterUpdated(_voter);
+    widget.onAddActivity?.call(
+      ActivityItem(
+        title: "Voter Stance Updated",
+        target: "${_voter.name} (${_voter.epicId})",
+        timestamp: "Just Now",
+        status: "SUCCESS",
+        details: "Stance classified as $stance",
+        icon: Icons.how_to_vote_rounded,
+      ),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: widget.c.primary,
+        content: Text("Stance updated: $stance (Saved to master record)"),
+        duration: const Duration(seconds: 2),
+      ),
+    );
+  }
+
+  void _submitDoorstepSurvey() {
+    setState(() {
+      _voter.isVisited = true;
+      _voter.surveyFeedback = _surveyNotesController.text.trim();
+      _voter.surveyTimestamp = "Today (GPS Geotagged)";
+    });
+    widget.onVoterUpdated(_voter);
+    widget.onAddActivity?.call(
+      ActivityItem(
+        title: "Doorstep Survey Recorded",
+        target: "${_voter.name} (${_voter.epicId})",
+        timestamp: "Just Now",
+        status: "SUCCESS",
+        details: "Scheme: $_selectedScheme | Notes: ${_voter.surveyFeedback.isNotEmpty ? _voter.surveyFeedback : 'None'} | Geotag: Lat 18.5204° N, Long 73.8567° E",
+        icon: Icons.verified_rounded,
+      ),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        backgroundColor: Color(0xFF10B981),
+        content: Row(
+          children: [
+            Icon(Icons.check_circle_rounded, color: Colors.white, size: 18),
+            SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                "✓ Doorstep Survey successfully saved to central master database with GPS geotag!",
+                style: TextStyle(color: Colors.white, fontSize: 11.5),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showAddressModal() {
+    final c = widget.c;
     showModalBottomSheet(
       context: context,
-      isScrollControlled: true,
       backgroundColor: c.cardBg,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
-      builder: (ctx) {
-        return DefaultTabController(
-          length: 6,
-          child: SizedBox(
-            height: MediaQuery.of(context).size.height * 0.75,
-            child: Column(
+      builder: (ctx) => Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const SizedBox(height: 10),
-                Container(width: 40, height: 4, decoration: BoxDecoration(color: c.borderColor, borderRadius: BorderRadius.circular(2))),
-                Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: Text(voter.name, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: c.textPrimary)),
-                ),
-                TabBar(
-                  isScrollable: true,
-                  indicatorColor: c.primary,
-                  labelColor: c.primary,
-                  unselectedLabelColor: c.textSecondary,
-                  tabs: const [
-                    Tab(text: "1. Details"),
-                    Tab(text: "2. Family"),
-                    Tab(text: "3. Sentiment"),
-                    Tab(text: "4. Slip"),
-                    Tab(text: "5. Issues"),
-                    Tab(text: "6. Propose Edit"),
+                Row(
+                  children: [
+                    Icon(Icons.location_on_rounded, color: c.primary, size: 22),
+                    const SizedBox(width: 8),
+                    Text("Structural House Address & GPS", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: c.textPrimary)),
                   ],
                 ),
+                IconButton(icon: const Icon(Icons.close, size: 20), onPressed: () => Navigator.pop(ctx)),
+              ],
+            ),
+            const Divider(height: 18),
+            _infoRow("House / Tenement No.", "#${_voter.houseNo}, Lane 4", c),
+            _infoRow("Building / Chawl", "Shree Ganesh Krupa Niwas", c),
+            _infoRow("Street & Area", "Shaniwar Peth, Near Wada Gate", c),
+            _infoRow("Assembly & Ward", "215 - Kasba Peth (Ward 18)", c),
+            _infoRow("Pincode", "Pune - 411030", c),
+            const SizedBox(height: 10),
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: c.primary.withOpacity(0.08),
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: c.primary.withOpacity(0.2)),
+              ),
+              child: Row(
+                children: [
+                  Icon(Icons.gps_fixed_rounded, size: 16, color: c.primary),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      "GPS Coordinates: 18.52043° N, 73.85674° E (Accuracy: ±2.4m)",
+                      style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.bold, color: c.primary),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 14),
+            Row(
+              children: [
                 Expanded(
-                  child: TabBarView(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Text(
-                          "EPIC ID: ${voter.epicId}\nHouse No: ${voter.houseNo}\nBooth: ${voter.boothNo}\nPhone: ${voter.phone}\nCaste: ${voter.caste}\nKey Scheme: ${voter.scheme}",
-                          style: TextStyle(fontSize: 12, height: 1.6, color: c.textPrimary),
-                        ),
+                  child: OutlinedButton.icon(
+                    onPressed: () {
+                      Navigator.pop(ctx);
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Address copied to clipboard.")));
+                    },
+                    icon: const Icon(Icons.copy_rounded, size: 14),
+                    label: const Text("Copy Address"),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: ElevatedButton.icon(
+                    onPressed: () {
+                      Navigator.pop(ctx);
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(backgroundColor: c.primary, content: Text("Launching Google Maps directions for ${_voter.name}...")));
+                    },
+                    icon: const Icon(Icons.navigation_rounded, size: 14, color: Colors.white),
+                    label: const Text("Navigate (GPS)", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                    style: ElevatedButton.styleFrom(backgroundColor: c.primary),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _dispatchSlip(String channel) {
+    widget.onAddSlip?.call(
+      SlipHistoryItem(
+        voterName: _voter.name,
+        marathiName: _voter.marathiName,
+        boothNo: _voter.boothNo,
+        epicId: _voter.epicId,
+        timestamp: "Just Now",
+        mode: channel,
+        serialNo: _voter.serialNo,
+        status: channel.contains("Thermal") ? "Printed" : "Delivered",
+      ),
+    );
+    widget.onAddActivity?.call(
+      ActivityItem(
+        title: channel.contains("Thermal") ? "Thermal Slip Printed" : "WhatsApp Slip Sent",
+        target: "${_voter.name} (${_voter.epicId})",
+        timestamp: "Just Now",
+        status: "SUCCESS",
+        details: "Dispatched via $channel for Booth #${_voter.boothNo}",
+        icon: channel.contains("Thermal") ? Icons.print : Icons.chat_bubble_outline,
+      ),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: const Color(0xFF10B981),
+        content: Text("✓ Voter Slip successfully dispatched via $channel to ${_voter.name}!"),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final c = widget.c;
+    final family = widget.allVoters.where((v) => v.houseNo == _voter.houseNo && v.id != _voter.id).toList();
+    final voterSlips = widget.slipHistory.where((s) => s.epicId == _voter.epicId || s.voterName == _voter.name).toList();
+    final voterIssues = widget.issues.where((i) => i.citizenName.toLowerCase().contains(_voter.name.toLowerCase())).toList();
+
+    Color stanceColor = Colors.grey;
+    if (_voter.classification == "Supporter") stanceColor = c.green;
+    if (_voter.classification == "Doubtful") stanceColor = c.amber;
+    if (_voter.classification == "Opponent") stanceColor = c.red;
+
+    return Scaffold(
+      backgroundColor: c.scaffoldBg,
+      appBar: AppBar(
+        backgroundColor: c.cardBg,
+        elevation: 0.5,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_rounded, color: c.textPrimary),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Central Voter Dossier",
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: c.textPrimary),
+            ),
+            Text(
+              "Assembly 215 - Kasba Peth • Serial #${_voter.serialNo}",
+              style: TextStyle(fontSize: 10, color: c.textSecondary),
+            ),
+          ],
+        ),
+        actions: [
+          IconButton(
+            icon: Icon(_isStar ? Icons.star_rounded : Icons.star_border_rounded, color: _isStar ? Colors.amber : c.textSecondary),
+            tooltip: "Bookmark Voter",
+            onPressed: () {
+              setState(() {
+                _isStar = !_isStar;
+                _voter.isImportant = _isStar;
+              });
+              widget.onVoterUpdated(_voter);
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.share_rounded, size: 20, color: c.textSecondary),
+            onPressed: () {
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Sharing voter dossier card...")));
+            },
+          ),
+        ],
+      ),
+      body: ListView(
+        padding: const EdgeInsets.all(14),
+        children: [
+          // 1. HERO VITALS CARD
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: c.cardBg,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: c.borderColor),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            _voter.name,
+                            style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: c.textPrimary),
+                          ),
+                          Text(
+                            _voter.marathiName,
+                            style: TextStyle(fontSize: 12, color: c.textSecondary),
+                          ),
+                        ],
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Text(
-                          "Patil Household (House #142):\n1. Rajesh V. Patil (Head, Age 48)\n2. Sunita R. Patil (Wife, Age 44)\n3. Amit R. Patil (Son, Age 22)",
-                          style: TextStyle(fontSize: 12, height: 1.6, color: c.textPrimary),
-                        ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: stanceColor.withOpacity(0.15),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: stanceColor.withOpacity(0.5)),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Column(
-                          children: ["Supporter", "Doubtful", "Opponent", "Neutral"].map((s) {
-                            return ListTile(
-                              title: Text(s, style: TextStyle(color: c.textPrimary)),
-                              trailing: voter.classification == s ? Icon(Icons.check, color: c.primary) : null,
-                              onTap: () {
-                                voter.classification = s;
-                                widget.onVoterUpdated(voter);
-                                Navigator.pop(ctx);
-                              },
-                            );
-                          }).toList(),
-                        ),
+                      child: Text(
+                        _voter.classification,
+                        style: TextStyle(color: stanceColor, fontSize: 11, fontWeight: FontWeight.bold),
                       ),
-                      Center(
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.pop(ctx);
-                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Opening Voter Slip chit...")));
-                          },
-                          style: ElevatedButton.styleFrom(backgroundColor: c.primary),
-                          child: const Text("Generate Official ECI Slip", style: TextStyle(color: Colors.white)),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Text("No unresolved grievances for this voter.", style: TextStyle(color: c.textSecondary)),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Text("Propose corrections to Candidate War Room Quarantine.", style: TextStyle(color: c.textSecondary)),
-                      ),
-                    ],
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    _vitalTag("${_voter.gender} • ${_voter.age} Yrs", c),
+                    const SizedBox(width: 6),
+                    _vitalTag("Booth #${_voter.boothNo}", c),
+                    const SizedBox(width: 6),
+                    _vitalTag("H.No #${_voter.houseNo}", c),
+                    const SizedBox(width: 6),
+                    _vitalTag(_voter.caste, c),
+                  ],
+                ),
+                const Divider(height: 20),
+                _infoRow("Voter ID (EPIC)", _voter.epicId, c, isBold: true),
+                _infoRow("Primary Contact", _voter.phone.isNotEmpty ? _voter.phone : "Not Registered", c),
+                _infoRow("Doorstep Visit", _voter.isVisited ? "✓ Completed (Geotagged)" : "⏳ Visit Pending", c, color: _voter.isVisited ? c.green : c.amber),
+                const SizedBox(height: 10),
+                SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton.icon(
+                    onPressed: _showAddressModal,
+                    icon: Icon(Icons.location_on_rounded, size: 16, color: c.primary),
+                    label: Text("House Address & GPS Telemetry", style: TextStyle(color: c.primary, fontWeight: FontWeight.bold, fontSize: 11.5)),
+                    style: OutlinedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      side: BorderSide(color: c.primary.withOpacity(0.4)),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    ),
                   ),
                 ),
               ],
             ),
           ),
-        );
-      },
+
+          const SizedBox(height: 14),
+
+          // 2. QUICK ACTIONS BAR
+          Row(
+            children: [
+              _actionSquare("Call", Icons.phone_rounded, c.primary, () {
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Calling ${_voter.name} (${_voter.phone})...")));
+              }, c),
+              const SizedBox(width: 8),
+              _actionSquare("WhatsApp", Icons.chat_bubble_outline_rounded, const Color(0xFF10B981), () => _dispatchSlip("WhatsApp Digital"), c),
+              const SizedBox(width: 8),
+              _actionSquare("Thermal Print", Icons.print_rounded, const Color(0xFF6366F1), () => _dispatchSlip("Thermal Printed (58mm)"), c),
+              const SizedBox(width: 8),
+              _actionSquare("Location", Icons.directions_rounded, Colors.orange, _showAddressModal, c),
+            ],
+          ),
+
+          const SizedBox(height: 16),
+
+          // 3. POLITICAL STANCE / INCLINATION CLASSIFICATION
+          _sectionHeader("POLITICAL STANCE & VOTER INCLINATION", c),
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: c.cardBg,
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(color: c.borderColor),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Tap to update voter stance against master electoral database:",
+                  style: TextStyle(fontSize: 11, color: c.textSecondary),
+                ),
+                const SizedBox(height: 10),
+                Wrap(
+                  spacing: 6,
+                  runSpacing: 6,
+                  children: [
+                    _stanceChip("Supporter", c.green, () => _updateStance("Supporter")),
+                    _stanceChip("Doubtful", c.amber, () => _updateStance("Doubtful")),
+                    _stanceChip("Opponent", c.red, () => _updateStance("Opponent")),
+                    _stanceChip("Neutral", Colors.grey, () => _updateStance("Neutral")),
+                    _stanceChip("Undecided", c.purple, () => _updateStance("Undecided")),
+                  ],
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 16),
+
+          // 4. INTEGRATED DOORSTEP SURVEY SECTION (CORE CLIENT REQUIREMENT)
+          _sectionHeader("INTEGRATED DOORSTEP SURVEY & FIELD FEEDBACK", c),
+          Container(
+            padding: const EdgeInsets.all(14),
+            decoration: BoxDecoration(
+              color: c.cardBg,
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(color: _voter.isVisited ? c.green.withOpacity(0.5) : c.borderColor),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Doorstep Survey Status",
+                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: c.textPrimary),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                      decoration: BoxDecoration(
+                        color: (_voter.isVisited ? c.green : c.amber).withOpacity(0.12),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: Text(
+                        _voter.isVisited ? "✓ Completed (Geotagged)" : "Visit Pending",
+                        style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.bold, color: _voter.isVisited ? c.green : c.amber),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  "Key Welfare Scheme Beneficiary:",
+                  style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.bold, color: c.textSecondary),
+                ),
+                const SizedBox(height: 6),
+                DropdownButtonFormField<String>(
+                  value: _selectedScheme,
+                  items: [
+                    "Ladki Bahin Yojana",
+                    "PM Awas Yojana",
+                    "Ayushman Bharat Health Card",
+                    "Kisan Samman Nidhi",
+                    "Senior Citizen Pension",
+                    "None / General Electorate",
+                  ].map((s) => DropdownMenuItem(value: s, child: Text(s, style: const TextStyle(fontSize: 12)))).toList(),
+                  onChanged: (val) {
+                    if (val != null) setState(() => _selectedScheme = val);
+                  },
+                  decoration: InputDecoration(
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: c.borderColor)),
+                    enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: c.borderColor)),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  "Voter Stance Notes & Local Issues Feedback:",
+                  style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.bold, color: c.textSecondary),
+                ),
+                const SizedBox(height: 6),
+                TextField(
+                  controller: _surveyNotesController,
+                  maxLines: 3,
+                  style: TextStyle(fontSize: 12, color: c.textPrimary),
+                  decoration: InputDecoration(
+                    hintText: "Enter doorstep feedback, civic demands, or voting inclination factors...",
+                    hintStyle: TextStyle(fontSize: 11, color: c.textSecondary),
+                    contentPadding: const EdgeInsets.all(12),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: c.borderColor)),
+                    enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: c.borderColor)),
+                  ),
+                ),
+                const SizedBox(height: 14),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton.icon(
+                    onPressed: _submitDoorstepSurvey,
+                    icon: const Icon(Icons.check_circle_rounded, size: 16, color: Colors.white),
+                    label: Text(
+                      _voter.isVisited ? "Update Doorstep Survey (GPS Commited)" : "Submit Doorstep Survey & Record Geotag",
+                      style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 11.5),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: c.primary,
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 16),
+
+          // 5. HOUSEHOLD & FAMILY TREE SECTION
+          _sectionHeader("FAMILY TREE & HOUSEHOLD (HOUSE #${_voter.houseNo})", c),
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: c.cardBg,
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(color: c.borderColor),
+            ),
+            child: family.isNotEmpty
+                ? Column(
+                    children: family.map((m) {
+                      Color fStance = Colors.grey;
+                      if (m.classification == "Supporter") fStance = c.green;
+                      if (m.classification == "Doubtful") fStance = c.amber;
+                      if (m.classification == "Opponent") fStance = c.red;
+
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 6),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(m.name, style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: c.textPrimary)),
+                                Text("${m.marathiName} • ${m.gender}, ${m.age} Yrs", style: TextStyle(fontSize: 10, color: c.textSecondary)),
+                              ],
+                            ),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                              decoration: BoxDecoration(
+                                color: fStance.withOpacity(0.15),
+                                borderRadius: BorderRadius.circular(6),
+                              ),
+                              child: Text(m.classification, style: TextStyle(color: fStance, fontSize: 9, fontWeight: FontWeight.bold)),
+                            ),
+                          ],
+                        ),
+                      );
+                    }).toList(),
+                  )
+                : Text("Single voter registered at this address.", style: TextStyle(color: c.textSecondary, fontSize: 11)),
+          ),
+
+          const SizedBox(height: 16),
+
+          // 6. OFFICIAL ECI VOTER SLIP ACTIONS & LOGS
+          _sectionHeader("OFFICIAL ECI VOTER SLIP ACTIONS & LOGS", c),
+          Container(
+            padding: const EdgeInsets.all(14),
+            decoration: BoxDecoration(
+              color: c.cardBg,
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(color: c.borderColor),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Slip Preview Chit
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: c.scaffoldBg,
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: c.borderColor),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Center(
+                        child: Text(
+                          "ECI VOTER INFORMATION SLIP (मतदार माहिती पावती)",
+                          style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.bold, color: c.primary, letterSpacing: 0.5),
+                        ),
+                      ),
+                      const Divider(height: 14),
+                      Text("Elector Name: ${_voter.name}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 11.5, color: c.textPrimary)),
+                      Text("नाव: ${_voter.marathiName}", style: TextStyle(fontSize: 11, color: c.textSecondary)),
+                      Text("EPIC No: ${_voter.epicId}", style: TextStyle(fontFamily: 'monospace', fontWeight: FontWeight.bold, fontSize: 11, color: c.primary)),
+                      Text("Part / Booth No: ${_voter.boothNo} • Serial No: ${_voter.serialNo}", style: TextStyle(fontSize: 10, color: c.textSecondary)),
+                      Text("Polling Station: Kasba Peth Central School", style: TextStyle(fontSize: 10, color: c.textSecondary)),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton.icon(
+                        onPressed: () => _dispatchSlip("WhatsApp Digital"),
+                        icon: const Icon(Icons.chat_bubble_outline_rounded, size: 14, color: Colors.white),
+                        label: const Text("WhatsApp Slip", style: TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold)),
+                        style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF10B981)),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: ElevatedButton.icon(
+                        onPressed: () => _dispatchSlip("Thermal Printed (58mm)"),
+                        icon: const Icon(Icons.print_rounded, size: 14, color: Colors.white),
+                        label: const Text("Thermal Print", style: TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold)),
+                        style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF6366F1)),
+                      ),
+                    ),
+                  ],
+                ),
+                if (voterSlips.isNotEmpty) ...[
+                  const Divider(height: 20),
+                  Text("Past Dispatched Slips:", style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.bold, color: c.textSecondary)),
+                  const SizedBox(height: 6),
+                  ...voterSlips.map((s) => Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 3),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text("${s.mode} • ${s.timestamp}", style: TextStyle(fontSize: 10, color: c.textSecondary)),
+                            Text("✓ ${s.status}", style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: c.green)),
+                          ],
+                        ),
+                      )),
+                ],
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 16),
+
+          // 7. CIVIC GRIEVANCES & TICKETS
+          _sectionHeader("REPORTED ISSUES & TICKETS", c),
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: c.cardBg,
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(color: c.borderColor),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (voterIssues.isNotEmpty)
+                  ...voterIssues.map((iss) => ListTile(
+                        dense: true,
+                        contentPadding: EdgeInsets.zero,
+                        leading: Icon(Icons.report_problem, color: c.red, size: 18),
+                        title: Text(iss.title, style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.bold, color: c.textPrimary)),
+                        subtitle: Text("${iss.category} • Status: ${iss.status}", style: TextStyle(fontSize: 9.5, color: c.textSecondary)),
+                      ))
+                else
+                  Text("No open grievance tickets logged for this elector.", style: TextStyle(fontSize: 11, color: c.textSecondary)),
+                const SizedBox(height: 8),
+                OutlinedButton.icon(
+                  onPressed: () {
+                    final titCtrl = TextEditingController();
+                    showDialog(
+                      context: context,
+                      builder: (ctx) => AlertDialog(
+                        backgroundColor: c.cardBg,
+                        title: Text("Log Field Grievance", style: TextStyle(color: c.textPrimary, fontSize: 14, fontWeight: FontWeight.bold)),
+                        content: TextField(
+                          controller: titCtrl,
+                          decoration: InputDecoration(
+                            hintText: "Issue description (e.g. water pipeline leakage, ration card renewal)...",
+                            hintStyle: TextStyle(fontSize: 11, color: c.textSecondary),
+                          ),
+                        ),
+                        actions: [
+                          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text("Cancel")),
+                          ElevatedButton(
+                            onPressed: () {
+                              if (titCtrl.text.trim().isNotEmpty) {
+                                widget.onAddIssue?.call(
+                                  IssueItem(
+                                    id: "iss-${DateTime.now().millisecondsSinceEpoch}",
+                                    title: titCtrl.text.trim(),
+                                    citizenName: _voter.name,
+                                    category: "Civic / Municipal",
+                                    priority: "Medium",
+                                    status: "Open",
+                                    boothNo: _voter.boothNo,
+                                    date: "Today",
+                                  ),
+                                );
+                                Navigator.pop(ctx);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(backgroundColor: Colors.green, content: Text("Grievance ticket logged & synced!")),
+                                );
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(backgroundColor: c.primary),
+                            child: const Text("Submit Ticket", style: TextStyle(color: Colors.white)),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.add, size: 14),
+                  label: const Text("Report New Field Issue", style: TextStyle(fontSize: 11)),
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 16),
+
+          // 8. PROPOSE CORRECTIONS (WAR ROOM QUARANTINE)
+          _sectionHeader("PROPOSE CORRECTIONS (WAR ROOM QUARANTINE)", c),
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: c.cardBg,
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(color: c.borderColor),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Report voter shift, deceased status, or phone corrections to Candidate War Room:",
+                  style: TextStyle(fontSize: 11, color: c.textSecondary),
+                ),
+                const SizedBox(height: 8),
+                TextField(
+                  controller: _proposeEditController,
+                  style: TextStyle(fontSize: 12, color: c.textPrimary),
+                  decoration: InputDecoration(
+                    hintText: "e.g. Correct mobile number is +91 98220 99881; shifted to Lane 5...",
+                    hintStyle: TextStyle(fontSize: 11, color: c.textSecondary),
+                    contentPadding: const EdgeInsets.all(10),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide(color: c.borderColor)),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                ElevatedButton(
+                  onPressed: () {
+                    if (_proposeEditController.text.trim().isNotEmpty) {
+                      _proposeEditController.clear();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          backgroundColor: Color(0xFF10B981),
+                          content: Text("✓ Correction proposal submitted to Candidate War Room Quarantine!"),
+                        ),
+                      );
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(backgroundColor: c.primary),
+                  child: const Text("Propose to War Room Quarantine", style: TextStyle(color: Colors.white, fontSize: 11)),
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 24),
+        ],
+      ),
+    );
+  }
+
+  Widget _sectionHeader(String title, AppThemeColors c) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 6),
+      child: Text(
+        title,
+        style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w900, color: c.textSecondary, letterSpacing: 0.8),
+      ),
+    );
+  }
+
+  Widget _vitalTag(String text, AppThemeColors c) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2.5),
+      decoration: BoxDecoration(
+        color: c.primary.withOpacity(0.08),
+        borderRadius: BorderRadius.circular(6),
+      ),
+      child: Text(
+        text,
+        style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.bold, color: c.primary),
+      ),
+    );
+  }
+
+  Widget _stanceChip(String label, Color color, VoidCallback onTap) {
+    final isSel = _voter.classification == label;
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(8),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+        decoration: BoxDecoration(
+          color: isSel ? color : color.withOpacity(0.12),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: color),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            fontSize: 10,
+            fontWeight: FontWeight.bold,
+            color: isSel ? Colors.white : color,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _actionSquare(String label, IconData icon, Color color, VoidCallback onTap, AppThemeColors c) {
+    return Expanded(
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          decoration: BoxDecoration(
+            color: c.cardBg,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: c.borderColor),
+          ),
+          child: Column(
+            children: [
+              Icon(icon, size: 18, color: color),
+              const SizedBox(height: 4),
+              Text(label, style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.bold, color: c.textPrimary)),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _infoRow(String label, String value, AppThemeColors c, {bool isBold = false, Color? color}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(label, style: TextStyle(fontSize: 11, color: c.textSecondary)),
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: 11.5,
+              fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
+              color: color ?? c.textPrimary,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -3062,6 +4485,7 @@ class DoorstepSurveyScreen extends StatelessWidget {
   final bool isDark;
   final List<VoterItem> voters;
   final Function(String, String) onSurveyComplete;
+  final VoidCallback? onNavigateToVoters;
 
   const DoorstepSurveyScreen({
     super.key,
@@ -3069,20 +4493,51 @@ class DoorstepSurveyScreen extends StatelessWidget {
     required this.isDark,
     required this.voters,
     required this.onSurveyComplete,
+    this.onNavigateToVoters,
   });
 
   @override
   Widget build(BuildContext context) {
-    if (voters.isEmpty) {
-      return Center(
-        child: Text("All doorstep surveys completed for your assigned booths! 🎉", style: TextStyle(color: c.textSecondary)),
-      );
-    }
-
     return ListView(
       padding: const EdgeInsets.all(14),
       children: [
-        Text("PENDING DOORSTEP VISITS", style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.bold, color: c.textSecondary)),
+        Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: c.primary.withOpacity(0.08),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: c.primary.withOpacity(0.3)),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Icon(Icons.how_to_reg_rounded, color: c.primary, size: 22),
+                  const SizedBox(width: 8),
+                  Text(
+                    "Integrated Doorstep Survey Workflow",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: c.textPrimary),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 6),
+              Text(
+                "Per system guidelines, surveys are now integrated directly inside the Central Voter Profile for anti-tamper GPS geotagging. Select any voter from the list to record feedback and update stance.",
+                style: TextStyle(fontSize: 11, color: c.textSecondary, height: 1.4),
+              ),
+              const SizedBox(height: 12),
+              ElevatedButton.icon(
+                onPressed: onNavigateToVoters,
+                icon: const Icon(Icons.search, size: 16, color: Colors.white),
+                label: const Text("Open Total Voters List & Search", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 11)),
+                style: ElevatedButton.styleFrom(backgroundColor: c.primary),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 16),
+        Text("PENDING UNVISITED ELECTORS (${voters.length})", style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.bold, color: c.textSecondary)),
         const SizedBox(height: 10),
         ...voters.map((v) {
           return Container(
@@ -3100,7 +4555,7 @@ class DoorstepSurveyScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(v.name, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: c.textPrimary)),
-                    Text("${v.marathiName} • H.No ${v.houseNo}", style: TextStyle(fontSize: 10, color: c.textSecondary)),
+                    Text("${v.marathiName} • H.No ${v.houseNo} • Booth #${v.boothNo}", style: TextStyle(fontSize: 10, color: c.textSecondary)),
                   ],
                 ),
                 ElevatedButton(
@@ -3108,7 +4563,7 @@ class DoorstepSurveyScreen extends StatelessWidget {
                     onSurveyComplete(v.id, "Supporter");
                   },
                   style: ElevatedButton.styleFrom(backgroundColor: c.primary),
-                  child: const Text("Conduct Survey", style: TextStyle(color: Colors.white, fontSize: 11)),
+                  child: const Text("Record Stance", style: TextStyle(color: Colors.white, fontSize: 11)),
                 ),
               ],
             ),
