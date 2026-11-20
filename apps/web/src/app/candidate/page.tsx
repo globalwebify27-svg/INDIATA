@@ -356,7 +356,6 @@ export default function CandidateWarRoomDashboard() {
 
   // Booth table filter
   const [boothSearch, setBoothSearch] = useState("");
-  const [boothGradeFilter, setBoothGradeFilter] = useState("all");
 
   // Ranked booths search
   const [rankedSearch, setRankedSearch] = useState("");
@@ -444,13 +443,13 @@ export default function CandidateWarRoomDashboard() {
   const filteredBooths = useMemo(() => {
     return BOOTH_RECORDS.filter((b) => {
       const matchSearch =
+        boothSearch.trim() === "" ||
         b.name.toLowerCase().includes(boothSearch.toLowerCase()) ||
         b.locality.toLowerCase().includes(boothSearch.toLowerCase()) ||
         b.boothNumber.toString().includes(boothSearch);
-      const matchGrade = boothGradeFilter === "all" || b.grade.includes(boothGradeFilter);
-      return matchSearch && matchGrade;
+      return matchSearch;
     });
-  }, [boothSearch, boothGradeFilter]);
+  }, [boothSearch]);
 
   // Filtered ranked booths
   const rankedBooths = useMemo(() => {
@@ -1504,7 +1503,7 @@ export default function CandidateWarRoomDashboard() {
               <h3 className="font-bold text-slate-900 text-sm">Booth Intelligence &amp; Readiness Matrix</h3>
             </div>
             <p className="text-xs text-slate-500 mt-0.5">
-              Live status, grade ratings, BLO verification, karyakarta staffing, and slip delivery per polling station.
+              Live status, BLO verification, karyakarta staffing, and slip delivery per polling station.
             </p>
           </div>
 
@@ -1520,18 +1519,6 @@ export default function CandidateWarRoomDashboard() {
                 className="pl-8 pr-3 py-1.5 rounded-xl border border-slate-200 bg-slate-50 text-xs w-48 sm:w-64 focus:outline-none focus:ring-1 focus:ring-blue-500"
               />
             </div>
-
-            <select
-              value={boothGradeFilter}
-              onChange={(e) => setBoothGradeFilter(e.target.value)}
-              className="px-2.5 py-1.5 rounded-xl border border-slate-200 bg-slate-50 text-xs font-semibold text-slate-700"
-            >
-              <option value="all">All Grades</option>
-              <option value="Grade A">Grade A</option>
-              <option value="Grade B">Grade B • Swing</option>
-              <option value="Grade C">Grade C • Swing</option>
-              <option value="Grade D">Grade D • Swing</option>
-            </select>
           </div>
         </div>
 
@@ -1543,7 +1530,6 @@ export default function CandidateWarRoomDashboard() {
                 <th className="py-3 px-3">BOOTH #</th>
                 <th className="py-3 px-3">POLLING STATION NAME &amp; LOCALITY</th>
                 <th className="py-3 px-3">VOTERS</th>
-                <th className="py-3 px-3">GRADE</th>
                 <th className="py-3 px-3">BLO INCHARGE</th>
                 <th className="py-3 px-3">KARYAKARTAS</th>
                 <th className="py-3 px-3">SLIP DELIVERY</th>
@@ -1560,21 +1546,6 @@ export default function CandidateWarRoomDashboard() {
                     <p className="text-[11px] text-slate-400 mt-0.5">{booth.locality}</p>
                   </td>
                   <td className="py-3 px-3 font-semibold text-slate-800">{booth.totalVoters.toLocaleString()}</td>
-                  <td className="py-3 px-3">
-                    <span
-                      className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                        booth.grade.includes("Grade A")
-                          ? "bg-blue-50 text-blue-700 border border-blue-200"
-                          : booth.grade.includes("Grade B")
-                          ? "bg-purple-50 text-purple-700 border border-purple-200"
-                          : booth.grade.includes("Grade C")
-                          ? "bg-amber-50 text-amber-700 border border-amber-200"
-                          : "bg-rose-50 text-rose-700 border border-rose-200"
-                      }`}
-                    >
-                      {booth.grade}
-                    </span>
-                  </td>
                   <td className="py-3 px-3">
                     <p className="font-semibold text-slate-800">{booth.bloName}</p>
                     <p className="text-[11px] text-slate-400">{booth.bloPhone}</p>
