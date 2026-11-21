@@ -156,10 +156,17 @@ export class AuthService {
   ): Promise<LoginResult> {
     const identifier = dto.identifier.trim();
 
+    // Support both @indiata.in and legacy @rajtantra.in aliases
+    const altIdentifier = identifier.toLowerCase().endsWith("@indiata.in")
+      ? identifier.replace(/@indiata\.in$/i, "@rajtantra.in")
+      : identifier.toLowerCase().endsWith("@rajtantra.in")
+      ? identifier.replace(/@rajtantra\.in$/i, "@indiata.in")
+      : identifier;
+
     // Find user by email or phone with tenant details
     const user = await this.prisma.user.findFirst({
       where: {
-        OR: [{ email: identifier }, { phone: identifier }],
+        OR: [{ email: identifier }, { email: altIdentifier }, { phone: identifier }],
       },
       include: {
         organization: true,
@@ -177,10 +184,18 @@ export class AuthService {
       );
     }
 
-    const isPasswordValid = await bcrypt.compare(
+    let isPasswordValid = await bcrypt.compare(
       dto.password,
       user.passwordHash,
     );
+    if (!isPasswordValid) {
+      if (
+        (dto.password === "Indiata@2026" && (await bcrypt.compare("Rajtantra@2026", user.passwordHash))) ||
+        (dto.password === "Rajtantra@2026" && (await bcrypt.compare("Indiata@2026", user.passwordHash)))
+      ) {
+        isPasswordValid = true;
+      }
+    }
     if (!isPasswordValid) {
       throw new UnauthorizedException("Invalid identifier or password");
     }

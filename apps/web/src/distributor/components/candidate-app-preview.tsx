@@ -125,7 +125,7 @@ export function CandidateAppPreview({ candidate }: CandidateAppPreviewProps) {
                         className="w-4 h-4 rounded-md object-contain"
                       />
                       <span className="text-[10px] font-bold text-white tracking-wide">
-                        Rajtantra Candidate
+                        INDIATA Candidate
                       </span>
                     </div>
 

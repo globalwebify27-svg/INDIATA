@@ -33,7 +33,7 @@ export default function BlockedAccountPage() {
             {title}
           </h2>
           <p className="mt-2 text-xs text-slate-600 dark:text-slate-400 max-w-sm mx-auto leading-relaxed">
-            Access to the Rajtantra Distributor Portal and candidate management workspaces has been restricted by Super Admin governance.
+            Access to the INDIATA Distributor Portal and candidate management workspaces has been restricted by Super Admin governance.
           </p>
         </div>
 
@@ -69,7 +69,7 @@ export default function BlockedAccountPage() {
             <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 space-y-1 text-[11px]">
               <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
                 <Mail className="w-3.5 h-3.5 text-slate-400" />
-                <span>support@rajtantra.com • partners@rajtantra.com</span>
+                <span>support@indiata.in • partners@indiata.in</span>
               </div>
               <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
                 <Phone className="w-3.5 h-3.5 text-slate-400" />

@@ -111,7 +111,7 @@ export default function RegisterPage() {
             Franchise Distributor Registration
           </h2>
           <p className="mt-1 text-xs text-slate-600 dark:text-slate-400">
-            Apply to become an authorized Rajtantra regional franchise partner
+            Apply to become an authorized INDIATA regional franchise partner
           </p>
         </div>
       </div>
@@ -251,7 +251,7 @@ export default function RegisterPage() {
 
         <div className="mt-8 text-center text-xs text-slate-500 flex items-center justify-center gap-2">
           <ShieldCheck className="w-4 h-4 text-[#2087FE]" />
-          <span>Rajtantra Enterprise Security &amp; Tenant Isolation Protocol</span>
+          <span>INDIATA Enterprise Security &amp; Tenant Isolation Protocol</span>
         </div>
       </div>
     </div>

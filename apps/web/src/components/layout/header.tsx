@@ -467,7 +467,7 @@ export function Header({
                   {user?.name || "Adv. Vikram Patil"}
                 </p>
                 <p className="text-[11px] text-slate-500 truncate mt-0.5">
-                  {user?.email || "candidate@rajtantra.in"}
+                  {user?.email || "candidate@indiata.in"}
                 </p>
                 <span className="inline-block mt-1.5 px-2 py-0.5 rounded text-[10px] font-bold bg-brand-50 text-brand-700">
                   Candidate Admin • 34 Pune PC

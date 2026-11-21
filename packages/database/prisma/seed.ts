@@ -210,14 +210,17 @@ async function main() {
   });
   console.info("✓ Seeded 4 System Portals");
 
-  const passwordHash = await bcrypt.hash("Rajtantra@2026", 10);
+  const passwordHash = await bcrypt.hash("Indiata@2026", 10);
 
   // 5. Super Admin User
   const superAdmin = await prisma.user.upsert({
     where: { phone: "+919876543210" },
-    update: {},
+    update: {
+      email: "superadmin@indiata.in",
+      passwordHash,
+    },
     create: {
-      email: "superadmin@rajtantra.in",
+      email: "superadmin@indiata.in",
       phone: "+919876543210",
       name: "System Super Admin",
       passwordHash,
@@ -243,9 +246,12 @@ async function main() {
   // 6. Distributor User & Entity
   const distributorUser = await prisma.user.upsert({
     where: { phone: "+919876543211" },
-    update: {},
+    update: {
+      email: "distributor@indiata.in",
+      passwordHash,
+    },
     create: {
-      email: "distributor@rajtantra.in",
+      email: "distributor@indiata.in",
       phone: "+919876543211",
       name: "Vikas Deshmukh (Distributor Partner)",
       passwordHash,
@@ -256,12 +262,12 @@ async function main() {
   });
 
   const distributor = await prisma.distributor.upsert({
-    where: { email: "distributor@rajtantra.in" },
+    where: { email: "distributor@indiata.in" },
     update: {},
     create: {
       companyName: "Sahyadri Political Media & IT Services",
       contactName: "Vikas Deshmukh",
-      email: "distributor@rajtantra.in",
+      email: "distributor@indiata.in",
       phone: "+919876543211",
       userId: distributorUser.id,
       status: DistributorStatus.ACTIVE,
@@ -342,9 +348,12 @@ async function main() {
   // 9. Candidate Admin (Campaign Owner)
   const candidateAdmin = await prisma.user.upsert({
     where: { phone: "+919876543212" },
-    update: {},
+    update: {
+      email: "candidate@indiata.in",
+      passwordHash,
+    },
     create: {
-      email: "candidate@rajtantra.in",
+      email: "candidate@indiata.in",
       phone: "+919876543212",
       name: "Anand Shinde (Candidate)",
       passwordHash,

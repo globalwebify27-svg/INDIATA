@@ -22,7 +22,7 @@ export const IS_DEV_PREVIEW =
 
 export const MOCK_DEV_CANDIDATE_USER: ExtendedUser = {
   id: "cnd-dev-preview-001",
-  email: "candidate@rajtantra.in",
+  email: "candidate@indiata.in",
   phone: "+919876543212",
   name: "Anand Shinde",
   role: UserRole.CANDIDATE_ADMIN,
@@ -36,7 +36,7 @@ export const MOCK_DEV_CANDIDATE_USER: ExtendedUser = {
 
 export const MOCK_DEV_SUPERADMIN_USER: ExtendedUser = {
   id: "sa-dev-preview-001",
-  email: "superadmin@rajtantra.in",
+  email: "superadmin@indiata.in",
   phone: "+919876543210",
   name: "System Super Admin",
   role: UserRole.SUPER_ADMIN,

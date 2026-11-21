@@ -24,7 +24,7 @@ export function Breadcrumbs({ items, currentPage }: BreadcrumbsProps) {
           className="flex items-center gap-1 font-bold text-[#5146D8] dark:text-[#8B7CEF] hover:opacity-80 transition-opacity"
         >
           <ShieldCheck className="w-3.5 h-3.5" />
-          <span>Rajtantra</span>
+          <span>INDIATA</span>
         </Link>
 
         <ChevronRight className="w-3 h-3 text-[#98A2B3] shrink-0" />

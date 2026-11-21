@@ -161,11 +161,11 @@ export default function NewCandidateWizardPage() {
     isolationBoundaryStatus: "ENFORCED",
     electoralRollCap: 342150,
 
-    appName: "Rajtantra War Room",
+    appName: "INDIATA War Room",
     whatsappSupportNumber: "+91 98220 11223",
     facebookUrl: "https://facebook.com/candidate",
     instagramUrl: "https://instagram.com/candidate",
-    slipDownloadUrl: "https://rajtantra.in/slips/pune214",
+    slipDownloadUrl: "https://indiata.in/slips/pune214",
     helplineNumber: "1800-200-9988",
 
     whatsappBotNumber: "+91 98220 99881",

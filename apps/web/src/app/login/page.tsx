@@ -27,8 +27,8 @@ export default function CentralLoginPage() {
   const { showToast } = useToast();
 
   const [activePortal, setActivePortal] = useState<PortalType>("superadmin");
-  const [identifier, setIdentifier] = useState("superadmin@rajtantra.in");
-  const [password, setPassword] = useState("Rajtantra@2026");
+  const [identifier, setIdentifier] = useState("superadmin@indiata.in");
+  const [password, setPassword] = useState("Indiata@2026");
   const [karyakartaKey, setKaryakartaKey] = useState("KAS101");
   const [karyakartaPhone, setKaryakartaPhone] = useState("+919876543213");
   const [showPassword, setShowPassword] = useState(false);
@@ -40,14 +40,14 @@ export default function CentralLoginPage() {
     setActivePortal(portal);
     setErrorMessage(null);
     if (portal === "superadmin") {
-      setIdentifier("superadmin@rajtantra.in");
-      setPassword("Rajtantra@2026");
+      setIdentifier("superadmin@indiata.in");
+      setPassword("Indiata@2026");
     } else if (portal === "candidate") {
-      setIdentifier("candidate@rajtantra.in");
-      setPassword("Rajtantra@2026");
+      setIdentifier("candidate@indiata.in");
+      setPassword("Indiata@2026");
     } else if (portal === "distributor") {
-      setIdentifier("distributor@rajtantra.in");
-      setPassword("Rajtantra@2026");
+      setIdentifier("distributor@indiata.in");
+      setPassword("Indiata@2026");
     } else if (portal === "karyakarta") {
       setKaryakartaKey("KAS101");
       setKaryakartaPhone("+919876543213");
@@ -66,7 +66,7 @@ export default function CentralLoginPage() {
           buttonBg: "from-cyan-600 to-sky-700 hover:from-cyan-700 hover:to-sky-800",
           submitLabel: "Sign In to Candidate War Room",
           icon: BarChart3,
-          demoHint: "candidate@rajtantra.in / Rajtantra@2026",
+          demoHint: "candidate@indiata.in / Indiata@2026",
         };
       case "distributor":
         return {
@@ -78,7 +78,7 @@ export default function CentralLoginPage() {
           buttonBg: "from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800",
           submitLabel: "Sign In to Distributor Desk",
           icon: Building2,
-          demoHint: "distributor@rajtantra.in / Rajtantra@2026",
+          demoHint: "distributor@indiata.in / Indiata@2026",
         };
       case "karyakarta":
         return {
@@ -103,7 +103,7 @@ export default function CentralLoginPage() {
           buttonBg: "from-[#4F46E5] to-[#7C3AED] hover:from-[#4338CA] hover:to-[#6D28D9]",
           submitLabel: "Sign In to Super Admin Console",
           icon: Shield,
-          demoHint: "superadmin@rajtantra.in / Rajtantra@2026",
+          demoHint: "superadmin@indiata.in / Indiata@2026",
         };
     }
   };
@@ -226,11 +226,11 @@ export default function CentralLoginPage() {
           <div className="flex items-center justify-between pb-2.5 border-b border-slate-100 mb-2.5">
             <div>
               <div className="flex items-center gap-2">
-                <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-gradient-to-tr from-[#4F46E5] to-[#7C3AED] flex items-center justify-center text-white font-black text-xs shadow-sm shadow-[#4F46E5]/20">
-                  R
+                <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-gradient-to-tr from-[#2087FE] to-[#6256D9] flex items-center justify-center text-white font-black text-xs shadow-sm shadow-[#2087FE]/20">
+                  I
                 </div>
                 <span className="font-extrabold text-slate-900 text-base sm:text-lg tracking-wider">
-                  RAJTANTRA
+                  INDIATA
                 </span>
               </div>
               <p className="text-slate-500 text-[10.5px] mt-0.5 font-medium leading-tight">
@@ -437,10 +437,10 @@ export default function CentralLoginPage() {
                       onChange={(e) => setIdentifier(e.target.value)}
                       placeholder={
                         activePortal === "superadmin"
-                          ? "superadmin@rajtantra.in"
+                          ? "superadmin@indiata.in"
                           : activePortal === "distributor"
-                          ? "distributor@rajtantra.in"
-                          : "candidate@rajtantra.in"
+                          ? "distributor@indiata.in"
+                          : "candidate@indiata.in"
                       }
                       className="block w-full pl-9 pr-3 py-1.5 sm:py-2 text-xs text-slate-900 bg-slate-50/80 border border-slate-200 rounded-lg focus:ring-2 focus:ring-[#4F46E5] focus:border-[#4F46E5] transition-colors"
                     />
@@ -558,7 +558,7 @@ export default function CentralLoginPage() {
           <p className="text-[10px] text-slate-400/80 flex items-center justify-center gap-1.5">
             <Headphones className="w-3 h-3 text-slate-400" />
             <span>Central Election Command Helpdesk:</span>
-            <span className="font-mono font-bold text-slate-300">1800-RAJTANTRA</span>
+            <span className="font-mono font-bold text-slate-300">1800-INDIATA</span>
             <span className="text-slate-500">(Toll Free 24/7)</span>
           </p>
         </div>
