@@ -5,6 +5,15 @@ import {
   OrganizationStatus,
   PlanType,
   DistributorStatus,
+  TransactionStatus,
+  PayoutStatus,
+  VoterClassification,
+  VoterStatus,
+  TurnoutStatus,
+  SlipChannel,
+  SlipStatus,
+  TicketPriority,
+  TicketStatus,
 } from "@prisma/client";
 import * as bcrypt from "bcryptjs";
 
@@ -56,7 +65,7 @@ const ALL_PERMISSIONS = [
 ];
 
 async function main() {
-  console.info("Starting foundational database seed with normalized RBAC...");
+  console.info("Starting foundational database seed with normalized RBAC and Phase 3 models...");
 
   // 1. Seed All Granular Permissions
   for (const perm of ALL_PERMISSIONS) {
@@ -180,23 +189,23 @@ async function main() {
 
   const distributorPortal = await prisma.portal.upsert({
     where: { key: "DISTRIBUTOR_PARTNER" },
-    update: { baseUrl: "http://localhost:3002" },
+    update: { baseUrl: "http://localhost:3000/distributor/dashboard" },
     create: {
       key: "DISTRIBUTOR_PARTNER",
       name: "Distributor Partner Network",
       description: "Agency allocation, lead onboarding, and commission tracking",
-      baseUrl: "http://localhost:3002",
+      baseUrl: "http://localhost:3000/distributor/dashboard",
     },
   });
 
   const karyakartaPortal = await prisma.portal.upsert({
     where: { key: "KARYAKARTA_FIELD" },
-    update: { baseUrl: "http://localhost:3003" },
+    update: { baseUrl: "http://localhost:3000/karyakarta/dashboard" },
     create: {
       key: "KARYAKARTA_FIELD",
       name: "Field Volunteer Web Portal",
       description: "Booth voter slip delivery and survey check-ins",
-      baseUrl: "http://localhost:3003",
+      baseUrl: "http://localhost:3000/karyakarta/dashboard",
     },
   });
   console.info("✓ Seeded 4 System Portals");
@@ -256,7 +265,11 @@ async function main() {
       phone: "+919876543211",
       userId: distributorUser.id,
       status: DistributorStatus.ACTIVE,
-      commissionRatePct: 15.0,
+      commissionRatePct: 20.0,
+      bankAccountName: "Sahyadri Political Media Pvt Ltd",
+      bankAccountNumber: "50200012345678",
+      bankIfsc: "HDFC0000123",
+      bankName: "HDFC Bank, FC Road Branch",
     },
   });
 
@@ -293,7 +306,40 @@ async function main() {
     },
   });
 
-  // 8. Candidate Admin (Campaign Owner)
+  // 8. Distributor Transactions & Payouts
+  await prisma.distributorTransaction.upsert({
+    where: { transactionRef: "TXN-2026-KASBA" },
+    update: {},
+    create: {
+      transactionRef: "TXN-2026-KASBA",
+      distributorId: distributor.id,
+      organizationId: organization.id,
+      planType: PlanType.ELECTION_MODULE,
+      grossAmount: 500000.0,
+      commissionRatePct: 20.0,
+      commissionAmount: 100000.0,
+      status: TransactionStatus.COMPLETED,
+      paymentMethod: "Bank Transfer (NEFT)",
+      utrNumber: "HDFCN26110012345",
+      receiptUrl: "/receipts/TXN-2026-KASBA.pdf",
+      settledAt: new Date(),
+    },
+  });
+
+  await prisma.distributorPayout.upsert({
+    where: { payoutNumber: "PAY-2026-001" },
+    update: {},
+    create: {
+      payoutNumber: "PAY-2026-001",
+      distributorId: distributor.id,
+      amount: 48000.0,
+      status: PayoutStatus.PENDING,
+      remarks: "Monthly commission settlement for November 2026",
+    },
+  });
+  console.info("✓ Seeded Distributor Transactions and Payouts");
+
+  // 9. Candidate Admin (Campaign Owner)
   const candidateAdmin = await prisma.user.upsert({
     where: { phone: "+919876543212" },
     update: {},
@@ -322,7 +368,7 @@ async function main() {
   });
   console.info(`✓ Candidate Admin seeded: ${candidateAdmin.email}`);
 
-  // 9. Karyakarta (Field Volunteer)
+  // 10. Karyakarta (Field Volunteer)
   const karyakarta = await prisma.user.upsert({
     where: { phone: "+919876543213" },
     update: {},
@@ -337,6 +383,7 @@ async function main() {
       hasAiSeat: false,
       activationKey: "KAS101",
       reactivationKey: "REACT_KAS101",
+      assignedBooths: "101,102",
     },
   });
 
@@ -353,7 +400,249 @@ async function main() {
   });
   console.info(`✓ Karyakarta seeded: ${karyakarta.name}`);
 
-  console.info("Foundational database seed with normalized RBAC completed successfully!");
+  // 11. Polling Booths (Booth Readiness Matrix)
+  const booth101 = await prisma.pollingBooth.upsert({
+    where: { organizationId_boothNumber: { organizationId: organization.id, boothNumber: "101" } },
+    update: {},
+    create: {
+      boothNumber: "101",
+      boothName: "Navbharat High School, Room 1",
+      locality: "Kothrud Depot Road",
+      partNumber: "Part 101",
+      pollingCentre: "Navbharat Education Complex",
+      pollingAddress: "Room 1, Ground Floor, Navbharat High School, Kasba Peth, Pune 411030",
+      latitude: 18.52043,
+      longitude: 73.85674,
+      googleMapsUrl: "https://maps.google.com/?q=18.52043,73.85674",
+      totalVoters: 1142,
+      maleVoters: 602,
+      femaleVoters: 540,
+      bloName: "Sanjay K. Kulkarni",
+      bloPhone: "+91 98220 11234",
+      karyakartasCount: 5,
+      slipsPercent: 92,
+      projectedTurnout: 74.0,
+      lastTurnout: 68.4,
+      organizationId: organization.id,
+    },
+  });
+
+  await prisma.pollingBooth.upsert({
+    where: { organizationId_boothNumber: { organizationId: organization.id, boothNumber: "102" } },
+    update: {},
+    create: {
+      boothNumber: "102",
+      boothName: "Navbharat High School, Room 2",
+      locality: "Kothrud Depot Road",
+      partNumber: "Part 102",
+      pollingCentre: "Navbharat Education Complex",
+      pollingAddress: "Room 2, First Floor, Navbharat High School, Kasba Peth, Pune 411030",
+      latitude: 18.52055,
+      longitude: 73.85685,
+      googleMapsUrl: "https://maps.google.com/?q=18.52055,73.85685",
+      totalVoters: 1205,
+      maleVoters: 630,
+      femaleVoters: 575,
+      bloName: "Asha V. More",
+      bloPhone: "+91 98220 54321",
+      karyakartasCount: 4,
+      slipsPercent: 88,
+      projectedTurnout: 71.5,
+      lastTurnout: 65.2,
+      organizationId: organization.id,
+    },
+  });
+  console.info("✓ Seeded Polling Booths (#101 & #102)");
+
+  // 12. 9-Facet Voters (Central Voter Profile)
+  const voter1 = await prisma.voter.upsert({
+    where: { id: "voter-kasba-001" },
+    update: {},
+    create: {
+      id: "voter-kasba-001",
+      epicId: "MH/12/215/001452",
+      serialNumber: 1,
+      name: "Suresh R. Patil",
+      marathiName: "सुरेश रामचंद्र पाटील",
+      relativeName: "Ramchandra Patil",
+      relation: "Father",
+      age: 48,
+      gender: "M",
+      dob: "15/06/1978",
+      phone: "+91 98220 11223",
+      whatsapp: "+91 98220 11223",
+      email: "suresh.patil@example.com",
+      isPhoneVerified: true,
+      houseNo: "124/B",
+      buildingChawl: "Shree Ganesh Krupa Niwas",
+      street: "Lane 4",
+      area: "Shaniwar Peth",
+      landmark: "Near Wada Gate",
+      address: "124/B, Shree Ganesh Krupa Niwas, Lane 4, Shaniwar Peth, Pune 411030",
+      ward: "Ward 18",
+      prabhaag: "Prabhaag 12",
+      pincode: "411030",
+      latitude: 18.52043,
+      longitude: 73.85674,
+      gpsAccuracy: 2.4,
+      caste: "Maratha",
+      communityGroup: "Maratha",
+      primaryLanguage: "Marathi",
+      occupation: "Retail Trader / Grocery",
+      qualification: "Graduate (B.Com)",
+      classification: VoterClassification.SUPPORTER,
+      isKeyInfluencer: true,
+      isImportant: true,
+      isFavourite: true,
+      votingLikelihoodPct: 98,
+      strategyNotes: "Influential local merchant. Coordinates shopkeeper mobilization across Lane 4.",
+      familyId: "FAM-KAS-101",
+      familyHead: true,
+      familyMembersCount: 3,
+      isVisited: true,
+      lastVisitDate: "Today (Geotagged)",
+      scheme: "PM Awas Yojana",
+      demand: "Repair of stormwater drain near Wada Gate.",
+      isVoted: true,
+      votedAt: "08:45 AM",
+      votedBy: "Karyakarta (Field Cadre)",
+      boothId: booth101.id,
+      boothNumber: "101",
+      boothName: "Navbharat High School, Room 1",
+      electoralPart: "Part 101",
+      organizationId: organization.id,
+      assignedKaryakartaId: karyakarta.id,
+    },
+  });
+
+  const voter2 = await prisma.voter.upsert({
+    where: { id: "voter-kasba-002" },
+    update: {},
+    create: {
+      id: "voter-kasba-002",
+      epicId: "MH/12/215/001453",
+      serialNumber: 2,
+      name: "Sunita Suresh Patil",
+      marathiName: "सुनिता सुरेश पाटील",
+      relativeName: "Suresh Patil",
+      relation: "Husband",
+      age: 44,
+      gender: "F",
+      dob: "20/09/1982",
+      phone: "+91 98220 11224",
+      whatsapp: "+91 98220 11224",
+      isPhoneVerified: true,
+      houseNo: "124/B",
+      buildingChawl: "Shree Ganesh Krupa Niwas",
+      street: "Lane 4",
+      area: "Shaniwar Peth",
+      landmark: "Near Wada Gate",
+      address: "124/B, Shree Ganesh Krupa Niwas, Lane 4, Shaniwar Peth, Pune 411030",
+      ward: "Ward 18",
+      prabhaag: "Prabhaag 12",
+      pincode: "411030",
+      caste: "Maratha",
+      communityGroup: "Maratha",
+      primaryLanguage: "Marathi",
+      occupation: "Homemaker",
+      classification: VoterClassification.SUPPORTER,
+      familyId: "FAM-KAS-101",
+      familyHead: false,
+      familyMembersCount: 3,
+      isVisited: true,
+      lastVisitDate: "Today (Geotagged)",
+      scheme: "Ladki Bahin Yojana",
+      isVoted: true,
+      votedAt: "08:46 AM",
+      votedBy: "Karyakarta (Field Cadre)",
+      boothId: booth101.id,
+      boothNumber: "101",
+      boothName: "Navbharat High School, Room 1",
+      electoralPart: "Part 101",
+      organizationId: organization.id,
+      assignedKaryakartaId: karyakarta.id,
+    },
+  });
+  console.info("✓ Seeded 9-Facet Voters (Patil Family)");
+
+  // 13. Doorstep Survey Record with GPS
+  await prisma.voterSurveyRecord.create({
+    data: {
+      voterId: voter1.id,
+      karyakartaId: karyakarta.id,
+      welfareScheme: "PM Awas Yojana & Ladki Bahin Yojana",
+      feedbackNotes: "Warm reception. Strongly committed to candidate following infrastructure development.",
+      citizenDemands: "Pipeline pressure issues during morning hours.",
+      gpsLat: 18.52043,
+      gpsLng: 73.85674,
+      isGeotagged: true,
+      organizationId: organization.id,
+    },
+  });
+
+  // 14. Live Polling Turnout Audit & Hourly Logs (LPIANE)
+  await prisma.voterTurnoutAudit.create({
+    data: {
+      voterId: voter1.id,
+      boothNumber: "101",
+      status: TurnoutStatus.VOTED,
+      actingUserId: karyakarta.id,
+      actingUserName: karyakarta.name,
+      timestamp: "Today, 08:45 AM",
+      reason: "Polling Booth ECI Slip Verification",
+      organizationId: organization.id,
+    },
+  });
+
+  await prisma.boothHourlyTurnoutLog.create({
+    data: {
+      boothId: booth101.id,
+      boothNumber: "101",
+      timeSlot: "07:00 - 09:00",
+      maleVoted: 110,
+      femaleVoted: 85,
+      totalVoted: 195,
+      cumulativePct: 17.1,
+      organizationId: organization.id,
+    },
+  });
+
+  // 15. ECI Voter Slip Dispatches
+  await prisma.voterSlipDispatch.create({
+    data: {
+      voterId: voter1.id,
+      channel: SlipChannel.WHATSAPP_DIGITAL,
+      status: SlipStatus.DELIVERED,
+      dispatchedById: karyakarta.id,
+      organizationId: organization.id,
+    },
+  });
+
+  // 16. Civic Grievance Ticket
+  await prisma.issueTicket.upsert({
+    where: { ticketNumber: "TCK-2026-001" },
+    update: {},
+    create: {
+      ticketNumber: "TCK-2026-001",
+      voterId: voter1.id,
+      voterName: voter1.name,
+      voterPhone: voter1.phone,
+      voterBooth: "101",
+      category: "Municipal / Water Supply",
+      title: "Low Water Pressure in Lane 4",
+      description: "Drinking water pipeline pressure drops significantly between 7 AM and 9 AM.",
+      priority: TicketPriority.HIGH,
+      status: TicketStatus.IN_PROGRESS,
+      location: "Near Wada Gate, Shaniwar Peth",
+      assignedTo: "Karyakarta Suresh Patil",
+      karyakartaId: karyakarta.id,
+      karyakartaName: karyakarta.name,
+      organizationId: organization.id,
+    },
+  });
+  console.info("✓ Seeded Survey, LPIANE Turnout Audits, Slips, and Civic Grievances");
+
+  console.info("🎉 Foundational database seed with Phase 3 complete architecture completed successfully!");
 }
 
 main()
