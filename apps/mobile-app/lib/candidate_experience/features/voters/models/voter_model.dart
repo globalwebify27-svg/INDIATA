@@ -156,12 +156,16 @@ class VoterModel {
   final String strategyNotes;
   final List<String> tags;
 
+  // 14. Polling Day Turnout (LPIANE)
+  final bool hasVoted;
+  final String? votedAt;
+
   // Convenience getters for profile & UI
   bool get isStarVoter => isKeyInfluencer;
   String get address => "$houseNumber, $buildingOrChawl, $street, $area";
   String get caste => communityGroup.isNotEmpty ? communityGroup : subCaste;
   String get occupation => "Business / Retail";
-  bool get isVoted => isSlipDistributed;
+  bool get isVoted => hasVoted || isSlipDistributed;
 
   const VoterModel({
     required this.id,
@@ -212,6 +216,8 @@ class VoterModel {
     this.slipDistributedBy,
     this.strategyNotes = "",
     this.tags = const [],
+    this.hasVoted = false,
+    this.votedAt,
   });
 
   VoterModel copyWith({
@@ -220,6 +226,8 @@ class VoterModel {
     String? slipDistributedAt,
     String? strategyNotes,
     List<String>? tags,
+    bool? hasVoted,
+    String? votedAt,
   }) {
     return VoterModel(
       id: id,
@@ -270,6 +278,8 @@ class VoterModel {
       slipDistributedBy: slipDistributedBy,
       strategyNotes: strategyNotes ?? this.strategyNotes,
       tags: tags ?? this.tags,
+      hasVoted: hasVoted ?? this.hasVoted,
+      votedAt: votedAt ?? this.votedAt,
     );
   }
 }

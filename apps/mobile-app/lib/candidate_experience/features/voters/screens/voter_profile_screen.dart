@@ -296,6 +296,81 @@ class _VoterProfileScreenState extends State<VoterProfileScreen> {
     );
   }
 
+  void _toggleTurnoutStatus(CandidateColors c) {
+    if (!_voter.hasVoted) {
+      showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          backgroundColor: c.cardBg,
+          title: Text("Mark Voter as Voted", style: TextStyle(color: c.textPrimary, fontSize: 15, fontWeight: FontWeight.bold)),
+          content: Text(
+            "Confirm that ${_voter.name} (${_voter.epic}) has cast their vote at Booth #${_voter.boothNumber}?",
+            style: TextStyle(color: c.textSecondary, fontSize: 13),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: const Text("Cancel"),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                final nowTime = "Today, 11:45 AM";
+                setState(() {
+                  _voter = _voter.copyWith(hasVoted: true, votedAt: nowTime);
+                });
+                widget.onVoterUpdated?.call(_voter);
+                Navigator.pop(ctx);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    backgroundColor: Color(0xFF10B981),
+                    content: Text("✓ Voter marked as VOTED! Turnout synced to War Room."),
+                  ),
+                );
+              },
+              style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF10B981)),
+              child: const Text("Confirm Voted", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+            ),
+          ],
+        ),
+      );
+    } else {
+      showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          backgroundColor: c.cardBg,
+          title: Text("Revert Voting Status", style: TextStyle(color: c.textPrimary, fontSize: 15, fontWeight: FontWeight.bold)),
+          content: Text(
+            "Revert voting turnout status for ${_voter.name} back to NOT VOTED?",
+            style: TextStyle(color: c.textSecondary, fontSize: 13),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: const Text("Cancel"),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  _voter = _voter.copyWith(hasVoted: false, votedAt: null);
+                });
+                widget.onVoterUpdated?.call(_voter);
+                Navigator.pop(ctx);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    backgroundColor: Color(0xFFF59E0B),
+                    content: Text("Voting status reverted to Not Voted."),
+                  ),
+                );
+              },
+              style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFF59E0B)),
+              child: const Text("Revert Status", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+            ),
+          ],
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final c = widget.c;
@@ -356,8 +431,8 @@ class _VoterProfileScreenState extends State<VoterProfileScreen> {
             _buildHeroCard(c, sentimentColor, isDark),
             const SizedBox(height: 16),
 
-            // QUICK ACTIONS BAR (CALL, WHATSAPP, SLIP, MAP)
-            _buildQuickActionBar(c),
+            // QUICK ACTIONS BAR (CALL, WHATSAPP, SLIP, LOCATION, TURNOUT, NOTES)
+            _buildQuickActionBar(c, isDark),
             const SizedBox(height: 16),
 
             // SENTIMENT TOGGLE BAR
@@ -978,42 +1053,77 @@ class _VoterProfileScreenState extends State<VoterProfileScreen> {
     );
   }
 
-  Widget _buildQuickActionBar(CandidateColors c) {
-    return Row(
+  Widget _buildQuickActionBar(CandidateColors c, bool isDark) {
+    return Column(
       children: [
-        Expanded(
-          child: _quickActionButton(
-            icon: Icons.call_rounded,
-            label: "Call",
-            color: const Color(0xFF10B981),
-            onTap: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text("Calling ${_voter.name} (+91 ${_voter.mobile})...")),
-              );
-            },
-          ),
+        Row(
+          children: [
+            Expanded(
+              child: _quickActionButton(
+                icon: Icons.call_rounded,
+                label: "Call",
+                color: const Color(0xFF10B981),
+                onTap: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text("Calling ${_voter.name} (+91 ${_voter.mobile})...")),
+                  );
+                },
+              ),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: _quickActionButton(
+                icon: Icons.chat_rounded,
+                label: "WhatsApp",
+                color: const Color(0xFF22C55E),
+                onTap: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text("Opening WhatsApp message to ${_voter.name}...")),
+                  );
+                },
+              ),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: _quickActionButton(
+                icon: Icons.confirmation_number_outlined,
+                label: "Voter Slip",
+                color: const Color(0xFF4F46E5),
+                onTap: () => VoterSlipDialog.show(context, _voter, c),
+              ),
+            ),
+          ],
         ),
-        const SizedBox(width: 8),
-        Expanded(
-          child: _quickActionButton(
-            icon: Icons.chat_rounded,
-            label: "WhatsApp",
-            color: const Color(0xFF22C55E),
-            onTap: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text("Opening WhatsApp message to ${_voter.name}...")),
-              );
-            },
-          ),
-        ),
-        const SizedBox(width: 8),
-        Expanded(
-          child: _quickActionButton(
-            icon: Icons.confirmation_number_outlined,
-            label: "Voter Slip",
-            color: const Color(0xFF4F46E5),
-            onTap: () => VoterSlipDialog.show(context, _voter, c),
-          ),
+        const SizedBox(height: 8),
+        Row(
+          children: [
+            Expanded(
+              child: _quickActionButton(
+                icon: Icons.location_on_rounded,
+                label: "Location",
+                color: Colors.orange,
+                onTap: () => _openHouseAddressModal(c, isDark),
+              ),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: _quickActionButton(
+                icon: _voter.hasVoted ? Icons.check_circle_rounded : Icons.how_to_vote_rounded,
+                label: _voter.hasVoted ? "Voted (Revert)" : "Mark Voted",
+                color: _voter.hasVoted ? const Color(0xFF10B981) : const Color(0xFFF59E0B),
+                onTap: () => _toggleTurnoutStatus(c),
+              ),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: _quickActionButton(
+                icon: Icons.note_alt_outlined,
+                label: "Strategy Notes",
+                color: Colors.purple,
+                onTap: _editStrategyNotes,
+              ),
+            ),
+          ],
         ),
       ],
     );

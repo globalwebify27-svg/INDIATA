@@ -1337,7 +1337,7 @@ class _MainMobileScaffoldState extends State<MainMobileScaffold> {
 // ==============================================================================
 // 1. PERFORMANCE DASHBOARD (15 KPIS + QUICK ACTION HUB FOR CLIENT DEMOS)
 // ==============================================================================
-class DashboardScreen extends StatelessWidget {
+class DashboardScreen extends StatefulWidget {
   final AppThemeColors c;
   final bool isDark;
   final List<VoterItem> voters;
@@ -1354,7 +1354,27 @@ class DashboardScreen extends StatelessWidget {
   });
 
   @override
+  State<DashboardScreen> createState() => _DashboardScreenState();
+}
+
+class _DashboardScreenState extends State<DashboardScreen> {
+  int _quickPage = 0;
+  final PageController _quickController = PageController();
+
+  @override
+  void dispose() {
+    _quickController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final c = widget.c;
+    final isDark = widget.isDark;
+    final voters = widget.voters;
+    final onKpiTap = widget.onKpiTap;
+    final onQuickActionTap = widget.onQuickActionTap;
+
     final supporters = voters.where((v) => v.classification == "Supporter").length;
     final doubtful = voters.where((v) => v.classification == "Doubtful").length;
     final opponents = voters.where((v) => v.classification == "Opponent").length;
@@ -1432,38 +1452,102 @@ class DashboardScreen extends StatelessWidget {
 
         const SizedBox(height: 14),
 
-        // SECTION: QUICK FIELD OPERATIONS (8 TILES FOR RAPID CLIENT ACCESS)
+        // SECTION: QUICK COMMANDS (TWO-ROW HORIZONTALLY SWIPEABLE CAROUSEL - 16 SHORTCUTS)
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              "QUICK FIELD OPERATIONS",
-              style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: c.textSecondary, letterSpacing: 1),
+            Row(
+              children: [
+                Text(
+                  "QUICK COMMANDS",
+                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: c.textSecondary, letterSpacing: 1),
+                ),
+                const SizedBox(width: 6),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: c.primary.withOpacity(0.12),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Text(
+                    "2 Rows • Swipe ◄ ►",
+                    style: TextStyle(fontSize: 8.5, color: c.primary, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ],
             ),
-            Text(
-              "8 Active Modules",
-              style: TextStyle(fontSize: 9, color: c.primary, fontWeight: FontWeight.bold),
+            Row(
+              children: [
+                Text(
+                  "16 Shortcuts",
+                  style: TextStyle(fontSize: 9, color: c.primary, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(width: 6),
+                // Dynamic Page Dot Indicators
+                Row(
+                  children: List.generate(2, (index) {
+                    final isActive = _quickPage == index;
+                    return Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 2),
+                      width: isActive ? 12 : 5,
+                      height: 5,
+                      decoration: BoxDecoration(
+                        color: isActive ? c.primary : c.borderColor,
+                        borderRadius: BorderRadius.circular(3),
+                      ),
+                    );
+                  }),
+                ),
+              ],
             ),
           ],
         ),
         const SizedBox(height: 8),
-        GridView.count(
-          crossAxisCount: 4,
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          mainAxisSpacing: 8,
-          crossAxisSpacing: 8,
-          childAspectRatio: 0.95,
-          children: [
-            _quickTile(Icons.tune_rounded, "Advanced\nFilter", c.primary, () => onQuickActionTap("advancedFilter")),
-            _quickTile(Icons.report_problem_rounded, "Issues &\nTickets (2)", c.red, () => onQuickActionTap("issues")),
-            _quickTile(Icons.call_rounded, "Phone\nBook", c.cyan, () => onQuickActionTap("phoneBook")),
-            _quickTile(Icons.location_city_rounded, "Booth &\nBLO Info", c.amber, () => onQuickActionTap("boothInfo")),
-            _quickTile(Icons.assessment_rounded, "Reports &\nExports", c.purple, () => onQuickActionTap("reports")),
-            _quickTile(Icons.receipt_long_rounded, "Slip\nHistory", c.green, () => onQuickActionTap("slipHistory")),
-            _quickTile(Icons.history_rounded, "Activity\nAudit", c.textPrimary, () => onQuickActionTap("activityHistory")),
-            _quickTile(Icons.manage_accounts_rounded, "Profile &\nSettings", c.primary, () => onQuickActionTap("profile")),
-          ],
+
+        SizedBox(
+          height: 185,
+          child: PageView(
+            controller: _quickController,
+            onPageChanged: (page) => setState(() => _quickPage = page),
+            children: [
+              // PAGE 1: Core Field Intelligence & Essential Operations (2 rows of 4)
+              GridView.count(
+                crossAxisCount: 4,
+                physics: const NeverScrollableScrollPhysics(),
+                mainAxisSpacing: 8,
+                crossAxisSpacing: 8,
+                childAspectRatio: 0.95,
+                children: [
+                  _quickTile(Icons.person_search_rounded, "Search\nVoter", c.primary, () => onQuickActionTap("voters")),
+                  _quickTile(Icons.tune_rounded, "Advanced\nSearch", c.cyan, () => onQuickActionTap("advancedFilter")),
+                  _quickTile(Icons.assignment_turned_in_rounded, "Doorstep\nSurvey", c.green, () => onQuickActionTap("surveys")),
+                  _quickTile(Icons.how_to_vote_rounded, "Mark\nTurnout", Colors.purple, () => onQuickActionTap("voters")),
+                  _quickTile(Icons.report_problem_rounded, "Issues &\nTickets (2)", c.red, () => onQuickActionTap("issues")),
+                  _quickTile(Icons.call_rounded, "Phone\nBook", c.cyan, () => onQuickActionTap("phoneBook")),
+                  _quickTile(Icons.location_city_rounded, "Booth &\nBLO Info", c.amber, () => onQuickActionTap("boothInfo")),
+                  _quickTile(Icons.assessment_rounded, "Reports &\nExports", c.purple, () => onQuickActionTap("reports")),
+                ],
+              ),
+              // PAGE 2: Slips, Audits, Family Network & Utilities (2 rows of 4)
+              GridView.count(
+                crossAxisCount: 4,
+                physics: const NeverScrollableScrollPhysics(),
+                mainAxisSpacing: 8,
+                crossAxisSpacing: 8,
+                childAspectRatio: 0.95,
+                children: [
+                  _quickTile(Icons.print_rounded, "Print\nVoter Slip", c.primary, () => onQuickActionTap("slipHistory")),
+                  _quickTile(Icons.share_rounded, "WhatsApp\nSlip", c.green, () => onQuickActionTap("voters")),
+                  _quickTile(Icons.person_add_alt_1_rounded, "Register\nVoter", Colors.teal, () => onQuickActionTap("voters")),
+                  _quickTile(Icons.account_tree_rounded, "Family\nTree", Colors.indigo, () => onQuickActionTap("voters")),
+                  _quickTile(Icons.receipt_long_rounded, "Slip\nHistory", c.green, () => onQuickActionTap("slipHistory")),
+                  _quickTile(Icons.history_rounded, "Activity\nAudit", c.textPrimary, () => onQuickActionTap("activityHistory")),
+                  _quickTile(Icons.auto_awesome_rounded, "AI Field\nCopilot", Colors.amber, () => onQuickActionTap("aiMode")),
+                  _quickTile(Icons.manage_accounts_rounded, "Profile &\nSettings", c.primary, () => onQuickActionTap("profile")),
+                ],
+              ),
+            ],
+          ),
         ),
 
         const SizedBox(height: 16),

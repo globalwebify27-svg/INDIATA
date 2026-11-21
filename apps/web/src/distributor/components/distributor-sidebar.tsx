@@ -13,6 +13,7 @@ import {
   LogOut,
   Sparkles,
   X,
+  IndianRupee,
 } from "lucide-react";
 import { DistributorStatus } from "@rajtantra/common-types";
 import { useDistributorAuth } from "../context/distributor-auth-context";
@@ -70,6 +71,12 @@ export function DistributorSidebar({
     {
       group: "Commercial & Franchise",
       items: [
+        {
+          label: "Price & Earnings",
+          href: "/distributor/earnings",
+          icon: IndianRupee,
+          badge: "Live",
+        },
         {
           label: "Pricing Manual",
           href: "/distributor/pricing-manual",

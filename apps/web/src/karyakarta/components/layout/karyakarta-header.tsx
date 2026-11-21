@@ -9,9 +9,12 @@ import {
   Sparkles,
   MapPin,
   ShieldCheck,
+  Sun,
+  Moon,
 } from "lucide-react";
 import { useKaryakartaAuth } from "../../context/karyakarta-auth-context";
 import { useKaryakartaLanguage } from "../../context/karyakarta-language-context";
+import { useTheme } from "@/context/theme-context";
 import { LanguageType } from "../../types/karyakarta.types";
 
 interface KaryakartaHeaderProps {
@@ -27,6 +30,7 @@ export function KaryakartaHeader({
 }: KaryakartaHeaderProps) {
   const { user } = useKaryakartaAuth();
   const { language, setLanguage } = useKaryakartaLanguage();
+  const { theme, toggleTheme } = useTheme();
 
   const handleToggle = () => {
     if (typeof window !== "undefined" && window.innerWidth < 1024) {
@@ -99,6 +103,16 @@ export function KaryakartaHeader({
             </button>
           ))}
         </div>
+
+        {/* Theme Toggle (☀️ / 🌙) */}
+        <button
+          onClick={toggleTheme}
+          className="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+          title={theme === "dark" ? "Switch to Daylight Mode" : "Switch to Obsidian Dark Mode"}
+          aria-label="Toggle theme"
+        >
+          {theme === "dark" ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-slate-600" />}
+        </button>
 
         {/* Notifications Icon */}
         <button

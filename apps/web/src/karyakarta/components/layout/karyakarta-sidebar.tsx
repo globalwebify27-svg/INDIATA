@@ -18,6 +18,8 @@ import {
   LogOut,
   X,
   Languages,
+  Radio,
+  ClipboardCheck,
 } from "lucide-react";
 import { useKaryakartaAuth } from "../../context/karyakarta-auth-context";
 import { useKaryakartaLanguage } from "../../context/karyakarta-language-context";
@@ -40,7 +42,9 @@ export function KaryakartaSidebar({
 
   const mainNavItems = [
     { href: "/karyakarta/dashboard", label: t("nav.dashboard", "Dashboard"), icon: LayoutDashboard },
+    { href: "/karyakarta/live-polling", label: "Live Polling", icon: Radio, badge: "LIVE" },
     { href: "/karyakarta/search-voter", label: t("nav.search_voter", "Search Voter"), icon: Search },
+    { href: "/karyakarta/surveys", label: "Doorstep Surveys", icon: ClipboardCheck },
     { href: "/karyakarta/advanced-search", label: t("nav.advanced_search", "Advanced Filter"), icon: Filter },
     { href: "/karyakarta/issues", label: t("nav.issues", "Voter Issues"), icon: AlertCircle, badge: "2 Open" },
     { href: "/karyakarta/ai-mode", label: t("nav.ai_mode", "AI Field Assistant"), icon: Sparkles, badge: "AI" },

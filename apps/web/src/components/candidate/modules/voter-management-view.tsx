@@ -1820,7 +1820,20 @@ function ContinuousVoterProfileView({
 // MAIN VOTER MANAGEMENT VIEW COMPONENT
 // ============================================================================
 
-export function VoterManagementView() {
+export interface VoterManagementViewProps {
+  portalMode?: "CANDIDATE" | "KARYAKARTA";
+  assignedBooths?: string[] | number[];
+  cadreUserName?: string;
+  cadreUserId?: string;
+  onNavigateBack?: () => void;
+}
+
+export function VoterManagementView({
+  portalMode = "CANDIDATE",
+  assignedBooths,
+  cadreUserName,
+  cadreUserId,
+}: VoterManagementViewProps = {}) {
   const { showToast } = useToast();
 
   // Local state of electors for reactive updates
@@ -1844,6 +1857,12 @@ export function VoterManagementView() {
         ", " +
         new Date().toLocaleDateString("en-IN", { day: "2-digit", month: "short" });
 
+    const actorName =
+      cadreUserName ||
+      (portalMode === "KARYAKARTA" ? "Sachin D. Mane (Booth Agent #101)" : "Candidate Admin (Anand Shinde)");
+    const actorId =
+      cadreUserId || (portalMode === "KARYAKARTA" ? "CADRE-101-01" : "USR-CADMIN-01");
+
     setElectors((prev) =>
       prev.map((e) => {
         if (e.id === voterId) {
@@ -1852,8 +1871,8 @@ export function VoterManagementView() {
             id: `aud-${Date.now()}`,
             previousStatus: (e.hasVoted ? "VOTED" : "NOT_VOTED") as "VOTED" | "NOT_VOTED",
             newStatus: (nextVoted ? "VOTED" : "NOT_VOTED") as "VOTED" | "NOT_VOTED",
-            updatedBy: "Candidate Admin (Anand Shinde)",
-            userId: "USR-CADMIN-01",
+            updatedBy: actorName,
+            userId: actorId,
             timestamp: currentTimestamp,
             reason: reason || (nextVoted ? "Polling Booth Turnout Verification" : "Authorized Status Correction"),
           };
@@ -1872,8 +1891,8 @@ export function VoterManagementView() {
             ...e,
             hasVoted: nextVoted,
             votedAt: nextVoted ? currentTimestamp : undefined,
-            votedByUserName: nextVoted ? "Candidate Admin (Anand Shinde)" : undefined,
-            votedByUserId: nextVoted ? "USR-CADMIN-01" : undefined,
+            votedByUserName: nextVoted ? actorName : undefined,
+            votedByUserId: nextVoted ? actorId : undefined,
             votingAuditTrail: nextAudit,
           };
         }
@@ -1888,8 +1907,8 @@ export function VoterManagementView() {
           id: `aud-${Date.now()}`,
           previousStatus: (prev.hasVoted ? "VOTED" : "NOT_VOTED") as "VOTED" | "NOT_VOTED",
           newStatus: (nextVoted ? "VOTED" : "NOT_VOTED") as "VOTED" | "NOT_VOTED",
-          updatedBy: "Candidate Admin (Anand Shinde)",
-          userId: "USR-CADMIN-01",
+          updatedBy: actorName,
+          userId: actorId,
           timestamp: currentTimestamp,
           reason: reason || (nextVoted ? "Polling Booth Turnout Verification" : "Authorized Status Correction"),
         };
@@ -1897,8 +1916,8 @@ export function VoterManagementView() {
           ...prev,
           hasVoted: nextVoted,
           votedAt: nextVoted ? currentTimestamp : undefined,
-          votedByUserName: nextVoted ? "Candidate Admin (Anand Shinde)" : undefined,
-          votedByUserId: nextVoted ? "USR-CADMIN-01" : undefined,
+          votedByUserName: nextVoted ? actorName : undefined,
+          votedByUserId: nextVoted ? actorId : undefined,
           votingAuditTrail: [...(prev.votingAuditTrail || []), auditEntry],
         };
       });
@@ -2517,14 +2536,20 @@ export function VoterManagementView() {
         <div>
           <div className="flex items-center gap-2 mb-1">
             <span className="text-[10px] font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/60 px-2 py-0.5 rounded uppercase tracking-wider border border-blue-200 dark:border-blue-900/40">
-              Voter Intelligence
+              {portalMode === "KARYAKARTA" ? "Field Cadre Operations" : "Voter Intelligence"}
             </span>
             <span className="text-slate-400 text-xs">/</span>
-            <span className="text-xs font-semibold text-slate-600 dark:text-slate-400">Total Voters</span>
+            <span className="text-xs font-semibold text-slate-600 dark:text-slate-400">
+              {portalMode === "KARYAKARTA" ? "Search Voter" : "Total Voters"}
+            </span>
           </div>
-          <h1 className="text-xl md:text-2xl font-black text-slate-900 dark:text-white tracking-tight">Total Voters</h1>
+          <h1 className="text-xl md:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+            {portalMode === "KARYAKARTA" ? "Search Voter Roll (मतदार यादी शोध)" : "Total Voters"}
+          </h1>
           <p className="text-xs text-slate-500 dark:text-slate-400">
-            Electoral roll records with multi-attribute filtering, polling station locators, and unified profiles.
+            {portalMode === "KARYAKARTA"
+              ? `Instant search across name, Marathi spelling, EPIC, mobile number, or house number. Scoped to Booths: ${assignedBooths?.join(", ") || "101, 102"}`
+              : "Electoral roll records with multi-attribute filtering, polling station locators, and unified profiles."}
           </p>
         </div>
 

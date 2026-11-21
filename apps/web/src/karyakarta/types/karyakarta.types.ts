@@ -60,6 +60,18 @@ export interface VoterRecord {
   isFavourite: boolean;
   isVisited: boolean;
   isVoted: boolean;
+  hasVoted?: boolean;
+  votedAt?: string;
+  votedBy?: string;
+  votingAuditTrail?: {
+    id: string;
+    previousStatus: "VOTED" | "NOT_VOTED";
+    newStatus: "VOTED" | "NOT_VOTED";
+    updatedBy: string;
+    userId: string;
+    timestamp: string;
+    reason: string;
+  }[];
   isOutside: boolean;
   isDeceased: boolean;
   lastVisitDate: string | null;
