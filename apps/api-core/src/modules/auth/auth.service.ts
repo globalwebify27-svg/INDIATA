@@ -19,6 +19,7 @@ import {
   ForgotPasswordDto,
   LoginResult,
   PortalAccessInfo,
+  KaryakartaActivationDto,
 } from "@rajtantra/common-types";
 
 export type { LoginResult };
@@ -162,6 +163,7 @@ export class AuthService {
       },
       include: {
         organization: true,
+        distributorProfile: true,
       },
     });
 
@@ -191,11 +193,116 @@ export class AuthService {
       role: user.role as UserRole,
       organizationId: user.organizationId,
       hasAiSeat: user.hasAiSeat,
+      distributorId: user.distributorProfile?.id,
     });
 
     // Save refresh token record
     const tokenHash = this.hashToken(tokens.refreshToken);
     const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
+
+    await this.prisma.refreshToken.create({
+      data: {
+        tokenHash,
+        userId: user.id,
+        deviceInfo: userAgent ? userAgent.substring(0, 255) : null,
+        ipAddress: ipAddress ? ipAddress.substring(0, 45) : null,
+        expiresAt,
+      },
+    });
+
+    // Update lastLoginAt
+    await this.prisma.user.update({
+      where: { id: user.id },
+      data: { lastLoginAt: new Date() },
+    });
+
+    const authenticatedUser: AuthenticatedUser & { distributorId?: string } = {
+      id: user.id,
+      email: user.email,
+      phone: user.phone,
+      name: user.name,
+      role: user.role as UserRole,
+      organizationId: user.organizationId,
+      hasAiSeat: user.hasAiSeat,
+      distributorId: user.distributorProfile?.id,
+    };
+
+    const portals = this.resolveAuthorizedPortals(
+      user.role as UserRole,
+      user.organization?.name,
+      user.organization?.constituencyName,
+    );
+    const primaryPortal = portals.find((p) => p.isDefault) || portals[0];
+
+    return {
+      user: authenticatedUser,
+      tokens,
+      portals,
+      primaryPortal,
+    };
+  }
+
+  async activateKaryakarta(
+    dto: KaryakartaActivationDto,
+    ipAddress?: string,
+    userAgent?: string,
+  ): Promise<
+    LoginResult & {
+      assignedBooths: string[];
+      constituencyName?: string;
+    }
+  > {
+    const key = dto.activationKey.trim().toUpperCase();
+
+    const user = await this.prisma.user.findFirst({
+      where: {
+        OR: [{ activationKey: key }, { reactivationKey: key }],
+      },
+      include: {
+        organization: true,
+      },
+    });
+
+    if (!user) {
+      throw new UnauthorizedException(
+        "Invalid activation key. Please contact your candidate war room to receive your 6-character access key.",
+      );
+    }
+
+    if (user.status !== "ACTIVE") {
+      throw new UnauthorizedException(
+        `Karyakarta account is ${user.status.toLowerCase()}. Please contact your candidate war room administrator.`,
+      );
+    }
+
+    // Optional phone number validation if provided
+    if (dto.phone && user.phone && user.phone !== dto.phone && !user.phone.endsWith(dto.phone)) {
+      throw new UnauthorizedException(
+        "Phone number does not match registered cadre record.",
+      );
+    }
+
+    // Bind device UUID if provided and not yet bound
+    if (dto.deviceUuid && !user.deviceUuid) {
+      await this.prisma.user.update({
+        where: { id: user.id },
+        data: { deviceUuid: dto.deviceUuid },
+      });
+    }
+
+    // Generate tokens
+    const tokens = await this.generateTokens({
+      sub: user.id,
+      email: user.email,
+      phone: user.phone,
+      role: user.role as UserRole,
+      organizationId: user.organizationId,
+      hasAiSeat: user.hasAiSeat,
+    });
+
+    // Save refresh token record
+    const tokenHash = this.hashToken(tokens.refreshToken);
+    const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
 
     await this.prisma.refreshToken.create({
       data: {
@@ -230,11 +337,17 @@ export class AuthService {
     );
     const primaryPortal = portals.find((p) => p.isDefault) || portals[0];
 
+    const assignedBooths = user.assignedBooths
+      ? user.assignedBooths.split(",").map((b) => b.trim())
+      : [];
+
     return {
       user: authenticatedUser,
       tokens,
       portals,
       primaryPortal,
+      assignedBooths,
+      constituencyName: user.organization?.constituencyName,
     };
   }
 

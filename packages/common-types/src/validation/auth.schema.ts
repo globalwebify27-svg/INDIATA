@@ -42,6 +42,24 @@ export const MobileActivationDtoSchema = z.object({
 
 export type MobileActivationDto = z.infer<typeof MobileActivationDtoSchema>;
 
+export const KaryakartaActivationDtoSchema = z.object({
+  activationKey: z
+    .string()
+    .min(4, "Activation key must be at least 4 characters")
+    .max(12, "Activation key cannot exceed 12 characters"),
+  phone: z
+    .string()
+    .min(10, "Phone number must be at least 10 digits")
+    .max(15, "Phone number cannot exceed 15 digits")
+    .optional(),
+  deviceUuid: z
+    .string()
+    .max(128, "Device UUID cannot exceed 128 characters")
+    .optional(),
+});
+
+export type KaryakartaActivationDto = z.infer<typeof KaryakartaActivationDtoSchema>;
+
 export const RegisterEnquiryDtoSchema = z.object({
   fullName: z.string().min(2, "Full name must be at least 2 characters").max(150),
   mobile: z.string().min(10, "Mobile number must be at least 10 digits").max(15),

@@ -23,6 +23,8 @@ import {
   RegisterEnquiryDtoSchema,
   ForgotPasswordDto,
   ForgotPasswordDtoSchema,
+  KaryakartaActivationDto,
+  KaryakartaActivationDtoSchema,
 } from "@rajtantra/common-types";
 import { RegisterEnquiryResult } from "./auth.service";
 
@@ -60,6 +62,19 @@ export class AuthController {
       (req.headers["x-forwarded-for"] as string) || req.socket.remoteAddress;
     const userAgent = req.headers["user-agent"];
     return this.authService.login(dto, ipAddress, userAgent);
+  }
+
+  @Post("karyakarta/activate")
+  @Public()
+  @HttpCode(HttpStatus.OK)
+  async activateKaryakarta(
+    @Body(new ZodValidationPipe(KaryakartaActivationDtoSchema)) dto: KaryakartaActivationDto,
+    @Req() req: Request,
+  ) {
+    const ipAddress =
+      (req.headers["x-forwarded-for"] as string) || req.socket.remoteAddress;
+    const userAgent = req.headers["user-agent"];
+    return this.authService.activateKaryakarta(dto, ipAddress, userAgent);
   }
 
   @Post("refresh")

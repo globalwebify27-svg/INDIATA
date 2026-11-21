@@ -19,18 +19,23 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(payload: JwtPayload): Promise<AuthenticatedUser> {
+  async validate(payload: JwtPayload): Promise<AuthenticatedUser & { permissions?: string[] }> {
     const user = await this.prisma.user.findUnique({
       where: { id: payload.sub },
-      select: {
-        id: true,
-        email: true,
-        phone: true,
-        name: true,
-        role: true,
-        status: true,
-        organizationId: true,
-        hasAiSeat: true,
+      include: {
+        userRoles: {
+          include: {
+            role: {
+              include: {
+                permissions: {
+                  include: {
+                    permission: true,
+                  },
+                },
+              },
+            },
+          },
+        },
       },
     });
 
@@ -40,6 +45,11 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       );
     }
 
+    const permissions =
+      user.userRoles?.flatMap((ur) =>
+        ur.role.permissions.map((rp) => rp.permission.code),
+      ) || [];
+
     return {
       id: user.id,
       email: user.email,
@@ -48,6 +58,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       role: user.role as unknown as UserRole,
       organizationId: user.organizationId,
       hasAiSeat: user.hasAiSeat,
+      distributorId: payload.distributorId,
+      permissions,
     };
   }
 }
