@@ -153,14 +153,15 @@ export default function CentralLoginPage() {
           return;
         }
 
-        if (!response.ok && data.message) {
-          throw new Error(data.message);
-        }
-        throw new Error("Activation failed. Launching field console...");
+        // If response is NOT ok (e.g. 401 Unauthorized or wrong phone/key)
+        const errorMsg = data.message || "Invalid activation key or phone number.";
+        setErrorMessage(errorMsg);
+        showToast("error", "Activation Failed", errorMsg);
+        return;
       } catch (err: unknown) {
-        const msg = err instanceof Error ? err.message : "Opening Field Volunteer Console...";
-        showToast("info", "Karyakarta Session", msg);
-        window.location.replace("/karyakarta/dashboard");
+        const msg = err instanceof Error ? err.message : "Could not connect to authentication service";
+        setErrorMessage(msg);
+        showToast("error", "Activation Failed", msg);
       } finally {
         setIsSubmitting(false);
       }
@@ -186,9 +187,10 @@ export default function CentralLoginPage() {
       await login(cleanId, cleanPass);
       showToast("success", `${portalMeta.title} Authorized`, `Opening ${portalMeta.route}...`);
       window.location.replace(portalMeta.route);
-    } catch {
-      showToast("info", "Authenticating Session", `Opening ${portalMeta.route}...`);
-      window.location.replace(portalMeta.route);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Invalid identifier or password";
+      setErrorMessage(msg);
+      showToast("error", "Authentication Failed", msg);
     } finally {
       setIsSubmitting(false);
     }

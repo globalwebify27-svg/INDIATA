@@ -7,7 +7,6 @@ import {
   AuthTokenPair,
   LoginResult,
   UserRole,
-  PortalAccessInfo,
   PortalType,
 } from "@rajtantra/common-types";
 import {
@@ -103,54 +102,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [loadProfile]);
 
   const login = async (identifier: string, password: string): Promise<LoginResult> => {
-    const cleanId = identifier.trim().toLowerCase();
-
     if (typeof window !== "undefined") {
       sessionStorage.removeItem("rajtantra_logged_out");
-    }
-
-    if (IS_DEV_PREVIEW) {
-      const isSuperAdmin =
-        cleanId.includes("superadmin") ||
-        cleanId.includes("premsons") ||
-        cleanId.startsWith("admin@") ||
-        cleanId === "admin" ||
-        (cleanId.includes("admin") && !cleanId.includes("candidate"));
-      const targetUser = isSuperAdmin ? MOCK_DEV_SUPERADMIN_USER : MOCK_DEV_CANDIDATE_USER;
-      const targetUrl = isSuperAdmin ? "/super-admin" : "/candidate";
-
-      setUser(targetUser);
-      setTokens(MOCK_DEV_TOKENS);
-
-      if (typeof window !== "undefined") {
-        localStorage.setItem("rajtantra_access_token", MOCK_DEV_TOKENS.accessToken);
-        localStorage.setItem("rajtantra_refresh_token", MOCK_DEV_TOKENS.refreshToken);
-        localStorage.setItem("rajtantra_active_role", targetUser.role);
-        document.cookie = `rajtantra_access_token=${MOCK_DEV_TOKENS.accessToken}; Path=/; SameSite=Lax; max-age=86400`;
-      }
-
-      setIsLoading(false);
-      router.push(targetUrl);
-
-      const portals: PortalAccessInfo[] = [
-        {
-          portalKey: isSuperAdmin ? "SUPER_ADMIN" : "CANDIDATE_WAR_ROOM",
-          title: isSuperAdmin ? "Super Admin Platform Command" : "Kasba Peth Constituency War Room",
-          subtitle: isSuperAdmin
-            ? "Multi-tenant War Room Infrastructure, KYC & Licencing"
-            : "Voter intelligence, GIS telemetry & cadre command",
-          url: targetUrl,
-          role: targetUser.role,
-          isDefault: true,
-        },
-      ];
-
-      return {
-        user: targetUser,
-        tokens: MOCK_DEV_TOKENS,
-        portals,
-        primaryPortal: portals[0],
-      };
     }
 
     setIsLoading(true);
@@ -172,61 +125,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
         await loadProfile();
 
-        const targetUrl = authUser.role === UserRole.SUPER_ADMIN ? "/super-admin" : "/candidate";
-        router.push(targetUrl);
-
         return response.data;
       }
       throw new Error(response.message || "Failed to authenticate session");
     } catch (err: unknown) {
-      const cleanId = identifier.trim().toLowerCase();
-      const isSuperAdmin =
-        cleanId.includes("superadmin") ||
-        cleanId.includes("premsons") ||
-        cleanId.startsWith("admin@") ||
-        cleanId === "admin" ||
-        (cleanId.includes("admin") && !cleanId.includes("candidate"));
-      const fallbackUser = isSuperAdmin ? MOCK_DEV_SUPERADMIN_USER : MOCK_DEV_CANDIDATE_USER;
-      const targetUrl = isSuperAdmin ? "/super-admin" : "/candidate";
-
-      setUser(fallbackUser);
-      setTokens(MOCK_DEV_TOKENS);
-
-      if (typeof window !== "undefined") {
-        localStorage.setItem("rajtantra_access_token", MOCK_DEV_TOKENS.accessToken);
-        localStorage.setItem("rajtantra_refresh_token", MOCK_DEV_TOKENS.refreshToken);
-        localStorage.setItem("rajtantra_active_role", fallbackUser.role);
-        document.cookie = `rajtantra_access_token=${MOCK_DEV_TOKENS.accessToken}; Path=/; SameSite=Lax; max-age=86400`;
-      }
-
       setIsLoading(false);
-      router.push(targetUrl);
-
-      return {
-        user: fallbackUser,
-        tokens: MOCK_DEV_TOKENS,
-        portals: [
-          {
-            portalKey: isSuperAdmin ? "SUPER_ADMIN" : "CANDIDATE_WAR_ROOM",
-            title: isSuperAdmin ? "Super Admin Platform Command" : "Kasba Peth Constituency War Room",
-            subtitle: isSuperAdmin
-              ? "Multi-tenant War Room Infrastructure, KYC & Licencing"
-              : "Voter intelligence, GIS telemetry & cadre command",
-            url: targetUrl,
-            role: fallbackUser.role,
-            isDefault: true,
-          },
-        ],
-        primaryPortal: {
-          portalKey: isSuperAdmin ? "SUPER_ADMIN" : "CANDIDATE_WAR_ROOM",
-          title: isSuperAdmin ? "Super Admin Platform Command" : "Kasba Peth Constituency War Room",
-          subtitle: isSuperAdmin
-            ? "Multi-tenant War Room Infrastructure, KYC & Licencing"
-            : "Voter intelligence, GIS telemetry & cadre command",
-          url: targetUrl,
-          role: fallbackUser.role,
-        },
-      };
+      const message = err instanceof Error ? err.message : "Invalid identifier or password";
+      throw new Error(message);
     }
   };
 
