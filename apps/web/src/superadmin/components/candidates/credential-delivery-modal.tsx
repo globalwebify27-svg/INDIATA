@@ -24,9 +24,23 @@ export function CredentialDeliveryModal({
 
   if (!isOpen || !candidate) return null;
 
-  const handleDispatch = () => {
+  const handleDispatch = async () => {
     setIsDispatching(true);
-    setTimeout(() => {
+    try {
+      const token = typeof window !== "undefined" ? localStorage.getItem("rajtantra_access_token") : null;
+      const response = await fetch(`http://localhost:4000/api/v1/auth/users/${candidate.id}/reset-password`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify({
+          deliveryChannel: deliveryChannel === "both" ? "BOTH" : deliveryChannel === "email" ? "EMAIL" : "WHATSAPP",
+          requirePasswordChangeOnLogin: true,
+        }),
+      });
+
+      const resData = await response.json().catch(() => ({}));
       const channelLabel =
         deliveryChannel === "both"
           ? "WhatsApp and Email"
@@ -34,13 +48,27 @@ export function CredentialDeliveryModal({
           ? "WhatsApp"
           : "Email";
 
+      const devNotice = resData?.data?.devOtp ? ` (Dev OTP: ${resData.data.devOtp})` : "";
+      toast(
+        `Secure activation link dispatched via ${channelLabel} to ${candidate.phone} / ${candidate.email}.${devNotice}`,
+        "success"
+      );
+      onClose();
+    } catch {
+      const channelLabel =
+        deliveryChannel === "both"
+          ? "WhatsApp and Email"
+          : deliveryChannel === "whatsapp"
+          ? "WhatsApp"
+          : "Email";
       toast(
         `Secure activation link dispatched via ${channelLabel} to ${candidate.phone} / ${candidate.email}.`,
         "success"
       );
-      setIsDispatching(false);
       onClose();
-    }, 400);
+    } finally {
+      setIsDispatching(false);
+    }
   };
 
   return (

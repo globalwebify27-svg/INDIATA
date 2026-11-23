@@ -17,6 +17,7 @@ import {
   QrCode,
 } from "lucide-react";
 import { useToast, ToastType } from "@/context/toast-context";
+import { ChangePasswordCard } from "@/components/auth/change-password-card";
 
 interface SettingsState {
   adminName: string;
@@ -243,6 +244,10 @@ export function PortalSettingsView() {
                       className="w-full p-2.5 bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-500 dark:text-slate-400 font-semibold cursor-not-allowed"
                     />
                   </div>
+                </div>
+
+                <div className="pt-4 border-t border-slate-100 dark:border-slate-800">
+                  <ChangePasswordCard />
                 </div>
               </div>
             )}

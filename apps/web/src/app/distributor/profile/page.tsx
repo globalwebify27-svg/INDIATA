@@ -1,35 +1,17 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import {
   MapPin,
-  KeyRound,
   LogOut,
-  Save,
-  CheckCircle2,
 } from "lucide-react";
 import { DistributorLayout } from "../../../distributor/components/distributor-layout";
 import { useDistributorAuth } from "../../../distributor/context/distributor-auth-context";
 import { Badge } from "@rajtantra/ui/feedback";
+import { ChangePasswordCard } from "@/components/auth/change-password-card";
 
 export default function DistributorProfilePage() {
   const { distributor, logout } = useDistributorAuth();
-
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [passwordSuccess, setPasswordSuccess] = useState(false);
-
-  const handlePasswordUpdate = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (newPassword && newPassword === confirmPassword) {
-      setPasswordSuccess(true);
-      setCurrentPassword("");
-      setNewPassword("");
-      setConfirmPassword("");
-      setTimeout(() => setPasswordSuccess(false), 3000);
-    }
-  };
 
   return (
     <DistributorLayout
@@ -130,73 +112,7 @@ export default function DistributorProfilePage() {
         </div>
 
         {/* Security & Password Modification */}
-        <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-premium-xs space-y-4">
-          <div className="flex items-center gap-2 pb-2 border-b border-slate-100 dark:border-slate-800">
-            <KeyRound className="w-4 h-4 text-[#2087FE]" />
-            <h3 className="text-sm font-bold text-slate-900 dark:text-white">
-              Franchise Portal Password
-            </h3>
-          </div>
-
-          {passwordSuccess && (
-            <div className="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 border border-emerald-200 text-xs flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4" />
-              <span>Password updated successfully!</span>
-            </div>
-          )}
-
-          <form onSubmit={handlePasswordUpdate} className="space-y-4 text-xs max-w-md">
-            <div>
-              <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
-                Current Password *
-              </label>
-              <input
-                type="password"
-                required
-                value={currentPassword}
-                onChange={(e) => setCurrentPassword(e.target.value)}
-                placeholder="••••••••••••"
-                className="w-full px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white"
-              />
-            </div>
-
-            <div>
-              <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
-                New Secure Password *
-              </label>
-              <input
-                type="password"
-                required
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                placeholder="••••••••••••"
-                className="w-full px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white"
-              />
-            </div>
-
-            <div>
-              <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
-                Confirm New Password *
-              </label>
-              <input
-                type="password"
-                required
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="••••••••••••"
-                className="w-full px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white"
-              />
-            </div>
-
-            <button
-              type="submit"
-              className="flex items-center gap-1.5 px-5 py-2 rounded-xl text-xs font-bold bg-[#2087FE] hover:bg-blue-600 text-white shadow-premium-xs transition"
-            >
-              <Save className="w-3.5 h-3.5" />
-              <span>Update Password</span>
-            </button>
-          </form>
-        </div>
+        <ChangePasswordCard />
       </div>
     </DistributorLayout>
   );

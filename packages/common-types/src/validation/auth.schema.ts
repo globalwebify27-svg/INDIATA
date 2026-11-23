@@ -92,9 +92,34 @@ export type ForgotPasswordDto = z.infer<typeof ForgotPasswordDtoSchema>;
 
 export const ResetPasswordDtoSchema = z.object({
   identifier: z.string().min(3, "Email or phone number is required").max(120),
-  otp: z.string().min(4, "OTP code must be at least 4 digits").max(8),
+  otp: z.string().min(4, "OTP or reset code is required").max(64),
   newPassword: z.string().min(6, "New password must be at least 6 characters").max(128),
 });
 
 export type ResetPasswordDto = z.infer<typeof ResetPasswordDtoSchema>;
+
+export const ChangePasswordDtoSchema = z.object({
+  currentPassword: z.string().min(1, "Current password is required"),
+  newPassword: z
+    .string()
+    .min(6, "New password must be at least 6 characters")
+    .max(128, "New password cannot exceed 128 characters"),
+  confirmPassword: z.string().min(1, "Password confirmation is required"),
+}).refine((data) => data.newPassword === data.confirmPassword, {
+  message: "New password and confirmation do not match",
+  path: ["confirmPassword"],
+}).refine((data) => data.currentPassword !== data.newPassword, {
+  message: "New password cannot be identical to current password",
+  path: ["newPassword"],
+});
+
+export type ChangePasswordDto = z.infer<typeof ChangePasswordDtoSchema>;
+
+export const AdminResetPasswordDtoSchema = z.object({
+  deliveryChannel: z.enum(["EMAIL", "WHATSAPP", "BOTH"]).default("BOTH"),
+  requirePasswordChangeOnLogin: z.boolean().default(true),
+});
+
+export type AdminResetPasswordDto = z.infer<typeof AdminResetPasswordDtoSchema>;
+
 

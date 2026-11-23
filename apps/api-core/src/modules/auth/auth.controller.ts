@@ -3,6 +3,7 @@ import {
   Post,
   Get,
   Body,
+  Param,
   Req,
   HttpCode,
   HttpStatus,
@@ -23,6 +24,12 @@ import {
   RegisterEnquiryDtoSchema,
   ForgotPasswordDto,
   ForgotPasswordDtoSchema,
+  ResetPasswordDto,
+  ResetPasswordDtoSchema,
+  ChangePasswordDto,
+  ChangePasswordDtoSchema,
+  AdminResetPasswordDto,
+  AdminResetPasswordDtoSchema,
   KaryakartaActivationDto,
   KaryakartaActivationDtoSchema,
 } from "@rajtantra/common-types";
@@ -46,8 +53,36 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   async forgotPassword(
     @Body(new ZodValidationPipe(ForgotPasswordDtoSchema)) dto: ForgotPasswordDto,
-  ): Promise<{ message: string; challengeSent: boolean }> {
+  ): Promise<{ message: string; challengeSent: boolean; devOtp?: string }> {
     return this.authService.forgotPassword(dto);
+  }
+
+  @Post("reset-password")
+  @Public()
+  @HttpCode(HttpStatus.OK)
+  async resetPassword(
+    @Body(new ZodValidationPipe(ResetPasswordDtoSchema)) dto: ResetPasswordDto,
+  ): Promise<{ message: string }> {
+    return this.authService.resetPassword(dto);
+  }
+
+  @Post("change-password")
+  @HttpCode(HttpStatus.OK)
+  async changePassword(
+    @CurrentUser() user: AuthenticatedUser,
+    @Body(new ZodValidationPipe(ChangePasswordDtoSchema)) dto: ChangePasswordDto,
+  ): Promise<{ message: string }> {
+    return this.authService.changePassword(user.id, dto);
+  }
+
+  @Post("users/:userId/reset-password")
+  @HttpCode(HttpStatus.OK)
+  async adminResetPassword(
+    @CurrentUser() adminUser: AuthenticatedUser,
+    @Param("userId") targetUserId: string,
+    @Body(new ZodValidationPipe(AdminResetPasswordDtoSchema)) dto: AdminResetPasswordDto,
+  ): Promise<{ message: string; devOtp?: string }> {
+    return this.authService.adminResetPassword(adminUser, targetUserId, dto);
   }
 
 

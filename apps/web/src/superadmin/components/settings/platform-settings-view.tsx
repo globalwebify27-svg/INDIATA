@@ -14,9 +14,11 @@ import {
   Briefcase,
   Bell,
   Sliders,
+  KeyRound,
 } from "lucide-react";
 import { superAdminApi } from "../../services/superadmin-api";
 import { useToast } from "@/context/toast-context";
+import { ChangePasswordCard } from "@/components/auth/change-password-card";
 import {
   RolePortalSettingsConfig,
   NotificationDeliveryConfig,
@@ -29,7 +31,7 @@ import {
 } from "../../data/mock-superadmin-data";
 import { NotificationManagementPanel } from "./notification-management-panel";
 
-type SettingsSubTab = "global" | "roles" | "notifications";
+type SettingsSubTab = "global" | "roles" | "notifications" | "security";
 
 export function PlatformSettingsView() {
   const { toast } = useToast();
@@ -244,6 +246,19 @@ export function PlatformSettingsView() {
           >
             13
           </span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setActiveTab("security")}
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition ${
+            activeTab === "security"
+              ? "bg-[#2087FE] text-white shadow-xs"
+              : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
+          }`}
+        >
+          <KeyRound className="w-4 h-4" />
+          <span>Security &amp; Password</span>
         </button>
       </div>
 
@@ -796,6 +811,13 @@ export function PlatformSettingsView() {
             onSaveTemplates={handleSaveTemplates}
             saving={saving}
           />
+        </div>
+      )}
+
+      {/* TAB 4: SECURITY & CREDENTIALS MANAGEMENT */}
+      {activeTab === "security" && (
+        <div className="max-w-2xl animate-in fade-in duration-150">
+          <ChangePasswordCard />
         </div>
       )}
     </div>
