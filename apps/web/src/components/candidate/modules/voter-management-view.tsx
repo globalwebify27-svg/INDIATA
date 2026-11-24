@@ -50,6 +50,7 @@ import {
   Lock,
 } from "lucide-react";
 import { useToast } from "@/context/toast-context";
+import { apiFetch } from "@/lib/api-client";
 
 // ============================================================================
 // DATA MODELS & TAXONOMY
@@ -1820,6 +1821,65 @@ function ContinuousVoterProfileView({
 // MAIN VOTER MANAGEMENT VIEW COMPONENT
 // ============================================================================
 
+function mapDbVoterToElector(db: any): ElectorRecord {
+  const leaningMap: Record<string, ElectorRecord["politicalLeaning"]> = {
+    SUPPORTER: "STRONG_SUPPORTER",
+    OPPONENT: "STRONG_OPPOSITION",
+    DOUBTFUL: "NEUTRAL",
+    NEUTRAL: "NEUTRAL",
+  };
+
+  const id = String(db.id || Math.random());
+  const serialNo = Number(db.serialNumber) || 1;
+  const boothNum = parseInt(String(db.boothNumber || "101").replace(/\D/g, "") || "101", 10);
+  const partNo = parseInt(String(db.electoralPart || "101").replace(/\D/g, "") || "101", 10);
+
+  return {
+    id,
+    voterCode: id,
+    epicNumber: db.epicId || `MH/12/215/${String(serialNo).padStart(6, "0")}`,
+    partNo,
+    serialNo,
+    fullName: db.name || "Elector",
+    hindiName: db.marathiName || db.name || "",
+    relativeName: db.relativeName || "N/A",
+    relativeHindiName: db.relativeName || "N/A",
+    relationType: (db.relation || "Father") as any,
+    gender: (String(db.gender || "M").toUpperCase().startsWith("F") ? "FEMALE" : String(db.gender || "M").toUpperCase().startsWith("O") ? "OTHER" : "MALE"),
+    age: Number(db.age) || 35,
+    dob: db.dob || "1985-01-01",
+    mobile: db.phone || "",
+    email: db.email || "",
+    address: db.address || `${db.houseNo || ""}, ${db.area || ""}, Pune 411030`,
+    houseNo: db.houseNo || "",
+    constituency: "Kasba Peth",
+    constituencyNo: "215",
+    assemblySegment: "215 - Kasba Peth",
+    prabhaag: db.prabhaag || "Prabhaag 12",
+    ward: db.ward || "Ward 18",
+    gan: "Gan 8",
+    boothNumber: boothNum,
+    pollingStation: db.boothName || `Polling Station Room ${boothNum}`,
+    caste: db.caste || "General",
+    occupation: db.occupation || "N/A",
+    qualification: db.qualification || "Graduate",
+    schemeBeneficiary: db.scheme ? [db.scheme] : [],
+    politicalLeaning: leaningMap[db.classification] || "NEUTRAL",
+    isInfluencer: !!db.isKeyInfluencer,
+    influencerScope: db.strategyNotes || "",
+    voterSlipStatus: "DELIVERED",
+    verified: true,
+    hasVoted: !!db.isVoted,
+    votedAt: db.votedAt || undefined,
+    votedByUserName: db.votedBy || undefined,
+    isVisited: !!db.isVisited,
+    isFavorite: !!db.isFavourite,
+    isHelped: false,
+    isDeceased: false,
+    isOutside: false,
+  };
+}
+
 export interface VoterManagementViewProps {
   portalMode?: "CANDIDATE" | "KARYAKARTA";
   assignedBooths?: string[] | number[];
@@ -1836,8 +1896,63 @@ export function VoterManagementView({
 }: VoterManagementViewProps = {}) {
   const { showToast } = useToast();
 
-  // Local state of electors for reactive updates
+  // Local state of electors for reactive updates (defaults to seed, replaced by live DB)
   const [electors, setElectors] = useState<ElectorRecord[]>(SEED_ELECTORS);
+  const [isLiveDbConnected, setIsLiveDbConnected] = useState<boolean>(false);
+  const [liveStats, setLiveStats] = useState<any>(null);
+
+  // Load Live Database Voters from Backend
+  useEffect(() => {
+    let active = true;
+    async function loadLiveVoters() {
+      try {
+        const [votersRes, statsRes] = await Promise.allSettled([
+          apiFetch<any>("/voters?limit=100"),
+          apiFetch<any>("/voters/stats"),
+        ]);
+
+        let rawList: any[] = [];
+        if (votersRes.status === "fulfilled" && votersRes.value) {
+          const val = votersRes.value as any;
+          if (Array.isArray(val.data?.voters)) {
+            rawList = val.data.voters;
+          } else if (Array.isArray(val.data)) {
+            rawList = val.data;
+          } else if (Array.isArray(val.voters)) {
+            rawList = val.voters;
+          } else if (Array.isArray(val)) {
+            rawList = val;
+          }
+        }
+
+        if (rawList.length > 0) {
+          const liveList = rawList.map(mapDbVoterToElector);
+          if (active) {
+            setElectors(liveList);
+            setIsLiveDbConnected(true);
+          }
+        } else if (votersRes.status === "rejected") {
+          console.error("Voters API call rejected:", (votersRes as any).reason);
+        }
+
+        if (
+          statsRes.status === "fulfilled" &&
+          statsRes.value?.success &&
+          statsRes.value.data
+        ) {
+          if (active) {
+            setLiveStats(statsRes.value.data);
+          }
+        }
+      } catch (err) {
+        console.warn("Backend not reached, using local seed electors", err);
+      }
+    }
+    loadLiveVoters();
+    return () => {
+      active = false;
+    };
+  }, []);
 
   // Active Election Day State (Client requirement: turnout control active during polling days)
   const [isElectionDayActive, setIsElectionDayActive] = useState<boolean>(true);
@@ -1867,6 +1982,17 @@ export function VoterManagementView({
       prev.map((e) => {
         if (e.id === voterId) {
           const nextVoted = !e.hasVoted;
+
+          // Sync live turnout to backend database
+          apiFetch(`/voters/${voterId}/turnout`, {
+            method: "PATCH",
+            body: JSON.stringify({
+              isVoted: nextVoted,
+              votedAt: currentTimestamp,
+              votedBy: actorName,
+            }),
+          }).catch((err) => console.warn("Live DB turnout sync warning:", err));
+
           const auditEntry = {
             id: `aud-${Date.now()}`,
             previousStatus: (e.hasVoted ? "VOTED" : "NOT_VOTED") as "VOTED" | "NOT_VOTED",
@@ -2187,23 +2313,23 @@ export function VoterManagementView({
     showToast("success", "Export Complete", `Exported ${listToExport.length} voters to CSV successfully.`);
   };
 
-  // 23 Quick Filter Cards (Matching Screenshot 1)
+  // 23 Quick Filter Cards (Dynamic counts from Live Hostinger DB if available)
   const quickFilterCards = [
-    { id: "total", label: "Total Voters", count: "2,48,650", icon: Users, iconBg: "bg-blue-50 dark:bg-blue-950/50", iconColor: "text-blue-600 dark:text-blue-400" },
-    { id: "male", label: "Male", count: "1,27,560", icon: Users, iconBg: "bg-indigo-50 dark:bg-indigo-950/50", iconColor: "text-indigo-600 dark:text-indigo-400" },
-    { id: "female", label: "Female", count: "1,21,090", icon: Users, iconBg: "bg-pink-50 dark:bg-pink-950/50", iconColor: "text-pink-600 dark:text-pink-400" },
+    { id: "total", label: "Total Voters", count: liveStats ? liveStats.totalElectors.toLocaleString("en-IN") : "2,48,650", icon: Users, iconBg: "bg-blue-50 dark:bg-blue-950/50", iconColor: "text-blue-600 dark:text-blue-400" },
+    { id: "male", label: "Male", count: liveStats ? liveStats.maleCount.toLocaleString("en-IN") : "1,27,560", icon: Users, iconBg: "bg-indigo-50 dark:bg-indigo-950/50", iconColor: "text-indigo-600 dark:text-indigo-400" },
+    { id: "female", label: "Female", count: liveStats ? liveStats.femaleCount.toLocaleString("en-IN") : "1,21,090", icon: Users, iconBg: "bg-pink-50 dark:bg-pink-950/50", iconColor: "text-pink-600 dark:text-pink-400" },
     { id: "alphabets", label: "Name Alphabet", count: "26", icon: Tag, iconBg: "bg-purple-50 dark:bg-purple-950/50", iconColor: "text-purple-600 dark:text-purple-400" },
     { id: "prabhaag", label: "Prabhaag", count: "12", icon: Building2, iconBg: "bg-cyan-50 dark:bg-cyan-950/50", iconColor: "text-cyan-600 dark:text-cyan-400" },
     { id: "gan", label: "Gan", count: "8", icon: Layers, iconBg: "bg-amber-50 dark:bg-amber-950/50", iconColor: "text-amber-600 dark:text-amber-400" },
     { id: "parts", label: "Electoral Part", count: "325", icon: Layers, iconBg: "bg-blue-50 dark:bg-blue-950/50", iconColor: "text-blue-600 dark:text-blue-400" },
     { id: "karyakarta", label: "Karyakarta", count: "4,850", icon: UserCheck, iconBg: "bg-purple-50 dark:bg-purple-950/50", iconColor: "text-purple-600 dark:text-purple-400" },
     { id: "booth", label: "Booth No", count: "2,045", icon: Building2, iconBg: "bg-blue-50 dark:bg-blue-950/50", iconColor: "text-blue-600 dark:text-blue-400" },
-    { id: "mobile", label: "Mobile", count: "1,86,430", icon: Phone, iconBg: "bg-cyan-50 dark:bg-cyan-950/50", iconColor: "text-cyan-600 dark:text-cyan-400" },
-    { id: "dob", label: "DOB / Month", count: "2,48,650", icon: Calendar, iconBg: "bg-rose-50 dark:bg-rose-950/50", iconColor: "text-rose-600 dark:text-rose-400" },
+    { id: "mobile", label: "Mobile", count: liveStats ? liveStats.totalElectors.toLocaleString("en-IN") : "1,86,430", icon: Phone, iconBg: "bg-cyan-50 dark:bg-cyan-950/50", iconColor: "text-cyan-600 dark:text-cyan-400" },
+    { id: "dob", label: "DOB / Month", count: liveStats ? liveStats.totalElectors.toLocaleString("en-IN") : "2,48,650", icon: Calendar, iconBg: "bg-rose-50 dark:bg-rose-950/50", iconColor: "text-rose-600 dark:text-rose-400" },
     { id: "surname", label: "Surname", count: "89,540", icon: Users, iconBg: "bg-indigo-50 dark:bg-indigo-950/50", iconColor: "text-indigo-600 dark:text-indigo-400" },
-    { id: "voted", label: "Voted", count: "1,40,320", icon: CheckCircle2, iconBg: "bg-blue-50 dark:bg-blue-950/50", iconColor: "text-blue-600 dark:text-blue-400" },
-    { id: "non_voted", label: "Non Voted", count: "1,08,330", icon: XCircle, iconBg: "bg-rose-50 dark:bg-rose-950/50", iconColor: "text-rose-600 dark:text-rose-400" },
-    { id: "visited", label: "Visited", count: "72,450", icon: Eye, iconBg: "bg-cyan-50 dark:bg-cyan-950/50", iconColor: "text-cyan-600 dark:text-cyan-400" },
+    { id: "voted", label: "Voted", count: liveStats ? liveStats.votedCount.toLocaleString("en-IN") : "1,40,320", icon: CheckCircle2, iconBg: "bg-blue-50 dark:bg-blue-950/50", iconColor: "text-blue-600 dark:text-blue-400" },
+    { id: "non_voted", label: "Non Voted", count: liveStats ? (liveStats.totalElectors - liveStats.votedCount).toLocaleString("en-IN") : "1,08,330", icon: XCircle, iconBg: "bg-rose-50 dark:bg-rose-950/50", iconColor: "text-rose-600 dark:text-rose-400" },
+    { id: "visited", label: "Visited", count: liveStats ? liveStats.visitedCount.toLocaleString("en-IN") : "72,450", icon: Eye, iconBg: "bg-cyan-50 dark:bg-cyan-950/50", iconColor: "text-cyan-600 dark:text-cyan-400" },
     { id: "favorites", label: "Favorites", count: "12,680", icon: Heart, iconBg: "bg-rose-50 dark:bg-rose-950/50", iconColor: "text-rose-600 dark:text-rose-400" },
     { id: "helped", label: "Helped", count: "6,240", icon: Heart, iconBg: "bg-amber-50 dark:bg-amber-950/50", iconColor: "text-amber-600 dark:text-amber-400" },
     { id: "address", label: "Address", count: "2,48,650", icon: MapPin, iconBg: "bg-cyan-50 dark:bg-cyan-950/50", iconColor: "text-cyan-600 dark:text-cyan-400" },
@@ -2555,9 +2681,17 @@ export function VoterManagementView({
 
         <div className="flex flex-wrap items-center gap-2">
           {/* Total Voters Pill */}
-          <div className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-50/80 dark:bg-blue-950/50 border border-blue-200 dark:border-blue-900/60 rounded-xl text-xs font-bold text-blue-700 dark:text-blue-400 shadow-xs">
-            <Users className="w-3.5 h-3.5" />
-            <span>2,48,650 Total Voters</span>
+          <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold shadow-xs ${
+            isLiveDbConnected
+              ? "bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-300 dark:border-emerald-700 text-emerald-700 dark:text-emerald-300"
+              : "bg-blue-50/80 dark:bg-blue-950/50 border border-blue-200 dark:border-blue-900/60 text-blue-700 dark:text-blue-400"
+          }`}>
+            <span className={`w-2 h-2 rounded-full ${isLiveDbConnected ? "bg-emerald-500 animate-pulse" : "bg-blue-500"}`} />
+            <span>
+              {isLiveDbConnected
+                ? `Live DB: ${liveStats?.totalElectors ?? electors.length} Electors (Hostinger MySQL)`
+                : "2,48,650 Total Voters"}
+            </span>
           </div>
 
           {/* Refresh Button */}
