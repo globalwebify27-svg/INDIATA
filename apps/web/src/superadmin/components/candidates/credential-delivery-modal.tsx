@@ -13,6 +13,8 @@ export interface CredentialDeliveryModalProps {
   candidate: CandidateRecord | null;
 }
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api/v1";
+
 export function CredentialDeliveryModal({
   isOpen,
   onClose,
@@ -28,7 +30,7 @@ export function CredentialDeliveryModal({
     setIsDispatching(true);
     try {
       const token = typeof window !== "undefined" ? localStorage.getItem("rajtantra_access_token") : null;
-      const response = await fetch(`http://localhost:4000/api/v1/auth/users/${candidate.id}/reset-password`, {
+      const response = await fetch(`${API_BASE_URL}/auth/users/${candidate.id}/reset-password`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

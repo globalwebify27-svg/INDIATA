@@ -24,6 +24,8 @@ import { useToast } from "@/context/toast-context";
 
 type PortalType = "candidate" | "superadmin" | "distributor" | "karyakarta";
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api/v1";
+
 export default function CentralLoginPage() {
   const { login } = useAuth();
   const { showToast } = useToast();
@@ -71,7 +73,7 @@ export default function CentralLoginPage() {
 
     setForgotLoading(true);
     try {
-      const response = await fetch("http://localhost:4000/api/v1/auth/forgot-password", {
+      const response = await fetch(`${API_BASE_URL}/auth/forgot-password`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ identifier: forgotIdentifier.trim() }),
@@ -122,7 +124,7 @@ export default function CentralLoginPage() {
 
     setForgotLoading(true);
     try {
-      const response = await fetch("http://localhost:4000/api/v1/auth/reset-password", {
+      const response = await fetch(`${API_BASE_URL}/auth/reset-password`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -242,7 +244,7 @@ export default function CentralLoginPage() {
 
       setIsSubmitting(true);
       try {
-        const response = await fetch("http://localhost:4000/api/v1/auth/karyakarta/activate", {
+        const response = await fetch(`${API_BASE_URL}/auth/karyakarta/activate`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({

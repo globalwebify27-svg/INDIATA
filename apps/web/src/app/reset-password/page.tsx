@@ -6,6 +6,8 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { Lock, Eye, EyeOff, ShieldCheck, ArrowRight, CheckCircle2, BadgeAlert } from "lucide-react";
 import { useToast } from "@/context/toast-context";
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api/v1";
+
 function ResetPasswordContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -53,7 +55,7 @@ function ResetPasswordContent() {
 
     setIsSubmitting(true);
     try {
-      const response = await fetch("http://localhost:4000/api/v1/auth/reset-password", {
+      const response = await fetch(`${API_BASE_URL}/auth/reset-password`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
