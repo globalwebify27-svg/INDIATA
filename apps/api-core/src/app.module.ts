@@ -4,6 +4,7 @@ import { PrismaModule } from "./prisma/prisma.module";
 import { HealthModule } from "./modules/health/health.module";
 import { AuthModule } from "./modules/auth/auth.module";
 import { OrganizationsModule } from "./modules/organizations/organizations.module";
+import { VotersModule } from "./modules/voters/voters.module";
 import { JwtAuthGuard } from "./common/guards/jwt-auth.guard";
 import { RolesGuard } from "./common/guards/roles.guard";
 import { TransformInterceptor } from "./common/interceptors/transform.interceptor";
@@ -12,7 +13,13 @@ import { GlobalHttpExceptionFilter } from "./common/filters/http-exception.filte
 import { RequestIdMiddleware } from "./common/middleware/request-id.middleware";
 
 @Module({
-  imports: [PrismaModule, HealthModule, AuthModule, OrganizationsModule],
+  imports: [
+    PrismaModule,
+    HealthModule,
+    AuthModule,
+    OrganizationsModule,
+    VotersModule,
+  ],
   providers: [
     // Deny-by-default global JWT authentication guard
     {

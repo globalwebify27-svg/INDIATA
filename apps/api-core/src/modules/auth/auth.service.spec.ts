@@ -3,6 +3,7 @@ import { UnauthorizedException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import * as bcrypt from "bcryptjs";
 import { AuthService } from "./auth.service";
+import { AuthNotificationService } from "./auth-notification.service";
 import { PrismaService } from "../../prisma/prisma.service";
 import { UserRole } from "@rajtantra/common-types";
 
@@ -38,11 +39,16 @@ describe("AuthService", () => {
       signAsync: jest.fn().mockResolvedValue("mock-access-token-xyz"),
     };
 
+    const notificationService = {
+      dispatchPasswordResetOtp: jest.fn().mockResolvedValue({ success: true, message: "OK" }),
+    };
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AuthService,
         { provide: PrismaService, useValue: prisma },
         { provide: JwtService, useValue: jwtService },
+        { provide: AuthNotificationService, useValue: notificationService },
       ],
     }).compile();
 
