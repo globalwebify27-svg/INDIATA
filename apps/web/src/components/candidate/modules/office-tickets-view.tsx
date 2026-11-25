@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Search,
   Plus,
@@ -10,6 +10,7 @@ import {
   UserCheck,
 } from "lucide-react";
 import { useToast } from "@/context/toast-context";
+import { apiFetch } from "@/lib/api-client";
 
 // ============================================================================
 // DATA MODELS
@@ -219,6 +220,43 @@ export function OfficeTicketsView() {
   const [statusFilter, setStatusFilter] = useState("ALL");
   const [categoryFilter, setCategoryFilter] = useState("ALL");
   const [searchQuery, setSearchQuery] = useState("");
+
+  // Sync live tickets from backend API
+  useEffect(() => {
+    let isMounted = true;
+    async function loadLiveTickets() {
+      try {
+        const res = await apiFetch<any>("/tickets?limit=50");
+        const list = res?.data?.tickets || res?.data || res;
+        if (Array.isArray(list) && list.length > 0 && isMounted) {
+          const mapped = list.map((t: any) => ({
+            id: t.ticketNumber || t.id,
+            visitorName: t.voterName || t.voter?.name || "Citizen / Voter",
+            visitorPhone: t.voterPhone || t.voter?.phone || "N/A",
+            visitorAddress: t.location || t.voter?.address || `Booth #${t.voterBooth || "Kasba"}`,
+            isLinkedVoter: Boolean(t.voterId),
+            voterEpic: t.voter?.epicId || "ECI-LINKED",
+            category: t.category || "General Grievance",
+            priority: (t.priority === "URGENT" ? "CRITICAL" : t.priority || "MEDIUM") as any,
+            status: (t.status === "RESOLVED" || t.status === "CLOSED" ? "RESOLVED" : t.status === "IN_PROGRESS" ? "IN_PROGRESS" : "OPEN") as any,
+            assignedTo: t.assignedTo || t.karyakartaName || "Office Team",
+            createdAt: t.createdAt ? new Date(t.createdAt).toLocaleDateString("en-IN") : "Today",
+            updatedAt: t.updatedAt ? new Date(t.updatedAt).toLocaleDateString("en-IN") : "Today",
+            description: t.description || t.title || "No description provided",
+            resolutionNote: t.resolutionNotes || undefined,
+            comments: [],
+          }));
+          setTickets(mapped);
+        }
+      } catch {
+        // Fallback gracefully to seed tickets if backend not reached
+      }
+    }
+    loadLiveTickets();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   // Inspect Ticket Drawer / Modal
   const [inspectTicket, setInspectTicket] = useState<TicketRecord | null>(null);

@@ -13,23 +13,43 @@ async function bootstrap(): Promise<void> {
 
   // CORS Configuration
   const allowedOrigins = env.CORS_ORIGIN.split(",").map((origin) =>
-    origin.trim(),
+    origin.trim().replace(/\/$/, ""),
   );
   app.enableCors({
     origin: (
       origin: string | undefined,
       callback: (err: Error | null, allow?: boolean) => void,
     ) => {
-      // Allow requests with no origin (e.g. mobile apps, curl) or allowed origins
-      if (
-        !origin ||
-        allowedOrigins.includes(origin) ||
-        allowedOrigins.includes("*")
-      ) {
-        callback(null, true);
-      } else {
-        callback(new Error(`Origin ${origin} not allowed by CORS policy`));
+      // Allow requests with no origin (e.g. mobile apps, curl, server-side)
+      if (!origin) {
+        return callback(null, true);
       }
+
+      const normalizedOrigin = origin.replace(/\/$/, "");
+
+      // 1. Direct match with configured CORS_ORIGIN or wildcard
+      if (
+        allowedOrigins.includes("*") ||
+        allowedOrigins.includes(normalizedOrigin)
+      ) {
+        return callback(null, true);
+      }
+
+      // 2. Automatically allow all Vercel deployments (*.vercel.app) & localhost
+      try {
+        const url = new URL(normalizedOrigin);
+        if (
+          url.hostname.endsWith(".vercel.app") ||
+          url.hostname === "localhost" ||
+          url.hostname === "127.0.0.1"
+        ) {
+          return callback(null, true);
+        }
+      } catch {
+        // Fallback for non-URL origins
+      }
+
+      callback(new Error(`Origin ${origin} not allowed by CORS policy`));
     },
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     credentials: true,

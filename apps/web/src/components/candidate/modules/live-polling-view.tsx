@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import {
   Radio,
@@ -17,6 +17,7 @@ import {
   X,
 } from "lucide-react";
 import { useToast } from "@/context/toast-context";
+import { apiFetch } from "@/lib/api-client";
 
 // ============================================================================
 // DATA MODELS & MOCK TELEMETRY
@@ -292,9 +293,45 @@ export function LivePollingView() {
   // Selected Historical Election for drill-down
   const [selectedHistoricalElection, setSelectedHistoricalElection] = useState<HistoricalElection | null>(null);
 
+  // Real-time API Telemetry State
+  const [telemetry, setTelemetry] = useState<any>(null);
+  const [boothList, setBoothList] = useState<BoothTurnoutItem[]>(BOOTH_TURNOUT_LIST);
+  const [timeSlots, setTimeSlots] = useState<TimeSlotProgress[]>(TIME_SLOT_DATA);
+
+  // Sync live telemetry from /api/v1/polling
+  useEffect(() => {
+    let isMounted = true;
+    async function loadTelemetry() {
+      try {
+        const [telRes, boothsRes] = await Promise.allSettled([
+          apiFetch<any>("/polling/live"),
+          apiFetch<any>("/polling/booths"),
+        ]);
+
+        if (telRes.status === "fulfilled" && telRes.value?.data && isMounted) {
+          const data = telRes.value.data;
+          setTelemetry(data);
+          if (Array.isArray(data.timeSlots) && data.timeSlots.length > 0) {
+            setTimeSlots(data.timeSlots);
+          }
+        }
+
+        if (boothsRes.status === "fulfilled" && Array.isArray(boothsRes.value?.data) && isMounted) {
+          setBoothList(boothsRes.value.data);
+        }
+      } catch {
+        // Fallback gracefully
+      }
+    }
+    loadTelemetry();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   // Filtered Booths in Modal
   const filteredBooths = useMemo(() => {
-    return BOOTH_TURNOUT_LIST.filter((b) => {
+    return boothList.filter((b) => {
       const matchSearch =
         boothSearch.trim() === "" ||
         b.name.toLowerCase().includes(boothSearch.toLowerCase()) ||
@@ -304,22 +341,31 @@ export function LivePollingView() {
       const matchStatus = boothStatusFilter === "ALL" || b.status === boothStatusFilter;
       return matchSearch && matchStatus;
     });
-  }, [boothSearch, boothStatusFilter]);
+  }, [boothList, boothSearch, boothStatusFilter]);
 
   // Overall Statistics Calculation
-  const totalRegistered = 284500;
-  const totalVotesCast = 142250;
-  const remainingVoters = totalRegistered - totalVotesCast;
-  const turnoutPercentage = ((totalVotesCast / totalRegistered) * 100).toFixed(1);
+  const totalRegistered = telemetry?.totalRegistered ?? 284500;
+  const totalVotesCast = telemetry?.votesCast ?? 142250;
+  const remainingVoters = telemetry?.remainingVoters ?? (totalRegistered - totalVotesCast);
+  const turnoutPercentage =
+    telemetry?.turnoutPercentage !== undefined
+      ? String(telemetry.turnoutPercentage)
+      : ((totalVotesCast / totalRegistered) * 100).toFixed(1);
 
   // Demographic Statistics
-  const maleRegistered = 146000;
-  const maleVoted = 74500;
-  const maleTurnout = ((maleVoted / maleRegistered) * 100).toFixed(1);
+  const maleRegistered = telemetry?.demographics?.maleVoters ?? 146000;
+  const maleVoted = telemetry?.demographics?.maleVoted ?? 74500;
+  const maleTurnout =
+    telemetry?.demographics?.maleTurnoutPct !== undefined
+      ? String(telemetry.demographics.maleTurnoutPct)
+      : ((maleVoted / maleRegistered) * 100).toFixed(1);
 
-  const femaleRegistered = 136500;
-  const femaleVoted = 66800;
-  const femaleTurnout = ((femaleVoted / femaleRegistered) * 100).toFixed(1);
+  const femaleRegistered = telemetry?.demographics?.femaleVoters ?? 136500;
+  const femaleVoted = telemetry?.demographics?.femaleVoted ?? 66800;
+  const femaleTurnout =
+    telemetry?.demographics?.femaleTurnoutPct !== undefined
+      ? String(telemetry.demographics.femaleTurnoutPct)
+      : ((femaleVoted / femaleRegistered) * 100).toFixed(1);
 
   const otherRegistered = 2000;
   const otherVoted = 950;
@@ -566,7 +612,7 @@ export function LivePollingView() {
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2.5">
-              {TIME_SLOT_DATA.map((slot, idx) => (
+              {timeSlots.map((slot, idx) => (
                 <div
                   key={idx}
                   className={`p-3 rounded-xl border text-center transition-all ${
@@ -611,7 +657,7 @@ export function LivePollingView() {
 
             {/* Quick Preview Grid of 4 Sample Booths */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
-              {BOOTH_TURNOUT_LIST.slice(0, 4).map((booth) => (
+              {boothList.slice(0, 4).map((booth) => (
                 <div
                   key={booth.boothNumber}
                   className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 space-y-2"
@@ -1133,7 +1179,7 @@ export function LivePollingView() {
             {/* Modal Footer */}
             <div className="flex items-center justify-between pt-2 border-t border-slate-100 dark:border-slate-800 shrink-0">
               <span className="text-xs text-slate-400">
-                Showing {filteredBooths.length} of {BOOTH_TURNOUT_LIST.length} configured polling stations
+                Showing {filteredBooths.length} of {boothList.length} configured polling stations
               </span>
               <button
                 onClick={() => setIsBoothModalOpen(false)}

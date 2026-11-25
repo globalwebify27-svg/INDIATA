@@ -1,0 +1,34 @@
+export enum SlipChannel {
+  WHATSAPP_DIGITAL = "WHATSAPP_DIGITAL",
+  THERMAL_58MM = "THERMAL_58MM",
+  PHYSICAL_DELIVERY = "PHYSICAL_DELIVERY",
+}
+
+export enum SlipStatus {
+  GENERATED = "GENERATED",
+  PRINTED = "PRINTED",
+  DELIVERED = "DELIVERED",
+  FAILED = "FAILED",
+}
+
+export enum TicketPriority {
+  LOW = "LOW",
+  MEDIUM = "MEDIUM",
+  HIGH = "HIGH",
+  URGENT = "URGENT",
+}
+
+export enum TicketStatus {
+  NEW = "NEW",
+  ASSIGNED = "ASSIGNED",
+  IN_PROGRESS = "IN_PROGRESS",
+  FOLLOW_UP = "FOLLOW_UP",
+  RESOLVED = "RESOLVED",
+  CLOSED = "CLOSED",
+}
+
+export enum CorrectionStatus {
+  PENDING_WAR_ROOM = "PENDING_WAR_ROOM",
+  APPROVED = "APPROVED",
+  REJECTED = "REJECTED",
+}
