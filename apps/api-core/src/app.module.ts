@@ -5,6 +5,7 @@ import { HealthModule } from "./modules/health/health.module";
 import { AuthModule } from "./modules/auth/auth.module";
 import { OrganizationsModule } from "./modules/organizations/organizations.module";
 import { VotersModule } from "./modules/voters/voters.module";
+import { BoothsModule } from "./modules/booths/booths.module";
 import { JwtAuthGuard } from "./common/guards/jwt-auth.guard";
 import { RolesGuard } from "./common/guards/roles.guard";
 import { TransformInterceptor } from "./common/interceptors/transform.interceptor";
@@ -19,6 +20,7 @@ import { RequestIdMiddleware } from "./common/middleware/request-id.middleware";
     AuthModule,
     OrganizationsModule,
     VotersModule,
+    BoothsModule,
   ],
   providers: [
     // Deny-by-default global JWT authentication guard

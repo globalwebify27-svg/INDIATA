@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Search, Phone, Plus, X } from "lucide-react";
 import { useToast } from "@/context/toast-context";
+import { apiFetch } from "@/lib/api-client";
 
 export interface BloOfficer {
   id: string;
@@ -133,6 +134,38 @@ export function BloDirectoryView() {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("ALL");
   const [showModal, setShowModal] = useState(false);
+
+  useEffect(() => {
+    let isMounted = true;
+    async function loadLiveBlos() {
+      try {
+        const res = await apiFetch<any>("/booths/blo/directory");
+        const list = res?.data ?? res;
+        if (Array.isArray(list) && list.length > 0 && isMounted) {
+          setBlos(
+            list.map((item: any, idx: number) => ({
+              id: item.id || `blo-${item.boothNumber || idx}`,
+              name: item.name || item.bloName || "Not Assigned",
+              phone: item.phone || item.bloPhone || "N/A",
+              designation: item.designation || "Booth Level Officer (ECI)",
+              department: item.department || "Revenue / Education Board",
+              boothNumber: Number(item.boothNumber) || 101,
+              pollingStation: item.pollingStation || item.boothName || `Polling Booth #${item.boothNumber}`,
+              constituency: item.constituency || "215 - Kasba Peth",
+              status: (item.status || "ACTIVE") as any,
+              lastVerifiedDate: item.lastVerifiedDate || new Date().toISOString().split("T")[0],
+            }))
+          );
+        }
+      } catch {
+        // Fallback to initial seed state gracefully if server not running
+      }
+    }
+    loadLiveBlos();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   // Form states for new BLO
   const [name, setName] = useState("");

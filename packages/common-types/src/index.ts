@@ -6,6 +6,7 @@ export * from "./api/pagination.interface";
 export * from "./enums/roles.enum";
 export * from "./enums/organization.enum";
 export * from "./enums/voter.enum";
+export * from "./enums/booth.enum";
 
 // Auth & Session
 export * from "./auth/jwt-payload.interface";
@@ -18,3 +19,4 @@ export * from "./tenancy/tenant-context.interface";
 export * from "./validation/auth.schema";
 export * from "./validation/pagination.schema";
 export * from "./validation/voter.schema";
+export * from "./validation/booth.schema";

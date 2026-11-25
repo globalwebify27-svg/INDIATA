@@ -21,6 +21,7 @@ import {
   UserPlus,
 } from "lucide-react";
 import { useToast } from "@/context/toast-context";
+import { apiFetch } from "@/lib/api-client";
 
 // ============================================================================
 // TYPES & DATA MODELS
@@ -605,6 +606,38 @@ export function KaryakartaWorkforceView({ initialSubView }: KaryakartaWorkforceV
   const [users, setUsers] = useState<PortalUser[]>(SEED_PORTAL_USERS);
   const [karyakartas, setKaryakartas] = useState<KaryakartaCadre[]>(SEED_KARYAKARTAS);
   const [updateRequests, setUpdateRequests] = useState<VoterUpdateRequest[]>(SEED_UPDATE_REQUESTS);
+
+  // Sync live karyakartas from backend API
+  useEffect(() => {
+    let isMounted = true;
+    async function loadLiveWorkforce() {
+      try {
+        const res = await apiFetch<any>("/booths/workforce");
+        const list = res?.data ?? res;
+        if (Array.isArray(list) && list.length > 0 && isMounted) {
+          const mappedCadre: KaryakartaCadre[] = list.map((item: any, idx: number) => ({
+            id: item.id || `k-cadre-${idx}`,
+            name: item.name || "Karyakarta",
+            phone: item.phone || "N/A",
+            prabhaag: item.prabhaag || "Prabhaag 12 - Kothrud West",
+            assignedBooth: Number(item.assignedBooths?.[0]) || 101,
+            surveysCompleted: item.surveysCompletedCount || 0,
+            voterSlipsDelivered: item.slipsDispatchedCount || 0,
+            status: item.status === "ACTIVE" ? "APPROVED" : (item.status || "APPROVED"),
+            joinedDate: item.joinedDate ? (new Date(item.joinedDate).toISOString().split("T")[0] || "2024-04-01") : "2024-04-01",
+            isOnline: true,
+          }));
+          setKaryakartas(mappedCadre);
+        }
+      } catch {
+        // Fallback gracefully
+      }
+    }
+    loadLiveWorkforce();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   // Filter requests when user clicks "View Updates" from worker table
   const [selectedWorkerFilter, setSelectedWorkerFilter] = useState<string>("ALL");
