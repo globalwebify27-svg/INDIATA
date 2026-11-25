@@ -8,6 +8,7 @@ import { VotersModule } from "./modules/voters/voters.module";
 import { BoothsModule } from "./modules/booths/booths.module";
 import { SurveysModule } from "./modules/surveys/surveys.module";
 import { PollingModule } from "./modules/polling/polling.module";
+import { CampaignsModule } from "./modules/campaigns/campaigns.module";
 import { JwtAuthGuard } from "./common/guards/jwt-auth.guard";
 import { RolesGuard } from "./common/guards/roles.guard";
 import { TransformInterceptor } from "./common/interceptors/transform.interceptor";
@@ -25,6 +26,7 @@ import { RequestIdMiddleware } from "./common/middleware/request-id.middleware";
     BoothsModule,
     SurveysModule,
     PollingModule,
+    CampaignsModule,
   ],
   providers: [
     // Deny-by-default global JWT authentication guard

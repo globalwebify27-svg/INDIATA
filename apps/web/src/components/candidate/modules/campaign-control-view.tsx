@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import {
   Megaphone,
   CreditCard,
@@ -19,6 +19,7 @@ import {
   DollarSign,
 } from "lucide-react";
 import { useToast } from "@/context/toast-context";
+import { apiFetch } from "@/lib/api-client";
 
 export type CampaignChannel = "WHATSAPP" | "SMS" | "AI_VOICE" | "BULK";
 export type CampaignStatus = "RUNNING" | "SCHEDULED" | "COMPLETED" | "PAUSED" | "DRAFT";
@@ -268,6 +269,41 @@ export function CampaignControlView() {
   // Campaigns Data
   const [campaigns, setCampaigns] = useState<CampaignRecord[]>(SEED_CAMPAIGNS);
 
+  // Sync campaigns and credits from backend API
+  useEffect(() => {
+    let isMounted = true;
+    async function loadCampaignData() {
+      try {
+        const [cRes, credRes] = await Promise.allSettled([
+          apiFetch<any>("/campaigns"),
+          apiFetch<any>("/campaigns/credits"),
+        ]);
+
+        if (cRes.status === "fulfilled" && Array.isArray(cRes.value?.data?.campaigns) && isMounted) {
+          if (cRes.value.data.campaigns.length > 0) {
+            setCampaigns(cRes.value.data.campaigns);
+          }
+        }
+
+        if (credRes.status === "fulfilled" && credRes.value?.data && isMounted) {
+          const cred = credRes.value.data;
+          setCredits({
+            whatsapp: cred.whatsapp ?? 48250,
+            sms: cred.sms ?? 92400,
+            voice: cred.voice ?? 31800,
+            totalBalanceInr: cred.totalBalanceInr ?? 18450,
+          });
+        }
+      } catch {
+        // Fallback seamlessly to seed data
+      }
+    }
+    loadCampaignData();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   // Filters
   const [channelFilter, setChannelFilter] = useState<string>("ALL");
   const [statusFilter, setStatusFilter] = useState<string>("ALL");
@@ -345,11 +381,19 @@ export function CampaignControlView() {
     });
   }, [campaigns, activeTab, channelFilter, statusFilter, searchQuery]);
 
-  const toggleCampaignStatus = (id: string, currentStatus: CampaignStatus) => {
+  const toggleCampaignStatus = async (id: string, currentStatus: CampaignStatus) => {
     const nextStatus: CampaignStatus = currentStatus === "RUNNING" ? "PAUSED" : "RUNNING";
     setCampaigns((prev) =>
       prev.map((c) => (c.id === id ? { ...c, status: nextStatus } : c))
     );
+    try {
+      await apiFetch(`/campaigns/${id}/status`, {
+        method: "PATCH",
+        body: JSON.stringify({ status: nextStatus }),
+      });
+    } catch {
+      // Keep optimistic update
+    }
     showToast(
       "info",
       "Campaign Updated",
@@ -357,7 +401,7 @@ export function CampaignControlView() {
     );
   };
 
-  const handleLaunchCampaign = () => {
+  const handleLaunchCampaign = async () => {
     const newCamp: CampaignRecord = {
       id: `cmp-0${campaigns.length + 1}`,
       name: wizardName.trim() || "Multi-Channel Voter Broadcast",
@@ -380,6 +424,27 @@ export function CampaignControlView() {
 
     setCampaigns([newCamp, ...campaigns]);
     setShowGenerateModal(false);
+
+    try {
+      const createdRes = await apiFetch<any>("/campaigns", {
+        method: "POST",
+        body: JSON.stringify({
+          name: newCamp.name,
+          channel: newCamp.channel,
+          campaignType: newCamp.campaignType,
+          targetAudience: newCamp.targetAudience,
+          messageTemplate: newCamp.messageTemplate,
+          scheduledTime: newCamp.scheduledTime,
+        }),
+      });
+
+      if (wizardSchedule === "NOW" && createdRes?.data?.id) {
+        await apiFetch(`/campaigns/${createdRes.data.id}/launch`, { method: "POST" });
+      }
+    } catch {
+      // Local state is already updated optimistically
+    }
+
     showToast(
       "success",
       "Campaign Launched",

@@ -9,6 +9,7 @@ export * from "./enums/voter.enum";
 export * from "./enums/booth.enum";
 export * from "./enums/survey.enum";
 export * from "./enums/polling.enum";
+export * from "./enums/campaign.enum";
 
 // Auth & Session
 export * from "./auth/jwt-payload.interface";
@@ -24,3 +25,4 @@ export * from "./validation/voter.schema";
 export * from "./validation/booth.schema";
 export * from "./validation/survey.schema";
 export * from "./validation/polling.schema";
+export * from "./validation/campaign.schema";
