@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect, useCallback } from "react";
 import { usePathname } from "next/navigation";
 import {
   Search,
@@ -19,6 +19,10 @@ import {
   Users,
   Eye,
   UserPlus,
+  Key,
+  Copy,
+  Share2,
+  Loader2,
 } from "lucide-react";
 import { useToast } from "@/context/toast-context";
 import { apiFetch } from "@/lib/api-client";
@@ -56,6 +60,7 @@ export interface PortalUser {
   canImportData: boolean;
   avatar?: string;
   lastActive: string;
+  activationKey?: string;
 }
 
 export interface KaryakartaCadre {
@@ -64,12 +69,14 @@ export interface KaryakartaCadre {
   phone: string;
   prabhaag: string;
   assignedBooth: number;
+  assignedBooths?: number[];
   surveysCompleted: number;
   voterSlipsDelivered: number;
   status: "APPROVED" | "PENDING" | "REJECTED" | "BLOCKED";
   joinedDate: string;
   isOnline: boolean;
   currentLocation?: { lat: number; lng: number; label: string };
+  activationKey?: string;
 }
 
 export interface UpdatedFieldDiff {
@@ -608,36 +615,58 @@ export function KaryakartaWorkforceView({ initialSubView }: KaryakartaWorkforceV
   const [updateRequests, setUpdateRequests] = useState<VoterUpdateRequest[]>(SEED_UPDATE_REQUESTS);
 
   // Sync live karyakartas from backend API
-  useEffect(() => {
-    let isMounted = true;
-    async function loadLiveWorkforce() {
-      try {
-        const res = await apiFetch<any>("/booths/workforce");
-        const list = res?.data ?? res;
-        if (Array.isArray(list) && list.length > 0 && isMounted) {
-          const mappedCadre: KaryakartaCadre[] = list.map((item: any, idx: number) => ({
-            id: item.id || `k-cadre-${idx}`,
-            name: item.name || "Karyakarta",
-            phone: item.phone || "N/A",
-            prabhaag: item.prabhaag || "Prabhaag 12 - Kothrud West",
-            assignedBooth: Number(item.assignedBooths?.[0]) || 101,
-            surveysCompleted: item.surveysCompletedCount || 0,
-            voterSlipsDelivered: item.slipsDispatchedCount || 0,
-            status: item.status === "ACTIVE" ? "APPROVED" : (item.status || "APPROVED"),
-            joinedDate: item.joinedDate ? (new Date(item.joinedDate).toISOString().split("T")[0] || "2024-04-01") : "2024-04-01",
-            isOnline: true,
-          }));
-          setKaryakartas(mappedCadre);
-        }
-      } catch {
-        // Fallback gracefully
+  const loadLiveWorkforce = useCallback(async () => {
+    try {
+      const res = await apiFetch<any>("/booths/workforce");
+      const list = (res as any)?.data ?? res;
+      if (Array.isArray(list) && list.length > 0) {
+        const mappedCadre: KaryakartaCadre[] = list.map((item: any, idx: number) => ({
+          id: item.id || `k-cadre-${idx}`,
+          name: item.name || "Karyakarta",
+          phone: item.phone || "N/A",
+          prabhaag: item.prabhaag || "215 - Kasba Peth",
+          assignedBooth: Number(item.assignedBooths?.[0]) || 101,
+          assignedBooths: Array.isArray(item.assignedBooths) ? item.assignedBooths.map(Number) : [101],
+          surveysCompleted: item.surveysCompletedCount || 0,
+          voterSlipsDelivered: item.slipsDispatchedCount || 0,
+          status: item.status === "ACTIVE" ? "APPROVED" : (item.status || "APPROVED"),
+          joinedDate: item.joinedDate ? (new Date(item.joinedDate).toISOString().split("T")[0] || "2024-04-01") : "2024-04-01",
+          isOnline: true,
+          activationKey: item.activationKey,
+        }));
+        setKaryakartas(mappedCadre);
+
+        const livePortalUsers: PortalUser[] = list.map((item: any, idx: number) => ({
+          id: item.id || `live-usr-${idx}`,
+          name: item.name,
+          email: `${item.phone?.replace(/[^0-9]/g, "") || "karyakarta"}@indata-election.in`,
+          phone: item.phone || "N/A",
+          role: "KARYAKARTA" as UserRole,
+          status: "ACTIVE" as const,
+          prabhaag: item.prabhaag || "215 - Kasba Peth",
+          assignedBooths: Array.isArray(item.assignedBooths) ? item.assignedBooths.map(Number) : [101],
+          voterSerialRange: "Full Roll Range",
+          modulePermissions: ["VOTER_SEARCH", "SURVEY", "SLIP_DISTRIBUTION"],
+          canImportData: false,
+          lastActive: "Active today",
+          activationKey: item.activationKey,
+        }));
+
+        setUsers((prev) => {
+          const liveIds = new Set(livePortalUsers.map((u) => u.id));
+          const livePhones = new Set(livePortalUsers.map((u) => u.phone));
+          const retained = prev.filter((u) => !liveIds.has(u.id) && !livePhones.has(u.phone));
+          return [...livePortalUsers, ...retained];
+        });
       }
+    } catch {
+      // Fallback gracefully
     }
-    loadLiveWorkforce();
-    return () => {
-      isMounted = false;
-    };
   }, []);
+
+  useEffect(() => {
+    loadLiveWorkforce();
+  }, [loadLiveWorkforce]);
 
   // Filter requests when user clicks "View Updates" from worker table
   const [selectedWorkerFilter, setSelectedWorkerFilter] = useState<string>("ALL");
@@ -668,6 +697,7 @@ export function KaryakartaWorkforceView({ initialSubView }: KaryakartaWorkforceV
             setUsers((prev) => [newUser, ...prev]);
             setSubView("users-all");
           }}
+          onReloadWorkforce={loadLiveWorkforce}
         />
       )}
 
@@ -675,6 +705,7 @@ export function KaryakartaWorkforceView({ initialSubView }: KaryakartaWorkforceV
         <MembersRosterView
           karyakartas={karyakartas}
           setKaryakartas={setKaryakartas}
+          onNavigateToAdd={() => setSubView("users-add")}
         />
       )}
 
@@ -1068,7 +1099,15 @@ function AllUsersView({ users, setUsers, onNavigateToAdd }: AllUsersViewProps) {
                           .join("")}
                       </div>
                       <div>
-                        <span className="font-bold text-slate-900 block">{u.name}</span>
+                        <div className="flex items-center gap-1.5">
+                          <span className="font-bold text-slate-900 block">{u.name}</span>
+                          {u.activationKey && (
+                            <span className="inline-flex items-center gap-1 font-mono text-[10px] font-bold bg-amber-50 text-amber-800 px-1.5 py-0.5 rounded border border-amber-300">
+                              <Key className="w-2.5 h-2.5" />
+                              {u.activationKey}
+                            </span>
+                          )}
+                        </div>
                         <span className="text-[11px] text-slate-500 font-mono">{u.phone}</span>
                       </div>
                     </div>
@@ -1124,12 +1163,27 @@ function AllUsersView({ users, setUsers, onNavigateToAdd }: AllUsersViewProps) {
                     </button>
                   </td>
                   <td className="py-3 px-4 text-right">
-                    <button
-                      onClick={() => setEditingUser({ ...u })}
-                      className="px-2.5 py-1 bg-slate-100 hover:bg-blue-50 text-slate-700 hover:text-blue-700 rounded-lg text-xs font-semibold transition-colors"
-                    >
-                      View Details
-                    </button>
+                    <div className="flex items-center justify-end gap-1.5">
+                      {u.activationKey && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            navigator.clipboard.writeText(u.activationKey!);
+                            showToast("success", "Copied", `Activation Key ${u.activationKey} copied.`);
+                          }}
+                          className="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                          title={`Copy Key: ${u.activationKey}`}
+                        >
+                          <Copy className="w-3.5 h-3.5" />
+                        </button>
+                      )}
+                      <button
+                        onClick={() => setEditingUser({ ...u })}
+                        className="px-2.5 py-1 bg-slate-100 hover:bg-blue-50 text-slate-700 hover:text-blue-700 rounded-lg text-xs font-semibold transition-colors"
+                      >
+                        View Details
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -1298,6 +1352,46 @@ function AllUsersView({ users, setUsers, onNavigateToAdd }: AllUsersViewProps) {
                 <p>Last Active: {editingUser.lastActive || "Today"}</p>
               </div>
 
+              {editingUser.activationKey && (
+                <div className="p-3.5 bg-amber-50 border border-amber-200 rounded-2xl space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] font-bold text-amber-900 flex items-center gap-1.5">
+                      <Key className="w-3.5 h-3.5 text-amber-700" />
+                      Mobile Login Activation Key
+                    </span>
+                    <span className="font-mono font-extrabold text-sm text-blue-700 bg-white px-2 py-0.5 rounded border border-amber-300">
+                      {editingUser.activationKey}
+                    </span>
+                  </div>
+                  <div className="flex gap-2 pt-1">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        navigator.clipboard.writeText(editingUser.activationKey!);
+                        showToast("success", "Copied", `Activation Key ${editingUser.activationKey} copied.`);
+                      }}
+                      className="flex-1 py-1.5 px-2 bg-white hover:bg-amber-100 text-amber-900 border border-amber-300 rounded-xl text-[11px] font-bold flex items-center justify-center gap-1.5 transition-colors"
+                    >
+                      <Copy className="w-3.5 h-3.5" />
+                      <span>Copy Key</span>
+                    </button>
+                    <a
+                      href={`https://api.whatsapp.com/send?phone=${encodeURIComponent(
+                        editingUser.phone.replace(/[^0-9]/g, "")
+                      )}&text=${encodeURIComponent(
+                        `Namaskar ${editingUser.name}, your INDIATA Mobile Activation Key is: *${editingUser.activationKey}*. Login at: https://indiata-mu.vercel.app/login`
+                      )}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex-1 py-1.5 px-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-[11px] font-bold flex items-center justify-center gap-1.5 transition-colors"
+                    >
+                      <Share2 className="w-3.5 h-3.5" />
+                      <span>WhatsApp</span>
+                    </a>
+                  </div>
+                </div>
+              )}
+
               <div className="flex items-center justify-end gap-2 pt-4 border-t border-slate-100">
                 <button
                   type="button"
@@ -1329,9 +1423,10 @@ function AllUsersView({ users, setUsers, onNavigateToAdd }: AllUsersViewProps) {
 interface AddUserViewProps {
   onBack: () => void;
   onUserCreated: (newUser: PortalUser) => void;
+  onReloadWorkforce?: () => Promise<void>;
 }
 
-function AddUserView({ onBack, onUserCreated }: AddUserViewProps) {
+function AddUserView({ onBack, onUserCreated, onReloadWorkforce }: AddUserViewProps) {
   const { showToast } = useToast();
 
   const [form, setForm] = useState({
@@ -1340,12 +1435,23 @@ function AddUserView({ onBack, onUserCreated }: AddUserViewProps) {
     phone: "",
     loginPassword: "Password@2024",
     role: "KARYAKARTA" as UserRole,
-    prabhaag: "Prabhaag 12 - Kothrud West",
+    prabhaag: "215 - Kasba Peth",
     assignedBooths: [101],
     voterSerialRange: "1 to 250",
     modulePermissions: ["VOTER_SEARCH", "SURVEY", "SLIP_DISTRIBUTION", "AI_ASSISTANT"],
     canImportData: false,
   });
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [copiedKey, setCopiedKey] = useState(false);
+  const [createdKeyData, setCreatedKeyData] = useState<{
+    id: string;
+    name: string;
+    phone: string;
+    activationKey: string;
+    assignedBooths: number[];
+    role: UserRole;
+  } | null>(null);
 
   const toggleBooth = (boothNo: number) => {
     setForm((prev) => ({
@@ -1365,30 +1471,52 @@ function AddUserView({ onBack, onUserCreated }: AddUserViewProps) {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.name.trim() || !form.phone.trim()) {
       showToast("error", "Validation Error", "Please fill in required fields (Name and Phone).");
       return;
     }
 
-    const created: PortalUser = {
-      id: "usr-" + Math.floor(10 + Math.random() * 90),
-      name: form.name.trim(),
-      email: form.email.trim() || "user@indata-election.in",
-      phone: form.phone.trim(),
-      role: form.role,
-      status: "ACTIVE",
-      prabhaag: form.prabhaag,
-      assignedBooths: form.assignedBooths,
-      voterSerialRange: form.voterSerialRange,
-      modulePermissions: form.modulePermissions,
-      canImportData: form.canImportData,
-      lastActive: "Just now",
-    };
+    if (form.assignedBooths.length === 0) {
+      showToast("error", "Validation Error", "Please allot at least one Polling Booth.");
+      return;
+    }
 
-    showToast("success", "Account Created", `User ${created.name} successfully registered with ${created.role} role.`);
-    onUserCreated(created);
+    setIsSubmitting(true);
+    try {
+      const payload = {
+        name: form.name.trim(),
+        phone: form.phone.trim(),
+        assignedBooths: form.assignedBooths.map(String),
+      };
+
+      const res = await apiFetch<any>("/booths/workforce", {
+        method: "POST",
+        body: JSON.stringify(payload),
+      });
+
+      const responseData = (res as any)?.data || res;
+      const activationKey = responseData.activationKey || `KAS${Math.floor(100 + Math.random() * 900)}`;
+
+      setCreatedKeyData({
+        id: responseData.id || "usr-" + Date.now(),
+        name: form.name.trim(),
+        phone: form.phone.trim(),
+        activationKey,
+        assignedBooths: form.assignedBooths,
+        role: form.role,
+      });
+
+      showToast("success", "Karyakarta Created in Database", `Generated Activation Key: ${activationKey}`);
+      if (onReloadWorkforce) {
+        await onReloadWorkforce();
+      }
+    } catch (err: any) {
+      showToast("error", "Failed to Create Karyakarta", err.message || "Failed to register user in database.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -1581,13 +1709,135 @@ function AddUserView({ onBack, onUserCreated }: AddUserViewProps) {
             </button>
             <button
               type="submit"
-              className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-md transition-colors"
+              disabled={isSubmitting}
+              className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-bold rounded-xl shadow-md transition-colors flex items-center gap-2"
             >
-              Create User Account
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span>Creating Account...</span>
+                </>
+              ) : (
+                <span>Create User Account</span>
+              )}
             </button>
           </div>
         </form>
       </div>
+
+      {/* Generated Activation Key Modal */}
+      {createdKeyData && (
+        <div className="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
+          <div className="bg-white rounded-3xl border border-slate-200 shadow-2xl max-w-lg w-full overflow-hidden animate-scale-in">
+            {/* Modal Header */}
+            <div className="bg-gradient-to-r from-blue-700 via-indigo-700 to-blue-800 p-6 text-white text-center relative">
+              <div className="w-16 h-16 mx-auto bg-white/10 rounded-2xl flex items-center justify-center mb-3 ring-4 ring-white/20">
+                <Key className="w-8 h-8 text-amber-300" />
+              </div>
+              <h2 className="text-xl font-black">Karyakarta Created in Database!</h2>
+              <p className="text-xs text-blue-100 mt-1">
+                6-character mobile login activation key generated and stored in database.
+              </p>
+            </div>
+
+            {/* Modal Body */}
+            <div className="p-6 space-y-5">
+              {/* Activation Key Highlight Box */}
+              <div className="bg-slate-50 border-2 border-dashed border-blue-300 rounded-2xl p-5 text-center relative group">
+                <span className="text-[11px] font-bold text-slate-500 uppercase tracking-widest block mb-1">
+                  Karyakarta Mobile Activation Key
+                </span>
+                <div className="flex items-center justify-center gap-3">
+                  <span className="font-mono text-3xl md:text-4xl font-extrabold tracking-widest text-blue-700 select-all">
+                    {createdKeyData.activationKey}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      navigator.clipboard.writeText(createdKeyData.activationKey);
+                      setCopiedKey(true);
+                      showToast("success", "Copied!", "Activation Key copied to clipboard.");
+                      setTimeout(() => setCopiedKey(false), 2000);
+                    }}
+                    className="p-2.5 rounded-xl bg-blue-100 hover:bg-blue-200 text-blue-700 transition-colors"
+                    title="Copy Key"
+                  >
+                    {copiedKey ? <Check className="w-5 h-5 text-emerald-600" /> : <Copy className="w-5 h-5" />}
+                  </button>
+                </div>
+                <p className="text-[11px] text-slate-500 mt-2">
+                  Worker can activate their profile at <strong>/login</strong> using this key.
+                </p>
+              </div>
+
+              {/* Assignment Details */}
+              <div className="bg-slate-50 rounded-xl p-3 border border-slate-200 text-xs space-y-1.5">
+                <div className="flex justify-between">
+                  <span className="text-slate-500 font-medium">Cadre Name:</span>
+                  <span className="font-bold text-slate-900">{createdKeyData.name}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-500 font-medium">Mobile Phone:</span>
+                  <span className="font-bold text-slate-900 font-mono">{createdKeyData.phone}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-500 font-medium">Assigned Booths:</span>
+                  <span className="font-bold text-blue-700">
+                    {createdKeyData.assignedBooths.map((b) => `Booth #${b}`).join(", ")}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-500 font-medium">Role:</span>
+                  <span className="font-bold text-slate-900">{createdKeyData.role}</span>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="space-y-2.5 pt-2">
+                <a
+                  href={`https://api.whatsapp.com/send?phone=${encodeURIComponent(
+                    createdKeyData.phone.replace(/[^0-9]/g, "")
+                  )}&text=${encodeURIComponent(
+                    `Namaskar ${createdKeyData.name},\n\nYou have been onboarded as an INDIATA Karyakarta for Booth #${createdKeyData.assignedBooths.join(", #")}.\n\n🔑 Your Mobile Login Activation Key is: *${createdKeyData.activationKey}*\n\nPlease open this link on your phone to login:\nhttps://indiata-mu.vercel.app/login\n\nSelect "Karyakarta" tab and enter your activation key.`
+                  )}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-md transition-all text-xs"
+                >
+                  <Share2 className="w-4 h-4" />
+                  <span>Share Activation Key via WhatsApp</span>
+                </a>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    const newUser: PortalUser = {
+                      id: createdKeyData.id,
+                      name: createdKeyData.name,
+                      email: form.email.trim() || `${createdKeyData.phone.replace(/[^0-9]/g, "")}@indata-election.in`,
+                      phone: createdKeyData.phone,
+                      role: form.role,
+                      status: "ACTIVE",
+                      prabhaag: form.prabhaag,
+                      assignedBooths: createdKeyData.assignedBooths,
+                      voterSerialRange: form.voterSerialRange,
+                      modulePermissions: form.modulePermissions,
+                      canImportData: form.canImportData,
+                      lastActive: "Just now",
+                      activationKey: createdKeyData.activationKey,
+                    };
+                    setCreatedKeyData(null);
+                    onUserCreated(newUser);
+                  }}
+                  className="w-full py-2.5 px-4 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl transition-all text-xs text-center"
+                >
+                  Done &amp; View in Users Roster
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -1599,9 +1849,10 @@ function AddUserView({ onBack, onUserCreated }: AddUserViewProps) {
 interface MembersRosterViewProps {
   karyakartas: KaryakartaCadre[];
   setKaryakartas: React.Dispatch<React.SetStateAction<KaryakartaCadre[]>>;
+  onNavigateToAdd?: () => void;
 }
 
-function MembersRosterView({ karyakartas, setKaryakartas }: MembersRosterViewProps) {
+function MembersRosterView({ karyakartas, setKaryakartas, onNavigateToAdd }: MembersRosterViewProps) {
   const { showToast } = useToast();
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("ALL");
@@ -1652,6 +1903,15 @@ function MembersRosterView({ karyakartas, setKaryakartas }: MembersRosterViewPro
           </p>
         </div>
         <div className="flex items-center gap-2">
+          {onNavigateToAdd && (
+            <button
+              onClick={onNavigateToAdd}
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs transition-colors shadow-xs"
+            >
+              <UserPlus className="w-3.5 h-3.5" />
+              <span>+ Onboard Karyakarta</span>
+            </button>
+          )}
           <span className="px-3 py-1 rounded-xl bg-slate-100 text-xs font-semibold text-slate-700">
             Total Cadre: {karyakartas.length}
           </span>
@@ -1695,6 +1955,7 @@ function MembersRosterView({ karyakartas, setKaryakartas }: MembersRosterViewPro
               <tr className="bg-slate-50 text-slate-600 font-bold border-b border-slate-200 uppercase tracking-wider text-[11px]">
                 <th className="py-3 px-4">Karyakarta Name</th>
                 <th className="py-3 px-4">Contact</th>
+                <th className="py-3 px-4">Activation Key</th>
                 <th className="py-3 px-4">Prabhaag &amp; Assigned Booth</th>
                 <th className="py-3 px-4">Surveys Done</th>
                 <th className="py-3 px-4">Slips Delivered</th>
@@ -1730,6 +1991,42 @@ function MembersRosterView({ karyakartas, setKaryakartas }: MembersRosterViewPro
                     </div>
                   </td>
                   <td className="py-3 px-4 font-mono font-medium">{k.phone}</td>
+                  <td className="py-3 px-4">
+                    {k.activationKey ? (
+                      <div className="flex items-center gap-1.5">
+                        <span className="inline-flex items-center gap-1 font-mono text-[11px] font-extrabold bg-blue-50 text-blue-700 px-2 py-0.5 rounded-lg border border-blue-200">
+                          <Key className="w-3 h-3 text-blue-600" />
+                          {k.activationKey}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            navigator.clipboard.writeText(k.activationKey!);
+                            showToast("success", "Copied", `Activation Key ${k.activationKey} copied.`);
+                          }}
+                          className="p-1 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
+                          title="Copy Key"
+                        >
+                          <Copy className="w-3.5 h-3.5" />
+                        </button>
+                        <a
+                          href={`https://api.whatsapp.com/send?phone=${encodeURIComponent(
+                            k.phone.replace(/[^0-9]/g, "")
+                          )}&text=${encodeURIComponent(
+                            `Namaskar ${k.name}, your INDIATA Mobile Activation Key is: *${k.activationKey}*. Booth #${k.assignedBooth}. Login: https://indiata-mu.vercel.app/login`
+                          )}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="p-1 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded transition-colors"
+                          title="Share on WhatsApp"
+                        >
+                          <Share2 className="w-3.5 h-3.5" />
+                        </a>
+                      </div>
+                    ) : (
+                      <span className="text-[11px] text-slate-400 font-mono">Not Set</span>
+                    )}
+                  </td>
                   <td className="py-3 px-4">
                     <span className="font-bold text-slate-900 block">Booth #{k.assignedBooth}</span>
                     <span className="text-[11px] text-slate-500">{k.prabhaag}</span>
