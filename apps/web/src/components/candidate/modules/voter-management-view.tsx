@@ -2133,7 +2133,6 @@ export function VoterManagementView({
     setIsSavingElector(true);
     try {
       const ageNum = parseInt(newElector.age, 10);
-      const boothNum = parseInt(newElector.boothNumber, 10);
 
       const payload: Record<string, any> = {
         name: newElector.fullName.trim(),
@@ -2146,7 +2145,9 @@ export function VoterManagementView({
         phone: newElector.mobile.trim() || undefined,
         address: newElector.address.trim() || undefined,
         ward: newElector.ward || undefined,
-        boothNumber: !isNaN(boothNum) && boothNum > 0 ? boothNum : 101,
+        boothNumber: String(newElector.boothNumber || "101").trim(),
+        boothName: newElector.pollingStation || undefined,
+        electoralPart: String(newElector.constituencyNo || "215").trim(),
       };
 
       const res = await apiFetch<any>("/voters", {

@@ -74,10 +74,22 @@ export async function apiFetch<T>(
     const body = await response.json().catch(() => ({}));
 
     if (!response.ok) {
-      const errorMessage =
+      let errorMessage =
         body.message ||
-        body.error ||
+        body.error?.message ||
+        (typeof body.error === "string" ? body.error : "") ||
         `Request failed with status ${response.status}`;
+
+      const details = body?.error?.details || body?.details;
+      if (Array.isArray(details) && details.length > 0) {
+        const detailStr = details
+          .map((d: any) => `${d.field ? `${d.field}: ` : ""}${d.message}`)
+          .join(", ");
+        if (detailStr) {
+          errorMessage = detailStr;
+        }
+      }
+
       throw new ApiError(errorMessage, response.status, body);
     }
 

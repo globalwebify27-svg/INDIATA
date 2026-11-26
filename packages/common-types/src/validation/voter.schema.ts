@@ -77,7 +77,7 @@ export const CreateVoterDtoSchema = z.object({
   demand: z.string().optional(),
   candidateHelp: z.string().optional(),
   boothId: z.string().optional(),
-  boothNumber: z.string().optional(),
+  boothNumber: z.union([z.string(), z.number()]).transform((val) => String(val)).optional(),
   boothName: z.string().optional(),
   electoralPart: z.string().optional(),
   assignedKaryakartaId: z.string().optional(),
