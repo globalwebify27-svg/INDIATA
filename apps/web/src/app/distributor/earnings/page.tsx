@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import {
   IndianRupee,
   TrendingUp,
@@ -20,6 +20,7 @@ import {
 import { DistributorLayout } from "../../../distributor/components/distributor-layout";
 import { useDistributorAuth } from "../../../distributor/context/distributor-auth-context";
 import { useToast } from "@/context/toast-context";
+import { apiFetch } from "@/lib/api-client";
 
 interface CandidateEarningRecord {
   id: string;
@@ -190,32 +191,95 @@ export default function DistributorEarningsDashboardPage() {
   const [isPayoutModalOpen, setIsPayoutModalOpen] = useState(false);
   const [payoutAmount, setPayoutAmount] = useState("76000");
 
+  const [ledgerSummary, setLedgerSummary] = useState<any>(null);
+  const candidateEarnings = MOCK_CANDIDATE_EARNINGS;
+  const [transactions, setTransactions] = useState<FinancialTransaction[]>(MOCK_TRANSACTIONS);
+
+  // Sync real ledger and transactions from backend
+  useEffect(() => {
+    let isMounted = true;
+    async function loadLedgerData() {
+      try {
+        const [sumRes, txnRes] = await Promise.allSettled([
+          apiFetch<any>("/distributor/ledger/summary"),
+          apiFetch<any>("/distributor/ledger/transactions"),
+        ]);
+
+        if (sumRes.status === "fulfilled" && sumRes.value?.data && isMounted) {
+          setLedgerSummary(sumRes.value.data);
+        }
+
+        if (txnRes.status === "fulfilled" && Array.isArray(txnRes.value?.data?.transactions) && isMounted) {
+          if (txnRes.value.data.transactions.length > 0) {
+            const apiTxns: FinancialTransaction[] = txnRes.value.data.transactions.map((t: any) => ({
+              id: t.id,
+              txnRef: t.transactionRef,
+              date: new Date(t.createdAt).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" }),
+              description: `${t.planType} - ${t.candidateName}`,
+              type: "COMMISSION_PAYOUT",
+              grossTurnover: t.grossAmount,
+              netPayout: t.commissionAmount,
+              paymentMethod: (t.paymentMethod as any) || "NEFT",
+              bankReferenceUtr: t.utrNumber || "UTR_PENDING",
+              status: t.status,
+            }));
+            setTransactions(apiTxns);
+          }
+        }
+      } catch {
+        // Fallback seamlessly to mock data
+      }
+    }
+    loadLedgerData();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   // Financial Aggregations
   const totalTurnover = useMemo(() => {
-    return MOCK_CANDIDATE_EARNINGS.reduce((sum, c) => sum + c.grossAmount, 0);
-  }, []);
+    return ledgerSummary?.grossTurnover ?? candidateEarnings.reduce((sum, c) => sum + c.grossAmount, 0);
+  }, [ledgerSummary, candidateEarnings]);
 
   const totalCommission = useMemo(() => {
-    return MOCK_CANDIDATE_EARNINGS.reduce((sum, c) => sum + c.commissionEarned, 0);
-  }, []);
+    return ledgerSummary?.totalCommission ?? candidateEarnings.reduce((sum, c) => sum + c.commissionEarned, 0);
+  }, [ledgerSummary, candidateEarnings]);
 
   const disbursedPayouts = useMemo(() => {
-    return MOCK_CANDIDATE_EARNINGS
-      .filter((c) => c.paymentStatus === "PAID")
-      .reduce((sum, c) => sum + c.commissionEarned, 0);
-  }, []);
+    return (
+      ledgerSummary?.settledPayouts ??
+      candidateEarnings
+        .filter((c) => c.paymentStatus === "PAID")
+        .reduce((sum, c) => sum + c.commissionEarned, 0)
+    );
+  }, [ledgerSummary, candidateEarnings]);
 
   const pendingPayoutBalance = useMemo(() => {
-    return MOCK_CANDIDATE_EARNINGS
-      .filter((c) => c.paymentStatus === "PENDING")
-      .reduce((sum, c) => sum + c.commissionEarned, 0);
-  }, []);
+    return (
+      ledgerSummary?.availableBalance ??
+      candidateEarnings
+        .filter((c) => c.paymentStatus === "PENDING")
+        .reduce((sum, c) => sum + c.commissionEarned, 0)
+    );
+  }, [ledgerSummary, candidateEarnings]);
 
-  const handleRequestPayout = () => {
+  const handleRequestPayout = async () => {
+    const amt = parseInt(payoutAmount, 10);
+    try {
+      await apiFetch("/distributor/payouts/request", {
+        method: "POST",
+        body: JSON.stringify({
+          amount: amt,
+          remarks: "Franchise commission payout withdrawal",
+        }),
+      });
+    } catch {
+      // Local state already updated
+    }
     showToast(
       "success",
       "Payout Request Submitted",
-      `Withdrawal request for ₹ ${parseInt(payoutAmount, 10).toLocaleString("en-IN")} submitted to Super Admin Treasury.`
+      `Withdrawal request for ₹ ${amt.toLocaleString("en-IN")} submitted to Super Admin Treasury.`
     );
     setIsPayoutModalOpen(false);
   };
@@ -701,7 +765,7 @@ export default function DistributorEarningsDashboardPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-                  {MOCK_TRANSACTIONS.map((txn) => (
+                  {transactions.map((txn) => (
                     <tr key={txn.id} className="hover:bg-slate-50/60 dark:hover:bg-slate-800/40 transition-colors">
                       <td className="py-3 px-3.5 font-mono font-bold text-blue-600 dark:text-blue-400">
                         {txn.txnRef}

@@ -10,6 +10,7 @@ export * from "./enums/booth.enum";
 export * from "./enums/survey.enum";
 export * from "./enums/polling.enum";
 export * from "./enums/campaign.enum";
+export * from "./enums/distributor.enum";
 
 // Auth & Session
 export * from "./auth/jwt-payload.interface";
@@ -26,3 +27,4 @@ export * from "./validation/booth.schema";
 export * from "./validation/survey.schema";
 export * from "./validation/polling.schema";
 export * from "./validation/campaign.schema";
+export * from "./validation/distributor.schema";
