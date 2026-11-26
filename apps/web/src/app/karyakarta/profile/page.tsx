@@ -84,13 +84,13 @@ export default function ProfilePage() {
           {/* Identity Card */}
           <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-xs text-center">
             <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-[#2087fe] to-[#6256d9] text-white text-2xl font-black flex items-center justify-center mx-auto mb-3 shadow-md">
-              {user?.name?.charAt(0) || "S"}
+              {user?.name?.charAt(0) || "K"}
             </div>
             <h2 className="text-lg font-black text-slate-900 dark:text-white">
-              {user?.name || "Sachin D. Mane"}
+              {user?.name || "Karyakarta"}
             </h2>
             <div className="text-xs font-mono font-bold text-[#2087fe] mt-0.5">
-              ID: {user?.id || "KAR-2026-001"}
+              ID: {user?.id ? user.id.slice(-6).toUpperCase() : "CADRE"}
             </div>
             <div className="mt-2 inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
               <CheckCircle2 className="w-3 h-3" />

@@ -113,21 +113,21 @@ export function KaryakartaSidebar({
           {/* Karyakarta Credential Card (Candidate Palette) */}
           <div className="p-2.5 rounded-xl bg-slate-900 border border-slate-800">
             <div className="flex items-center justify-between text-xs font-semibold text-white mb-1">
-              <span className="truncate">{user?.name || "Sachin D. Mane"}</span>
+              <span className="truncate">{user?.name || "Karyakarta"}</span>
               <span className="text-[10px] font-mono font-bold text-[#2087FE] bg-blue-950/80 border border-blue-900/60 px-1.5 py-0.5 rounded">
-                {user?.id || "KAR-01"}
+                {user?.id ? user.id.slice(-6).toUpperCase() : "CADRE"}
               </span>
             </div>
             <div className="text-[11px] text-slate-400 truncate">
               Cand: <span className="font-semibold text-slate-200">{user?.candidateName || "Anand Shinde"}</span>
             </div>
             <div className="mt-1.5 flex flex-wrap gap-1">
-              {user?.assignedBooths.map((b) => (
+              {user?.assignedBooths?.map((b) => (
                 <span
                   key={b}
                   className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-emerald-950/60 text-emerald-400 border border-emerald-800/60"
                 >
-                  {b}
+                  {b.startsWith("#") ? b : `#${b}`}
                 </span>
               ))}
             </div>
@@ -140,18 +140,26 @@ export function KaryakartaSidebar({
         <div className="py-2 flex justify-center border-b border-slate-900/60">
           <div className="relative group">
             <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white font-bold flex items-center justify-center text-xs shadow-xs cursor-pointer">
-              {user?.name?.slice(0, 2).toUpperCase() || "SM"}
+              {user?.name
+                ? user.name
+                    .split(" ")
+                    .filter(Boolean)
+                    .map((n) => n[0])
+                    .slice(0, 2)
+                    .join("")
+                    .toUpperCase()
+                : "KA"}
             </div>
             {/* Tooltip */}
             <div
               role="tooltip"
               className="pointer-events-none absolute left-full top-1/2 -translate-y-1/2 ml-3.5 z-50 whitespace-nowrap rounded-xl bg-slate-900 border border-slate-800 text-white p-3 text-xs font-semibold shadow-xl opacity-0 transition-opacity duration-150 group-hover:opacity-100"
             >
-              <p className="font-bold text-slate-100">{user?.name || "Sachin D. Mane"} ({user?.id || "KAR-01"})</p>
+              <p className="font-bold text-slate-100">{user?.name || "Karyakarta"}</p>
               <p className="text-[11px] text-slate-400 font-normal">Candidate: {user?.candidateName || "Anand Shinde"}</p>
               <div className="mt-1 pt-1 border-t border-slate-800 text-[10px] text-emerald-400 flex items-center gap-1">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                <span>Booths: {user?.assignedBooths.join(", ") || "All"}</span>
+                <span>Booths: {user?.assignedBooths?.join(", ") || "All"}</span>
               </div>
               <div className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-slate-900" />
             </div>

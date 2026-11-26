@@ -126,11 +126,19 @@ export function KaryakartaHeader({
         {/* Cadre Badge & Avatar */}
         <div className="flex items-center gap-2 pl-2 border-l border-slate-200 dark:border-slate-800">
           <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 flex items-center justify-center font-bold text-xs text-white shadow-xs">
-            {user?.name?.slice(0, 2).toUpperCase() || "SA"}
+            {user?.name
+              ? user.name
+                  .split(" ")
+                  .filter(Boolean)
+                  .map((n) => n[0])
+                  .slice(0, 2)
+                  .join("")
+                  .toUpperCase()
+              : "KA"}
           </div>
           <div className="hidden xl:block text-left text-xs">
             <div className="font-bold text-slate-900 dark:text-white leading-tight">
-              {user?.name || "Sachin D. Mane"}
+              {user?.name || "Karyakarta"}
             </div>
             <div className="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1">
               <ShieldCheck className="w-3 h-3" />

@@ -265,6 +265,31 @@ export default function CentralLoginPage() {
             localStorage.setItem("rajtantra_active_role", authData.user?.role || "KARYAKARTA");
             document.cookie = `rajtantra_access_token=${authData.tokens.accessToken}; Path=/; SameSite=Lax; max-age=86400`;
           }
+
+          if (authData.user) {
+            const rawBooths = Array.isArray(authData.assignedBooths)
+              ? authData.assignedBooths
+              : (authData.user.assignedBooths ? String(authData.user.assignedBooths).split(",") : ["101"]);
+            const formattedBooths = rawBooths.map((b: any) => String(b).trim().replace(/^Booth\s*#?/i, "")).filter(Boolean);
+            const karyakartaProfile = {
+              id: authData.user.id || "KAR-01",
+              name: authData.user.name || "Karyakarta",
+              phone: authData.user.phone || cleanPhone || "",
+              email: authData.user.email || `${cleanPhone}@indata-election.in`,
+              organizationId: authData.user.organizationId || "org-kasba-peth-2026",
+              candidateName: "Anand Shinde",
+              constituencyName: authData.constituencyName || "215 - Kasba Peth Assembly",
+              assignedBooths: formattedBooths.length > 0 ? formattedBooths : ["101"],
+              assignedArea: `Booth #${formattedBooths.join(", #")} Jurisdiction`,
+              status: "ACTIVE",
+              hasAiSeat: authData.user.hasAiSeat ?? false,
+              deviceUuid: "web-client",
+              createdAt: "Active",
+            };
+            localStorage.setItem("karyakarta_user", JSON.stringify(karyakartaProfile));
+            localStorage.setItem("rajtantra_user", JSON.stringify(authData.user));
+          }
+
           showToast("success", "Karyakarta Activated", `Welcome ${authData.user?.name || "Volunteer"}! Assigned booths: ${authData.assignedBooths?.join(", ") || "101, 102"}`);
           window.location.replace("/karyakarta/dashboard");
           return;

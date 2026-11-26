@@ -136,7 +136,7 @@ export default function KaryakartaDashboardPage() {
             </div>
 
             <h1 className="text-xl sm:text-2xl font-black tracking-tight">
-              Welcome back, {user?.name || "Sachin Mane"}
+              Welcome back, {user?.name || "Karyakarta"}
             </h1>
             <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-xl">
               Constituency: <strong className="text-white">{user?.constituencyName || "215 - Kasba Peth"}</strong> • 

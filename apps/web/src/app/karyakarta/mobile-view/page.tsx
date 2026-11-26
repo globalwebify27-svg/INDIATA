@@ -36,8 +36,10 @@ import {
   computeKaryakartaKpiStats,
 } from "@/karyakarta/data/mock-karyakarta-data";
 import { VoterRecord, IssueTicket } from "@/karyakarta/types/karyakarta.types";
+import { useKaryakartaAuth } from "@/karyakarta/context/karyakarta-auth-context";
 
 export default function KaryakartaMobileViewSimulator() {
+  const { user } = useKaryakartaAuth();
   // Simulator configuration
   const [deviceFrame, setDeviceFrame] = useState<"iphone" | "android" | "clean">("iphone");
   const [networkOnline, setNetworkOnline] = useState<boolean>(true);
@@ -443,7 +445,7 @@ export default function KaryakartaMobileViewSimulator() {
                         </span>
                       </div>
 
-                      <h2 className="text-base font-black text-white">Sachin D. Mane</h2>
+                      <h2 className="text-base font-black text-white">{user?.name || "Karyakarta"}</h2>
                       <p className="text-[11px] text-slate-300">
                         215 - Kasba Peth • <span className="text-cyan-300">Shaniwar Peth Central</span>
                       </p>

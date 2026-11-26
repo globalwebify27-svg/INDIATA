@@ -211,8 +211,8 @@ export function CreateIssueModal({
         priority,
         description: description.trim(),
         location: locationLandmark.trim(),
-        karyakartaId: user?.id || "KAR-2026-001",
-        karyakartaName: user?.name || "Sachin D. Mane",
+        karyakartaId: user?.id || "KAR-01",
+        karyakartaName: user?.name || "Karyakarta",
         assignedTo: `${boothNumber} Quick Response Cell`,
         organizationId: user?.organizationId || "org-kasba-peth-2026",
       };

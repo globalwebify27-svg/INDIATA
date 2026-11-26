@@ -81,7 +81,7 @@ export default function ActivityHistoryPage() {
               Audit Trail & Telemetry
             </span>
             <span className="text-xs text-slate-500 font-medium">
-              Field Cadre: {user?.name || "Sachin D. Mane"} ({user?.id || "KAR-01"})
+              Field Cadre: {user?.name || "Karyakarta"} ({user?.id ? user.id.slice(-6).toUpperCase() : "CADRE"})
             </span>
           </div>
           <h1 className="text-2xl font-black text-slate-900 dark:text-white flex items-center gap-2">
