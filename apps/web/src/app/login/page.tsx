@@ -21,10 +21,11 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/context/auth-context";
 import { useToast } from "@/context/toast-context";
+import { getApiBaseUrl } from "@/lib/api-client";
 
 type PortalType = "candidate" | "superadmin" | "distributor" | "karyakarta";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api/v1";
+const API_BASE_URL = getApiBaseUrl();
 
 export default function CentralLoginPage() {
   const { login } = useAuth();

@@ -17,8 +17,7 @@ export interface ExtendedUser extends AuthenticatedUser {
  * set NEXT_PUBLIC_ENABLE_REAL_API="true" or NEXT_PUBLIC_DISABLE_DEV_PREVIEW="true"
  */
 export const IS_DEV_PREVIEW =
-  process.env.NEXT_PUBLIC_DISABLE_DEV_PREVIEW !== "true" &&
-  process.env.NEXT_PUBLIC_ENABLE_REAL_API !== "true";
+  process.env.NEXT_PUBLIC_ENABLE_DEV_PREVIEW === "true";
 
 export const MOCK_DEV_CANDIDATE_USER: ExtendedUser = {
   id: "cnd-dev-preview-001",

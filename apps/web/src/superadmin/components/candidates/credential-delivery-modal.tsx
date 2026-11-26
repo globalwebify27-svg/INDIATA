@@ -6,6 +6,7 @@ import { CandidateRecord } from "../../types/superadmin.types";
 import { Dialog } from "../ui/dialog";
 import { Button } from "../ui/button";
 import { useToast } from "../../context/toast-context";
+import { getApiBaseUrl } from "@/lib/api-client";
 
 export interface CredentialDeliveryModalProps {
   isOpen: boolean;
@@ -13,7 +14,7 @@ export interface CredentialDeliveryModalProps {
   candidate: CandidateRecord | null;
 }
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api/v1";
+const API_BASE_URL = getApiBaseUrl();
 
 export function CredentialDeliveryModal({
   isOpen,

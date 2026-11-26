@@ -2161,113 +2161,22 @@ export function VoterManagementView({
         setNewElector(INITIAL_NEW_ELECTOR);
         showToast(
           "success",
-          "Elector Registered",
-          `New elector ${createdElector.fullName} registered into Booth #${createdElector.boothNumber} and saved to database.`
+          "Saved to Database",
+          `Elector ${createdElector.fullName} permanently saved to MySQL database.`
         );
       } else {
-        // Fallback for dev preview or offline mode: insert locally into electors state
-        const fallbackId = `vtr-local-${Date.now()}`;
-        const localElector: ElectorRecord = {
-          id: fallbackId,
-          voterCode: fallbackId,
-          epicNumber: newElector.epicNumber.trim().toUpperCase() || `MH/12/215/${Math.floor(100000 + Math.random() * 900000)}`,
-          partNo: !isNaN(boothNum) ? boothNum : 101,
-          serialNo: electors.length + 1,
-          fullName: newElector.fullName.trim(),
-          hindiName: newElector.hindiName.trim() || newElector.fullName.trim(),
-          relativeName: newElector.relativeName.trim() || "N/A",
-          relativeHindiName: newElector.relativeName.trim() || "N/A",
-          relationType: newElector.relationType,
-          gender: newElector.gender,
-          age: !isNaN(ageNum) && ageNum >= 18 ? ageNum : 35,
-          dob: "1990-01-01",
-          mobile: newElector.mobile.trim(),
-          email: "",
-          address: newElector.address.trim() || "Kasba Peth, Pune",
-          houseNo: "",
-          constituency: "Kasba Peth",
-          constituencyNo: newElector.constituencyNo || "215",
-          assemblySegment: "215 - Kasba Peth",
-          prabhaag: "Prabhaag 12",
-          ward: newElector.ward || "Ward 12",
-          gan: "Gan 8",
-          boothNumber: !isNaN(boothNum) && boothNum > 0 ? boothNum : 101,
-          pollingStation: newElector.pollingStation || `Booth Station Room ${boothNum || 101}`,
-          caste: "General",
-          occupation: "N/A",
-          qualification: "Graduate",
-          schemeBeneficiary: [],
-          politicalLeaning: "NEUTRAL",
-          isInfluencer: false,
-          influencerScope: "",
-          voterSlipStatus: "DELIVERED",
-          verified: true,
-          hasVoted: false,
-          isVisited: false,
-          isFavorite: false,
-          isHelped: false,
-          isDeceased: false,
-          isOutside: false,
-        };
-        setElectors((prev) => [localElector, ...prev]);
-        setIsAddVoterOpen(false);
-        setNewElector(INITIAL_NEW_ELECTOR);
-        showToast("success", "Elector Registered", `New elector ${localElector.fullName} added to voter list.`);
+        showToast(
+          "error",
+          "Database Error",
+          res.message || "Failed to save elector to database."
+        );
       }
-    } catch {
-      // If network call fails, still add locally so the user is never blocked
-      const ageNum = parseInt(newElector.age, 10);
-      const boothNum = parseInt(newElector.boothNumber, 10);
-      const fallbackId = `vtr-local-${Date.now()}`;
-      const localElector: ElectorRecord = {
-        id: fallbackId,
-        voterCode: fallbackId,
-        epicNumber: newElector.epicNumber.trim().toUpperCase() || `MH/12/215/${Math.floor(100000 + Math.random() * 900000)}`,
-        partNo: !isNaN(boothNum) ? boothNum : 101,
-        serialNo: electors.length + 1,
-        fullName: newElector.fullName.trim(),
-        hindiName: newElector.hindiName.trim() || newElector.fullName.trim(),
-        relativeName: newElector.relativeName.trim() || "N/A",
-        relativeHindiName: newElector.relativeName.trim() || "N/A",
-        relationType: newElector.relationType,
-        gender: newElector.gender,
-        age: !isNaN(ageNum) && ageNum >= 18 ? ageNum : 35,
-        dob: "1990-01-01",
-        mobile: newElector.mobile.trim(),
-        email: "",
-        address: newElector.address.trim() || "Kasba Peth, Pune",
-        houseNo: "",
-        constituency: "Kasba Peth",
-        constituencyNo: newElector.constituencyNo || "215",
-        assemblySegment: "215 - Kasba Peth",
-        prabhaag: "Prabhaag 12",
-        ward: newElector.ward || "Ward 12",
-        gan: "Gan 8",
-        boothNumber: !isNaN(boothNum) && boothNum > 0 ? boothNum : 101,
-        pollingStation: newElector.pollingStation || `Booth Station Room ${boothNum || 101}`,
-        caste: "General",
-        occupation: "N/A",
-        qualification: "Graduate",
-        schemeBeneficiary: [],
-        politicalLeaning: "NEUTRAL",
-        isInfluencer: false,
-        influencerScope: "",
-        voterSlipStatus: "DELIVERED",
-        verified: true,
-        hasVoted: false,
-        isVisited: false,
-        isFavorite: false,
-        isHelped: false,
-        isDeceased: false,
-        isOutside: false,
-      };
-      setElectors((prev) => [localElector, ...prev]);
-      setIsAddVoterOpen(false);
-      setNewElector(INITIAL_NEW_ELECTOR);
+    } catch (err: any) {
+      console.error("Save elector error:", err);
       showToast(
-        "success",
-        "Elector Registered",
-        `New elector ${localElector.fullName} added to voter list.`
+        "error",
+        "Failed to Save to Database",
+        err.message || "Could not reach database. Please log in first."
       );
     } finally {
       setIsSavingElector(false);

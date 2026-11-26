@@ -5,8 +5,9 @@ import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Lock, Eye, EyeOff, ShieldCheck, ArrowRight, CheckCircle2, BadgeAlert } from "lucide-react";
 import { useToast } from "@/context/toast-context";
+import { getApiBaseUrl } from "@/lib/api-client";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api/v1";
+const API_BASE_URL = getApiBaseUrl();
 
 function ResetPasswordContent() {
   const searchParams = useSearchParams();
