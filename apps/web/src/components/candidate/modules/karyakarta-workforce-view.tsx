@@ -989,18 +989,18 @@ function AllUsersView({ users, setUsers, onNavigateToAdd }: AllUsersViewProps) {
   return (
     <div className="space-y-6 pb-12 animate-fade-in">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white dark:bg-[#151E2D] p-5 rounded-2xl border border-slate-200 dark:border-[#29364A] shadow-xs">
         <div>
           <div className="flex items-center gap-2">
-            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+            <span className="text-xs font-bold text-slate-500 dark:text-[#94A3B8] uppercase tracking-wider">
               System Administration
             </span>
-            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200">
+            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
               Access Governance
             </span>
           </div>
-          <h1 className="text-xl md:text-2xl font-extrabold text-slate-900 mt-1">All Portal Users</h1>
-          <p className="text-xs text-slate-500 mt-0.5">
+          <h1 className="text-xl md:text-2xl font-extrabold text-slate-900 dark:text-[#F8FAFC] mt-1">All Portal Users</h1>
+          <p className="text-xs text-slate-500 dark:text-[#94A3B8] mt-0.5">
             Manage administrative credentials, role hierarchies, assigned booths, and module rights.
           </p>
         </div>
@@ -1015,35 +1015,35 @@ function AllUsersView({ users, setUsers, onNavigateToAdd }: AllUsersViewProps) {
 
       {/* 5 KPI Stats Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
-        <div className="bg-white p-3.5 rounded-2xl border border-slate-200 text-xs">
-          <span className="text-slate-400 font-bold uppercase text-[10px] block">Total Users</span>
-          <span className="text-xl font-black text-slate-900 mt-0.5 block">{stats.total}</span>
-          <span className="text-[10px] text-blue-600 font-semibold">Active Directory</span>
+        <div className="bg-white dark:bg-[#151E2D] p-3.5 rounded-2xl border border-slate-200 dark:border-[#29364A] text-xs">
+          <span className="text-slate-400 dark:text-[#94A3B8] font-bold uppercase text-[10px] block">Total Users</span>
+          <span className="text-xl font-black text-slate-900 dark:text-[#F8FAFC] mt-0.5 block">{stats.total}</span>
+          <span className="text-[10px] text-blue-600 dark:text-blue-400 font-semibold">Active Directory</span>
         </div>
-        <div className="bg-white p-3.5 rounded-2xl border border-slate-200 text-xs">
-          <span className="text-slate-400 font-bold uppercase text-[10px] block">Candidate Admins</span>
-          <span className="text-xl font-black text-slate-900 mt-0.5 block">{stats.admins}</span>
-          <span className="text-[10px] text-indigo-600 font-semibold">Full Privileges</span>
+        <div className="bg-white dark:bg-[#151E2D] p-3.5 rounded-2xl border border-slate-200 dark:border-[#29364A] text-xs">
+          <span className="text-slate-400 dark:text-[#94A3B8] font-bold uppercase text-[10px] block">Candidate Admins</span>
+          <span className="text-xl font-black text-slate-900 dark:text-[#F8FAFC] mt-0.5 block">{stats.admins}</span>
+          <span className="text-[10px] text-indigo-600 dark:text-indigo-400 font-semibold">Full Privileges</span>
         </div>
-        <div className="bg-white p-3.5 rounded-2xl border border-slate-200 text-xs">
-          <span className="text-slate-400 font-bold uppercase text-[10px] block">Prabhaag Incharges</span>
-          <span className="text-xl font-black text-slate-900 mt-0.5 block">{stats.incharges}</span>
-          <span className="text-[10px] text-teal-600 font-semibold">Ward Supervisors</span>
+        <div className="bg-white dark:bg-[#151E2D] p-3.5 rounded-2xl border border-slate-200 dark:border-[#29364A] text-xs">
+          <span className="text-slate-400 dark:text-[#94A3B8] font-bold uppercase text-[10px] block">Prabhaag Incharges</span>
+          <span className="text-xl font-black text-slate-900 dark:text-[#F8FAFC] mt-0.5 block">{stats.incharges}</span>
+          <span className="text-[10px] text-teal-600 dark:text-teal-400 font-semibold">Ward Supervisors</span>
         </div>
-        <div className="bg-white p-3.5 rounded-2xl border border-slate-200 text-xs">
-          <span className="text-slate-400 font-bold uppercase text-[10px] block">Karyakartas</span>
-          <span className="text-xl font-black text-slate-900 mt-0.5 block">{stats.karyakartas}</span>
-          <span className="text-[10px] text-blue-600 font-semibold">Field Operators</span>
+        <div className="bg-white dark:bg-[#151E2D] p-3.5 rounded-2xl border border-slate-200 dark:border-[#29364A] text-xs">
+          <span className="text-slate-400 dark:text-[#94A3B8] font-bold uppercase text-[10px] block">Karyakartas</span>
+          <span className="text-xl font-black text-slate-900 dark:text-[#F8FAFC] mt-0.5 block">{stats.karyakartas}</span>
+          <span className="text-[10px] text-blue-600 dark:text-blue-400 font-semibold">Field Operators</span>
         </div>
-        <div className="bg-white p-3.5 rounded-2xl border border-slate-200 text-xs">
-          <span className="text-slate-400 font-bold uppercase text-[10px] block">Data Operators</span>
-          <span className="text-xl font-black text-slate-900 mt-0.5 block">{stats.operators}</span>
-          <span className="text-[10px] text-amber-600 font-semibold">Roll Viewers</span>
+        <div className="bg-white dark:bg-[#151E2D] p-3.5 rounded-2xl border border-slate-200 dark:border-[#29364A] text-xs">
+          <span className="text-slate-400 dark:text-[#94A3B8] font-bold uppercase text-[10px] block">Data Operators</span>
+          <span className="text-xl font-black text-slate-900 dark:text-[#F8FAFC] mt-0.5 block">{stats.operators}</span>
+          <span className="text-[10px] text-amber-600 dark:text-amber-400 font-semibold">Roll Viewers</span>
         </div>
       </div>
 
       {/* Search & Filter Bar */}
-      <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex flex-col sm:flex-row gap-3">
+      <div className="bg-white dark:bg-[#151E2D] p-4 rounded-2xl border border-slate-200 dark:border-[#29364A] shadow-xs flex flex-col sm:flex-row gap-3">
         <div className="flex-1 relative">
           <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
@@ -1051,14 +1051,14 @@ function AllUsersView({ users, setUsers, onNavigateToAdd }: AllUsersViewProps) {
             placeholder="Search by name, email, or mobile..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-blue-500 focus:bg-white"
+            className="w-full pl-10 pr-4 py-2 bg-slate-50 dark:bg-[#0B101A] border border-slate-200 dark:border-[#29364A] rounded-xl text-xs text-slate-900 dark:text-[#F8FAFC] placeholder:text-slate-400 dark:placeholder:text-[#64748B] focus:ring-1 focus:ring-blue-500"
           />
         </div>
         <div className="w-full sm:w-60">
           <select
             value={roleFilter}
             onChange={(e) => setRoleFilter(e.target.value)}
-            className="w-full py-2 px-3 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-700 focus:ring-2 focus:ring-blue-500"
+            className="w-full py-2 px-3 bg-slate-50 dark:bg-[#0B101A] border border-slate-200 dark:border-[#29364A] rounded-xl text-xs font-medium text-slate-700 dark:text-[#F8FAFC] focus:ring-1 focus:ring-blue-500"
           >
             <option value="ALL">All Roles</option>
             <option value="CANDIDATE_ADMIN">Candidate Admin</option>
@@ -1071,122 +1071,154 @@ function AllUsersView({ users, setUsers, onNavigateToAdd }: AllUsersViewProps) {
       </div>
 
       {/* Users Table */}
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+      <div className="bg-white dark:bg-[#151E2D] rounded-2xl border border-slate-200 dark:border-[#29364A] shadow-xs overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs border-collapse">
             <thead>
-              <tr className="bg-slate-50 text-slate-600 font-bold border-b border-slate-200 uppercase tracking-wider text-[11px]">
-                <th className="py-3 px-4">User</th>
-                <th className="py-3 px-4">Role</th>
-                <th className="py-3 px-4">Constituency</th>
-                <th className="py-3 px-4">Booth Number</th>
-                <th className="py-3 px-4">Serial Number</th>
-                <th className="py-3 px-4">Permissions</th>
-                <th className="py-3 px-4">Status</th>
-                <th className="py-3 px-4 text-right">Actions</th>
+              <tr className="bg-slate-50 dark:bg-[#101827] text-slate-600 dark:text-[#94A3B8] font-bold border-b border-slate-200 dark:border-[#29364A] uppercase tracking-wider text-[11px]">
+                <th className="py-3 px-4">USER</th>
+                <th className="py-3 px-4">ROLE &amp; JURISDICTION</th>
+                <th className="py-3 px-4">ASSIGNED BOOTHS</th>
+                <th className="py-3 px-4">PERMISSIONS</th>
+                <th className="py-3 px-4">DATA IMPORT</th>
+                <th className="py-3 px-4">STATUS</th>
+                <th className="py-3 px-4 text-right">ACTIONS</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 text-slate-700">
-              {filteredUsers.map((u) => (
-                <tr key={u.id} className="hover:bg-slate-50 transition-colors">
-                  <td className="py-3 px-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center font-bold text-xs shrink-0">
-                        {u.name
-                          .split(" ")
-                          .map((n) => n[0])
-                          .slice(0, 2)
-                          .join("")}
-                      </div>
-                      <div>
-                        <div className="flex items-center gap-1.5">
-                          <span className="font-bold text-slate-900 block">{u.name}</span>
-                          {u.activationKey && (
-                            <span className="inline-flex items-center gap-1 font-mono text-[10px] font-bold bg-amber-50 text-amber-800 px-1.5 py-0.5 rounded border border-amber-300">
-                              <Key className="w-2.5 h-2.5" />
-                              {u.activationKey}
-                            </span>
-                          )}
+            <tbody className="divide-y divide-slate-100 dark:divide-[#29364A] text-slate-700 dark:text-slate-300">
+              {filteredUsers.map((u) => {
+                const initials = u.name
+                  .split(" ")
+                  .map((n) => n[0])
+                  .slice(0, 2)
+                  .join("");
+
+                let boothsStr = "None";
+                if (u.assignedBooths?.length) {
+                  const boothCount = u.assignedBooths.length;
+                  const boothListStr = u.assignedBooths.slice(0, 3).join(", ");
+                  const hasMore = boothCount > 3 ? "..." : "";
+                  boothsStr = `${boothCount} Booths (${boothListStr}${hasMore})`;
+                }
+
+                const roleLabel = u.role.replace(/_/g, " ");
+                const jurisdiction = u.prabhaag || "All Constituencies";
+
+                return (
+                  <tr
+                    key={u.id}
+                    className="border-b border-slate-200 dark:border-[#29364A] hover:bg-slate-50 dark:hover:bg-[#1E293B]/70 transition-colors"
+                  >
+                    {/* 1. USER */}
+                    <td className="py-3.5 px-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-full bg-slate-200 dark:bg-[#1E293B] text-slate-700 dark:text-slate-200 flex items-center justify-center font-bold text-xs shrink-0">
+                          {initials}
                         </div>
-                        <span className="text-[11px] text-slate-500 font-mono">{u.phone}</span>
+                        <div>
+                          <div className="flex items-center gap-1.5">
+                            <span className="font-bold text-slate-900 dark:text-white block">{u.name}</span>
+                            {u.activationKey && (
+                              <span className="inline-flex items-center gap-1 font-mono text-[10px] font-bold bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-400 px-1.5 py-0.5 rounded border border-amber-300 dark:border-amber-700/60">
+                                <Key className="w-2.5 h-2.5" />
+                                {u.activationKey}
+                              </span>
+                            )}
+                          </div>
+                          <span className="text-[11px] text-slate-500 dark:text-[#94A3B8] font-mono">{u.phone}</span>
+                        </div>
                       </div>
-                    </div>
-                  </td>
-                  <td className="py-3 px-4">
-                    <span className="font-semibold text-blue-700 block">{u.role.replace("_", " ")}</span>
-                  </td>
-                  <td className="py-3 px-4">
-                    <span className="text-slate-800 font-medium block">{u.prabhaag || "215 - Kasba Peth"}</span>
-                  </td>
-                  <td className="py-3 px-4">
-                    <span className="font-mono font-medium text-slate-800">
-                      {u.assignedBooths?.length
-                        ? `Booths: ${u.assignedBooths.join(", ")}`
-                        : "None"}
-                    </span>
-                  </td>
-                  <td className="py-3 px-4">
-                    <span className="font-mono text-slate-700 font-medium">
-                      {u.voterSerialRange || "Full Roll Range"}
-                    </span>
-                  </td>
-                  <td className="py-3 px-4">
-                    <span className="px-2 py-0.5 rounded bg-slate-100 text-slate-700 text-[10px] font-semibold">
-                      {u.modulePermissions.includes("ALL")
-                        ? "All Modules (Unrestricted)"
-                        : `${u.modulePermissions.length} Modules`}
-                    </span>
-                  </td>
-                  <td className="py-3 px-4">
-                    <span
-                      className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                        u.canImportData ? "bg-blue-100 text-blue-800" : "bg-slate-100 text-slate-500"
-                      }`}
-                    >
-                      {u.canImportData ? "Allowed" : "Restricted"}
-                    </span>
-                  </td>
-                  <td className="py-3 px-4">
-                    <button
-                      onClick={() => toggleStatus(u.id)}
-                      className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold transition-colors ${
-                        u.status === "ACTIVE"
-                          ? "bg-blue-100 text-blue-800 hover:bg-blue-200"
-                          : u.status === "PENDING"
-                          ? "bg-amber-100 text-amber-800 hover:bg-amber-200"
-                          : u.status === "BLOCKED"
-                          ? "bg-rose-100 text-rose-800 hover:bg-rose-200"
-                          : "bg-slate-200 text-slate-600 hover:bg-slate-300"
-                      }`}
-                    >
-                      {u.status}
-                    </button>
-                  </td>
-                  <td className="py-3 px-4 text-right">
-                    <div className="flex items-center justify-end gap-1.5">
-                      {u.activationKey && (
-                        <button
-                          type="button"
-                          onClick={() => {
-                            navigator.clipboard.writeText(u.activationKey!);
-                            showToast("success", "Copied", `Activation Key ${u.activationKey} copied.`);
-                          }}
-                          className="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                          title={`Copy Key: ${u.activationKey}`}
-                        >
-                          <Copy className="w-3.5 h-3.5" />
-                        </button>
+                    </td>
+
+                    {/* 2. ROLE & JURISDICTION */}
+                    <td className="py-3.5 px-4">
+                      <span className="font-semibold text-sky-600 dark:text-sky-400 text-xs tracking-wide block uppercase">
+                        {roleLabel}
+                      </span>
+                      <span className="text-[11px] text-slate-500 dark:text-[#94A3B8] block mt-0.5">
+                        {jurisdiction}
+                      </span>
+                    </td>
+
+                    {/* 3. ASSIGNED BOOTHS */}
+                    <td className="py-3.5 px-4">
+                      <span className="text-slate-900 dark:text-white font-medium block">
+                        {boothsStr}
+                      </span>
+                      {u.voterSerialRange && (
+                        <span className="text-[10px] text-slate-400 dark:text-[#64748B] block mt-0.5">
+                          {u.voterSerialRange}
+                        </span>
                       )}
-                      <button
-                        onClick={() => setEditingUser({ ...u })}
-                        className="px-2.5 py-1 bg-slate-100 hover:bg-blue-50 text-slate-700 hover:text-blue-700 rounded-lg text-xs font-semibold transition-colors"
+                    </td>
+
+                    {/* 4. PERMISSIONS */}
+                    <td className="py-3.5 px-4">
+                      <span className="text-slate-700 dark:text-slate-300 font-medium">
+                        {u.modulePermissions.includes("ALL")
+                          ? "All Modules (Unrestricted)"
+                          : `${u.modulePermissions.length} Modules`}
+                      </span>
+                    </td>
+
+                    {/* 5. DATA IMPORT */}
+                    <td className="py-3.5 px-4">
+                      <span
+                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
+                          u.canImportData
+                            ? "bg-white text-slate-900 border border-slate-300 dark:bg-white dark:text-slate-900 shadow-2xs"
+                            : "bg-slate-100 dark:bg-transparent border border-slate-300 dark:border-slate-700 text-slate-500 dark:text-slate-400"
+                        }`}
                       >
-                        View Details
+                        {u.canImportData ? "Allowed" : "Restricted"}
+                      </span>
+                    </td>
+
+                    {/* 6. STATUS */}
+                    <td className="py-3.5 px-4">
+                      <button
+                        onClick={() => toggleStatus(u.id)}
+                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider transition-colors cursor-pointer ${
+                          u.status === "ACTIVE"
+                            ? "bg-slate-100 dark:bg-transparent border border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white hover:bg-slate-200 dark:hover:bg-slate-800"
+                            : u.status === "PENDING"
+                            ? "bg-amber-100 dark:bg-amber-950/60 border border-amber-300 dark:border-amber-700 text-amber-800 dark:text-amber-300"
+                            : u.status === "BLOCKED"
+                            ? "bg-rose-100 dark:bg-rose-950/60 border border-rose-300 dark:border-rose-700 text-rose-800 dark:text-rose-300"
+                            : "bg-slate-200 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-400"
+                        }`}
+                      >
+                        {u.status}
                       </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
+                    </td>
+
+                    {/* 7. ACTIONS */}
+                    <td className="py-3.5 px-4 text-right">
+                      <div className="flex items-center justify-end gap-2">
+                        {u.activationKey && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              navigator.clipboard.writeText(u.activationKey!);
+                              showToast("success", "Copied", `Activation Key ${u.activationKey} copied.`);
+                            }}
+                            className="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
+                            title={`Copy Key: ${u.activationKey}`}
+                          >
+                            <Copy className="w-3.5 h-3.5" />
+                          </button>
+                        )}
+                        <button
+                          onClick={() => setEditingUser({ ...u })}
+                          className="px-2.5 py-1 text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-white rounded-lg text-xs font-semibold transition-colors cursor-pointer"
+                        >
+                          View Details
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
@@ -1194,9 +1226,9 @@ function AllUsersView({ users, setUsers, onNavigateToAdd }: AllUsersViewProps) {
 
       {/* User Details Side-Drawer / Modal */}
       {editingUser && (
-        <div className="fixed inset-0 z-50 flex items-center justify-end bg-slate-900/50 backdrop-blur-sm animate-fade-in">
-          <div className="bg-white w-full max-w-lg h-full shadow-2xl flex flex-col border-l border-slate-200 animate-slide-left">
-            <div className="p-4 px-6 border-b border-slate-200 flex items-center justify-between bg-slate-50">
+        <div className="fixed inset-0 z-50 flex items-center justify-end bg-slate-900/60 backdrop-blur-sm animate-fade-in">
+          <div className="bg-white dark:bg-[#151E2D] w-full max-w-lg h-full shadow-2xl flex flex-col border-l border-slate-200 dark:border-[#29364A] animate-slide-left">
+            <div className="p-4 px-6 border-b border-slate-200 dark:border-[#29364A] flex items-center justify-between bg-slate-50 dark:bg-[#0B101A]">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-blue-700 text-white flex items-center justify-center font-bold text-sm">
                   {editingUser.name
@@ -1206,61 +1238,61 @@ function AllUsersView({ users, setUsers, onNavigateToAdd }: AllUsersViewProps) {
                     .join("")}
                 </div>
                 <div>
-                  <h3 className="font-bold text-slate-900 text-base">{editingUser.name}</h3>
-                  <span className="text-xs text-blue-600 font-semibold">
+                  <h3 className="font-bold text-slate-900 dark:text-white text-base">{editingUser.name}</h3>
+                  <span className="text-xs text-blue-600 dark:text-sky-400 font-semibold">
                     {editingUser.role.replace("_", " ")}
                   </span>
                 </div>
               </div>
               <button
                 onClick={() => setEditingUser(null)}
-                className="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-200"
+                className="p-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-800"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <form onSubmit={handleSaveUserDetails} className="flex-1 p-6 overflow-y-auto space-y-4 text-xs">
+            <form onSubmit={handleSaveUserDetails} className="flex-1 p-6 overflow-y-auto space-y-4 text-xs bg-white dark:bg-[#151E2D]">
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Full Name</label>
+                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Full Name</label>
                   <input
                     type="text"
                     required
                     value={editingUser.name}
                     onChange={(e) => setEditingUser({ ...editingUser, name: e.target.value })}
-                    className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500"
+                    className="w-full p-2.5 bg-slate-50 dark:bg-[#0B101A] border border-slate-200 dark:border-[#29364A] text-slate-900 dark:text-white rounded-xl focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
                 <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Mobile Phone</label>
+                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Mobile Phone</label>
                   <input
                     type="tel"
                     required
                     value={editingUser.phone}
                     onChange={(e) => setEditingUser({ ...editingUser, phone: e.target.value })}
-                    className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500"
+                    className="w-full p-2.5 bg-slate-50 dark:bg-[#0B101A] border border-slate-200 dark:border-[#29364A] text-slate-900 dark:text-white rounded-xl focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-700 mb-1">Email Address</label>
+                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Email Address</label>
                 <input
                   type="email"
                   value={editingUser.email}
                   onChange={(e) => setEditingUser({ ...editingUser, email: e.target.value })}
-                  className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500"
+                  className="w-full p-2.5 bg-slate-50 dark:bg-[#0B101A] border border-slate-200 dark:border-[#29364A] text-slate-900 dark:text-white rounded-xl focus:ring-2 focus:ring-blue-500"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Assigned Role</label>
+                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Assigned Role</label>
                   <select
                     value={editingUser.role}
                     onChange={(e) => setEditingUser({ ...editingUser, role: e.target.value as UserRole })}
-                    className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-medium focus:ring-2 focus:ring-blue-500"
+                    className="w-full p-2.5 bg-slate-50 dark:bg-[#0B101A] border border-slate-200 dark:border-[#29364A] text-slate-900 dark:text-white rounded-xl font-medium focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="CANDIDATE_ADMIN">Candidate Admin</option>
                     <option value="WAR_ROOM_HEAD">War Room Head</option>
@@ -1270,7 +1302,7 @@ function AllUsersView({ users, setUsers, onNavigateToAdd }: AllUsersViewProps) {
                   </select>
                 </div>
                 <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Account Status</label>
+                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Account Status</label>
                   <select
                     value={editingUser.status}
                     onChange={(e) =>
@@ -1279,7 +1311,7 @@ function AllUsersView({ users, setUsers, onNavigateToAdd }: AllUsersViewProps) {
                         status: e.target.value as "ACTIVE" | "INACTIVE" | "PENDING" | "BLOCKED",
                       })
                     }
-                    className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-medium focus:ring-2 focus:ring-blue-500"
+                    className="w-full p-2.5 bg-slate-50 dark:bg-[#0B101A] border border-slate-200 dark:border-[#29364A] text-slate-900 dark:text-white rounded-xl font-medium focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="ACTIVE">Active</option>
                     <option value="PENDING">Pending</option>
@@ -1290,18 +1322,18 @@ function AllUsersView({ users, setUsers, onNavigateToAdd }: AllUsersViewProps) {
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-700 mb-1">Prabhaag / Ward Jurisdiction</label>
+                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Prabhaag / Ward Jurisdiction</label>
                 <input
                   type="text"
                   value={editingUser.prabhaag || ""}
                   onChange={(e) => setEditingUser({ ...editingUser, prabhaag: e.target.value })}
                   placeholder="e.g. Prabhaag 12 - Kothrud West"
-                  className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500"
+                  className="w-full p-2.5 bg-slate-50 dark:bg-[#0B101A] border border-slate-200 dark:border-[#29364A] text-slate-900 dark:text-white rounded-xl focus:ring-2 focus:ring-blue-500"
                 />
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-700 mb-1">
+                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
                   Assigned Polling Booth Numbers (comma-separated)
                 </label>
                 <input
@@ -1315,51 +1347,51 @@ function AllUsersView({ users, setUsers, onNavigateToAdd }: AllUsersViewProps) {
                     setEditingUser({ ...editingUser, assignedBooths: booths });
                   }}
                   placeholder="101, 102"
-                  className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-mono focus:ring-2 focus:ring-blue-500"
+                  className="w-full p-2.5 bg-slate-50 dark:bg-[#0B101A] border border-slate-200 dark:border-[#29364A] text-slate-900 dark:text-white rounded-xl font-mono focus:ring-2 focus:ring-blue-500"
                 />
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-700 mb-1">Voter Roll Serial Range</label>
+                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Voter Roll Serial Range</label>
                 <input
                   type="text"
                   value={editingUser.voterSerialRange || ""}
                   onChange={(e) => setEditingUser({ ...editingUser, voterSerialRange: e.target.value })}
                   placeholder="e.g. 1 to 500"
-                  className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500"
+                  className="w-full p-2.5 bg-slate-50 dark:bg-[#0B101A] border border-slate-200 dark:border-[#29364A] text-slate-900 dark:text-white rounded-xl focus:ring-2 focus:ring-blue-500"
                 />
               </div>
 
-              <div className="pt-2 border-t border-slate-100">
-                <label className="block font-semibold text-slate-700 mb-2">Data Import Policy</label>
-                <label className="flex items-center gap-2 p-3 bg-slate-50 rounded-xl border border-slate-200 cursor-pointer">
+              <div className="pt-2 border-t border-slate-100 dark:border-[#29364A]">
+                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-2">Data Import Policy</label>
+                <label className="flex items-center gap-2 p-3 bg-slate-50 dark:bg-[#0B101A] rounded-xl border border-slate-200 dark:border-[#29364A] cursor-pointer">
                   <input
                     type="checkbox"
                     checked={editingUser.canImportData}
                     onChange={(e) => setEditingUser({ ...editingUser, canImportData: e.target.checked })}
                     className="rounded text-blue-600 focus:ring-blue-500"
                   />
-                  <span className="font-medium text-slate-800">
+                  <span className="font-medium text-slate-800 dark:text-slate-200">
                     Allow Voter &amp; Contact CSV Import Access
                   </span>
                 </label>
               </div>
 
-              <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 text-[11px] text-slate-500 space-y-1">
+              <div className="p-4 bg-slate-50 dark:bg-[#0B101A] rounded-xl border border-slate-200 dark:border-[#29364A] text-[11px] text-slate-500 dark:text-[#94A3B8] space-y-1">
                 <p>
-                  User ID: <span className="font-mono text-slate-700">{editingUser.id}</span>
+                  User ID: <span className="font-mono text-slate-700 dark:text-slate-300">{editingUser.id}</span>
                 </p>
                 <p>Last Active: {editingUser.lastActive || "Today"}</p>
               </div>
 
               {editingUser.activationKey && (
-                <div className="p-3.5 bg-amber-50 border border-amber-200 rounded-2xl space-y-2">
+                <div className="p-3.5 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 rounded-2xl space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-[11px] font-bold text-amber-900 flex items-center gap-1.5">
-                      <Key className="w-3.5 h-3.5 text-amber-700" />
+                    <span className="text-[11px] font-bold text-amber-900 dark:text-amber-300 flex items-center gap-1.5">
+                      <Key className="w-3.5 h-3.5 text-amber-700 dark:text-amber-400" />
                       Mobile Login Activation Key
                     </span>
-                    <span className="font-mono font-extrabold text-sm text-blue-700 bg-white px-2 py-0.5 rounded border border-amber-300">
+                    <span className="font-mono font-extrabold text-sm text-blue-700 dark:text-sky-300 bg-white dark:bg-[#151E2D] px-2 py-0.5 rounded border border-amber-300 dark:border-amber-700">
                       {editingUser.activationKey}
                     </span>
                   </div>
@@ -1370,7 +1402,7 @@ function AllUsersView({ users, setUsers, onNavigateToAdd }: AllUsersViewProps) {
                         navigator.clipboard.writeText(editingUser.activationKey!);
                         showToast("success", "Copied", `Activation Key ${editingUser.activationKey} copied.`);
                       }}
-                      className="flex-1 py-1.5 px-2 bg-white hover:bg-amber-100 text-amber-900 border border-amber-300 rounded-xl text-[11px] font-bold flex items-center justify-center gap-1.5 transition-colors"
+                      className="flex-1 py-1.5 px-2 bg-white dark:bg-[#151E2D] hover:bg-amber-100 dark:hover:bg-amber-900/40 text-amber-900 dark:text-amber-300 border border-amber-300 dark:border-amber-700 rounded-xl text-[11px] font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
                     >
                       <Copy className="w-3.5 h-3.5" />
                       <span>Copy Key</span>
@@ -1392,17 +1424,17 @@ function AllUsersView({ users, setUsers, onNavigateToAdd }: AllUsersViewProps) {
                 </div>
               )}
 
-              <div className="flex items-center justify-end gap-2 pt-4 border-t border-slate-100">
+              <div className="flex items-center justify-end gap-2 pt-4 border-t border-slate-100 dark:border-[#29364A]">
                 <button
                   type="button"
                   onClick={() => setEditingUser(null)}
-                  className="px-4 py-2 rounded-xl text-slate-600 hover:bg-slate-100 font-semibold"
+                  className="px-4 py-2 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-colors shadow-sm flex items-center gap-1.5"
+                  className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-colors shadow-sm flex items-center gap-1.5 cursor-pointer"
                 >
                   <Check className="w-3.5 h-3.5" />
                   <span>Save Changes</span>
