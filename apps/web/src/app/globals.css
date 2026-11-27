@@ -84,6 +84,12 @@
   --warning: #FC7C36;
   --on-warning: #FFFFFF;
   --warning-container: #FC7C36;
+
+  /* Candidate Portal Table Tokens (Light Theme Baseline) */
+  --table-row-border: rgba(226, 232, 240, 0.8);
+  --table-row-hover: #F8FAFC;
+  --table-row-text: #0F172A;
+  --table-row-secondary-text: #64748B;
 }
 
 .dark {
@@ -113,6 +119,12 @@
   --on-secondary: #FFFFFF;
 
   --warning: #F59E0B;
+
+  /* Candidate Portal Table Tokens (Dark Theme - Screenshot 1 Standard) */
+  --table-row-border: rgba(255, 255, 255, 0.18);
+  --table-row-hover: #202D40;
+  --table-row-text: #F8FAFC;
+  --table-row-secondary-text: #94A3B8;
 }
 
 body {
@@ -473,5 +485,173 @@ body {
   & header .hover\:bg-slate-100:hover {
     background-color: #1B2638;
   }
+
+  /* ======================================================================== */
+  /* CANDIDATE PORTAL: TABLE ROW BORDERS & HOVER ENGINE (DARK THEME ONLY)     */
+  /* Strictly scoped to Candidate Portal — Zero impact on other portals/light  */
+  /* ======================================================================== */
+
+  & .candidate-portal table,
+  & [data-portal="candidate"] table,
+  & table.candidate-table,
+  & table.dark-theme-table {
+    border-collapse: separate !important;
+    border-spacing: 0 !important;
+    width: 100%;
+  }
+
+  /* Neutralize divide-y top borders so rows only have uniform bottom borders */
+  & .candidate-portal tbody.divide-y > :not([hidden]) ~ :not([hidden]),
+  & [data-portal="candidate"] tbody.divide-y > :not([hidden]) ~ :not([hidden]),
+  & table.candidate-table tbody.divide-y > :not([hidden]) ~ :not([hidden]),
+  & table.dark-theme-table tbody.divide-y > :not([hidden]) ~ :not([hidden]) {
+    border-top-width: 0 !important;
+  }
+
+  /* 1. Visible Horizontal White/Light-Grey Separators Between Every Row */
+  & .candidate-portal table tbody tr,
+  & [data-portal="candidate"] table tbody tr,
+  & table.candidate-table tbody tr,
+  & table.dark-theme-table tbody tr {
+    border-bottom: 1px solid var(--table-row-border, rgba(255, 255, 255, 0.18)) !important;
+    transition: background-color 150ms ease-in-out !important;
+  }
+
+  & .candidate-portal table tbody td,
+  & [data-portal="candidate"] table tbody td,
+  & table.candidate-table tbody td,
+  & table.dark-theme-table tbody td {
+    border-bottom: 1px solid var(--table-row-border, rgba(255, 255, 255, 0.18)) !important;
+    border-top: none !important;
+    border-left: none !important;
+    border-right: none !important;
+  }
+
+  /* Table Header Separator */
+  & .candidate-portal table thead tr,
+  & [data-portal="candidate"] table thead tr,
+  & table.candidate-table thead tr,
+  & table.dark-theme-table thead tr,
+  & .candidate-portal table thead th,
+  & [data-portal="candidate"] table thead th,
+  & table.candidate-table thead th,
+  & table.dark-theme-table thead th {
+    border-bottom: 1px solid var(--table-row-border, rgba(255, 255, 255, 0.18)) !important;
+    border-top: none !important;
+    border-left: none !important;
+    border-right: none !important;
+  }
+
+  /* Border alignment when table is followed by a pagination footer */
+  & .candidate-portal .overflow-x-auto + div[class*="border-t"],
+  & [data-portal="candidate"] .overflow-x-auto + div[class*="border-t"],
+  & .candidate-portal table + div[class*="border-t"],
+  & [data-portal="candidate"] table + div[class*="border-t"] {
+    border-top: 1px solid var(--table-row-border, rgba(255, 255, 255, 0.18)) !important;
+  }
+
+  & .candidate-portal .overflow-x-auto:has(+ div[class*="border-t"]) table tbody tr:last-child td,
+  & [data-portal="candidate"] .overflow-x-auto:has(+ div[class*="border-t"]) table tbody tr:last-child td,
+  & .candidate-portal table:has(+ div[class*="border-t"]) tbody tr:last-child td,
+  & [data-portal="candidate"] table:has(+ div[class*="border-t"]) tbody tr:last-child td {
+    border-bottom: none !important;
+  }
+
+  /* 2. Professional Subtle Row Hover Effect (Matching Screenshot 1) */
+  & .candidate-portal table tbody tr:hover,
+  & [data-portal="candidate"] table tbody tr:hover,
+  & table.candidate-table tbody tr:hover,
+  & table.dark-theme-table tbody tr:hover {
+    background-color: var(--table-row-hover, #202D40) !important;
+  }
+
+  & .candidate-portal table tbody tr:hover > td,
+  & [data-portal="candidate"] table tbody tr:hover > td,
+  & table.candidate-table tbody tr:hover > td,
+  & table.dark-theme-table tbody tr:hover > td {
+    background-color: var(--table-row-hover, #202D40) !important;
+  }
+
+  /* Selected row states */
+  & .candidate-portal table tbody tr[class*="bg-blue-950"],
+  & [data-portal="candidate"] table tbody tr[class*="bg-blue-950"] {
+    background-color: #18253A !important;
+  }
+  & .candidate-portal table tbody tr[class*="bg-blue-950"]:hover,
+  & [data-portal="candidate"] table tbody tr[class*="bg-blue-950"]:hover,
+  & .candidate-portal table tbody tr[class*="bg-blue-950"]:hover > td,
+  & [data-portal="candidate"] table tbody tr[class*="bg-blue-950"]:hover > td {
+    background-color: #243550 !important;
+  }
+
+  /* 3. Text and Element Visibility during Normal & Hover states */
+  & .candidate-portal table tbody td .text-slate-400,
+  & [data-portal="candidate"] table tbody td .text-slate-400 {
+    color: var(--table-row-secondary-text, #94A3B8) !important;
+  }
+
+  & .candidate-portal table tbody td .text-blue-600,
+  & [data-portal="candidate"] table tbody td .text-blue-600 {
+    color: #60A5FA !important;
+  }
+
+  & .candidate-portal table tbody td .bg-slate-100 {
+    background-color: rgba(255, 255, 255, 0.12) !important;
+  }
 }
+
+/* ========================================================================== */
+/* TOP-LEVEL SCOPED CANDIDATE PORTAL DARK TABLE ENGINE                       */
+/* Zero impact on Light Theme, Super Admin, Distributor, or Karyakarta       */
+/* ========================================================================== */
+html.dark .candidate-portal table,
+html.dark [data-portal="candidate"] table,
+html.dark table.candidate-table,
+html.dark table.dark-theme-table {
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+  width: 100%;
+}
+
+html.dark .candidate-portal tbody.divide-y > :not([hidden]) ~ :not([hidden]),
+html.dark [data-portal="candidate"] tbody.divide-y > :not([hidden]) ~ :not([hidden]),
+html.dark table.candidate-table tbody.divide-y > :not([hidden]) ~ :not([hidden]),
+html.dark table.dark-theme-table tbody.divide-y > :not([hidden]) ~ :not([hidden]) {
+  border-top-width: 0 !important;
+}
+
+html.dark .candidate-portal table tbody tr,
+html.dark [data-portal="candidate"] table tbody tr,
+html.dark table.candidate-table tbody tr,
+html.dark table.dark-theme-table tbody tr,
+html.dark .candidate-portal table tbody td,
+html.dark [data-portal="candidate"] table tbody td,
+html.dark table.candidate-table tbody td,
+html.dark table.dark-theme-table tbody td {
+  border-bottom: 1px solid var(--table-row-border, rgba(255, 255, 255, 0.18)) !important;
+  transition: background-color 150ms ease-in-out !important;
+}
+
+html.dark .candidate-portal table thead tr,
+html.dark [data-portal="candidate"] table thead tr,
+html.dark table.candidate-table thead tr,
+html.dark table.dark-theme-table thead tr,
+html.dark .candidate-portal table thead th,
+html.dark [data-portal="candidate"] table thead th,
+html.dark table.candidate-table thead th,
+html.dark table.dark-theme-table thead th {
+  border-bottom: 1px solid var(--table-row-border, rgba(255, 255, 255, 0.18)) !important;
+}
+
+html.dark .candidate-portal table tbody tr:hover,
+html.dark [data-portal="candidate"] table tbody tr:hover,
+html.dark table.candidate-table tbody tr:hover,
+html.dark table.dark-theme-table tbody tr:hover,
+html.dark .candidate-portal table tbody tr:hover > td,
+html.dark [data-portal="candidate"] table tbody tr:hover > td,
+html.dark table.candidate-table tbody tr:hover > td,
+html.dark table.dark-theme-table tbody tr:hover > td {
+  background-color: var(--table-row-hover, #202D40) !important;
+}
+
 

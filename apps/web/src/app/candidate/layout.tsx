@@ -53,7 +53,10 @@ export default function CandidateLayout({
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#101827] text-slate-800 dark:text-[#F8FAFC] flex flex-col font-sans max-w-[100vw] overflow-x-clip">
+    <div
+      className="candidate-portal min-h-screen bg-slate-50 dark:bg-[#101827] text-slate-800 dark:text-[#F8FAFC] flex flex-col font-sans max-w-[100vw] overflow-x-clip"
+      data-portal="candidate"
+    >
       {/* COLLAPSIBLE SIDEBAR */}
       <Sidebar
         collapsed={collapsed}
