@@ -20,8 +20,8 @@ import {
   Settings,
   LogOut,
   ChevronDown,
+  ChevronLeft,
   X,
-  MessageSquare,
   Radio,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
@@ -66,27 +66,19 @@ export const NAV_GROUPS: NavGroupConfig[] = [
         iconColor: "text-slate-300",
       },
       {
-        key: "field-map",
-        label: "Live Field Map",
-        href: "/candidate/field-map",
-        icon: MapPin,
-        iconColor: "text-cyan-400",
-        pulseDot: true,
-      },
-      {
-        key: "feedback",
-        label: "Live Feedback",
-        href: "/candidate/feedback",
-        icon: MessageSquare,
-        iconColor: "text-emerald-400",
-        pulseDot: true,
-      },
-      {
         key: "live-polling",
         label: "Live Polling",
         href: "/candidate/live-polling",
         icon: Radio,
         iconColor: "text-emerald-400",
+        pulseDot: true,
+      },
+      {
+        key: "field-map",
+        label: "Live Field Map",
+        href: "/candidate/field-map",
+        icon: MapPin,
+        iconColor: "text-cyan-400",
         pulseDot: true,
       },
       {
@@ -207,13 +199,13 @@ export const NAV_GROUPS: NavGroupConfig[] = [
 
 export function Sidebar({
   collapsed,
-  onToggleCollapse: _onToggleCollapse,
+  onToggleCollapse,
   mobileOpen,
   onCloseMobile,
 }: SidebarProps) {
   const pathname = usePathname();
   const { user, logout } = useAuth();
-  const [usersExpanded, setUsersExpanded] = useState<boolean>(true);
+  const [usersExpanded, setUsersExpanded] = useState<boolean>(false);
 
   useEffect(() => {
     if (
@@ -263,14 +255,7 @@ export function Sidebar({
     return pathname === href || pathname.startsWith(href + "/");
   };
 
-  const candidateInitials = user?.name
-    ? user.name
-        .split(" ")
-        .map((p) => p[0])
-        .slice(0, 2)
-        .join("")
-        .toUpperCase()
-    : "VP";
+  const candidateInitials = "VP";
 
   return (
     <>
@@ -284,10 +269,10 @@ export function Sidebar({
         />
       )}
 
-      {/* CANDIDATE SIDEBAR: OBSIDIAN SLATE-950 THEME */}
+      {/* CANDIDATE SIDEBAR: OBSIDIAN DARK NAVY THEME (#080D16) */}
       <aside
         aria-label="INDIATA Candidate Navigation"
-        className={`fixed top-0 left-0 bottom-0 z-50 flex flex-col justify-between h-screen bg-slate-950 text-slate-300 border-r border-slate-900 shadow-xl select-none transition-all duration-200 ease-in-out ${
+        className={`fixed top-0 left-0 bottom-0 z-50 flex flex-col justify-between h-screen bg-[#080D16] text-slate-300 border-r border-[#29364A]/60 shadow-xl select-none transition-all duration-200 ease-in-out ${
           collapsed ? "md:w-20" : "md:w-64"
         } ${
           mobileOpen
@@ -296,7 +281,7 @@ export function Sidebar({
         }`}
       >
         {/* BRAND HEADER BAR */}
-        <div className="h-16 px-4 flex items-center justify-between border-b border-slate-900/80 bg-slate-950 shrink-0">
+        <div className="h-16 px-4 flex items-center justify-between border-b border-[#29364A]/40 bg-[#080D16] shrink-0">
           {collapsed && !mobileOpen ? (
             <div className="w-full flex items-center justify-center relative">
               <Link
@@ -322,17 +307,29 @@ export function Sidebar({
                     INDATA
                     <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
                   </span>
-                  <span className="text-[10px] font-bold bg-gradient-to-r from-amber-400 via-pink-400 to-cyan-400 bg-clip-text text-transparent tracking-wider uppercase block">
-                    Candidate Portal
+                  <span className="text-[10px] font-bold tracking-wider uppercase block">
+                    <span className="text-amber-400 font-bold">CANDIDATE </span>
+                    <span className="text-cyan-400 font-bold">PORTAL</span>
                   </span>
                 </div>
               </Link>
 
               <div className="flex items-center gap-1">
+                {onToggleCollapse && (
+                  <button
+                    type="button"
+                    onClick={onToggleCollapse}
+                    className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 hidden md:flex items-center justify-center transition-colors cursor-pointer"
+                    aria-label="Toggle sidebar collapse"
+                    title="Toggle sidebar"
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                  </button>
+                )}
                 <button
                   type="button"
                   onClick={onCloseMobile}
-                  className="md:hidden p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-900"
+                  className="md:hidden p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-900 cursor-pointer"
                   aria-label="Close menu"
                 >
                   <X className="w-4 h-4" />
@@ -343,11 +340,11 @@ export function Sidebar({
         </div>
 
         {/* MIDDLE SCROLLABLE NAVIGATION LIST */}
-        <div className="flex-1 overflow-y-auto px-3 py-4 space-y-5 scrollbar-thin sidebar-scroller">
+        <div className="flex-1 overflow-y-auto px-3 py-4 space-y-4 scrollbar-none">
           {NAV_GROUPS.map((group) => (
             <div key={group.groupTitle} className="space-y-1">
               {!collapsed && (
-                <p className="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 select-none">
+                <p className="px-3 text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2 select-none">
                   {group.groupTitle}
                 </p>
               )}
@@ -362,8 +359,8 @@ export function Sidebar({
                           href="/candidate/users"
                           className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-150 relative group ${
                             isUsersActive
-                              ? "bg-blue-900/50 text-white border border-blue-500 shadow-md shadow-blue-500/20"
-                              : "text-teal-400 hover:text-white hover:bg-slate-900/80"
+                              ? "bg-[#1D61E0] text-white shadow-md shadow-blue-500/20"
+                              : "text-teal-400 hover:text-white hover:bg-white/10"
                           }`}
                           title="Users & Karyakarta"
                         >
@@ -383,23 +380,20 @@ export function Sidebar({
                         <button
                           type="button"
                           onClick={() => setUsersExpanded(!usersExpanded)}
-                          className={`relative w-full flex items-center justify-between py-2.5 px-3 rounded-2xl text-xs font-semibold transition-all select-none overflow-hidden cursor-pointer ${
+                          className={`relative w-full flex items-center justify-between py-2 px-3 rounded-xl text-[13px] font-medium transition-all select-none cursor-pointer ${
                             isUsersActive
-                              ? "bg-[#132347] text-white font-bold border border-blue-500/30"
-                              : "text-slate-300 hover:text-white hover:bg-slate-900/80 font-medium"
+                              ? "bg-[#1D61E0] text-white font-semibold shadow-md shadow-blue-600/20"
+                              : "text-slate-200 hover:text-white hover:bg-white/5"
                           }`}
                         >
-                          {isUsersActive && (
-                            <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1.5 h-6 bg-blue-400 rounded-r-full" />
-                          )}
                           <div className="flex items-center gap-3">
-                            <Users className="w-4 h-4 shrink-0 text-teal-400 ml-0.5" />
+                            <Users className={`w-4 h-4 shrink-0 ${isUsersActive ? "text-white" : "text-teal-400"}`} />
                             <span>Users</span>
                           </div>
                           <div className="flex items-center gap-1.5">
-                            <span className="w-2.5 h-2.5 rounded-full bg-amber-400 shrink-0" />
+                            <span className="w-2 h-2 rounded-full bg-amber-400 shrink-0" />
                             <ChevronDown
-                              className={`w-3.5 h-3.5 text-slate-300 transition-transform duration-200 ${
+                              className={`w-3.5 h-3.5 text-slate-400 transition-transform duration-200 ${
                                 usersExpanded ? "rotate-180" : ""
                               }`}
                             />
@@ -510,8 +504,8 @@ export function Sidebar({
                           href={item.href || "/candidate"}
                           className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-150 relative group ${
                             active
-                              ? "bg-blue-900/50 text-white border border-blue-500 shadow-md shadow-blue-500/20"
-                              : `${item.iconColor} hover:text-white hover:bg-slate-900/80`
+                              ? "bg-[#1D61E0] text-white shadow-md shadow-blue-500/20"
+                              : `${item.iconColor} hover:text-white hover:bg-white/10`
                           }`}
                           title={item.label}
                         >
@@ -554,7 +548,7 @@ export function Sidebar({
                         key={item.key}
                         type="button"
                         onClick={logout}
-                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all text-rose-400 hover:text-rose-300 hover:bg-rose-950/30 cursor-pointer"
+                        className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-[13px] font-semibold transition-all text-rose-400 hover:text-rose-300 hover:bg-rose-950/30 cursor-pointer"
                       >
                         <IconComp className="w-4 h-4 shrink-0 text-rose-400" />
                         <span className="flex-1 text-left truncate">{item.label}</span>
@@ -567,15 +561,12 @@ export function Sidebar({
                       key={item.key}
                       href={item.href || "/candidate"}
                       onClick={onCloseMobile}
-                      className={`relative w-full flex items-center gap-3 px-3 py-2.5 rounded-2xl text-xs font-semibold transition-all overflow-hidden ${
+                      className={`relative w-full flex items-center gap-3 px-3 py-2 rounded-xl text-[13px] transition-all overflow-hidden ${
                         active
-                          ? "bg-[#132347] text-white font-bold border border-blue-500/30"
-                          : "text-slate-300 hover:text-white hover:bg-slate-900/80"
+                          ? "bg-[#1D61E0] text-white font-semibold shadow-md shadow-blue-600/20"
+                          : "text-slate-200 hover:text-white hover:bg-white/5 font-medium"
                       }`}
                     >
-                      {active && (
-                        <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1.5 h-6 bg-blue-400 rounded-r-full" />
-                      )}
                       <IconComp
                         className={`w-4 h-4 shrink-0 ml-0.5 ${
                           active ? "text-white" : item.iconColor
@@ -583,7 +574,7 @@ export function Sidebar({
                       />
                       <span className="flex-1 truncate">{item.label}</span>
 
-                      {/* Live Field Map Cyan Pulse Dot */}
+                      {/* Live Field Map / Polling Cyan Pulse Dot */}
                       {item.pulseDot && (
                         <span className="w-2 h-2 rounded-full bg-cyan-400 ring-2 ring-slate-950 animate-pulse" />
                       )}
@@ -596,9 +587,9 @@ export function Sidebar({
                         <ChevronDown className="w-3.5 h-3.5 text-slate-400 shrink-0" />
                       )}
 
-                      {/* Office & Issues Circular Amber Badge */}
+                      {/* Circular Amber Badge */}
                       {item.badge && (
-                        <span className="w-4 h-4 rounded-full bg-amber-400 text-slate-950 font-bold text-[10px] flex items-center justify-center shrink-0">
+                        <span className="w-5 h-5 rounded-full bg-amber-500 text-slate-950 font-bold text-[11px] flex items-center justify-center shrink-0">
                           {item.badge}
                         </span>
                       )}
@@ -611,14 +602,15 @@ export function Sidebar({
         </div>
 
         {/* BOTTOM USER PROFILE CARD (EXACT CLIENT REFERENCE) */}
-        <div className="p-3 border-t border-slate-900 bg-slate-950/90 shrink-0">
+        <div className="p-3 border-t border-[#29364A]/40 bg-[#080D16] shrink-0">
           {collapsed && !mobileOpen ? (
             <div className="flex justify-center">
               <div
-                className="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 text-white flex items-center justify-center font-bold text-xs shadow-sm cursor-pointer relative group"
+                className="w-9 h-9 rounded-full bg-[#1D61E0] text-white flex items-center justify-center font-bold text-xs shadow-sm cursor-pointer relative group"
                 title={`${user?.name || "Adv. Vikram Patil"} - Candidate Admin`}
               >
                 {candidateInitials}
+                <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-500 ring-2 ring-[#080D16]" />
                 <div
                   role="tooltip"
                   className="pointer-events-none absolute left-full top-1/2 -translate-y-1/2 ml-3.5 z-50 whitespace-nowrap rounded-xl bg-slate-900 border border-slate-800 text-white p-3 text-xs font-semibold shadow-xl opacity-0 transition-opacity duration-150 group-hover:opacity-100"
@@ -633,11 +625,14 @@ export function Sidebar({
             </div>
           ) : (
             <div className="p-2 rounded-xl flex items-center gap-3">
-              <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 text-white font-bold flex items-center justify-center text-xs shadow-sm shrink-0">
-                {candidateInitials}
+              <div className="relative shrink-0">
+                <div className="w-9 h-9 rounded-full bg-[#1D61E0] text-white font-bold flex items-center justify-center text-xs shadow-sm">
+                  {candidateInitials}
+                </div>
+                <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-500 ring-2 ring-[#080D16]" />
               </div>
               <div className="min-w-0 leading-tight">
-                <div className="text-xs font-bold text-white truncate">
+                <div className="text-[13px] font-bold text-white truncate">
                   {user?.name || "Adv. Vikram Patil"}
                 </div>
                 <div className="text-[11px] text-slate-400 truncate">

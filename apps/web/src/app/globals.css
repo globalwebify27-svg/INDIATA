@@ -87,32 +87,32 @@
 }
 
 .dark {
-  --background: #090f1d;
-  --foreground: #f1f5f9;
-  --card: #0d1527;
-  --card-foreground: #f8fafc;
+  --background: #101827;
+  --foreground: #F8FAFC;
+  --card: #151E2D;
+  --card-foreground: #F8FAFC;
 
-  --client-bg: #030e17;
-  --client-card: #072439;
-  --client-soft-blue: #0e3554;
-  --client-border: #0e3554;
-  --client-primary: #0D79FD;
-  --client-success: #01C588;
-  --client-soft-success: #01C588;
-  --client-warning: #F48637;
-  --client-dark: #F5F6F6;
+  --client-bg: #101827;
+  --client-card: #151E2D;
+  --client-soft-blue: #1B2638;
+  --client-border: #29364A;
+  --client-primary: #1D61E0;
+  --client-success: #10B981;
+  --client-soft-success: #064E3B;
+  --client-warning: #F59E0B;
+  --client-dark: #F8FAFC;
 
-  --primary: #0D79FD;
-  --primary-hover: #318FFD;
-  --primary-container: #0D79FD;
+  --primary: #1D61E0;
+  --primary-hover: #2563EB;
+  --primary-container: #1D61E0;
   --on-primary: #FFFFFF;
 
-  --secondary: #01C588;
-  --secondary-hover: #1AD89D;
-  --secondary-container: #01C588;
-  --on-secondary: #011A2D;
+  --secondary: #10B981;
+  --secondary-hover: #059669;
+  --secondary-container: #064E3B;
+  --on-secondary: #FFFFFF;
 
-  --warning: #F48637;
+  --warning: #F59E0B;
 }
 
 body {
@@ -140,20 +140,29 @@ body {
   background: rgba(148, 163, 184, 0.5);
 }
 
-/* Custom Sleek Sidebar Scroller - Matching Reference UI */
+/* Clean utility for hiding scrollbar thumbs */
+.scrollbar-none {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+/* Custom Sleek Sidebar Scroller */
 .sidebar-scroller,
 .sidebar-scrollable,
 .custom-scroll,
 .scrollbar-thin {
   scrollbar-width: thin;
-  scrollbar-color: #cbd5e1 transparent;
+  scrollbar-color: rgba(148, 163, 184, 0.2) transparent;
 }
 
 .sidebar-scroller::-webkit-scrollbar,
 .sidebar-scrollable::-webkit-scrollbar,
 .scrollbar-thin::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
+  width: 4px;
+  height: 4px;
 }
 
 .sidebar-scroller::-webkit-scrollbar-track,
@@ -165,43 +174,144 @@ body {
 .sidebar-scroller::-webkit-scrollbar-thumb,
 .sidebar-scrollable::-webkit-scrollbar-thumb,
 .scrollbar-thin::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: rgba(148, 163, 184, 0.2);
   border-radius: 9999px;
 }
 
 .sidebar-scroller::-webkit-scrollbar-thumb:hover,
 .sidebar-scrollable::-webkit-scrollbar-thumb:hover,
 .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-  background: #ffffff;
+  background: rgba(148, 163, 184, 0.4);
 }
 
-/* Ensure bright, high-contrast silver scroller in dark mode sidebars */
-.dark .sidebar-scroller::-webkit-scrollbar-thumb,
-.dark .sidebar-scrollable::-webkit-scrollbar-thumb,
-.dark aside .overflow-y-auto::-webkit-scrollbar-thumb,
-.dark .scrollbar-thin::-webkit-scrollbar-thumb,
-aside .sidebar-scroller::-webkit-scrollbar-thumb,
-aside .scrollbar-thin::-webkit-scrollbar-thumb,
-aside.bg-slate-950 ::-webkit-scrollbar-thumb,
-aside.bg-slate-900 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1 !important;
-}
+/* ========================================================================== */
+/* CANDIDATE DARK THEME MAPPINGS                                              */
+/* Strictly scoped to .dark — Zero impact on light theme                      */
+/* ========================================================================== */
+.dark {
+  color-scheme: dark;
 
-.dark .sidebar-scroller::-webkit-scrollbar-thumb:hover,
-.dark .sidebar-scrollable::-webkit-scrollbar-thumb:hover,
-.dark aside .overflow-y-auto::-webkit-scrollbar-thumb:hover,
-.dark .scrollbar-thin::-webkit-scrollbar-thumb:hover,
-aside .sidebar-scroller::-webkit-scrollbar-thumb:hover,
-aside .scrollbar-thin::-webkit-scrollbar-thumb:hover,
-aside.bg-slate-950 ::-webkit-scrollbar-thumb:hover,
-aside.bg-slate-900 ::-webkit-scrollbar-thumb:hover {
-  background: #ffffff !important;
-}
+  & main {
+    background-color: #101827;
+    color: #F8FAFC;
+  }
 
-aside .sidebar-scroller,
-aside .scrollbar-thin,
-aside .overflow-y-auto {
-  scrollbar-width: thin;
-  scrollbar-color: #cbd5e1 transparent !important;
+  /* Hardcoded white card containers become dark surfaces */
+  & main .bg-white {
+    background-color: #151E2D;
+  }
+
+  /* Secondary surfaces (inputs, table headers, drawer sections) */
+  & main .bg-slate-50,
+  & main .bg-slate-50\/50,
+  & main .bg-slate-50\/80 {
+    background-color: #1B2638;
+  }
+
+  /* Tertiary surfaces (segmented buttons, table alternating rows) */
+  & main .bg-slate-100 {
+    background-color: #1F2C40;
+  }
+
+  /* Borders across dashboard cards, tables, and metric widgets */
+  & main .border-slate-100,
+  & main .border-slate-200,
+  & main .border-slate-200\/70,
+  & main .border-slate-200\/80,
+  & main .border-slate-200\/90,
+  & main .border-slate-300,
+  & main .border-blue-200,
+  & main .border-blue-200\/70,
+  & main .border-indigo-200,
+  & main .border-indigo-200\/70,
+  & main .border-purple-200,
+  & main .border-purple-200\/70,
+  & main .border-cyan-200,
+  & main .border-cyan-200\/70,
+  & main .border-emerald-200,
+  & main .border-emerald-200\/70,
+  & main .border-amber-200,
+  & main .border-amber-200\/70,
+  & main .border-violet-200,
+  & main .border-violet-200\/70,
+  & main .border-rose-200,
+  & main .border-rose-200\/70 {
+    border-color: #29364A;
+  }
+
+  /* List and table dividers */
+  & main .divide-slate-100 > :not([hidden]) ~ :not([hidden]),
+  & main .divide-slate-200 > :not([hidden]) ~ :not([hidden]) {
+    border-color: #29364A;
+  }
+
+  /* Text hierarchy */
+  & main .text-slate-900,
+  & main .text-slate-800 {
+    color: #F8FAFC;
+  }
+
+  & main .text-slate-700,
+  & main .text-slate-600,
+  & main .text-slate-500 {
+    color: #94A3B8;
+  }
+
+  & main .text-slate-400 {
+    color: #64748B;
+  }
+
+  /* Table row hover states */
+  & main .hover\:bg-slate-50:hover {
+    background-color: #1B2638;
+  }
+  & main .hover\:bg-slate-100:hover {
+    background-color: #1F2C40;
+  }
+
+  /* Form inputs and dropdown selects */
+  & main input:not([type="checkbox"]):not([type="radio"]),
+  & main select,
+  & main textarea {
+    background-color: #1B2638;
+    border-color: #29364A;
+    color: #F8FAFC;
+  }
+  & main input::placeholder,
+  & main textarea::placeholder {
+    color: #64748B;
+  }
+
+  /* Top Header popovers, search, and notification cards */
+  & header .bg-white {
+    background-color: #151E2D;
+  }
+  & header .bg-slate-50,
+  & header .bg-slate-50\/50,
+  & header .bg-slate-50\/80 {
+    background-color: #1B2638;
+  }
+  & header .border-slate-100,
+  & header .border-slate-200,
+  & header .border-slate-300 {
+    border-color: #29364A;
+  }
+  & header .divide-slate-100 > :not([hidden]) ~ :not([hidden]),
+  & header .divide-slate-200 > :not([hidden]) ~ :not([hidden]) {
+    border-color: #29364A;
+  }
+  & header .text-slate-900,
+  & header .text-slate-800 {
+    color: #F8FAFC;
+  }
+  & header .text-slate-700,
+  & header .text-slate-600,
+  & header .text-slate-500 {
+    color: #94A3B8;
+  }
+  & header .hover\:bg-slate-50:hover,
+  & header .hover\:bg-slate-100:hover {
+    background-color: #1B2638;
+  }
 }
 

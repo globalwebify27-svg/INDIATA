@@ -168,7 +168,7 @@ export function Header({
   return (
     <>
       <header
-        className={`h-[68px] bg-white/95 dark:bg-[#090A0F]/95 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800 px-4 sm:px-6 flex items-center justify-between fixed top-0 right-0 z-30 shadow-premium-xs select-none gap-3 transition-all duration-200 ease-in-out ${
+        className={`h-[68px] bg-white/95 dark:bg-[#0B101A]/95 backdrop-blur-md border-b border-slate-200/80 dark:border-[#29364A] px-4 sm:px-6 flex items-center justify-between fixed top-0 right-0 z-30 shadow-premium-xs select-none gap-3 transition-all duration-200 ease-in-out ${
           collapsed ? "left-0 md:left-20" : "left-0 md:left-64"
         }`}
       >
@@ -177,7 +177,7 @@ export function Header({
           <button
             type="button"
             onClick={handleToggle}
-            className="p-1.5 rounded-lg text-slate-500 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors shrink-0"
+            className="p-1.5 rounded-lg text-slate-500 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-[#151E2D] transition-colors shrink-0"
             aria-label={collapsed ? "Expand navigation" : "Collapse navigation"}
             title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
           >
@@ -185,14 +185,14 @@ export function Header({
           </button>
 
           {/* Vertical Divider */}
-          <div className="h-6 w-px bg-slate-200 dark:bg-slate-800 hidden sm:block" />
+          <div className="h-6 w-px bg-slate-200 dark:bg-[#29364A] hidden sm:block" />
 
           {/* Constituency Context Selector Pill */}
           <div className="relative" ref={constituencyRef}>
             <button
               type="button"
               onClick={() => setConstituencyDropdownOpen(!constituencyDropdownOpen)}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700/80 text-xs font-semibold text-slate-800 dark:text-slate-200 transition-colors"
+              className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-[#29364A] bg-slate-50 dark:bg-[#151E2D] hover:bg-slate-100 dark:hover:bg-[#1B2638] text-xs font-semibold text-slate-800 dark:text-[#F8FAFC] transition-colors"
             >
               <MapPin className="w-3.5 h-3.5 text-[#6256D9]" />
               <span className="truncate max-w-[140px] sm:max-w-[210px]">
@@ -202,7 +202,7 @@ export function Header({
             </button>
 
             {constituencyDropdownOpen && (
-              <div className="absolute left-0 mt-2 w-72 bg-white dark:bg-slate-900 rounded-xl shadow-xl border border-slate-200 dark:border-slate-800 p-2 z-50 animate-scale-up">
+              <div className="absolute left-0 mt-2 w-72 bg-white dark:bg-[#151E2D] rounded-xl shadow-xl border border-slate-200 dark:border-[#29364A] p-2 z-50 animate-scale-up">
                 <div className="px-2 py-1.5 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
                   Select Active Constituency
                 </div>
@@ -243,14 +243,14 @@ export function Header({
             <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
             <input
               type="text"
-              placeholder="Global search: voter name, EPIC ID, booth, phone..."
+              placeholder="Global search: voter, EPIC ID, Ctrl K"
               value={searchQuery}
               onChange={(e) => {
                 setSearchQuery(e.target.value);
                 setSearchResultsOpen(true);
               }}
               onFocus={() => setSearchResultsOpen(true)}
-              className="w-full pl-10 pr-8 py-2 bg-slate-50 hover:bg-slate-100/80 focus:bg-white text-xs text-slate-800 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition-all placeholder:text-slate-400 dark:bg-slate-800 dark:text-slate-100 dark:border-slate-700"
+              className="w-full pl-10 pr-8 py-2 bg-slate-50 hover:bg-slate-100/80 focus:bg-white text-xs text-slate-800 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition-all placeholder:text-slate-400 dark:bg-[#151E2D] dark:text-[#F8FAFC] dark:border-[#29364A] dark:placeholder-[#64748B]"
             />
             {searchQuery && (
               <button
@@ -439,21 +439,21 @@ export function Header({
         </button>
 
         {/* User Profile Avatar Dropdown */}
-        <div className="relative pl-1 border-l border-slate-200 dark:border-slate-800" ref={userMenuRef}>
+        <div className="relative pl-1 border-l border-slate-200 dark:border-[#29364A]" ref={userMenuRef}>
           <button
             type="button"
             onClick={() => setUserMenuOpen(!userMenuOpen)}
-            className="flex items-center gap-2 p-1 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            className="flex items-center gap-2 p-1 rounded-xl hover:bg-slate-100 dark:hover:bg-[#151E2D] transition-colors cursor-pointer"
           >
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-600 text-white font-bold flex items-center justify-center text-xs shadow-sm shrink-0">
+            <div className="w-9 h-9 rounded-full bg-[#1D61E0] text-white font-bold flex items-center justify-center text-xs shadow-sm shrink-0">
               {candidateInitials}
             </div>
 
             <div className="text-left hidden md:block leading-tight max-w-[120px]">
-              <div className="text-xs font-bold text-slate-800 dark:text-slate-100 truncate">
+              <div className="text-xs font-bold text-slate-800 dark:text-[#F8FAFC] truncate">
                 {user?.name || "Adv. Vikram Patil"}
               </div>
-              <div className="text-[10px] text-slate-500 truncate">
+              <div className="text-[10px] text-slate-500 dark:text-[#94A3B8] truncate">
                 Candidate Admin
               </div>
             </div>
@@ -461,15 +461,15 @@ export function Header({
           </button>
 
           {userMenuOpen && (
-            <div className="absolute right-0 mt-2 w-64 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl py-2 z-50">
-              <div className="px-4 py-2 border-b border-slate-100 dark:border-slate-800">
-                <p className="text-xs font-bold text-slate-800 dark:text-slate-100">
+            <div className="absolute right-0 mt-2 w-64 rounded-2xl bg-white dark:bg-[#151E2D] border border-slate-200 dark:border-[#29364A] shadow-xl py-2 z-50">
+              <div className="px-4 py-2 border-b border-slate-100 dark:border-[#29364A]">
+                <p className="text-xs font-bold text-slate-800 dark:text-[#F8FAFC]">
                   {user?.name || "Adv. Vikram Patil"}
                 </p>
-                <p className="text-[11px] text-slate-500 truncate mt-0.5">
+                <p className="text-[11px] text-slate-500 dark:text-[#94A3B8] truncate mt-0.5">
                   {user?.email || "candidate@indiata.in"}
                 </p>
-                <span className="inline-block mt-1.5 px-2 py-0.5 rounded text-[10px] font-bold bg-brand-50 text-brand-700">
+                <span className="inline-block mt-1.5 px-2 py-0.5 rounded text-[10px] font-bold bg-brand-50 text-brand-700 dark:bg-blue-950/50 dark:text-blue-300">
                   Candidate Admin • 34 Pune PC
                 </span>
               </div>
