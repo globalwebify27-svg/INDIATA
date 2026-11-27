@@ -1566,7 +1566,7 @@ function AddUserView({ onBack, onUserCreated, onReloadWorkforce }: AddUserViewPr
       </div>
 
       {/* Main Form Box */}
-      <div className="bg-white rounded-3xl border border-slate-200 shadow-xs overflow-hidden">
+      <div className="bg-white dark:bg-[#151E2D] rounded-3xl border border-slate-200 dark:border-[#29364A] shadow-xs overflow-hidden">
         {/* Dark Header */}
         <div className="bg-slate-950 p-6 text-white border-b border-slate-800">
           <h1 className="text-xl font-black">Provision New Portal User</h1>
@@ -1578,40 +1578,40 @@ function AddUserView({ onBack, onUserCreated, onReloadWorkforce }: AddUserViewPr
         <form onSubmit={handleSubmit} className="p-8 space-y-6 text-xs">
           {/* Section 1 */}
           <div className="space-y-3">
-            <h3 className="text-sm font-bold text-slate-900 border-b border-slate-100 pb-2">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white border-b border-slate-100 dark:border-[#29364A] pb-2">
               1. Personal &amp; Contact Information
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <label className="block font-semibold text-slate-700 mb-1">Full Legal Name *</label>
+                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Full Legal Name *</label>
                 <input
                   type="text"
                   required
                   placeholder="e.g. Ramesh Shankar Jadhav"
                   value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
-                  className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500"
+                  className="w-full p-2.5 bg-slate-50 dark:bg-[#0B101A] border border-slate-200 dark:border-[#29364A] text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-[#94A3B8] rounded-xl focus:ring-2 focus:ring-blue-500"
                 />
               </div>
               <div>
-                <label className="block font-semibold text-slate-700 mb-1">Mobile Phone (WhatsApp) *</label>
+                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Mobile Phone (WhatsApp) *</label>
                 <input
                   type="tel"
                   required
                   placeholder="+91 98XXX XXXXX"
                   value={form.phone}
                   onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                  className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500"
+                  className="w-full p-2.5 bg-slate-50 dark:bg-[#0B101A] border border-slate-200 dark:border-[#29364A] text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-[#94A3B8] rounded-xl focus:ring-2 focus:ring-blue-500"
                 />
               </div>
               <div>
-                <label className="block font-semibold text-slate-700 mb-1">Email Address</label>
+                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Email Address</label>
                 <input
                   type="email"
                   placeholder="user@indata-election.in"
                   value={form.email}
                   onChange={(e) => setForm({ ...form, email: e.target.value })}
-                  className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500"
+                  className="w-full p-2.5 bg-slate-50 dark:bg-[#0B101A] border border-slate-200 dark:border-[#29364A] text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-[#94A3B8] rounded-xl focus:ring-2 focus:ring-blue-500"
                 />
               </div>
             </div>
@@ -1619,16 +1619,16 @@ function AddUserView({ onBack, onUserCreated, onReloadWorkforce }: AddUserViewPr
 
           {/* Section 2 */}
           <div className="space-y-3">
-            <h3 className="text-sm font-bold text-slate-900 border-b border-slate-100 pb-2">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white border-b border-slate-100 dark:border-[#29364A] pb-2">
               2. Role &amp; Organizational Jurisdiction
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block font-semibold text-slate-700 mb-1">Assigned Role</label>
+                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Assigned Role</label>
                 <select
                   value={form.role}
                   onChange={(e) => setForm({ ...form, role: e.target.value as UserRole })}
-                  className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-medium focus:ring-2 focus:ring-blue-500"
+                  className="w-full p-2.5 bg-slate-50 dark:bg-[#0B101A] border border-slate-200 dark:border-[#29364A] text-slate-900 dark:text-white rounded-xl font-medium focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="KARYAKARTA">Karyakarta (Field Mobilizer)</option>
                   <option value="BOOTH_ADHYAKSH">Booth Adhyaksh (Booth Chief)</option>
@@ -1639,19 +1639,19 @@ function AddUserView({ onBack, onUserCreated, onReloadWorkforce }: AddUserViewPr
                 </select>
               </div>
               <div>
-                <label className="block font-semibold text-slate-700 mb-1">Assigned Prabhaag / Ward</label>
+                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Assigned Prabhaag / Ward</label>
                 <input
                   type="text"
                   value={form.prabhaag}
                   onChange={(e) => setForm({ ...form, prabhaag: e.target.value })}
-                  className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500"
+                  className="w-full p-2.5 bg-slate-50 dark:bg-[#0B101A] border border-slate-200 dark:border-[#29364A] text-slate-900 dark:text-white rounded-xl focus:ring-2 focus:ring-blue-500"
                 />
               </div>
             </div>
 
             {/* Booths Toggle Chips */}
             <div>
-              <label className="block font-semibold text-slate-700 mb-1.5">
+              <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                 Allot Polling Booths (Click to toggle)
               </label>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
@@ -1663,8 +1663,8 @@ function AddUserView({ onBack, onUserCreated, onReloadWorkforce }: AddUserViewPr
                       onClick={() => toggleBooth(b.boothNumber)}
                       className={`p-2.5 rounded-xl border text-center cursor-pointer transition-all ${
                         isSelected
-                          ? "bg-blue-50 border-blue-500 text-blue-900 font-bold"
-                          : "bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100"
+                          ? "bg-blue-50 dark:bg-blue-950/60 border-blue-500 text-blue-900 dark:text-blue-300 font-bold"
+                          : "bg-slate-50 dark:bg-[#0B101A] border-slate-200 dark:border-[#29364A] text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#1B2638]"
                       }`}
                     >
                       <span>Booth #{b.boothNumber}</span>
@@ -1675,7 +1675,7 @@ function AddUserView({ onBack, onUserCreated, onReloadWorkforce }: AddUserViewPr
             </div>
 
             <div>
-              <label className="block font-semibold text-slate-700 mb-1">
+              <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
                 Assigned Voter Serial Number Range (for Door-to-Door Slip Distribution)
               </label>
               <input
@@ -1683,21 +1683,21 @@ function AddUserView({ onBack, onUserCreated, onReloadWorkforce }: AddUserViewPr
                 placeholder="e.g. 1 to 250 or Part 101: 50-150"
                 value={form.voterSerialRange}
                 onChange={(e) => setForm({ ...form, voterSerialRange: e.target.value })}
-                className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500"
+                className="w-full p-2.5 bg-slate-50 dark:bg-[#0B101A] border border-slate-200 dark:border-[#29364A] text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-[#94A3B8] rounded-xl focus:ring-2 focus:ring-blue-500"
               />
             </div>
           </div>
 
           {/* Section 3 */}
           <div className="space-y-3">
-            <h3 className="text-sm font-bold text-slate-900 border-b border-slate-100 pb-2">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white border-b border-slate-100 dark:border-[#29364A] pb-2">
               3. Module Rights &amp; Security Policies
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {SYSTEM_MODULES.map((m) => (
                 <label
                   key={m.id}
-                  className="flex items-center gap-2 p-2.5 bg-slate-50 rounded-xl border border-slate-200 cursor-pointer"
+                  className="flex items-center gap-2 p-2.5 bg-slate-50 dark:bg-[#0B101A] rounded-xl border border-slate-200 dark:border-[#29364A] cursor-pointer"
                 >
                   <input
                     type="checkbox"
@@ -1705,13 +1705,13 @@ function AddUserView({ onBack, onUserCreated, onReloadWorkforce }: AddUserViewPr
                     onChange={() => togglePermission(m.id)}
                     className="rounded text-blue-600 focus:ring-blue-500"
                   />
-                  <span className="font-medium text-slate-700">{m.name}</span>
+                  <span className="font-medium text-slate-700 dark:text-white">{m.name}</span>
                 </label>
               ))}
             </div>
 
             <div className="pt-2">
-              <label className="flex items-center gap-2.5 p-3 rounded-xl border border-slate-200 bg-amber-50/50 cursor-pointer">
+              <label className="flex items-center gap-2.5 p-3 rounded-xl border border-slate-200 dark:border-[#29364A] bg-amber-50/50 dark:bg-[#0B101A] cursor-pointer">
                 <input
                   type="checkbox"
                   checked={form.canImportData}
@@ -1719,10 +1719,10 @@ function AddUserView({ onBack, onUserCreated, onReloadWorkforce }: AddUserViewPr
                   className="rounded text-blue-600 focus:ring-blue-500"
                 />
                 <div>
-                  <span className="font-bold text-slate-900 block">
+                  <span className="font-bold text-slate-900 dark:text-white block">
                     Grant Electoral Roll Data Import Access
                   </span>
-                  <span className="text-slate-500 text-[11px]">
+                  <span className="text-slate-500 dark:text-[#94A3B8] text-[11px] block mt-0.5">
                     Allows uploading voter CSVs or modifying electoral boundary definitions. Keep disabled for field karyakartas.
                   </span>
                 </div>
@@ -1731,11 +1731,11 @@ function AddUserView({ onBack, onUserCreated, onReloadWorkforce }: AddUserViewPr
           </div>
 
           {/* Buttons */}
-          <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
+          <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100 dark:border-[#29364A]">
             <button
               type="button"
               onClick={onBack}
-              className="px-5 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 font-semibold transition-colors"
+              className="px-5 py-2.5 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#1E293B] font-semibold transition-colors"
             >
               Cancel
             </button>
@@ -2419,20 +2419,20 @@ function UpdateRequestsView({
           onClick={() => setStatusTab("ALL")}
           className={`cursor-pointer p-4 rounded-2xl border transition-all ${
             statusTab === "ALL"
-              ? "bg-blue-50/70 border-blue-300 shadow-xs ring-1 ring-blue-400/30"
-              : "bg-white border-slate-200 hover:border-slate-300"
+              ? "bg-blue-50/70 dark:bg-[#1B2638] border-blue-300 dark:border-blue-500/80 shadow-xs ring-1 ring-blue-400/30"
+              : "bg-white dark:bg-[#151E2D] border-slate-200 dark:border-[#29364A] hover:border-slate-300 dark:hover:border-slate-500"
           }`}
         >
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-[#94A3B8]">
               Total Requests
             </span>
-            <div className="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center">
               <Users className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-2xl font-black text-slate-900 mt-2">{stats.total.toLocaleString()}</div>
-          <div className="text-[11px] text-slate-500 mt-1 flex items-center gap-1">
+          <div className="text-2xl font-black text-slate-900 dark:text-white mt-2">{stats.total.toLocaleString()}</div>
+          <div className="text-[11px] text-slate-500 dark:text-[#94A3B8] mt-1 flex items-center gap-1">
             <span>From 5 Field Workers</span>
           </div>
         </div>
@@ -2442,20 +2442,20 @@ function UpdateRequestsView({
           onClick={() => setStatusTab("PENDING")}
           className={`cursor-pointer p-4 rounded-2xl border transition-all ${
             statusTab === "PENDING"
-              ? "bg-amber-50/70 border-amber-300 shadow-xs ring-1 ring-amber-400/30"
-              : "bg-white border-slate-200 hover:border-slate-300"
+              ? "bg-amber-50/70 dark:bg-amber-950/40 border-amber-300 dark:border-amber-600/80 shadow-xs ring-1 ring-amber-400/30"
+              : "bg-white dark:bg-[#151E2D] border-slate-200 dark:border-[#29364A] hover:border-slate-300 dark:hover:border-slate-500"
           }`}
         >
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-amber-700">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-amber-700 dark:text-amber-400">
               Pending Review
             </span>
-            <div className="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-xl bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 flex items-center justify-center">
               <Clock className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-2xl font-black text-amber-600 mt-2">{stats.pending}</div>
-          <div className="text-[11px] text-amber-700/80 mt-1 flex items-center gap-1">
+          <div className="text-2xl font-black text-amber-600 dark:text-amber-400 mt-2">{stats.pending}</div>
+          <div className="text-[11px] text-amber-700/80 dark:text-amber-300/90 mt-1 flex items-center gap-1">
             <span className="inline-block w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
             <span>Awaiting Admin Action</span>
           </div>
@@ -2466,18 +2466,18 @@ function UpdateRequestsView({
           onClick={() => setStatusTab("APPROVED")}
           className={`cursor-pointer p-4 rounded-2xl border transition-all ${
             statusTab === "APPROVED"
-              ? "bg-blue-50/70 border-blue-400 shadow-xs ring-1 ring-blue-500/30"
-              : "bg-white border-slate-200 hover:border-slate-300"
+              ? "bg-blue-50/70 dark:bg-blue-950/40 border-blue-400 dark:border-blue-600/80 shadow-xs ring-1 ring-blue-500/30"
+              : "bg-white dark:bg-[#151E2D] border-slate-200 dark:border-[#29364A] hover:border-slate-300 dark:hover:border-slate-500"
           }`}
         >
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-blue-700">Approved</span>
-            <div className="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-blue-700 dark:text-blue-400">Approved</span>
+            <div className="w-8 h-8 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center">
               <CheckCircle2 className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-2xl font-black text-blue-700 mt-2">{stats.approved}</div>
-          <div className="text-[11px] text-slate-500 mt-1">
+          <div className="text-2xl font-black text-blue-700 dark:text-blue-400 mt-2">{stats.approved}</div>
+          <div className="text-[11px] text-slate-500 dark:text-[#94A3B8] mt-1">
             <span>Committed to Voter Roll</span>
           </div>
         </div>
@@ -2487,18 +2487,18 @@ function UpdateRequestsView({
           onClick={() => setStatusTab("REJECTED")}
           className={`cursor-pointer p-4 rounded-2xl border transition-all ${
             statusTab === "REJECTED"
-              ? "bg-rose-50/70 border-rose-300 shadow-xs ring-1 ring-rose-400/30"
-              : "bg-white border-slate-200 hover:border-slate-300"
+              ? "bg-rose-50/70 dark:bg-rose-950/40 border-rose-300 dark:border-rose-600/80 shadow-xs ring-1 ring-rose-400/30"
+              : "bg-white dark:bg-[#151E2D] border-slate-200 dark:border-[#29364A] hover:border-slate-300 dark:hover:border-slate-500"
           }`}
         >
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-rose-700">Rejected</span>
-            <div className="w-8 h-8 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-rose-700 dark:text-rose-400">Rejected</span>
+            <div className="w-8 h-8 rounded-xl bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 flex items-center justify-center">
               <XCircle className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-2xl font-black text-rose-600 mt-2">{stats.rejected}</div>
-          <div className="text-[11px] text-slate-500 mt-1">
+          <div className="text-2xl font-black text-rose-600 dark:text-rose-400 mt-2">{stats.rejected}</div>
+          <div className="text-[11px] text-slate-500 dark:text-[#94A3B8] mt-1">
             <span>Audited &amp; Discarded</span>
           </div>
         </div>
@@ -2508,32 +2508,32 @@ function UpdateRequestsView({
           onClick={() => setStatusTab("SYNC_FAILED")}
           className={`cursor-pointer p-4 rounded-2xl border col-span-2 sm:col-span-1 transition-all ${
             statusTab === "SYNC_FAILED"
-              ? "bg-rose-100/70 border-rose-400 shadow-xs ring-1 ring-rose-500/30"
-              : "bg-white border-slate-200 hover:border-slate-300"
+              ? "bg-rose-100/70 dark:bg-rose-950/60 border-rose-400 dark:border-rose-600/80 shadow-xs ring-1 ring-rose-500/30"
+              : "bg-white dark:bg-[#151E2D] border-slate-200 dark:border-[#29364A] hover:border-slate-300 dark:hover:border-slate-500"
           }`}
         >
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-rose-800">Failed to Sync</span>
-            <div className="w-8 h-8 rounded-xl bg-rose-100 text-rose-700 flex items-center justify-center">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-rose-800 dark:text-rose-400">Failed to Sync</span>
+            <div className="w-8 h-8 rounded-xl bg-rose-100 dark:bg-rose-950/80 text-rose-700 dark:text-rose-400 flex items-center justify-center">
               <AlertTriangle className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-2xl font-black text-rose-700 mt-2">{stats.failed}</div>
-          <div className="text-[11px] text-rose-700 mt-1 flex items-center gap-1 font-semibold">
+          <div className="text-2xl font-black text-rose-700 dark:text-rose-400 mt-2">{stats.failed}</div>
+          <div className="text-[11px] text-rose-700 dark:text-rose-300/90 mt-1 flex items-center gap-1 font-semibold">
             <span>Needs Re-attempt</span>
           </div>
         </div>
       </div>
 
       {/* Field Worker Activity & Submission Volume */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3 mb-4">
+      <div className="bg-white dark:bg-[#151E2D] rounded-2xl border border-slate-200 dark:border-[#29364A] p-5 shadow-xs">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-[#29364A] pb-3 mb-4">
           <div>
-            <h2 className="text-base font-bold text-slate-900 flex items-center gap-2">
-              <Users className="w-4 h-4 text-blue-600" />
+            <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <Users className="w-4 h-4 text-blue-600 dark:text-blue-400" />
               Field Worker Activity &amp; Submission Volume
             </h2>
-            <p className="text-xs text-slate-500 mt-0.5">
+            <p className="text-xs text-slate-500 dark:text-[#94A3B8] mt-0.5">
               Live submission breakdown by Karyakartas. Click &quot;Filter Requests&quot; to isolate submissions from a single worker.
             </p>
           </div>

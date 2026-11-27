@@ -1632,14 +1632,14 @@ export default function CandidateWarRoomDashboard() {
                 placeholder="Search ranked booths..."
                 value={rankedSearch}
                 onChange={(e) => setRankedSearch(e.target.value)}
-                className="pl-8 pr-3 py-1.5 rounded-xl border border-slate-200 bg-slate-50 text-xs w-40 sm:w-48"
+                className="pl-8 pr-3 py-1.5 rounded-xl border border-slate-200 dark:border-[#29364A] bg-slate-50 dark:bg-[#0B101A] text-xs text-slate-800 dark:text-white placeholder:text-slate-400 dark:placeholder:text-[#94A3B8] w-40 sm:w-48 focus:outline-none focus:ring-1 focus:ring-blue-500"
               />
             </div>
 
             <select
               value={rankedPrabhaag}
               onChange={(e) => setRankedPrabhaag(e.target.value)}
-              className="px-2.5 py-1.5 rounded-xl border border-slate-200 bg-slate-50 text-xs font-semibold text-slate-700"
+              className="px-2.5 py-1.5 rounded-xl border border-slate-200 dark:border-[#29364A] bg-slate-50 dark:bg-[#1E293B] text-xs font-semibold text-slate-700 dark:text-white focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer"
             >
               <option value="all">All Prabhaags</option>
               <option value="12">Prabhaag 12</option>
@@ -1647,7 +1647,7 @@ export default function CandidateWarRoomDashboard() {
               <option value="14">Prabhaag 14</option>
             </select>
 
-            <span className="text-xs font-semibold text-slate-400 bg-slate-100 px-2.5 py-1.5 rounded-xl hidden sm:inline-block">
+            <span className="text-xs font-semibold text-slate-400 dark:text-white bg-slate-100 dark:bg-[#1E293B] border border-transparent dark:border-[#29364A] px-2.5 py-1.5 rounded-xl hidden sm:inline-block">
               Showing {rankedBooths.length} Ranked Booths
             </span>
           </div>
@@ -2264,44 +2264,57 @@ export default function CandidateWarRoomDashboard() {
       {/* ========================================================================= */}
       <section className="space-y-5">
         {/* Top: Cadre Mobilization Summary & Table (Screenshot 9) */}
-        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-4">
+        <div className="bg-white dark:bg-[#151E2D] p-5 rounded-2xl border border-slate-200 dark:border-[#29364A] shadow-xs space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-[#29364A] pb-3">
+            <div>
+              <div className="flex items-center gap-2">
+                <Users className="w-4 h-4 text-blue-500" />
+                <h3 className="font-bold text-slate-900 dark:text-white text-sm sm:text-base">
+                  Field Operations &amp; Workforce Intelligence
+                </h3>
+              </div>
+              <p className="text-xs text-slate-500 dark:text-[#94A3B8] mt-0.5">
+                Real-time tracking of karyakarta deployments, surveys executed, voter slip delivery, and live field status.
+              </p>
+            </div>
+          </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 text-center text-xs">
-            <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/80">
-              <span className="text-[10px] font-bold text-slate-500 uppercase block">TOTAL CADRE</span>
-              <span className="text-lg font-black text-slate-900 mt-0.5 block">4,850</span>
-              <span className="text-[10px] text-slate-400 block">Registered Karyakartas</span>
+            <div className="p-3 bg-slate-50 dark:bg-[#1B2638] rounded-xl border border-slate-200/80 dark:border-[#29364A]">
+              <span className="text-[10px] font-bold text-slate-500 dark:text-[#94A3B8] uppercase block">TOTAL CADRE</span>
+              <span className="text-lg font-black text-slate-900 dark:text-white mt-0.5 block">4,850</span>
+              <span className="text-[10px] text-slate-400 dark:text-[#94A3B8] block">Registered Karyakartas</span>
             </div>
-            <div className="p-3 bg-blue-50 rounded-xl border border-blue-200/80">
-              <span className="text-[10px] font-bold text-blue-700 uppercase block">ACTIVE ON FIELD</span>
-              <span className="text-lg font-black text-blue-900 mt-0.5 block">3,120</span>
-              <span className="text-[10px] text-blue-600 block">64.3% Real-time deployed</span>
+            <div className="p-3 bg-blue-50 dark:bg-blue-950/40 rounded-xl border border-blue-200/80 dark:border-blue-800/60">
+              <span className="text-[10px] font-bold text-blue-700 dark:text-blue-400 uppercase block">ACTIVE ON FIELD</span>
+              <span className="text-lg font-black text-blue-900 dark:text-blue-300 mt-0.5 block">3,120</span>
+              <span className="text-[10px] text-blue-600 dark:text-blue-400 block">64.3% Real-time deployed</span>
             </div>
-            <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/80">
-              <span className="text-[10px] font-bold text-slate-500 uppercase block">INACTIVE / STANDBY</span>
-              <span className="text-lg font-black text-slate-700 mt-0.5 block">1,730</span>
-              <span className="text-[10px] text-slate-400 block">Available for reserve</span>
+            <div className="p-3 bg-slate-50 dark:bg-[#1B2638] rounded-xl border border-slate-200/80 dark:border-[#29364A]">
+              <span className="text-[10px] font-bold text-slate-500 dark:text-[#94A3B8] uppercase block">INACTIVE / STANDBY</span>
+              <span className="text-lg font-black text-slate-700 dark:text-slate-300 mt-0.5 block">1,730</span>
+              <span className="text-[10px] text-slate-400 dark:text-[#94A3B8] block">Available for reserve</span>
             </div>
-            <div className="p-3 bg-indigo-50 rounded-xl border border-indigo-200/80">
-              <span className="text-[10px] font-bold text-indigo-700 uppercase block">SURVEYS DONE</span>
-              <span className="text-lg font-black text-indigo-900 mt-0.5 block">16.82 L</span>
-              <span className="text-[10px] text-indigo-600 block">78.2% Completion</span>
+            <div className="p-3 bg-indigo-50 dark:bg-indigo-950/40 rounded-xl border border-indigo-200/80 dark:border-indigo-800/60">
+              <span className="text-[10px] font-bold text-indigo-700 dark:text-indigo-400 uppercase block">SURVEYS DONE</span>
+              <span className="text-lg font-black text-indigo-900 dark:text-indigo-300 mt-0.5 block">16.82 L</span>
+              <span className="text-[10px] text-indigo-600 dark:text-indigo-400 block">78.2% Completion</span>
             </div>
-            <div className="p-3 bg-purple-50 rounded-xl border border-purple-200/80">
-              <span className="text-[10px] font-bold text-purple-700 uppercase block">ASSIGNED BOOTHS</span>
-              <span className="text-lg font-black text-purple-900 mt-0.5 block">2,038</span>
-              <span className="text-[10px] text-purple-600 block">99.6% Booth coverage</span>
+            <div className="p-3 bg-purple-50 dark:bg-purple-950/40 rounded-xl border border-purple-200/80 dark:border-purple-800/60">
+              <span className="text-[10px] font-bold text-purple-700 dark:text-purple-400 uppercase block">ASSIGNED BOOTHS</span>
+              <span className="text-lg font-black text-purple-900 dark:text-purple-300 mt-0.5 block">2,038</span>
+              <span className="text-[10px] text-purple-600 dark:text-purple-400 block">99.6% Booth coverage</span>
             </div>
-            <div className="p-3 bg-amber-50 rounded-xl border border-amber-200/80">
-              <span className="text-[10px] font-bold text-amber-700 uppercase block">UNASSIGNED BOOTHS</span>
-              <span className="text-lg font-black text-amber-900 mt-0.5 block">7</span>
-              <span className="text-[10px] text-amber-600 block">Requires table agents</span>
+            <div className="p-3 bg-amber-50 dark:bg-amber-950/40 rounded-xl border border-amber-200/80 dark:border-amber-800/60">
+              <span className="text-[10px] font-bold text-amber-700 dark:text-amber-400 uppercase block">UNASSIGNED BOOTHS</span>
+              <span className="text-lg font-black text-amber-900 dark:text-amber-300 mt-0.5 block">7</span>
+              <span className="text-[10px] text-amber-600 dark:text-amber-400 block">Requires table agents</span>
             </div>
           </div>
 
           {/* Workforce Mobilization Table */}
-          <div className="overflow-x-auto rounded-xl border border-slate-200">
+          <div className="overflow-x-auto rounded-xl border border-slate-200 dark:border-[#29364A]">
             <table className="w-full text-left text-xs">
-              <thead className="bg-slate-50 border-b border-slate-200 text-slate-500 font-bold uppercase text-[10px] tracking-wider">
+              <thead className="bg-slate-50 dark:bg-[#1B2638] border-b border-slate-200 dark:border-[#29364A] text-slate-500 dark:text-[#94A3B8] font-bold uppercase text-[10px] tracking-wider">
                 <tr>
                   <th className="py-3 px-3">KARYAKARTA NAME</th>
                   <th className="py-3 px-3">PRABHAAG &amp; ASSIGNED BOOTH</th>
@@ -2311,22 +2324,22 @@ export default function CandidateWarRoomDashboard() {
                   <th className="py-3 px-3 text-right">ACTION</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 font-medium">
-                <tr className="hover:bg-slate-50/80">
+              <tbody className="divide-y divide-slate-100 dark:divide-[#29364A] font-medium">
+                <tr className="hover:bg-slate-50/80 dark:hover:bg-[#1B2638]/60 transition-colors">
                   <td className="py-3 px-3 flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-full bg-slate-200 text-slate-700 font-bold text-[10px] flex items-center justify-center">
+                    <div className="w-6 h-6 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-bold text-[10px] flex items-center justify-center">
                       Po
                     </div>
-                    <span className="font-bold text-slate-900">Pooja Jadhav</span>
+                    <span className="font-bold text-slate-900 dark:text-white">Pooja Jadhav</span>
                   </td>
                   <td className="py-3 px-3">
-                    <strong className="text-slate-900 block">Booth #101</strong>
-                    <span className="text-[11px] text-slate-400">Prabhaag 12 - Kothrud West</span>
+                    <strong className="text-slate-900 dark:text-white block">Booth #101</strong>
+                    <span className="text-[11px] text-slate-400 dark:text-[#94A3B8]">Prabhaag 12 - Kothrud West</span>
                   </td>
-                  <td className="py-3 px-3 font-bold text-blue-600">184</td>
-                  <td className="py-3 px-3 font-bold text-slate-900">420</td>
+                  <td className="py-3 px-3 font-bold text-blue-600 dark:text-blue-400">184</td>
+                  <td className="py-3 px-3 font-bold text-slate-900 dark:text-white">420</td>
                   <td className="py-3 px-3">
-                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/60 whitespace-nowrap">
                       Active on Field
                     </span>
                   </td>
@@ -2334,28 +2347,28 @@ export default function CandidateWarRoomDashboard() {
                     <button
                       type="button"
                       onClick={() => showToast("info", "GPS Locator", "Pinging Pooja Jadhav: Navbharat School corridor")}
-                      className="px-2.5 py-1 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold text-[11px]"
+                      className="px-2.5 py-1 rounded-lg border border-slate-200 dark:border-[#29364A] bg-white dark:bg-[#1E293B] hover:bg-slate-50 dark:hover:bg-[#2A374A] text-slate-700 dark:text-white font-bold text-[11px] whitespace-nowrap"
                     >
                       Locate GPS
                     </button>
                   </td>
                 </tr>
 
-                <tr className="hover:bg-slate-50/80">
+                <tr className="hover:bg-slate-50/80 dark:hover:bg-[#1B2638]/60 transition-colors">
                   <td className="py-3 px-3 flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-full bg-slate-200 text-slate-700 font-bold text-[10px] flex items-center justify-center">
+                    <div className="w-6 h-6 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-bold text-[10px] flex items-center justify-center">
                       Ga
                     </div>
-                    <span className="font-bold text-slate-900">Ganesh Patil</span>
+                    <span className="font-bold text-slate-900 dark:text-white">Ganesh Patil</span>
                   </td>
                   <td className="py-3 px-3">
-                    <strong className="text-slate-900 block">Booth #102</strong>
-                    <span className="text-[11px] text-slate-400">Prabhaag 12 - Kothrud West</span>
+                    <strong className="text-slate-900 dark:text-white block">Booth #102</strong>
+                    <span className="text-[11px] text-slate-400 dark:text-[#94A3B8]">Prabhaag 12 - Kothrud West</span>
                   </td>
-                  <td className="py-3 px-3 font-bold text-blue-600">210</td>
-                  <td className="py-3 px-3 font-bold text-slate-900">512</td>
+                  <td className="py-3 px-3 font-bold text-blue-600 dark:text-blue-400">210</td>
+                  <td className="py-3 px-3 font-bold text-slate-900 dark:text-white">512</td>
                   <td className="py-3 px-3">
-                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/60 whitespace-nowrap">
                       Active on Field
                     </span>
                   </td>
@@ -2363,28 +2376,28 @@ export default function CandidateWarRoomDashboard() {
                     <button
                       type="button"
                       onClick={() => showToast("info", "GPS Locator", "Pinging Ganesh Patil: Saraswati Vidyalaya Gate")}
-                      className="px-2.5 py-1 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold text-[11px]"
+                      className="px-2.5 py-1 rounded-lg border border-slate-200 dark:border-[#29364A] bg-white dark:bg-[#1E293B] hover:bg-slate-50 dark:hover:bg-[#2A374A] text-slate-700 dark:text-white font-bold text-[11px] whitespace-nowrap"
                     >
                       Locate GPS
                     </button>
                   </td>
                 </tr>
 
-                <tr className="hover:bg-slate-50/80">
+                <tr className="hover:bg-slate-50/80 dark:hover:bg-[#1B2638]/60 transition-colors">
                   <td className="py-3 px-3 flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-full bg-slate-200 text-slate-700 font-bold text-[10px] flex items-center justify-center">
+                    <div className="w-6 h-6 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-bold text-[10px] flex items-center justify-center">
                       Vi
                     </div>
-                    <span className="font-bold text-slate-900">Vikas More</span>
+                    <span className="font-bold text-slate-900 dark:text-white">Vikas More</span>
                   </td>
                   <td className="py-3 px-3">
-                    <strong className="text-slate-900 block">Booth #104</strong>
-                    <span className="text-[11px] text-slate-400">Prabhaag 13 - Erandwane</span>
+                    <strong className="text-slate-900 dark:text-white block">Booth #104</strong>
+                    <span className="text-[11px] text-slate-400 dark:text-[#94A3B8]">Prabhaag 13 - Erandwane</span>
                   </td>
-                  <td className="py-3 px-3 font-bold text-blue-600">95</td>
-                  <td className="py-3 px-3 font-bold text-slate-900">230</td>
+                  <td className="py-3 px-3 font-bold text-blue-600 dark:text-blue-400">95</td>
+                  <td className="py-3 px-3 font-bold text-slate-900 dark:text-white">230</td>
                   <td className="py-3 px-3">
-                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-600">
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 whitespace-nowrap">
                       Offline
                     </span>
                   </td>
@@ -2392,28 +2405,28 @@ export default function CandidateWarRoomDashboard() {
                     <button
                       type="button"
                       onClick={() => showToast("warning", "GPS Offline", "Vikas More terminal last reported 2 hours ago")}
-                      className="px-2.5 py-1 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold text-[11px]"
+                      className="px-2.5 py-1 rounded-lg border border-slate-200 dark:border-[#29364A] bg-white dark:bg-[#1E293B] hover:bg-slate-50 dark:hover:bg-[#2A374A] text-slate-700 dark:text-white font-bold text-[11px] whitespace-nowrap"
                     >
                       Locate GPS
                     </button>
                   </td>
                 </tr>
 
-                <tr className="hover:bg-slate-50/80">
+                <tr className="hover:bg-slate-50/80 dark:hover:bg-[#1B2638]/60 transition-colors">
                   <td className="py-3 px-3 flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-full bg-slate-200 text-slate-700 font-bold text-[10px] flex items-center justify-center">
+                    <div className="w-6 h-6 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-bold text-[10px] flex items-center justify-center">
                       Su
                     </div>
-                    <span className="font-bold text-slate-900">Supriya Salve</span>
+                    <span className="font-bold text-slate-900 dark:text-white">Supriya Salve</span>
                   </td>
                   <td className="py-3 px-3">
-                    <strong className="text-slate-900 block">Booth #106</strong>
-                    <span className="text-[11px] text-slate-400">Prabhaag 14 - Shivajinagar</span>
+                    <strong className="text-slate-900 dark:text-white block">Booth #106</strong>
+                    <span className="text-[11px] text-slate-400 dark:text-[#94A3B8]">Prabhaag 14 - Shivajinagar</span>
                   </td>
-                  <td className="py-3 px-3 font-bold text-blue-600">142</td>
-                  <td className="py-3 px-3 font-bold text-slate-900">310</td>
+                  <td className="py-3 px-3 font-bold text-blue-600 dark:text-blue-400">142</td>
+                  <td className="py-3 px-3 font-bold text-slate-900 dark:text-white">310</td>
                   <td className="py-3 px-3">
-                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/60 whitespace-nowrap">
                       Active on Field
                     </span>
                   </td>
@@ -2421,28 +2434,28 @@ export default function CandidateWarRoomDashboard() {
                     <button
                       type="button"
                       onClick={() => showToast("info", "GPS Locator", "Pinging Supriya Salve: Modern High School Desk")}
-                      className="px-2.5 py-1 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold text-[11px]"
+                      className="px-2.5 py-1 rounded-lg border border-slate-200 dark:border-[#29364A] bg-white dark:bg-[#1E293B] hover:bg-slate-50 dark:hover:bg-[#2A374A] text-slate-700 dark:text-white font-bold text-[11px] whitespace-nowrap"
                     >
                       Locate GPS
                     </button>
                   </td>
                 </tr>
 
-                <tr className="hover:bg-slate-50/80">
+                <tr className="hover:bg-slate-50/80 dark:hover:bg-[#1B2638]/60 transition-colors">
                   <td className="py-3 px-3 flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-full bg-slate-200 text-slate-700 font-bold text-[10px] flex items-center justify-center">
+                    <div className="w-6 h-6 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-bold text-[10px] flex items-center justify-center">
                       Am
                     </div>
-                    <span className="font-bold text-slate-900">Amol Chordia</span>
+                    <span className="font-bold text-slate-900 dark:text-white">Amol Chordia</span>
                   </td>
                   <td className="py-3 px-3">
-                    <strong className="text-slate-900 block">Booth #103</strong>
-                    <span className="text-[11px] text-slate-400">Prabhaag 12 - Kothrud West</span>
+                    <strong className="text-slate-900 dark:text-white block">Booth #103</strong>
+                    <span className="text-[11px] text-slate-400 dark:text-[#94A3B8]">Prabhaag 12 - Kothrud West</span>
                   </td>
-                  <td className="py-3 px-3 font-bold text-slate-400">0</td>
-                  <td className="py-3 px-3 font-bold text-slate-400">0</td>
+                  <td className="py-3 px-3 font-bold text-slate-400 dark:text-[#94A3B8]">0</td>
+                  <td className="py-3 px-3 font-bold text-slate-400 dark:text-[#94A3B8]">0</td>
                   <td className="py-3 px-3">
-                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-600">
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 whitespace-nowrap">
                       Offline
                     </span>
                   </td>
@@ -2450,7 +2463,7 @@ export default function CandidateWarRoomDashboard() {
                     <button
                       type="button"
                       onClick={() => showToast("warning", "GPS Offline", "Amol Chordia terminal currently offline")}
-                      className="px-2.5 py-1 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold text-[11px]"
+                      className="px-2.5 py-1 rounded-lg border border-slate-200 dark:border-[#29364A] bg-white dark:bg-[#1E293B] hover:bg-slate-50 dark:hover:bg-[#2A374A] text-slate-700 dark:text-white font-bold text-[11px] whitespace-nowrap"
                     >
                       Locate GPS
                     </button>
@@ -2462,27 +2475,29 @@ export default function CandidateWarRoomDashboard() {
         </div>
 
         {/* Bottom: War Room Task Management (Screenshot 9 & 10) */}
-        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-4">
+        <div className="bg-white dark:bg-[#151E2D] p-5 rounded-2xl border border-slate-200 dark:border-[#29364A] shadow-xs space-y-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-blue-600" />
-                <h3 className="font-bold text-slate-900 text-sm">War Room Task Management</h3>
+                <CheckCircle2 className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                <h3 className="font-bold text-slate-900 dark:text-white text-sm">War Room Task Management</h3>
               </div>
-              <p className="text-xs text-slate-500 mt-0.5">
+              <p className="text-xs text-slate-500 dark:text-[#94A3B8] mt-0.5">
                 Operational directives assigned to booth adhyaksh, karyakartas, and war room coordinators.
               </p>
             </div>
 
             {/* Filter Tabs */}
-            <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl text-xs font-semibold">
+            <div className="flex items-center gap-1 bg-slate-100 dark:bg-[#101827] p-1 rounded-xl text-xs font-semibold border border-slate-200/80 dark:border-[#29364A]">
               {(["ALL", "OVERDUE", "IN PROGRESS", "PENDING", "COMPLETED"] as const).map((tab) => (
                 <button
                   key={tab}
                   type="button"
                   onClick={() => setTaskFilter(tab)}
                   className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
-                    taskFilter === tab ? "bg-white text-slate-900 shadow-xs font-bold" : "text-slate-600 hover:text-slate-900"
+                    taskFilter === tab
+                      ? "bg-white dark:bg-[#243247] text-slate-900 dark:text-white shadow-xs font-bold dark:border dark:border-[#3E4F68]"
+                      : "text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white"
                   }`}
                 >
                   {tab}
@@ -2493,36 +2508,36 @@ export default function CandidateWarRoomDashboard() {
 
           {/* 6 Summary Boxes (Screenshot 10) */}
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 text-center text-xs">
-            <div className="p-2.5 bg-slate-50 rounded-xl border border-slate-200">
-              <span className="text-[10px] font-bold text-slate-400 uppercase block">TOTAL TASKS</span>
-              <span className="text-base font-black text-slate-900 block mt-0.5">6</span>
+            <div className="p-2.5 bg-slate-50 dark:bg-[#1B2638] rounded-xl border border-slate-200 dark:border-[#29364A]">
+              <span className="text-[10px] font-bold text-slate-400 dark:text-[#94A3B8] uppercase block">TOTAL TASKS</span>
+              <span className="text-base font-black text-slate-900 dark:text-white block mt-0.5">6</span>
             </div>
-            <div className="p-2.5 bg-blue-50/60 rounded-xl border border-blue-200">
-              <span className="text-[10px] font-bold text-blue-700 uppercase block">ASSIGNED</span>
-              <span className="text-base font-black text-blue-900 block mt-0.5">6</span>
+            <div className="p-2.5 bg-blue-50/60 dark:bg-blue-950/40 rounded-xl border border-blue-200 dark:border-blue-800/60">
+              <span className="text-[10px] font-bold text-blue-700 dark:text-blue-400 uppercase block">ASSIGNED</span>
+              <span className="text-base font-black text-blue-900 dark:text-blue-300 block mt-0.5">6</span>
             </div>
-            <div className="p-2.5 bg-cyan-50/60 rounded-xl border border-cyan-200">
-              <span className="text-[10px] font-bold text-cyan-700 uppercase block">IN PROGRESS</span>
-              <span className="text-base font-black text-cyan-900 block mt-0.5">3</span>
+            <div className="p-2.5 bg-cyan-50/60 dark:bg-cyan-950/40 rounded-xl border border-cyan-200 dark:border-cyan-800/60">
+              <span className="text-[10px] font-bold text-cyan-700 dark:text-cyan-400 uppercase block">IN PROGRESS</span>
+              <span className="text-base font-black text-cyan-900 dark:text-cyan-300 block mt-0.5">3</span>
             </div>
-            <div className="p-2.5 bg-yellow-50/60 rounded-xl border border-yellow-200">
-              <span className="text-[10px] font-bold text-yellow-700 uppercase block">PENDING</span>
-              <span className="text-base font-black text-yellow-900 block mt-0.5">1</span>
+            <div className="p-2.5 bg-yellow-50/60 dark:bg-yellow-950/40 rounded-xl border border-yellow-200 dark:border-yellow-800/60">
+              <span className="text-[10px] font-bold text-yellow-700 dark:text-yellow-400 uppercase block">PENDING</span>
+              <span className="text-base font-black text-yellow-900 dark:text-yellow-300 block mt-0.5">1</span>
             </div>
-            <div className="p-2.5 bg-rose-50/60 rounded-xl border border-rose-200">
-              <span className="text-[10px] font-bold text-rose-700 uppercase block">OVERDUE</span>
-              <span className="text-base font-black text-rose-900 block mt-0.5">1</span>
+            <div className="p-2.5 bg-rose-50/60 dark:bg-rose-950/40 rounded-xl border border-rose-200 dark:border-rose-800/60">
+              <span className="text-[10px] font-bold text-rose-700 dark:text-rose-400 uppercase block">OVERDUE</span>
+              <span className="text-base font-black text-rose-900 dark:text-rose-300 block mt-0.5">1</span>
             </div>
-            <div className="p-2.5 bg-purple-50/60 rounded-xl border border-purple-200">
-              <span className="text-[10px] font-bold text-purple-700 uppercase block">COMPLETED</span>
-              <span className="text-base font-black text-purple-900 block mt-0.5">1</span>
+            <div className="p-2.5 bg-purple-50/60 dark:bg-purple-950/40 rounded-xl border border-purple-200 dark:border-purple-800/60">
+              <span className="text-[10px] font-bold text-purple-700 dark:text-purple-400 uppercase block">COMPLETED</span>
+              <span className="text-base font-black text-purple-900 dark:text-purple-300 block mt-0.5">1</span>
             </div>
           </div>
 
           {/* Task Management Table */}
-          <div className="overflow-x-auto rounded-xl border border-slate-200">
+          <div className="overflow-x-auto rounded-xl border border-slate-200 dark:border-[#29364A]">
             <table className="w-full text-left text-xs">
-              <thead className="bg-slate-50 border-b border-slate-200 text-slate-500 font-bold uppercase text-[10px] tracking-wider">
+              <thead className="bg-slate-50 dark:bg-[#1B2638] border-b border-slate-200 dark:border-[#29364A] text-slate-500 dark:text-[#94A3B8] font-bold uppercase text-[10px] tracking-wider">
                 <tr>
                   <th className="py-3 px-3">TASK ID &amp; DIRECTIVE</th>
                   <th className="py-3 px-3">ASSIGNED PERSON &amp; ROLE</th>
@@ -2532,44 +2547,44 @@ export default function CandidateWarRoomDashboard() {
                   <th className="py-3 px-3">STATUS</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 font-medium">
+              <tbody className="divide-y divide-slate-100 dark:divide-[#29364A] font-medium">
                 {filteredTasks.map((t) => (
-                  <tr key={t.id} className="hover:bg-slate-50/80">
+                  <tr key={t.id} className="hover:bg-slate-50/80 dark:hover:bg-[#1B2638]/60 transition-colors">
                     <td className="py-3 px-3">
-                      <span className="font-mono font-bold text-blue-600 block">{t.id}</span>
-                      <span className="text-slate-800 font-semibold">{t.title}</span>
+                      <span className="font-mono font-bold text-blue-600 dark:text-blue-400 block">{t.id}</span>
+                      <span className="text-slate-800 dark:text-white font-semibold">{t.title}</span>
                     </td>
                     <td className="py-3 px-3">
-                      <p className="font-bold text-slate-900">{t.assignedTo}</p>
-                      <p className="text-[11px] text-slate-400">{t.assignedRole}</p>
+                      <p className="font-bold text-slate-900 dark:text-white">{t.assignedTo}</p>
+                      <p className="text-[11px] text-slate-400 dark:text-[#94A3B8]">{t.assignedRole}</p>
                     </td>
-                    <td className="py-3 px-3 font-mono font-semibold text-slate-700">Booth #{t.boothNumber}</td>
+                    <td className="py-3 px-3 font-mono font-semibold text-slate-700 dark:text-slate-200">Booth #{t.boothNumber}</td>
                     <td className="py-3 px-3">
                       <span
                         className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
                           t.priority === "CRITICAL"
-                            ? "bg-rose-100 text-rose-800"
+                            ? "bg-rose-100 dark:bg-rose-950/60 text-rose-800 dark:text-rose-400 border border-rose-200 dark:border-rose-800/60"
                             : t.priority === "HIGH"
-                            ? "bg-amber-100 text-amber-800"
+                            ? "bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-400 border border-amber-200 dark:border-amber-800/60"
                             : t.priority === "MEDIUM"
-                            ? "bg-blue-100 text-blue-800"
-                            : "bg-slate-100 text-slate-600"
+                            ? "bg-blue-100 dark:bg-blue-950/60 text-blue-800 dark:text-blue-400 border border-blue-200 dark:border-blue-800/60"
+                            : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700"
                         }`}
                       >
                         {t.priority}
                       </span>
                     </td>
-                    <td className="py-3 px-3 text-slate-600 font-medium">{t.deadline}</td>
+                    <td className="py-3 px-3 text-slate-600 dark:text-slate-300 font-medium">{t.deadline}</td>
                     <td className="py-3 px-3">
                       <span
                         className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
                           t.status === "OVERDUE"
-                            ? "bg-rose-100 text-rose-800"
+                            ? "bg-rose-100 dark:bg-rose-950/60 text-rose-800 dark:text-rose-400 border border-rose-200 dark:border-rose-800/60"
                             : t.status === "IN PROGRESS"
-                            ? "bg-blue-100 text-blue-800"
+                            ? "bg-blue-100 dark:bg-blue-950/60 text-blue-800 dark:text-blue-400 border border-blue-200 dark:border-blue-800/60"
                             : t.status === "PENDING"
-                            ? "bg-amber-100 text-amber-800"
-                            : "bg-purple-100 text-purple-800"
+                            ? "bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-400 border border-amber-200 dark:border-amber-800/60"
+                            : "bg-purple-100 dark:bg-purple-950/60 text-purple-800 dark:text-purple-400 border border-purple-200 dark:border-purple-800/60"
                         }`}
                       >
                         {t.status}

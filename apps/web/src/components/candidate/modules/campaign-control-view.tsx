@@ -669,45 +669,45 @@ export function CampaignControlView() {
           {/* 3 CHANNEL OVERVIEW CARDS */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {/* WhatsApp Card */}
-            <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs flex flex-col justify-between">
+            <div className="bg-white dark:bg-[#151E2D] rounded-2xl border border-slate-200 dark:border-[#29364A] p-5 shadow-xs flex flex-col justify-between">
               <div>
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+                    <div className="w-8 h-8 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center">
                       <MessageSquare className="w-4 h-4" />
                     </div>
                     <div>
-                      <h3 className="font-bold text-sm text-slate-900">WhatsApp Business API</h3>
-                      <span className="text-[10px] text-blue-600 font-bold">Meta Cloud Verified</span>
+                      <h3 className="font-bold text-sm text-slate-900 dark:text-white">WhatsApp Business API</h3>
+                      <span className="text-[10px] text-blue-600 dark:text-blue-400 font-bold">Meta Cloud Verified</span>
                     </div>
                   </div>
-                  <span className="text-xs font-mono font-bold text-slate-700">
+                  <span className="text-xs font-mono font-bold text-slate-700 dark:text-slate-300">
                     {credits.whatsapp.toLocaleString()} Credits
                   </span>
                 </div>
 
-                <div className="grid grid-cols-4 gap-2 text-center text-xs py-2 bg-slate-50 rounded-xl my-3">
+                <div className="grid grid-cols-4 gap-2 text-center text-xs py-2 bg-slate-50 dark:bg-[#0B101A] rounded-xl my-3 border border-slate-100 dark:border-[#29364A]">
                   <div>
-                    <span className="text-[10px] uppercase font-bold text-slate-400 block">Sent</span>
-                    <span className="font-bold text-slate-900">
+                    <span className="text-[10px] uppercase font-bold text-slate-400 dark:text-[#94A3B8] block">Sent</span>
+                    <span className="font-bold text-slate-900 dark:text-white">
                       {channelStats.whatsapp.sent.toLocaleString()}
                     </span>
                   </div>
                   <div>
-                    <span className="text-[10px] uppercase font-bold text-blue-600 block">Delivered</span>
-                    <span className="font-bold text-blue-600">
+                    <span className="text-[10px] uppercase font-bold text-blue-600 dark:text-blue-400 block">Delivered</span>
+                    <span className="font-bold text-blue-600 dark:text-blue-400">
                       {channelStats.whatsapp.delivered.toLocaleString()}
                     </span>
                   </div>
                   <div>
-                    <span className="text-[10px] uppercase font-bold text-blue-700 block">Read</span>
-                    <span className="font-bold text-blue-700">
+                    <span className="text-[10px] uppercase font-bold text-blue-700 dark:text-blue-300 block">Read</span>
+                    <span className="font-bold text-blue-700 dark:text-blue-300">
                       {channelStats.whatsapp.read.toLocaleString()}
                     </span>
                   </div>
                   <div>
-                    <span className="text-[10px] uppercase font-bold text-rose-600 block">Failed</span>
-                    <span className="font-bold text-rose-600">{channelStats.whatsapp.failed}</span>
+                    <span className="text-[10px] uppercase font-bold text-rose-600 dark:text-rose-400 block">Failed</span>
+                    <span className="font-bold text-rose-600 dark:text-rose-400">{channelStats.whatsapp.failed}</span>
                   </div>
                 </div>
               </div>
@@ -718,7 +718,7 @@ export function CampaignControlView() {
                   setActiveTab("WHATSAPP");
                   setChannelSubView("DASHBOARD");
                 }}
-                className="w-full mt-2 py-2 rounded-xl text-xs font-bold text-blue-700 bg-blue-50 hover:bg-blue-100 border border-blue-200 transition flex items-center justify-center gap-1.5 cursor-pointer"
+                className="w-full mt-2 py-2 rounded-xl text-xs font-bold text-blue-700 dark:text-white bg-blue-50 dark:bg-blue-600 hover:bg-blue-100 dark:hover:bg-blue-500 border border-blue-200 dark:border-blue-500 transition flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
               >
                 <span>Open WhatsApp Dashboard</span>
                 <ChevronRight className="w-3.5 h-3.5" />
@@ -726,43 +726,43 @@ export function CampaignControlView() {
             </div>
 
             {/* SMS Card */}
-            <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs flex flex-col justify-between">
+            <div className="bg-white dark:bg-[#151E2D] rounded-2xl border border-slate-200 dark:border-[#29364A] p-5 shadow-xs flex flex-col justify-between">
               <div>
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+                    <div className="w-8 h-8 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center">
                       <Mail className="w-4 h-4" />
                     </div>
                     <div>
-                      <h3 className="font-bold text-sm text-slate-900">DLT Transactional SMS</h3>
-                      <span className="text-[10px] text-blue-600 font-bold">TRAI DLT Registered Header</span>
+                      <h3 className="font-bold text-sm text-slate-900 dark:text-white">DLT Transactional SMS</h3>
+                      <span className="text-[10px] text-blue-600 dark:text-blue-400 font-bold">TRAI DLT Registered Header</span>
                     </div>
                   </div>
-                  <span className="text-xs font-mono font-bold text-slate-700">
+                  <span className="text-xs font-mono font-bold text-slate-700 dark:text-slate-300">
                     {credits.sms.toLocaleString()} Credits
                   </span>
                 </div>
 
-                <div className="grid grid-cols-4 gap-2 text-center text-xs py-2 bg-slate-50 rounded-xl my-3">
+                <div className="grid grid-cols-4 gap-2 text-center text-xs py-2 bg-slate-50 dark:bg-[#0B101A] rounded-xl my-3 border border-slate-100 dark:border-[#29364A]">
                   <div>
-                    <span className="text-[10px] uppercase font-bold text-slate-400 block">Sent</span>
-                    <span className="font-bold text-slate-900">
+                    <span className="text-[10px] uppercase font-bold text-slate-400 dark:text-[#94A3B8] block">Sent</span>
+                    <span className="font-bold text-slate-900 dark:text-white">
                       {channelStats.sms.sent.toLocaleString()}
                     </span>
                   </div>
                   <div>
-                    <span className="text-[10px] uppercase font-bold text-blue-600 block">Delivered</span>
-                    <span className="font-bold text-blue-600">
+                    <span className="text-[10px] uppercase font-bold text-blue-600 dark:text-blue-400 block">Delivered</span>
+                    <span className="font-bold text-blue-600 dark:text-blue-400">
                       {channelStats.sms.delivered.toLocaleString()}
                     </span>
                   </div>
                   <div>
-                    <span className="text-[10px] uppercase font-bold text-slate-400 block">Segments</span>
-                    <span className="font-bold text-slate-900">{channelStats.sms.segments}</span>
+                    <span className="text-[10px] uppercase font-bold text-slate-400 dark:text-[#94A3B8] block">Segments</span>
+                    <span className="font-bold text-slate-900 dark:text-white">{channelStats.sms.segments}</span>
                   </div>
                   <div>
-                    <span className="text-[10px] uppercase font-bold text-rose-600 block">Failed</span>
-                    <span className="font-bold text-rose-600">{channelStats.sms.failed}</span>
+                    <span className="text-[10px] uppercase font-bold text-rose-600 dark:text-rose-400 block">Failed</span>
+                    <span className="font-bold text-rose-600 dark:text-rose-400">{channelStats.sms.failed}</span>
                   </div>
                 </div>
               </div>
@@ -773,7 +773,7 @@ export function CampaignControlView() {
                   setActiveTab("SMS");
                   setChannelSubView("DASHBOARD");
                 }}
-                className="w-full mt-2 py-2 rounded-xl text-xs font-bold text-blue-700 bg-blue-50 hover:bg-blue-100 border border-blue-200 transition flex items-center justify-center gap-1.5 cursor-pointer"
+                className="w-full mt-2 py-2 rounded-xl text-xs font-bold text-blue-700 dark:text-white bg-blue-50 dark:bg-blue-600 hover:bg-blue-100 dark:hover:bg-blue-500 border border-blue-200 dark:border-blue-500 transition flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
               >
                 <span>Open SMS Dashboard</span>
                 <ChevronRight className="w-3.5 h-3.5" />
@@ -781,43 +781,43 @@ export function CampaignControlView() {
             </div>
 
             {/* AI Voice Card */}
-            <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs flex flex-col justify-between">
+            <div className="bg-white dark:bg-[#151E2D] rounded-2xl border border-slate-200 dark:border-[#29364A] p-5 shadow-xs flex flex-col justify-between">
               <div>
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center">
+                    <div className="w-8 h-8 rounded-xl bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 flex items-center justify-center">
                       <Headphones className="w-4 h-4" />
                     </div>
                     <div>
-                      <h3 className="font-bold text-sm text-slate-900">AI Voice Outbound Engine</h3>
-                      <span className="text-[10px] text-purple-600 font-bold">Marathi Cloned Speech</span>
+                      <h3 className="font-bold text-sm text-slate-900 dark:text-white">AI Voice Outbound Engine</h3>
+                      <span className="text-[10px] text-purple-600 dark:text-purple-400 font-bold">Marathi Cloned Speech</span>
                     </div>
                   </div>
-                  <span className="text-xs font-mono font-bold text-slate-700">
+                  <span className="text-xs font-mono font-bold text-slate-700 dark:text-slate-300">
                     {credits.voice.toLocaleString()} Credits
                   </span>
                 </div>
 
-                <div className="grid grid-cols-4 gap-2 text-center text-xs py-2 bg-slate-50 rounded-xl my-3">
+                <div className="grid grid-cols-4 gap-2 text-center text-xs py-2 bg-slate-50 dark:bg-[#0B101A] rounded-xl my-3 border border-slate-100 dark:border-[#29364A]">
                   <div>
-                    <span className="text-[10px] uppercase font-bold text-slate-400 block">Calls Made</span>
-                    <span className="font-bold text-slate-900">
+                    <span className="text-[10px] uppercase font-bold text-slate-400 dark:text-[#94A3B8] block">Calls Made</span>
+                    <span className="font-bold text-slate-900 dark:text-white">
                       {channelStats.voice.sent.toLocaleString()}
                     </span>
                   </div>
                   <div>
-                    <span className="text-[10px] uppercase font-bold text-purple-600 block">Answered</span>
-                    <span className="font-bold text-purple-600">
+                    <span className="text-[10px] uppercase font-bold text-purple-600 dark:text-purple-400 block">Answered</span>
+                    <span className="font-bold text-purple-600 dark:text-purple-400">
                       {channelStats.voice.answered.toLocaleString()}
                     </span>
                   </div>
                   <div>
-                    <span className="text-[10px] uppercase font-bold text-slate-400 block">Avg Dur.</span>
-                    <span className="font-bold text-slate-900">{channelStats.voice.avgDur}</span>
+                    <span className="text-[10px] uppercase font-bold text-slate-400 dark:text-[#94A3B8] block">Avg Dur.</span>
+                    <span className="font-bold text-slate-900 dark:text-white">{channelStats.voice.avgDur}</span>
                   </div>
                   <div>
-                    <span className="text-[10px] uppercase font-bold text-rose-600 block">Failed</span>
-                    <span className="font-bold text-rose-600">{channelStats.voice.failed}</span>
+                    <span className="text-[10px] uppercase font-bold text-rose-600 dark:text-rose-400 block">Failed</span>
+                    <span className="font-bold text-rose-600 dark:text-rose-400">{channelStats.voice.failed}</span>
                   </div>
                 </div>
               </div>
@@ -828,7 +828,7 @@ export function CampaignControlView() {
                   setActiveTab("AI_VOICE");
                   setChannelSubView("DASHBOARD");
                 }}
-                className="w-full mt-2 py-2 rounded-xl text-xs font-bold text-purple-700 bg-purple-50 hover:bg-purple-100 border border-purple-200 transition flex items-center justify-center gap-1.5 cursor-pointer"
+                className="w-full mt-2 py-2 rounded-xl text-xs font-bold text-purple-700 dark:text-white bg-purple-50 dark:bg-[#7C3AED] hover:bg-purple-100 dark:hover:bg-[#6D28D9] border border-purple-200 dark:border-purple-500 transition flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
               >
                 <span>Open AI Voice Dashboard</span>
                 <ChevronRight className="w-3.5 h-3.5" />

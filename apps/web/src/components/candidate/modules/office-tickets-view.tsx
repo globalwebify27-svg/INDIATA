@@ -493,7 +493,7 @@ export function OfficeTicketsView() {
       {/* ===================================================================== */}
       {/* 3. SEARCH & FILTERS BAR                                               */}
       {/* ===================================================================== */}
-      <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex flex-col md:flex-row gap-3">
+      <div className="bg-white dark:bg-[#151E2D] p-4 rounded-2xl border border-slate-200 dark:border-[#29364A] shadow-xs flex flex-col md:flex-row gap-3">
         <div className="flex-1 relative">
           <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
@@ -501,7 +501,7 @@ export function OfficeTicketsView() {
             placeholder="Search tickets by visitor name, ID, or description..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-blue-500 focus:bg-white"
+            className="w-full pl-10 pr-4 py-2 bg-slate-50 dark:bg-[#0B101A] border border-slate-200 dark:border-[#29364A] rounded-xl text-xs text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-[#94A3B8] focus:ring-2 focus:ring-blue-500 focus:bg-white dark:focus:bg-[#0B101A]"
           />
         </div>
 
@@ -510,7 +510,7 @@ export function OfficeTicketsView() {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="w-full py-2 pl-3 pr-8 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-700 focus:ring-2 focus:ring-blue-500 appearance-none cursor-pointer"
+            className="w-full py-2 pl-3 pr-8 bg-slate-50 dark:bg-[#0B101A] border border-slate-200 dark:border-[#29364A] rounded-xl text-xs font-medium text-slate-700 dark:text-white focus:ring-2 focus:ring-blue-500 appearance-none cursor-pointer"
           >
             <option value="ALL">All Statuses</option>
             <option value="OPEN">Open</option>
@@ -525,7 +525,7 @@ export function OfficeTicketsView() {
           <select
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value)}
-            className="w-full py-2 pl-3 pr-8 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-700 focus:ring-2 focus:ring-blue-500 appearance-none cursor-pointer"
+            className="w-full py-2 pl-3 pr-8 bg-slate-50 dark:bg-[#0B101A] border border-slate-200 dark:border-[#29364A] rounded-xl text-xs font-medium text-slate-700 dark:text-white focus:ring-2 focus:ring-blue-500 appearance-none cursor-pointer"
           >
             <option value="ALL">All Categories</option>
             <option value="Water Supply">Water Supply</option>

@@ -564,10 +564,10 @@ export function SubscriptionPlansView() {
       <div>
         <div className="flex items-center justify-between mb-3">
           <div>
-            <h2 className="text-sm font-black text-slate-900 uppercase tracking-wider">
+            <h2 className="text-sm font-black text-slate-900 dark:text-white uppercase tracking-wider">
               Select Subscription Module
             </h2>
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-slate-500 dark:text-[#94A3B8]">
               Select whether you need election campaign management or permanent office administration.
             </p>
           </div>
@@ -579,18 +579,18 @@ export function SubscriptionPlansView() {
             onClick={() => setSelectedModule("ELECTION")}
             className={`cursor-pointer rounded-2xl p-5 border transition-all ${
               selectedModule === "ELECTION"
-                ? "border-blue-600 bg-blue-50/30 ring-2 ring-blue-500/20 shadow-xs"
-                : "border-slate-200 bg-white hover:border-slate-300"
+                ? "border-blue-600 dark:border-blue-500 bg-blue-50/30 dark:bg-[#1B2638] ring-2 ring-blue-500/20 shadow-xs"
+                : "border-slate-200 dark:border-[#29364A] bg-white dark:bg-[#151E2D] hover:border-slate-300 dark:hover:border-slate-500"
             }`}
           >
             <div className="flex items-start justify-between gap-3">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center shrink-0">
+                <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-950/70 text-blue-700 dark:text-blue-400 flex items-center justify-center shrink-0">
                   <Vote className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="font-extrabold text-slate-900 text-sm">Election Module</h3>
-                  <span className="text-[11px] text-blue-600 font-semibold block">
+                  <h3 className="font-extrabold text-slate-900 dark:text-white text-sm">Election Module</h3>
+                  <span className="text-[11px] text-blue-600 dark:text-blue-400 font-semibold block">
                     Election Campaign Lifecycle
                   </span>
                 </div>
@@ -600,26 +600,26 @@ export function SubscriptionPlansView() {
                 className={`w-4 h-4 rounded-full border flex items-center justify-center ${
                   selectedModule === "ELECTION"
                     ? "border-blue-600 bg-blue-600 text-white"
-                    : "border-slate-300"
+                    : "border-slate-300 dark:border-slate-600"
                 }`}
               >
                 {selectedModule === "ELECTION" && <Check className="w-2.5 h-2.5" />}
               </span>
             </div>
 
-            <p className="text-xs text-slate-600 mt-3 leading-relaxed">
+            <p className="text-xs text-slate-600 dark:text-[#94A3B8] mt-3 leading-relaxed">
               War room command centre, live turnout telemetry, booth intelligence matrix, karyakarta
               field tracking, and voter slip generation.
             </p>
 
-            <div className="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
-              <span className="text-slate-500">Validity:</span>
-              <span className="font-bold text-slate-800">Election End Date + 15 Days</span>
+            <div className="mt-3 pt-3 border-t border-slate-100 dark:border-[#29364A] flex items-center justify-between text-xs">
+              <span className="text-slate-500 dark:text-[#94A3B8]">Validity:</span>
+              <span className="font-bold text-slate-800 dark:text-white">Election End Date + 15 Days</span>
             </div>
 
             <div className="mt-2 flex items-center justify-between text-xs">
-              <span className="text-slate-500">AI Mode:</span>
-              <span className="font-bold text-blue-700">Available with AI &amp; without AI</span>
+              <span className="text-slate-500 dark:text-[#94A3B8]">AI Mode:</span>
+              <span className="font-bold text-blue-700 dark:text-blue-400">Available with AI &amp; without AI</span>
             </div>
 
             <button
@@ -630,7 +630,7 @@ export function SubscriptionPlansView() {
               className={`mt-4 w-full py-2 rounded-xl text-xs font-bold transition-colors cursor-pointer ${
                 selectedModule === "ELECTION"
                   ? "bg-blue-600 text-white shadow-xs"
-                  : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                  : "bg-slate-100 dark:bg-[#1E293B] text-slate-700 dark:text-white hover:bg-slate-200 dark:hover:bg-[#2A374A]"
               }`}
             >
               {selectedModule === "ELECTION" ? "Viewing Election Plans ↓" : "View Election Plans"}
@@ -642,18 +642,18 @@ export function SubscriptionPlansView() {
             onClick={() => setSelectedModule("OFFICE")}
             className={`cursor-pointer rounded-2xl p-5 border transition-all ${
               selectedModule === "OFFICE"
-                ? "border-blue-600 bg-blue-50/30 ring-2 ring-blue-500/20 shadow-xs"
-                : "border-slate-200 bg-white hover:border-slate-300"
+                ? "border-blue-600 dark:border-blue-500 bg-blue-50/30 dark:bg-[#1B2638] ring-2 ring-blue-500/20 shadow-xs"
+                : "border-slate-200 dark:border-[#29364A] bg-white dark:bg-[#151E2D] hover:border-slate-300 dark:hover:border-slate-500"
             }`}
           >
             <div className="flex items-start justify-between gap-3">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center shrink-0">
+                <div className="w-10 h-10 rounded-xl bg-purple-100 dark:bg-purple-950/70 text-purple-700 dark:text-purple-400 flex items-center justify-center shrink-0">
                   <Building2 className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="font-extrabold text-slate-900 text-sm">Office Module</h3>
-                  <span className="text-[11px] text-purple-600 font-semibold block">
+                  <h3 className="font-extrabold text-slate-900 dark:text-white text-sm">Office Module</h3>
+                  <span className="text-[11px] text-purple-600 dark:text-purple-400 font-semibold block">
                     Permanent Constituency Office
                   </span>
                 </div>
@@ -663,26 +663,26 @@ export function SubscriptionPlansView() {
                 className={`w-4 h-4 rounded-full border flex items-center justify-center ${
                   selectedModule === "OFFICE"
                     ? "border-blue-600 bg-blue-600 text-white"
-                    : "border-slate-300"
+                    : "border-slate-300 dark:border-slate-600"
                 }`}
               >
                 {selectedModule === "OFFICE" && <Check className="w-2.5 h-2.5" />}
               </span>
             </div>
 
-            <p className="text-xs text-slate-600 mt-3 leading-relaxed">
+            <p className="text-xs text-slate-600 dark:text-[#94A3B8] mt-3 leading-relaxed">
               Public grievance desk, citizen appointment scheduler, official letter dispatches, ward
               development logs, and constituent CRM.
             </p>
 
-            <div className="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
-              <span className="text-slate-500">Duration Options:</span>
-              <span className="font-bold text-slate-800">6 Months or 12 Months</span>
+            <div className="mt-3 pt-3 border-t border-slate-100 dark:border-[#29364A] flex items-center justify-between text-xs">
+              <span className="text-slate-500 dark:text-[#94A3B8]">Duration Options:</span>
+              <span className="font-bold text-slate-800 dark:text-white">6 Months or 12 Months</span>
             </div>
 
             <div className="mt-2 flex items-center justify-between text-xs">
-              <span className="text-slate-500">AI Mode:</span>
-              <span className="font-bold text-purple-700">Available with AI &amp; without AI</span>
+              <span className="text-slate-500 dark:text-[#94A3B8]">AI Mode:</span>
+              <span className="font-bold text-purple-700 dark:text-purple-400">Available with AI &amp; without AI</span>
             </div>
 
             <button
@@ -693,7 +693,7 @@ export function SubscriptionPlansView() {
               className={`mt-4 w-full py-2 rounded-xl text-xs font-bold transition-colors cursor-pointer ${
                 selectedModule === "OFFICE"
                   ? "bg-blue-600 text-white shadow-xs"
-                  : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                  : "bg-slate-100 dark:bg-[#1E293B] text-slate-700 dark:text-white hover:bg-slate-200 dark:hover:bg-[#2A374A]"
               }`}
             >
               {selectedModule === "OFFICE" ? "Viewing Office Plans ↓" : "View Office Plans"}
