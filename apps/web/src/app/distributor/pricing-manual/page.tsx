@@ -352,7 +352,11 @@ export default function PricingManualPage() {
               <div className="mt-6 pt-4 border-t border-slate-100 dark:border-[#29364A]">
                 <Link
                   href="/distributor/candidates/new"
-                  className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-bold border border-transparent dark:border-[#3E4F68] bg-slate-100 dark:bg-[#243247] hover:bg-blue-600 dark:hover:bg-[#1D61E0] hover:text-white transition text-slate-700 dark:text-[#F8FAFC]"
+                  className={`w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-bold transition-all duration-150 cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#1D61E0] focus:ring-offset-2 dark:focus:ring-offset-[#151E2D] active:scale-[0.98] ${
+                    pkg.popular
+                      ? "bg-blue-600 dark:bg-[#1D61E0] text-white border border-blue-600 dark:border-blue-400/60 hover:bg-blue-700 dark:hover:bg-[#2563EB] shadow-md shadow-blue-500/25"
+                      : "bg-slate-100 dark:bg-[#2A3C56] text-slate-800 dark:text-white border border-slate-200 dark:border-[#475E82] hover:bg-blue-600 dark:hover:bg-[#1D61E0] hover:text-white dark:hover:border-[#1D61E0] shadow-xs"
+                  }`}
                 >
                   <span>Select for Onboarding</span>
                 </Link>
@@ -379,7 +383,7 @@ export default function PricingManualPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-5 gap-4 pt-2">
             <div>
-              <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
+              <label className="block text-xs font-bold text-slate-700 dark:text-white mb-1">
                 Election AI (₹ 1.5L)
               </label>
               <input
@@ -392,7 +396,7 @@ export default function PricingManualPage() {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
+              <label className="block text-xs font-bold text-slate-700 dark:text-white mb-1">
                 Election Std (₹ 95k)
               </label>
               <input
@@ -405,7 +409,7 @@ export default function PricingManualPage() {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
+              <label className="block text-xs font-bold text-slate-700 dark:text-white mb-1">
                 Office 12M AI (₹ 1.2L)
               </label>
               <input
@@ -418,7 +422,7 @@ export default function PricingManualPage() {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
+              <label className="block text-xs font-bold text-slate-700 dark:text-white mb-1">
                 Office 6M (₹ 40k)
               </label>
               <input

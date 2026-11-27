@@ -238,9 +238,10 @@ export default function ProfilePage() {
               <button
                 type="button"
                 onClick={handleTestPrint}
-                className="px-3 py-1.5 text-xs font-bold rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 transition-colors"
+                className="px-3.5 py-1.5 text-xs font-bold rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs border border-emerald-500/50 transition-colors cursor-pointer flex items-center gap-1.5 active:scale-95"
               >
-                Send Test Print Slip
+                <Printer className="w-3.5 h-3.5" />
+                <span>Send Test Print Slip</span>
               </button>
             </div>
 
@@ -254,10 +255,10 @@ export default function ProfilePage() {
                   <button
                     type="button"
                     onClick={() => setPaperWidth("80mm")}
-                    className={`p-3 rounded-xl border text-left ${
+                    className={`p-3 rounded-xl border text-left transition-colors cursor-pointer ${
                       paperWidth === "80mm"
-                        ? "bg-emerald-50/70 border-emerald-500 text-emerald-950 font-bold"
-                        : "border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300"
+                        ? "bg-emerald-50 dark:bg-emerald-950/60 border-emerald-500 dark:border-emerald-500 text-emerald-950 dark:text-emerald-300 font-bold shadow-xs"
+                        : "border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300"
                     }`}
                   >
                     80mm (Standard Field Width - 3 Inch)
@@ -265,10 +266,10 @@ export default function ProfilePage() {
                   <button
                     type="button"
                     onClick={() => setPaperWidth("58mm")}
-                    className={`p-3 rounded-xl border text-left ${
+                    className={`p-3 rounded-xl border text-left transition-colors cursor-pointer ${
                       paperWidth === "58mm"
-                        ? "bg-emerald-50/70 border-emerald-500 text-emerald-950 font-bold"
-                        : "border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300"
+                        ? "bg-emerald-50 dark:bg-emerald-950/60 border-emerald-500 dark:border-emerald-500 text-emerald-950 dark:text-emerald-300 font-bold shadow-xs"
+                        : "border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300"
                     }`}
                   >
                     58mm (Pocket Compact - 2 Inch)
@@ -285,10 +286,10 @@ export default function ProfilePage() {
                   <button
                     type="button"
                     onClick={() => setSlipLanguage("BILINGUAL")}
-                    className={`p-3 rounded-xl border text-left ${
+                    className={`p-3 rounded-xl border text-left transition-colors cursor-pointer ${
                       slipLanguage === "BILINGUAL"
-                        ? "bg-emerald-50/70 border-emerald-500 text-emerald-950 font-bold"
-                        : "border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300"
+                        ? "bg-emerald-50 dark:bg-emerald-950/60 border-emerald-500 dark:border-emerald-500 text-emerald-950 dark:text-emerald-300 font-bold shadow-xs"
+                        : "border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300"
                     }`}
                   >
                     Bilingual (English + मराठी)
@@ -296,10 +297,10 @@ export default function ProfilePage() {
                   <button
                     type="button"
                     onClick={() => setSlipLanguage("MARATHI_ONLY")}
-                    className={`p-3 rounded-xl border text-left ${
+                    className={`p-3 rounded-xl border text-left transition-colors cursor-pointer ${
                       slipLanguage === "MARATHI_ONLY"
-                        ? "bg-emerald-50/70 border-emerald-500 text-emerald-950 font-bold"
-                        : "border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300"
+                        ? "bg-emerald-50 dark:bg-emerald-950/60 border-emerald-500 dark:border-emerald-500 text-emerald-950 dark:text-emerald-300 font-bold shadow-xs"
+                        : "border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300"
                     }`}
                   >
                     मराठी Only (Devanagari Priority)

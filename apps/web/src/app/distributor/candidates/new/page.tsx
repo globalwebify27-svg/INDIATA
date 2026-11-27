@@ -175,7 +175,7 @@ export default function NewCandidateWizardPage() {
     requestedPlan: "ELECTION_AI",
     requestedPlanTier: "Election Module with AI Mode",
     requestedDuration: "Election End Date + 15 Days Grace Period",
-    estimatedPrice: "â‚¹ 1,50,000",
+    estimatedPrice: "₹1,50,000",
 
     enablePdfExport: true,
     enableExcelExport: true,
@@ -340,7 +340,7 @@ export default function NewCandidateWizardPage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-white mb-1">
                       Account Username / User ID *
                     </label>
                     <input
@@ -353,20 +353,20 @@ export default function NewCandidateWizardPage() {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-white mb-1">
                       Temporary Access Password *
                     </label>
                     <input
                       type="password"
                       value={formData.password}
                       onChange={(e) => updateField("password", e.target.value)}
-                      placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
+                      placeholder="••••••••••••"
                       className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-[#29364A] bg-slate-50 dark:bg-[#0B101A] text-slate-900 dark:text-[#F8FAFC] focus:outline-none focus:ring-2 focus:ring-[#1D61E0]"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-white mb-1">
                       Primary Candidate Mobile *
                     </label>
                     <input
@@ -379,7 +379,7 @@ export default function NewCandidateWizardPage() {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-white mb-1">
                       Official Contact Email
                     </label>
                     <input
@@ -392,7 +392,7 @@ export default function NewCandidateWizardPage() {
                   </div>
 
                   <div className="md:col-span-2">
-                    <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1.5">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-white mb-1.5">
                       Provisioning Account Type *
                     </label>
                     <div className="grid grid-cols-2 gap-3">
@@ -445,7 +445,7 @@ export default function NewCandidateWizardPage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-white mb-1">
                       Candidate Name (English) *
                     </label>
                     <input
@@ -458,7 +458,7 @@ export default function NewCandidateWizardPage() {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-white mb-1">
                       Candidate Name (Marathi / Devnagari) *
                     </label>
                     <input
@@ -471,7 +471,7 @@ export default function NewCandidateWizardPage() {
                   </div>
 
                   <div className="md:col-span-2">
-                    <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-white mb-1">
                       Candidate Role Classification *
                     </label>
                     <select
@@ -503,7 +503,7 @@ export default function NewCandidateWizardPage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-white mb-1">
                       Party Full Name (English) *
                     </label>
                     <input
@@ -516,7 +516,7 @@ export default function NewCandidateWizardPage() {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-white mb-1">
                       Party Name (Marathi) *
                     </label>
                     <input
@@ -529,7 +529,7 @@ export default function NewCandidateWizardPage() {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-white mb-1">
                       Party Acronym (e.g. RJP, INC, BJP)
                     </label>
                     <input
@@ -542,7 +542,7 @@ export default function NewCandidateWizardPage() {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-white mb-1">
                       Election Symbol Name / URL
                     </label>
                     <input
@@ -571,7 +571,7 @@ export default function NewCandidateWizardPage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="md:col-span-2">
-                    <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-white mb-1">
                       Election Category *
                     </label>
                     <select
@@ -587,7 +587,7 @@ export default function NewCandidateWizardPage() {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-white mb-1">
                       Official Election Name *
                     </label>
                     <input
@@ -600,7 +600,7 @@ export default function NewCandidateWizardPage() {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-white mb-1">
                       Election Year *
                     </label>
                     <input
@@ -634,7 +634,7 @@ export default function NewCandidateWizardPage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-white mb-1">
                       State / Union Territory *
                     </label>
                     <input
@@ -646,7 +646,7 @@ export default function NewCandidateWizardPage() {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-white mb-1">
                       Administrative District *
                     </label>
                     <input
@@ -661,7 +661,7 @@ export default function NewCandidateWizardPage() {
                   {formData.electionType === "VIDHAN_SABHA" && (
                     <>
                       <div>
-                        <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
+                        <label className="block text-xs font-bold text-slate-700 dark:text-white mb-1">
                           AC Number (Assembly Constituency) *
                         </label>
                         <input
@@ -673,7 +673,7 @@ export default function NewCandidateWizardPage() {
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
+                        <label className="block text-xs font-bold text-slate-700 dark:text-white mb-1">
                           AC Name (English & Marathi) *
                         </label>
                         <input
@@ -690,7 +690,7 @@ export default function NewCandidateWizardPage() {
                   {formData.electionType === "LOK_SABHA" && (
                     <>
                       <div>
-                        <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
+                        <label className="block text-xs font-bold text-slate-700 dark:text-white mb-1">
                           PC Number (Parliamentary Constituency) *
                         </label>
                         <input
@@ -702,7 +702,7 @@ export default function NewCandidateWizardPage() {
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
+                        <label className="block text-xs font-bold text-slate-700 dark:text-white mb-1">
                           PC Name *
                         </label>
                         <input
@@ -719,7 +719,7 @@ export default function NewCandidateWizardPage() {
                   {formData.electionType === "MUNICIPAL_CORP" && (
                     <>
                       <div>
-                        <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
+                        <label className="block text-xs font-bold text-slate-700 dark:text-white mb-1">
                           Municipal Corporation Name *
                         </label>
                         <input
@@ -731,7 +731,7 @@ export default function NewCandidateWizardPage() {
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
+                        <label className="block text-xs font-bold text-slate-700 dark:text-white mb-1">
                           Ward / Prabhag Number & Name *
                         </label>
                         <input
@@ -748,7 +748,7 @@ export default function NewCandidateWizardPage() {
                   {formData.electionType === "ZILLA_PARISHAD" && (
                     <>
                       <div>
-                        <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
+                        <label className="block text-xs font-bold text-slate-700 dark:text-white mb-1">
                           Zilla Parishad Body *
                         </label>
                         <input
@@ -760,7 +760,7 @@ export default function NewCandidateWizardPage() {
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
+                        <label className="block text-xs font-bold text-slate-700 dark:text-white mb-1">
                           Gat / Gan Electoral Circle *
                         </label>
                         <input
@@ -799,7 +799,7 @@ export default function NewCandidateWizardPage() {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
+                      <label className="block text-xs font-bold text-slate-700 dark:text-white mb-1">
                         Constituency Data Partition Key *
                       </label>
                       <input
@@ -815,7 +815,7 @@ export default function NewCandidateWizardPage() {
                     </div>
 
                     <div>
-                      <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
+                      <label className="block text-xs font-bold text-slate-700 dark:text-white mb-1">
                         Data Partitioning Strategy *
                       </label>
                       <select
@@ -835,7 +835,7 @@ export default function NewCandidateWizardPage() {
                     {/* Booth Number Partitioning Range */}
                     <div className="md:col-span-2 p-3.5 rounded-xl border border-slate-200 dark:border-[#29364A] bg-slate-50/50 dark:bg-[#0B101A] space-y-3">
                       <div className="flex items-center justify-between">
-                        <label className="text-xs font-bold text-slate-800 dark:text-slate-200">
+                        <label className="text-xs font-bold text-slate-800 dark:text-white">
                           Polling Booth Number Partitioning Range
                         </label>
                         <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900/60 text-[#1D61E0]">
@@ -884,7 +884,7 @@ export default function NewCandidateWizardPage() {
 
                     {/* Specific Campaign Data Criteria Tags */}
                     <div className="md:col-span-2 space-y-2">
-                      <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8]">
+                      <label className="block text-xs font-bold text-slate-700 dark:text-white">
                         Campaign Data Partitioning Criteria (Select Applied Segments)
                       </label>
                       <div className="flex flex-wrap gap-2">
@@ -947,7 +947,7 @@ export default function NewCandidateWizardPage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-white mb-1">
                       App Title / War Room Label
                     </label>
                     <input
@@ -959,7 +959,7 @@ export default function NewCandidateWizardPage() {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-white mb-1">
                       Voter Helpline Number
                     </label>
                     <input
@@ -971,7 +971,7 @@ export default function NewCandidateWizardPage() {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-white mb-1">
                       WhatsApp Support Number
                     </label>
                     <input
@@ -983,7 +983,7 @@ export default function NewCandidateWizardPage() {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-white mb-1">
                       Voter Slip Web Link
                     </label>
                     <input
@@ -1011,7 +1011,7 @@ export default function NewCandidateWizardPage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-white mb-1">
                       Official WhatsApp Bot Number
                     </label>
                     <input
@@ -1023,7 +1023,7 @@ export default function NewCandidateWizardPage() {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-white mb-1">
                       6-Character DLT SMS Sender Header
                     </label>
                     <input
@@ -1036,7 +1036,7 @@ export default function NewCandidateWizardPage() {
                   </div>
 
                   <div className="md:col-span-2">
-                    <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-white mb-1">
                       AI Outbound Voice Caller DID
                     </label>
                     <input
@@ -1080,7 +1080,7 @@ export default function NewCandidateWizardPage() {
                       {
                         id: "ELECTION_AI",
                         name: "Election Module with AI Mode",
-                        price: "â‚¹ 1,50,000",
+                        price: "₹1,50,000",
                         tag: "Full AI Suite",
                         hasAi: true,
                         validity: "Election End Date + 15 Days Grace Period",
@@ -1089,7 +1089,7 @@ export default function NewCandidateWizardPage() {
                       {
                         id: "ELECTION_NO_AI",
                         name: "Election Module without AI Mode",
-                        price: "â‚¹ 95,000",
+                        price: "₹95,000",
                         tag: "Standard Roll",
                         hasAi: false,
                         validity: "Election End Date + 15 Days Grace Period",
@@ -1117,7 +1117,7 @@ export default function NewCandidateWizardPage() {
                             {tier.tag}
                           </span>
                         </div>
-                        <div className="text-lg font-black text-[#1D61E0]">{tier.price}</div>
+                        <div className="text-xl font-extrabold tracking-tight text-blue-600 dark:text-[#38BDF8]">{tier.price}</div>
                         <div className="text-[10px] text-slate-500 mt-0.5 flex items-center gap-1">
                           <Calendar className="w-3 h-3 text-[#1D61E0]" />
                           <span>{tier.validity}</span>
@@ -1142,32 +1142,32 @@ export default function NewCandidateWizardPage() {
                     {[
                       {
                         id: "OFFICE_12M_AI",
-                        name: "Office â€“ 12 Months with AI Mode",
-                        price: "â‚¹ 1,20,000",
+                        name: "Office – 12 Months with AI Mode",
+                        price: "₹1,20,000",
                         validity: "12 Months Continuous",
                         hasAi: true,
                         tag: "12M + AI",
                       },
                       {
                         id: "OFFICE_12M_NO_AI",
-                        name: "Office â€“ 12 Months without AI",
-                        price: "â‚¹ 75,000",
+                        name: "Office – 12 Months without AI",
+                        price: "₹75,000",
                         validity: "12 Months Continuous",
                         hasAi: false,
                         tag: "12M Standard",
                       },
                       {
                         id: "OFFICE_6M_AI",
-                        name: "Office â€“ 6 Months with AI Mode",
-                        price: "â‚¹ 65,000",
+                        name: "Office – 6 Months with AI Mode",
+                        price: "₹65,000",
                         validity: "6 Months Continuous",
                         hasAi: true,
                         tag: "6M + AI",
                       },
                       {
                         id: "OFFICE_6M_NO_AI",
-                        name: "Office â€“ 6 Months without AI",
-                        price: "â‚¹ 40,000",
+                        name: "Office – 6 Months without AI",
+                        price: "₹40,000",
                         validity: "6 Months Continuous",
                         hasAi: false,
                         tag: "6M Standard",
@@ -1196,7 +1196,7 @@ export default function NewCandidateWizardPage() {
                             </span>
                           )}
                         </div>
-                        <div className="text-base font-black text-purple-600 dark:text-purple-400">
+                        <div className="text-lg font-extrabold tracking-tight text-purple-600 dark:text-purple-400">
                           {tier.price}
                         </div>
                         <div className="text-[10px] text-slate-500 mt-0.5">{tier.validity}</div>
@@ -1219,7 +1219,7 @@ export default function NewCandidateWizardPage() {
                       onClick={() => {
                         updateField("requestedPlan", "TRIAL_5D");
                         updateField("requestedPlanTier", "Trial Demo (5 Days)");
-                        updateField("estimatedPrice", "â‚¹ 0 (Free Trial)");
+                        updateField("estimatedPrice", "₹0 (Free Trial)");
                         updateField("requestedDuration", "Strict 5-Day Evaluation Window");
                       }}
                       className={`w-full p-3.5 rounded-2xl border text-left transition flex items-center justify-between ${
@@ -1240,7 +1240,7 @@ export default function NewCandidateWizardPage() {
                         </p>
                       </div>
                       <div className="text-right shrink-0">
-                        <div className="text-base font-black text-amber-600 dark:text-amber-400">â‚¹ 0</div>
+                        <div className="text-lg font-extrabold tracking-tight text-amber-600 dark:text-amber-400">₹0</div>
                         <div className="text-[10px] text-slate-500">Free 5 Days</div>
                       </div>
                     </button>
@@ -1337,7 +1337,7 @@ export default function NewCandidateWizardPage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-white mb-1">
                       Primary Brand Color
                     </label>
                     <div className="flex items-center gap-2">
@@ -1357,7 +1357,7 @@ export default function NewCandidateWizardPage() {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-white mb-1">
                       Secondary Brand Color
                     </label>
                     <div className="flex items-center gap-2">
@@ -1559,7 +1559,7 @@ export default function NewCandidateWizardPage() {
                       <div>
                         <span className="text-slate-600 dark:text-[#94A3B8] block">Assigned Booth Range:</span>
                         <span className="font-bold">
-                          Booth #{formData.boothStart} â€“ #{formData.boothEnd} ({formData.boothEnd - formData.boothStart + 1} Booths)
+                          Booth #{formData.boothStart} – #{formData.boothEnd} ({formData.boothEnd - formData.boothStart + 1} Booths)
                         </span>
                       </div>
                       <div>

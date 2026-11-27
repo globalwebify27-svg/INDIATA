@@ -353,7 +353,7 @@ export function EditCandidateModal({
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-[#94A3B8] mb-1">
+                  <label className="block font-semibold text-slate-700 dark:text-white mb-1">
                     Candidate Official English Name <span className="text-rose-500">*</span>
                   </label>
                   <input
@@ -369,7 +369,7 @@ export function EditCandidateModal({
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-[#94A3B8] mb-1">
+                  <label className="block font-semibold text-slate-700 dark:text-white mb-1">
                     Regional Marathi / Devnagari Name
                   </label>
                   <input
@@ -384,7 +384,7 @@ export function EditCandidateModal({
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-[#94A3B8] mb-1">Gender</label>
+                  <label className="block font-semibold text-slate-700 dark:text-white mb-1">Gender</label>
                   <select
                     value={gender}
                     onChange={(e) => setGender(e.target.value as any)}
@@ -397,7 +397,7 @@ export function EditCandidateModal({
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-[#94A3B8] mb-1">Age (Years)</label>
+                  <label className="block font-semibold text-slate-700 dark:text-white mb-1">Age (Years)</label>
                   <input
                     type="number"
                     value={age}
@@ -411,7 +411,7 @@ export function EditCandidateModal({
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-[#94A3B8] mb-1">Date of Birth</label>
+                  <label className="block font-semibold text-slate-700 dark:text-white mb-1">Date of Birth</label>
                   <input
                     type="date"
                     value={dateOfBirth}
@@ -423,7 +423,7 @@ export function EditCandidateModal({
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-[#94A3B8] mb-1">Educational Qualification</label>
+                  <label className="block font-semibold text-slate-700 dark:text-white mb-1">Educational Qualification</label>
                   <input
                     type="text"
                     value={education}
@@ -434,7 +434,7 @@ export function EditCandidateModal({
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-[#94A3B8] mb-1">Profession / Occupation</label>
+                  <label className="block font-semibold text-slate-700 dark:text-white mb-1">Profession / Occupation</label>
                   <input
                     type="text"
                     value={occupation}
@@ -457,7 +457,7 @@ export function EditCandidateModal({
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-[#94A3B8] mb-1">
+                  <label className="block font-semibold text-slate-700 dark:text-white mb-1">
                     Direct Contact Mobile <span className="text-rose-500">*</span>
                   </label>
                   <input
@@ -473,7 +473,7 @@ export function EditCandidateModal({
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-[#94A3B8] mb-1">
+                  <label className="block font-semibold text-slate-700 dark:text-white mb-1">
                     Official Campaign Email
                   </label>
                   <input
@@ -491,7 +491,7 @@ export function EditCandidateModal({
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-[#94A3B8] mb-1">
+                  <label className="block font-semibold text-slate-700 dark:text-white mb-1">
                     Public WhatsApp Bot / Citizen Helpline
                   </label>
                   <input
@@ -504,7 +504,7 @@ export function EditCandidateModal({
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-[#94A3B8] mb-1">
+                  <label className="block font-semibold text-slate-700 dark:text-white mb-1">
                     Central Office Landline / Reception
                   </label>
                   <input
@@ -529,7 +529,7 @@ export function EditCandidateModal({
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-[#94A3B8] mb-1">
+                  <label className="block font-semibold text-slate-700 dark:text-white mb-1">
                     Party Full Name <span className="text-rose-500">*</span>
                   </label>
                   <input
@@ -545,7 +545,7 @@ export function EditCandidateModal({
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-[#94A3B8] mb-1">
+                  <label className="block font-semibold text-slate-700 dark:text-white mb-1">
                     Party Acronym / Short Code
                   </label>
                   <input
@@ -560,7 +560,7 @@ export function EditCandidateModal({
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-[#94A3B8] mb-1">Candidate Role Type</label>
+                  <label className="block font-semibold text-slate-700 dark:text-white mb-1">Candidate Role Type</label>
                   <select
                     value={candidateType}
                     onChange={(e) => setCandidateType(e.target.value as any)}
@@ -574,7 +574,7 @@ export function EditCandidateModal({
                 </div>
 
                 <div className="sm:col-span-2">
-                  <label className="block font-semibold text-slate-700 dark:text-[#94A3B8] mb-1">
+                  <label className="block font-semibold text-slate-700 dark:text-white mb-1">
                     Grand Alliance / Mahayuti / Front Name
                   </label>
                   <input
@@ -599,7 +599,7 @@ export function EditCandidateModal({
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-[#94A3B8] mb-1">Election Type</label>
+                  <label className="block font-semibold text-slate-700 dark:text-white mb-1">Election Type</label>
                   <select
                     value={electionType}
                     onChange={(e) => setElectionType(e.target.value)}
@@ -613,7 +613,7 @@ export function EditCandidateModal({
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-[#94A3B8] mb-1">Seat Category</label>
+                  <label className="block font-semibold text-slate-700 dark:text-white mb-1">Seat Category</label>
                   <select
                     value={seatCategory}
                     onChange={(e) => setSeatCategory(e.target.value as any)}
@@ -629,7 +629,7 @@ export function EditCandidateModal({
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="sm:col-span-2">
-                  <label className="block font-semibold text-slate-700 dark:text-[#94A3B8] mb-1">Official Election Title</label>
+                  <label className="block font-semibold text-slate-700 dark:text-white mb-1">Official Election Title</label>
                   <input
                     type="text"
                     value={electionName}
@@ -640,7 +640,7 @@ export function EditCandidateModal({
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-[#94A3B8] mb-1">Polling Date</label>
+                  <label className="block font-semibold text-slate-700 dark:text-white mb-1">Polling Date</label>
                   <input
                     type="text"
                     value={pollingDate}
@@ -663,7 +663,7 @@ export function EditCandidateModal({
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-[#94A3B8] mb-1">State</label>
+                  <label className="block font-semibold text-slate-700 dark:text-white mb-1">State</label>
                   <input
                     type="text"
                     value={state}
@@ -673,7 +673,7 @@ export function EditCandidateModal({
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-[#94A3B8] mb-1">District</label>
+                  <label className="block font-semibold text-slate-700 dark:text-white mb-1">District</label>
                   <input
                     type="text"
                     value={district}
@@ -683,7 +683,7 @@ export function EditCandidateModal({
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-[#94A3B8] mb-1">
+                  <label className="block font-semibold text-slate-700 dark:text-white mb-1">
                     Constituency Name <span className="text-rose-500">*</span>
                   </label>
                   <input
@@ -698,7 +698,7 @@ export function EditCandidateModal({
 
               <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-[#94A3B8] mb-1">AC Number</label>
+                  <label className="block font-semibold text-slate-700 dark:text-white mb-1">AC Number</label>
                   <input
                     type="text"
                     value={acNumber}
@@ -709,7 +709,7 @@ export function EditCandidateModal({
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-[#94A3B8] mb-1">Parent PC</label>
+                  <label className="block font-semibold text-slate-700 dark:text-white mb-1">Parent PC</label>
                   <input
                     type="text"
                     value={pcName}
@@ -720,7 +720,7 @@ export function EditCandidateModal({
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-[#94A3B8] mb-1">Total Electors</label>
+                  <label className="block font-semibold text-slate-700 dark:text-white mb-1">Total Electors</label>
                   <input
                     type="number"
                     value={totalVoters}
@@ -731,7 +731,7 @@ export function EditCandidateModal({
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-[#94A3B8] mb-1">Mapped Booths</label>
+                  <label className="block font-semibold text-slate-700 dark:text-white mb-1">Mapped Booths</label>
                   <input
                     type="number"
                     value={totalBooths}
@@ -753,7 +753,7 @@ export function EditCandidateModal({
               </h3>
 
               <div>
-                <label className="block font-semibold text-slate-700 dark:text-[#94A3B8] mb-1">
+                <label className="block font-semibold text-slate-700 dark:text-white mb-1">
                   Full Office / Postal Address
                 </label>
                 <textarea
@@ -767,7 +767,7 @@ export function EditCandidateModal({
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-[#94A3B8] mb-1">City / Taluka</label>
+                  <label className="block font-semibold text-slate-700 dark:text-white mb-1">City / Taluka</label>
                   <input
                     type="text"
                     value={city}
@@ -777,7 +777,7 @@ export function EditCandidateModal({
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-[#94A3B8] mb-1">Postal Pincode</label>
+                  <label className="block font-semibold text-slate-700 dark:text-white mb-1">Postal Pincode</label>
                   <input
                     type="text"
                     value={pincode}
@@ -799,7 +799,7 @@ export function EditCandidateModal({
               </h3>
 
               <div>
-                <label className="block font-semibold text-slate-700 dark:text-[#94A3B8] mb-1">
+                <label className="block font-semibold text-slate-700 dark:text-white mb-1">
                   Official Campaign Slogan (Marathi / Regional / English)
                 </label>
                 <input
@@ -812,7 +812,7 @@ export function EditCandidateModal({
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-700 dark:text-[#94A3B8] mb-1">
+                <label className="block font-semibold text-slate-700 dark:text-white mb-1">
                   Public Voter Slip Download Portal URL
                 </label>
                 <input
@@ -826,7 +826,7 @@ export function EditCandidateModal({
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-[#94A3B8] mb-1">Facebook Profile / Page</label>
+                  <label className="block font-semibold text-slate-700 dark:text-white mb-1">Facebook Profile / Page</label>
                   <input
                     type="url"
                     value={facebookUrl}
@@ -837,7 +837,7 @@ export function EditCandidateModal({
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-[#94A3B8] mb-1">Instagram Handle</label>
+                  <label className="block font-semibold text-slate-700 dark:text-white mb-1">Instagram Handle</label>
                   <input
                     type="url"
                     value={instagramUrl}

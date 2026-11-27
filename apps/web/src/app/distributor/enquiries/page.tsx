@@ -365,7 +365,7 @@ export default function GeneratedEnquiriesPage() {
 
               <form onSubmit={handleCreateEnquiry} className="space-y-3.5 text-xs">
                 <div>
-                  <label className="block font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
+                  <label className="block font-bold text-slate-700 dark:text-white mb-1">
                     Select Assigned Candidate *
                   </label>
                   <select
@@ -382,7 +382,7 @@ export default function GeneratedEnquiriesPage() {
                 </div>
 
                 <div>
-                  <label className="block font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
+                  <label className="block font-bold text-slate-700 dark:text-white mb-1">
                     Requested Add-on / Service *
                   </label>
                   <select
@@ -406,7 +406,7 @@ export default function GeneratedEnquiriesPage() {
                 </div>
 
                 <div>
-                  <label className="block font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
+                  <label className="block font-bold text-slate-700 dark:text-white mb-1">
                     Candidate Campaign Notes
                   </label>
                   <textarea

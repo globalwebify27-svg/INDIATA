@@ -840,7 +840,7 @@ export default function DistributorEarningsDashboardPage() {
             </div>
 
             <div className="space-y-1.5">
-              <label className="block text-[11px] font-bold text-slate-700 dark:text-[#94A3B8]">
+              <label className="block text-[11px] font-bold text-slate-700 dark:text-white">
                 Withdrawal Amount (₹)
               </label>
               <input
