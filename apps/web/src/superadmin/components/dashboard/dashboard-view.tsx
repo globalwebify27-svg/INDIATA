@@ -44,7 +44,6 @@ export function DashboardView({
       <DashboardHeader
         onOpenAddCandidate={onOpenAddCandidate}
         onNavigateToOrganizations={() => onNavigate("organizations")}
-        onNavigateToComponents={() => onNavigate("components")}
       />
 
       {/* 2. 4 Compact Summary Metric Cards */}

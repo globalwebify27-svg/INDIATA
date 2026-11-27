@@ -5,13 +5,11 @@ import { useToast } from "../../context/toast-context";
 export interface DashboardHeaderProps {
   onOpenAddCandidate: () => void;
   onNavigateToOrganizations: () => void;
-  onNavigateToComponents: () => void;
 }
 
 export function DashboardHeader({
   onOpenAddCandidate,
   onNavigateToOrganizations,
-  onNavigateToComponents: _onNavigateToComponents,
 }: DashboardHeaderProps) {
   const { toast } = useToast();
 

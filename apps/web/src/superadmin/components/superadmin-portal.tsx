@@ -15,7 +15,6 @@ import { AiGovernanceView } from "@/superadmin/components/ai/ai-governance-view"
 import { SubscriptionsView } from "@/superadmin/components/subscriptions/subscriptions-view";
 import { SecurityAuditView } from "@/superadmin/components/audit/security-audit-view";
 import { PlatformSettingsView } from "@/superadmin/components/settings/platform-settings-view";
-import { DesignSystemShowcase } from "@/superadmin/components/prototype/design-system-showcase";
 import { LivePollingManagementView } from "@/superadmin/components/polling/live-polling-management";
 import { superAdminApi } from "@/superadmin/services/superadmin-api";
 import { useToast } from "@/context/toast-context";
@@ -53,7 +52,7 @@ export const NAV_KEY_TO_ROUTE: Record<NavKey, string> = {
   audit: "/super-admin/audit",
   settings: "/super-admin/settings",
   profile: "/super-admin/settings",
-  components: "/super-admin/design-system",
+  components: "/super-admin",
   "live-polling": "/super-admin/live-polling",
 };
 
@@ -71,7 +70,6 @@ export function getNavKeyFromPathname(pathname: string): NavKey {
   if (pathname.includes("/subscriptions") || pathname.includes("/licenses")) return "subscriptions";
   if (pathname.includes("/audit") || pathname.includes("/security")) return "audit";
   if (pathname.includes("/settings")) return "settings";
-  if (pathname.includes("/design-system") || pathname.includes("/components")) return "components";
   return "dashboard";
 }
 
@@ -291,12 +289,7 @@ export function SuperAdminPortal() {
         <PlatformSettingsView />
       )}
 
-      {/* 12. UI Design System Showcase */}
-      {activeNav === "components" && (
-        <DesignSystemShowcase />
-      )}
-
-      {/* 13. Live Polling Management & Scheduling Engine (LPIANE) */}
+      {/* 12. Live Polling Management & Scheduling Engine (LPIANE) */}
       {activeNav === "live-polling" && (
         <LivePollingManagementView />
       )}

@@ -14,7 +14,6 @@ import {
   CreditCard,
   ShieldAlert,
   Settings,
-  Layers,
   ShieldCheck,
   ChevronDown,
   ChevronRight,
@@ -171,11 +170,6 @@ export function Sidebar({
       key: "settings",
       label: "Platform Settings",
       icon: <Settings className="w-5 h-5 flex-shrink-0" />,
-    },
-    {
-      key: "components",
-      label: "UI Design System",
-      icon: <Layers className="w-5 h-5 flex-shrink-0" />,
     },
   ];
 
