@@ -95,11 +95,11 @@ export function DistributorSidebar({
 
   return (
     <aside
-      className={`w-full bg-slate-950 text-slate-300 border-r border-slate-900 shadow-xl flex flex-col h-full select-none transition-all duration-200 ease-in-out`}
+      className={`w-full bg-[#080D16] text-slate-300 border-r border-[#29364A]/60 shadow-xl flex flex-col h-full select-none transition-all duration-200 ease-in-out`}
     >
       {/* Brand Header */}
       {collapsed ? (
-        <div className="h-16 px-2 flex flex-col items-center justify-center border-b border-slate-900/80 bg-slate-950 relative">
+        <div className="h-16 px-2 flex flex-col items-center justify-center border-b border-[#29364A]/60 bg-[#080D16] relative">
           <Link
             href="/distributor/dashboard"
             onClick={onCloseMobile}
@@ -110,7 +110,7 @@ export function DistributorSidebar({
           </Link>
         </div>
       ) : (
-        <div className="p-4 border-b border-slate-900/80 bg-slate-950">
+        <div className="p-4 border-b border-[#29364A]/60 bg-[#080D16]">
           <div className="flex items-center justify-between">
             <Link
               href="/distributor/dashboard"
@@ -141,7 +141,7 @@ export function DistributorSidebar({
                 <button
                   type="button"
                   onClick={onCloseMobile}
-                  className="md:hidden p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-900 transition-colors"
+                  className="md:hidden p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-[#1B2638] transition-colors"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -150,7 +150,7 @@ export function DistributorSidebar({
           </div>
 
           {/* Distributor Franchise Identification Pill */}
-          <div className="mt-3.5 p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-300">
+          <div className="mt-3.5 p-2.5 rounded-xl bg-[#0B101A] border border-[#29364A] text-slate-300">
             <div className="flex items-center justify-between text-xs font-semibold text-slate-200 mb-1">
               <span className="truncate">{distributor?.name || "Maharashtra Western"}</span>
               <span className="text-[10px] font-mono font-bold text-[#2087FE]">
@@ -169,21 +169,21 @@ export function DistributorSidebar({
 
       {/* Collapsed Franchise Code Badge */}
       {collapsed && (
-        <div className="py-2 flex justify-center border-b border-slate-900/60">
+        <div className="py-2 flex justify-center border-b border-[#29364A]/40">
           <div className="relative group">
-            <div className="w-9 h-9 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center font-mono font-bold text-[10px] text-[#2087FE] cursor-pointer">
+            <div className="w-9 h-9 rounded-xl bg-[#0B101A] border border-[#29364A] flex items-center justify-center font-mono font-bold text-[10px] text-[#2087FE] cursor-pointer">
               {distributor?.distributorCode?.slice(-3) || "101"}
             </div>
             {/* Tooltip */}
             <div
               role="tooltip"
-              className="pointer-events-none absolute left-full top-1/2 -translate-y-1/2 ml-3.5 z-50 whitespace-nowrap rounded-xl bg-slate-900 border border-slate-800 text-white p-3 text-xs font-semibold shadow-xl opacity-0 transition-opacity duration-150 group-hover:opacity-100"
+              className="pointer-events-none absolute left-full top-1/2 -translate-y-1/2 ml-3.5 z-50 whitespace-nowrap rounded-xl bg-[#0B101A] border border-[#29364A] text-white p-3 text-xs font-semibold shadow-xl opacity-0 transition-opacity duration-150 group-hover:opacity-100"
             >
               <p className="font-bold text-slate-100">{distributor?.name || "Maharashtra Western"}</p>
               <p className="text-[11px] text-slate-400 font-normal">
                 {distributor?.distributorCode || "DIS-101"} • {distributor?.territory || "Pune Metro"}
               </p>
-              <div className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-slate-900" />
+              <div className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-[#0B101A]" />
             </div>
           </div>
         </div>
@@ -214,8 +214,8 @@ export function DistributorSidebar({
                         onClick={onCloseMobile}
                         className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-150 relative group ${
                           isActive
-                            ? "bg-[#2087FE] text-white shadow-md shadow-blue-500/30"
-                            : "text-slate-400 hover:text-white hover:bg-slate-900/80"
+                            ? "bg-[#1D61E0] text-white shadow-md shadow-blue-500/20"
+                            : "text-slate-400 hover:text-white hover:bg-[#1B2638]/60"
                         }`}
                         title={item.label}
                       >
@@ -223,7 +223,7 @@ export function DistributorSidebar({
                         {/* Floating Tooltip */}
                         <div
                           role="tooltip"
-                          className="pointer-events-none absolute left-full top-1/2 -translate-y-1/2 ml-3.5 z-50 whitespace-nowrap rounded-xl bg-slate-900 border border-slate-800 text-white px-3 py-1.5 text-xs font-semibold shadow-xl opacity-0 transition-opacity duration-150 group-hover:opacity-100 flex items-center gap-2"
+                          className="pointer-events-none absolute left-full top-1/2 -translate-y-1/2 ml-3.5 z-50 whitespace-nowrap rounded-xl bg-[#0B101A] border border-[#29364A] text-white px-3 py-1.5 text-xs font-semibold shadow-xl opacity-0 transition-opacity duration-150 group-hover:opacity-100 flex items-center gap-2"
                         >
                           <span>{item.label}</span>
                           {item.badge && (
@@ -231,7 +231,7 @@ export function DistributorSidebar({
                               {item.badge}
                             </span>
                           )}
-                          <div className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-slate-900" />
+                          <div className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-[#0B101A]" />
                         </div>
                       </Link>
                     </div>
@@ -245,8 +245,8 @@ export function DistributorSidebar({
                     onClick={onCloseMobile}
                     className={`flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-semibold transition-all ${
                       isActive
-                        ? "bg-[#2087FE] text-white shadow-premium-xs"
-                        : "text-slate-400 hover:bg-slate-900/80 hover:text-white"
+                        ? "bg-[#1D61E0] text-white shadow-md shadow-blue-500/20"
+                        : "text-slate-400 hover:bg-[#1B2638]/60 hover:text-white"
                     }`}
                   >
                     <Icon className={`w-4 h-4 shrink-0 ${isActive ? "text-white" : "text-slate-400"}`} />
@@ -256,7 +256,7 @@ export function DistributorSidebar({
                         className={`text-[10px] font-medium px-1.5 py-0.5 rounded-full ${
                           isActive
                             ? "bg-white/20 text-white"
-                            : "bg-slate-900 text-slate-400 border border-slate-800"
+                            : "bg-[#0B101A] text-slate-400 border border-[#29364A]"
                         }`}
                       >
                         {item.badge}
@@ -272,7 +272,7 @@ export function DistributorSidebar({
 
       {/* Role State Switcher & Sign Out */}
       {collapsed ? (
-        <div className="p-2 border-t border-slate-900 bg-slate-950/80 flex flex-col items-center gap-2">
+        <div className="p-2 border-t border-[#29364A]/60 bg-[#080D16]/80 flex flex-col items-center gap-2">
           <div className="relative group">
             <button
               onClick={logout}
@@ -283,16 +283,16 @@ export function DistributorSidebar({
             </button>
             <div
               role="tooltip"
-              className="pointer-events-none absolute left-full top-1/2 -translate-y-1/2 ml-3.5 z-50 whitespace-nowrap rounded-xl bg-slate-900 border border-slate-800 text-rose-300 px-3 py-1.5 text-xs font-semibold shadow-xl opacity-0 transition-opacity duration-150 group-hover:opacity-100"
+              className="pointer-events-none absolute left-full top-1/2 -translate-y-1/2 ml-3.5 z-50 whitespace-nowrap rounded-xl bg-[#0B101A] border border-[#29364A] text-rose-300 px-3 py-1.5 text-xs font-semibold shadow-xl opacity-0 transition-opacity duration-150 group-hover:opacity-100"
             >
               Sign Out
-              <div className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-slate-900" />
+              <div className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-[#0B101A]" />
             </div>
           </div>
         </div>
       ) : (
-        <div className="p-3 border-t border-slate-900 bg-slate-950/80 space-y-2">
-          <div className="p-2 rounded-lg bg-slate-900 border border-slate-800">
+        <div className="p-3 border-t border-[#29364A]/60 bg-[#080D16]/80 space-y-2">
+          <div className="p-2 rounded-lg bg-[#0B101A] border border-[#29364A]">
             <div className="flex items-center gap-1.5 text-[10px] font-bold text-blue-400 mb-1.5">
               <Sparkles className="w-3 h-3 text-[#2087FE]" />
               <span>Test Status Simulator</span>

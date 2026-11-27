@@ -82,7 +82,7 @@ export default function CandidatesDirectoryPage() {
     >
       <div className="space-y-6">
         {/* Controls & Filter Header */}
-        <div className="bg-white dark:bg-slate-900 rounded-3xl p-5 border border-slate-200 dark:border-slate-800 shadow-premium-xs flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+        <div className="bg-white dark:bg-[#151E2D] rounded-3xl p-5 border border-slate-200 dark:border-[#29364A] shadow-premium-xs flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           {/* Search Input */}
           <div className="relative flex-1 max-w-md">
             <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
@@ -94,7 +94,7 @@ export default function CandidatesDirectoryPage() {
                 setCurrentPage(1);
               }}
               placeholder="Search candidate name, mobile, email, constituency, party..."
-              className="w-full pl-10 pr-4 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#2087FE]/20 focus:border-[#2087FE]"
+              className="w-full pl-10 pr-4 py-2 text-xs rounded-xl border border-slate-200 dark:border-[#29364A] bg-slate-50/50 dark:bg-[#0B101A] text-slate-900 dark:text-[#F8FAFC] placeholder:text-slate-400 dark:placeholder:text-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-[#1D61E0]/20 focus:border-[#1D61E0]"
             />
           </div>
 
@@ -107,7 +107,7 @@ export default function CandidatesDirectoryPage() {
                 setStatusFilter(e.target.value);
                 setCurrentPage(1);
               }}
-              className="px-3 py-2 text-xs font-medium rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-[#2087FE]/20 cursor-pointer"
+              className="px-3 py-2 text-xs font-medium rounded-xl border border-slate-200 dark:border-[#29364A] bg-white dark:bg-[#0B101A] text-slate-700 dark:text-[#F8FAFC] focus:outline-none focus:ring-2 focus:ring-[#1D61E0]/20 cursor-pointer"
             >
               <option value="ALL">All Statuses</option>
               <option value="ACTIVE">Active</option>
@@ -123,7 +123,7 @@ export default function CandidatesDirectoryPage() {
                 setPartyFilter(e.target.value);
                 setCurrentPage(1);
               }}
-              className="px-3 py-2 text-xs font-medium rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-[#2087FE]/20 cursor-pointer"
+              className="px-3 py-2 text-xs font-medium rounded-xl border border-slate-200 dark:border-[#29364A] bg-white dark:bg-[#0B101A] text-slate-700 dark:text-[#F8FAFC] focus:outline-none focus:ring-2 focus:ring-[#1D61E0]/20 cursor-pointer"
             >
               <option value="ALL">All Parties</option>
               {uniqueParties.map((p) => (
@@ -140,7 +140,7 @@ export default function CandidatesDirectoryPage() {
                 setElectionFilter(e.target.value);
                 setCurrentPage(1);
               }}
-              className="px-3 py-2 text-xs font-medium rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-[#2087FE]/20 cursor-pointer"
+              className="px-3 py-2 text-xs font-medium rounded-xl border border-slate-200 dark:border-[#29364A] bg-white dark:bg-[#0B101A] text-slate-700 dark:text-[#F8FAFC] focus:outline-none focus:ring-2 focus:ring-[#1D61E0]/20 cursor-pointer"
             >
               <option value="ALL">All Election Types</option>
               <option value="Vidhan Sabha">Vidhan Sabha</option>
@@ -150,14 +150,14 @@ export default function CandidatesDirectoryPage() {
             </select>
 
             {/* View Mode Toggle */}
-            <div className="flex items-center gap-1 p-1 bg-slate-100 dark:bg-slate-800 rounded-xl">
+            <div className="flex items-center gap-1 p-1 bg-slate-100 dark:bg-[#1B2638] rounded-xl">
               <button
                 type="button"
                 onClick={() => setViewMode("table")}
                 className={`p-1.5 rounded-lg transition cursor-pointer ${
                   viewMode === "table"
-                    ? "bg-white dark:bg-slate-700 text-[#2087FE] shadow-sm"
-                    : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+                    ? "bg-white dark:bg-[#243247] text-blue-600 dark:text-[#2087FE] shadow-sm"
+                    : "text-slate-600 dark:text-[#94A3B8] hover:text-slate-900 dark:hover:text-white"
                 }`}
                 title="Table View"
               >
@@ -168,8 +168,8 @@ export default function CandidatesDirectoryPage() {
                 onClick={() => setViewMode("grid")}
                 className={`p-1.5 rounded-lg transition cursor-pointer ${
                   viewMode === "grid"
-                    ? "bg-white dark:bg-slate-700 text-[#2087FE] shadow-sm"
-                    : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+                    ? "bg-white dark:bg-[#243247] text-blue-600 dark:text-[#2087FE] shadow-sm"
+                    : "text-slate-600 dark:text-[#94A3B8] hover:text-slate-900 dark:hover:text-white"
                 }`}
                 title="Grid Cards View"
               >
@@ -180,7 +180,7 @@ export default function CandidatesDirectoryPage() {
             {/* Add Candidate Shortcut */}
             <Link
               href="/distributor/candidates/new"
-              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-[#2087FE] hover:bg-blue-600 text-white shadow-premium-xs transition"
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-blue-600 hover:bg-blue-700 dark:bg-[#1D61E0] dark:hover:bg-[#2563EB] text-white shadow-premium-xs transition"
             >
               <UserPlus className="w-3.5 h-3.5" />
               <span>Add Candidate</span>
@@ -189,10 +189,10 @@ export default function CandidatesDirectoryPage() {
         </div>
 
         {/* Candidate Count and Filter Indicators */}
-        <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 px-1">
+        <div className="flex items-center justify-between text-xs text-slate-500 dark:text-[#94A3B8] px-1">
           <div>
-            Showing <span className="font-bold text-slate-900 dark:text-white">{filteredCandidates.length}</span> of{" "}
-            <span className="font-bold text-slate-900 dark:text-white">{candidates.length}</span> assigned candidates
+            Showing <span className="font-bold text-slate-900 dark:text-[#F8FAFC]">{filteredCandidates.length}</span> of{" "}
+            <span className="font-bold text-slate-900 dark:text-[#F8FAFC]">{candidates.length}</span> assigned candidates
           </div>
           <div className="flex items-center gap-3">
             <span className="flex items-center gap-1">
@@ -208,10 +208,10 @@ export default function CandidatesDirectoryPage() {
 
         {/* View Mode: Table */}
         {viewMode === "table" ? (
-          <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-premium-xs overflow-hidden">
+          <div className="bg-white dark:bg-[#151E2D] rounded-3xl border border-slate-200 dark:border-[#29364A] shadow-premium-xs overflow-hidden">
             <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs text-slate-600 dark:text-slate-300">
-                <thead className="bg-slate-50 dark:bg-slate-800/60 text-slate-700 dark:text-slate-200 font-bold border-b border-slate-200 dark:border-slate-800">
+              <table className="candidate-table dark-theme-table w-full text-left text-xs text-slate-600 dark:text-[#94A3B8]">
+                <thead className="bg-slate-50 dark:bg-[#111A28] text-slate-700 dark:text-[#94A3B8] font-bold border-b border-slate-200 dark:border-[#29364A]">
                   <tr>
                     <th className="px-5 py-3.5">Candidate Details</th>
                     <th className="px-4 py-3.5">Party &amp; Symbol</th>
@@ -221,16 +221,16 @@ export default function CandidatesDirectoryPage() {
                     <th className="px-5 py-3.5 text-right">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                <tbody className="divide-y divide-slate-100 dark:divide-transparent">
                   {paginatedCandidates.map((cand) => (
                     <tr
                       key={cand.id}
-                      className="hover:bg-slate-50/60 dark:hover:bg-slate-800/40 transition group"
+                      className="hover:bg-slate-50/60 dark:hover:bg-[#202D40] transition-colors border-b border-slate-100 dark:border-white/[0.18] group"
                     >
                       {/* 1. Candidate Details with Photo */}
                       <td className="px-5 py-3.5">
                         <div className="flex items-center gap-3">
-                          <div className="w-11 h-11 rounded-2xl bg-blue-100 dark:bg-blue-950/60 p-0.5 border border-slate-200 dark:border-slate-700 shrink-0 overflow-hidden shadow-xs">
+                          <div className="w-11 h-11 rounded-2xl bg-blue-100 dark:bg-blue-950/60 p-0.5 border border-slate-200 dark:border-[#29364A] shrink-0 overflow-hidden shadow-xs">
                             {/* eslint-disable-next-line @next/next/no-img-element */}
                             <img
                               src={cand.images.profilePhotoUrl}
@@ -239,7 +239,7 @@ export default function CandidatesDirectoryPage() {
                             />
                           </div>
                           <div>
-                            <div className="font-bold text-slate-900 dark:text-white text-sm group-hover:text-blue-600 transition">
+                            <div className="font-bold text-slate-900 dark:text-[#F8FAFC] text-sm group-hover:text-blue-600 dark:group-hover:text-blue-400 transition">
                               {cand.name}
                             </div>
                             <div className="text-[11px] text-amber-600 dark:text-amber-400 font-marathi font-medium">
@@ -264,11 +264,11 @@ export default function CandidatesDirectoryPage() {
                             />
                           </div>
                           <div>
-                            <div className="font-semibold text-slate-800 dark:text-slate-200">
+                            <div className="font-semibold text-slate-800 dark:text-[#F8FAFC]">
                               {cand.party}
                             </div>
                             <div className="text-[10px] text-slate-400">
-                              Code: <span className="font-mono font-bold text-blue-600">{cand.partyAcronym}</span>
+                              Code: <span className="font-mono font-bold text-blue-600 dark:text-[#2087FE]">{cand.partyAcronym}</span>
                             </div>
                           </div>
                         </div>
@@ -276,12 +276,12 @@ export default function CandidatesDirectoryPage() {
 
                       {/* 3. Contact Details */}
                       <td className="px-4 py-3.5 space-y-0.5">
-                        <div className="flex items-center gap-1.5 font-mono text-[11px] font-bold text-slate-800 dark:text-slate-200">
+                        <div className="flex items-center gap-1.5 font-mono text-[11px] font-bold text-slate-800 dark:text-[#F8FAFC]">
                           <Phone className="w-3 h-3 text-slate-400" />
                           <span>{cand.mobile}</span>
                         </div>
                         {cand.email && (
-                          <div className="flex items-center gap-1.5 text-[10.5px] text-slate-500">
+                          <div className="flex items-center gap-1.5 text-[10.5px] text-slate-500 dark:text-[#94A3B8]">
                             <Mail className="w-3 h-3 text-slate-400" />
                             <span className="truncate max-w-[150px]">{cand.email}</span>
                           </div>
@@ -290,14 +290,14 @@ export default function CandidatesDirectoryPage() {
 
                       {/* 4. Geography */}
                       <td className="px-4 py-3.5">
-                        <div className="font-semibold text-slate-800 dark:text-slate-200">
+                        <div className="font-semibold text-slate-800 dark:text-[#F8FAFC]">
                           {cand.constituency}
                         </div>
-                        <div className="text-[11px] text-slate-500 flex items-center gap-1 mt-0.5">
+                        <div className="text-[11px] text-slate-500 dark:text-[#94A3B8] flex items-center gap-1 mt-0.5">
                           <MapPin className="w-3 h-3 text-slate-400" />
                           <span>{cand.district}, {cand.state}</span>
                         </div>
-                        <span className="text-[9.5px] text-blue-600 font-bold">
+                        <span className="text-[9.5px] text-blue-600 dark:text-[#2087FE] font-bold">
                           {cand.electionType}
                         </span>
                       </td>
@@ -330,17 +330,17 @@ export default function CandidatesDirectoryPage() {
                           <button
                             type="button"
                             onClick={() => setEditingCandidate(cand)}
-                            className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 transition cursor-pointer"
+                            className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-xs font-bold text-slate-700 dark:text-[#F8FAFC] hover:bg-slate-100 dark:hover:bg-[#243247] border border-slate-200 dark:border-[#3E4F68] transition cursor-pointer"
                             title="Edit Candidate Information"
                           >
-                            <Edit className="w-3 h-3 text-blue-600" />
+                            <Edit className="w-3 h-3 text-blue-600 dark:text-[#2087FE]" />
                             <span>Edit</span>
                           </button>
 
                           {/* View Profile & Images */}
                           <Link
                             href={`/distributor/candidates/${cand.id}`}
-                            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-bold text-white bg-[#2087FE] hover:bg-blue-600 transition shadow-sm"
+                            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 dark:bg-[#1D61E0] dark:hover:bg-[#2563EB] transition shadow-sm"
                           >
                             <span>View Profile</span>
                             <ExternalLink className="w-3 h-3" />
@@ -355,7 +355,7 @@ export default function CandidatesDirectoryPage() {
 
             {/* Pagination Bar */}
             {totalPages > 1 && (
-              <div className="p-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs text-slate-500">
+              <div className="p-4 border-t border-slate-100 dark:border-[#29364A] flex items-center justify-between text-xs text-slate-500 dark:text-[#94A3B8]">
                 <span>
                   Page {currentPage} of {totalPages}
                 </span>
@@ -364,7 +364,7 @@ export default function CandidatesDirectoryPage() {
                     type="button"
                     onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                     disabled={currentPage === 1}
-                    className="p-1.5 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-40 cursor-pointer"
+                    className="p-1.5 rounded-lg border border-slate-200 dark:border-[#29364A] hover:bg-slate-100 dark:hover:bg-[#1B2638] disabled:opacity-40 cursor-pointer"
                   >
                     <ChevronLeft className="w-4 h-4" />
                   </button>
@@ -372,7 +372,7 @@ export default function CandidatesDirectoryPage() {
                     type="button"
                     onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
                     disabled={currentPage === totalPages}
-                    className="p-1.5 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-40 cursor-pointer"
+                    className="p-1.5 rounded-lg border border-slate-200 dark:border-[#29364A] hover:bg-slate-100 dark:hover:bg-[#1B2638] disabled:opacity-40 cursor-pointer"
                   >
                     <ChevronRight className="w-4 h-4" />
                   </button>
@@ -386,13 +386,13 @@ export default function CandidatesDirectoryPage() {
             {paginatedCandidates.map((cand) => (
               <div
                 key={cand.id}
-                className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-5 shadow-premium-xs hover:border-slate-300 dark:hover:border-slate-700 transition flex flex-col justify-between overflow-hidden"
+                className="bg-white dark:bg-[#151E2D] rounded-3xl border border-slate-200 dark:border-[#29364A] p-5 shadow-premium-xs hover:border-slate-300 dark:hover:border-[#3E4F68] transition flex flex-col justify-between overflow-hidden"
               >
                 <div>
                   {/* Card Top: Photo & Status */}
                   <div className="flex items-start justify-between gap-3 mb-3.5">
                     <div className="flex items-center gap-3">
-                      <div className="w-13 h-13 rounded-2xl bg-blue-100 dark:bg-blue-950/60 p-0.5 border border-slate-200 dark:border-slate-700 shrink-0 overflow-hidden shadow-xs">
+                      <div className="w-13 h-13 rounded-2xl bg-blue-100 dark:bg-blue-950/60 p-0.5 border border-slate-200 dark:border-[#29364A] shrink-0 overflow-hidden shadow-xs">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
                           src={cand.images.profilePhotoUrl}
@@ -401,7 +401,7 @@ export default function CandidatesDirectoryPage() {
                         />
                       </div>
                       <div>
-                        <h4 className="font-bold text-sm text-slate-900 dark:text-white">
+                        <h4 className="font-bold text-sm text-slate-900 dark:text-[#F8FAFC]">
                           {cand.name}
                         </h4>
                         <p className="text-xs text-amber-600 dark:text-amber-400 font-marathi font-medium">
@@ -428,10 +428,10 @@ export default function CandidatesDirectoryPage() {
                   </div>
 
                   {/* Card Data Attributes */}
-                  <div className="space-y-2 py-3 border-y border-slate-100 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-300">
+                  <div className="space-y-2 py-3 border-y border-slate-100 dark:border-[#29364A] text-xs text-slate-600 dark:text-[#94A3B8]">
                     <div className="flex justify-between items-center">
                       <span className="text-slate-400">Party &amp; Symbol:</span>
-                      <div className="flex items-center gap-1.5 font-semibold text-slate-800 dark:text-slate-200">
+                      <div className="flex items-center gap-1.5 font-semibold text-slate-800 dark:text-[#F8FAFC]">
                         <div className="w-5 h-5 rounded bg-white p-0.5 border border-slate-200 shrink-0">
                           {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img
@@ -446,21 +446,21 @@ export default function CandidatesDirectoryPage() {
 
                     <div className="flex justify-between">
                       <span className="text-slate-400">Constituency:</span>
-                      <span className="font-semibold text-slate-800 dark:text-slate-200 text-right">
+                      <span className="font-semibold text-slate-800 dark:text-[#F8FAFC] text-right">
                         {cand.constituency}
                       </span>
                     </div>
 
                     <div className="flex justify-between">
                       <span className="text-slate-400">District / State:</span>
-                      <span className="text-slate-600 dark:text-slate-300">
+                      <span className="text-slate-600 dark:text-[#94A3B8]">
                         {cand.district}, {cand.state}
                       </span>
                     </div>
 
                     <div className="flex justify-between">
                       <span className="text-slate-400">Contact:</span>
-                      <span className="font-mono font-bold text-slate-800 dark:text-slate-200">
+                      <span className="font-mono font-bold text-slate-800 dark:text-[#F8FAFC]">
                         {cand.mobile}
                       </span>
                     </div>
@@ -468,7 +468,7 @@ export default function CandidatesDirectoryPage() {
                     {cand.email && (
                       <div className="flex justify-between">
                         <span className="text-slate-400">Email:</span>
-                        <span className="truncate max-w-[160px] text-slate-600 dark:text-slate-300">
+                        <span className="truncate max-w-[160px] text-slate-600 dark:text-[#94A3B8]">
                           {cand.email}
                         </span>
                       </div>
@@ -481,15 +481,15 @@ export default function CandidatesDirectoryPage() {
                   <button
                     type="button"
                     onClick={() => setEditingCandidate(cand)}
-                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 transition cursor-pointer"
+                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-bold text-slate-700 dark:text-[#F8FAFC] hover:bg-slate-100 dark:hover:bg-[#243247] border border-slate-200 dark:border-[#3E4F68] transition cursor-pointer"
                   >
-                    <Edit className="w-3.5 h-3.5 text-blue-600" />
+                    <Edit className="w-3.5 h-3.5 text-blue-600 dark:text-[#2087FE]" />
                     <span>Edit Profile</span>
                   </button>
 
                   <Link
                     href={`/distributor/candidates/${cand.id}`}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-white bg-[#2087FE] hover:bg-blue-600 transition shadow-premium-xs"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 dark:bg-[#1D61E0] dark:hover:bg-[#2563EB] transition shadow-premium-xs"
                   >
                     <span>View Profile</span>
                     <ExternalLink className="w-3.5 h-3.5" />

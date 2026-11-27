@@ -35,7 +35,10 @@ export function DistributorLayout({
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 font-sans flex text-slate-900 dark:text-slate-100 antialiased max-w-[100vw] overflow-x-clip">
+    <div
+      data-portal="candidate"
+      className="candidate-portal min-h-screen bg-slate-50 dark:bg-[#101827] font-sans flex text-slate-900 dark:text-[#F8FAFC] antialiased max-w-[100vw] overflow-x-clip"
+    >
       {/* Fixed Persistent Sidebar for Desktop */}
       <div
         className={`hidden md:block fixed top-0 left-0 bottom-0 z-40 h-screen transition-all duration-200 ease-in-out ${
@@ -55,7 +58,7 @@ export function DistributorLayout({
             className="fixed inset-0 bg-slate-950/70 backdrop-blur-xs transition-opacity duration-200"
             onClick={() => setMobileOpen(false)}
           />
-          <div className="fixed inset-y-0 left-0 w-64 bg-slate-950 shadow-2xl z-50 flex flex-col">
+          <div className="fixed inset-y-0 left-0 w-64 bg-[#080D16] border-r border-[#29364A]/60 shadow-2xl z-50 flex flex-col">
             <DistributorSidebar
               collapsed={false}
               onCloseMobile={() => setMobileOpen(false)}

@@ -276,11 +276,11 @@ export function EditCandidateModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/75 backdrop-blur-xs overflow-y-auto animate-in fade-in duration-200">
-      <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 w-full max-w-4xl my-6 overflow-hidden flex flex-col max-h-[92vh]">
+      <div className="bg-white dark:bg-[#151E2D] rounded-3xl shadow-2xl border border-slate-200 dark:border-[#29364A] w-full max-w-4xl my-6 overflow-hidden flex flex-col max-h-[92vh]">
         {/* Modal Header */}
-        <div className="p-5 border-b border-slate-100 dark:border-slate-800 flex items-start justify-between bg-gradient-to-r from-slate-900 via-blue-950 to-slate-900 text-white">
+        <div className="p-5 border-b border-slate-100 dark:border-[#29364A] flex items-start justify-between bg-gradient-to-r from-slate-900 via-blue-950 to-slate-900 text-white">
           <div className="flex items-center gap-3.5">
-            <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-[#2087FE] to-indigo-600 text-white flex items-center justify-center font-black text-lg shadow-md shrink-0">
+            <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-[#1D61E0] to-indigo-600 text-white flex items-center justify-center font-black text-lg shadow-md shrink-0">
               {candidate.name.slice(0, 2).toUpperCase()}
             </div>
             <div>
@@ -311,7 +311,7 @@ export function EditCandidateModal({
         </div>
 
         {/* Tab Navigation */}
-        <div className="flex items-center gap-1 px-4 pt-2 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 overflow-x-auto text-xs font-semibold">
+        <div className="flex items-center gap-1 px-4 pt-2 border-b border-slate-200 dark:border-[#29364A] bg-slate-50 dark:bg-[#151E2D]/60 overflow-x-auto text-xs font-semibold">
           {navItems.map((item) => {
             const Icon = item.icon;
             const active = activeTab === item.id;
@@ -322,7 +322,7 @@ export function EditCandidateModal({
                 onClick={() => setActiveTab(item.id)}
                 className={`pb-2.5 px-3 border-b-2 transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap ${
                   active
-                    ? "border-[#2087FE] text-[#2087FE] font-bold"
+                    ? "border-[#1D61E0] text-[#1D61E0] font-bold"
                     : "border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200"
                 }`}
               >
@@ -346,14 +346,14 @@ export function EditCandidateModal({
           {/* TAB 1: PERSONAL */}
           {activeTab === "personal" && (
             <div className="space-y-4">
-              <h3 className="font-bold text-sm text-slate-800 dark:text-white border-b border-slate-100 dark:border-slate-800 pb-2 flex items-center gap-2">
+              <h3 className="font-bold text-sm text-slate-800 dark:text-[#F8FAFC] border-b border-slate-100 dark:border-[#29364A] pb-2 flex items-center gap-2">
                 <User className="w-4 h-4 text-blue-600" />
                 <span>Candidate Personal Credentials</span>
               </h3>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  <label className="block font-semibold text-slate-700 dark:text-[#94A3B8] mb-1">
                     Candidate Official English Name <span className="text-rose-500">*</span>
                   </label>
                   <input
@@ -362,14 +362,14 @@ export function EditCandidateModal({
                     onChange={(e) => setName(e.target.value)}
                     placeholder="e.g. Vikramaditya Shinde"
                     className={`w-full px-3 py-2 rounded-xl border ${
-                      errors.name ? "border-rose-500 ring-1 ring-rose-500" : "border-slate-200 dark:border-slate-700"
-                    } bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-hidden focus:ring-2 focus:ring-[#2087fe]`}
+                      errors.name ? "border-rose-500 ring-1 ring-rose-500" : "border-slate-200 dark:border-[#29364A]"
+                    } bg-white dark:bg-[#0B101A] text-slate-900 dark:text-[#F8FAFC] focus:outline-hidden focus:ring-2 focus:ring-[#2087fe]`}
                   />
                   {errors.name && <p className="text-rose-500 text-[11px] mt-1">{errors.name}</p>}
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  <label className="block font-semibold text-slate-700 dark:text-[#94A3B8] mb-1">
                     Regional Marathi / Devnagari Name
                   </label>
                   <input
@@ -377,18 +377,18 @@ export function EditCandidateModal({
                     value={nameMarathi}
                     onChange={(e) => setNameMarathi(e.target.value)}
                     placeholder="उदा. विक्रमादित्य शिंदे"
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white font-marathi focus:outline-hidden focus:ring-2 focus:ring-[#2087fe]"
+                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-[#29364A] bg-white dark:bg-[#0B101A] text-slate-900 dark:text-[#F8FAFC] font-marathi focus:outline-hidden focus:ring-2 focus:ring-[#2087fe]"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Gender</label>
+                  <label className="block font-semibold text-slate-700 dark:text-[#94A3B8] mb-1">Gender</label>
                   <select
                     value={gender}
                     onChange={(e) => setGender(e.target.value as any)}
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-hidden focus:ring-2 focus:ring-[#2087fe]"
+                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-[#29364A] bg-white dark:bg-[#0B101A] text-slate-900 dark:text-[#F8FAFC] focus:outline-hidden focus:ring-2 focus:ring-[#2087fe]"
                   >
                     <option value="MALE">Male (पुरुष)</option>
                     <option value="FEMALE">Female (महिला)</option>
@@ -397,7 +397,7 @@ export function EditCandidateModal({
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Age (Years)</label>
+                  <label className="block font-semibold text-slate-700 dark:text-[#94A3B8] mb-1">Age (Years)</label>
                   <input
                     type="number"
                     value={age}
@@ -405,42 +405,42 @@ export function EditCandidateModal({
                     placeholder="e.g. 48"
                     min="25"
                     max="120"
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-hidden focus:ring-2 focus:ring-[#2087fe]"
+                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-[#29364A] bg-white dark:bg-[#0B101A] text-slate-900 dark:text-[#F8FAFC] focus:outline-hidden focus:ring-2 focus:ring-[#2087fe]"
                   />
                   {errors.age && <p className="text-rose-500 text-[11px] mt-1">{errors.age}</p>}
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Date of Birth</label>
+                  <label className="block font-semibold text-slate-700 dark:text-[#94A3B8] mb-1">Date of Birth</label>
                   <input
                     type="date"
                     value={dateOfBirth}
                     onChange={(e) => setDateOfBirth(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-hidden focus:ring-2 focus:ring-[#2087fe]"
+                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-[#29364A] bg-white dark:bg-[#0B101A] text-slate-900 dark:text-[#F8FAFC] focus:outline-hidden focus:ring-2 focus:ring-[#2087fe]"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Educational Qualification</label>
+                  <label className="block font-semibold text-slate-700 dark:text-[#94A3B8] mb-1">Educational Qualification</label>
                   <input
                     type="text"
                     value={education}
                     onChange={(e) => setEducation(e.target.value)}
                     placeholder="e.g. MBA, B.Sc., LL.B"
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-hidden focus:ring-2 focus:ring-[#2087fe]"
+                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-[#29364A] bg-white dark:bg-[#0B101A] text-slate-900 dark:text-[#F8FAFC] focus:outline-hidden focus:ring-2 focus:ring-[#2087fe]"
                   />
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Profession / Occupation</label>
+                  <label className="block font-semibold text-slate-700 dark:text-[#94A3B8] mb-1">Profession / Occupation</label>
                   <input
                     type="text"
                     value={occupation}
                     onChange={(e) => setOccupation(e.target.value)}
                     placeholder="e.g. Industrialist, Advocate, Agriculturist"
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-hidden focus:ring-2 focus:ring-[#2087fe]"
+                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-[#29364A] bg-white dark:bg-[#0B101A] text-slate-900 dark:text-[#F8FAFC] focus:outline-hidden focus:ring-2 focus:ring-[#2087fe]"
                   />
                 </div>
               </div>
@@ -450,14 +450,14 @@ export function EditCandidateModal({
           {/* TAB 2: CONTACT */}
           {activeTab === "contact" && (
             <div className="space-y-4">
-              <h3 className="font-bold text-sm text-slate-800 dark:text-white border-b border-slate-100 dark:border-slate-800 pb-2 flex items-center gap-2">
+              <h3 className="font-bold text-sm text-slate-800 dark:text-[#F8FAFC] border-b border-slate-100 dark:border-[#29364A] pb-2 flex items-center gap-2">
                 <Phone className="w-4 h-4 text-emerald-600" />
                 <span>Contact Channels &amp; War Room Helpline</span>
               </h3>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  <label className="block font-semibold text-slate-700 dark:text-[#94A3B8] mb-1">
                     Direct Contact Mobile <span className="text-rose-500">*</span>
                   </label>
                   <input
@@ -466,14 +466,14 @@ export function EditCandidateModal({
                     onChange={(e) => setMobile(e.target.value)}
                     placeholder="e.g. +91 98220 11221"
                     className={`w-full px-3 py-2 rounded-xl border ${
-                      errors.mobile ? "border-rose-500 ring-1 ring-rose-500" : "border-slate-200 dark:border-slate-700"
-                    } bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-hidden focus:ring-2 focus:ring-[#2087fe] font-mono`}
+                      errors.mobile ? "border-rose-500 ring-1 ring-rose-500" : "border-slate-200 dark:border-[#29364A]"
+                    } bg-white dark:bg-[#0B101A] text-slate-900 dark:text-[#F8FAFC] focus:outline-hidden focus:ring-2 focus:ring-[#2087fe] font-mono`}
                   />
                   {errors.mobile && <p className="text-rose-500 text-[11px] mt-1">{errors.mobile}</p>}
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  <label className="block font-semibold text-slate-700 dark:text-[#94A3B8] mb-1">
                     Official Campaign Email
                   </label>
                   <input
@@ -482,8 +482,8 @@ export function EditCandidateModal({
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="e.g. candidate@domain.org"
                     className={`w-full px-3 py-2 rounded-xl border ${
-                      errors.email ? "border-rose-500 ring-1 ring-rose-500" : "border-slate-200 dark:border-slate-700"
-                    } bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-hidden focus:ring-2 focus:ring-[#2087fe]`}
+                      errors.email ? "border-rose-500 ring-1 ring-rose-500" : "border-slate-200 dark:border-[#29364A]"
+                    } bg-white dark:bg-[#0B101A] text-slate-900 dark:text-[#F8FAFC] focus:outline-hidden focus:ring-2 focus:ring-[#2087fe]`}
                   />
                   {errors.email && <p className="text-rose-500 text-[11px] mt-1">{errors.email}</p>}
                 </div>
@@ -491,7 +491,7 @@ export function EditCandidateModal({
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  <label className="block font-semibold text-slate-700 dark:text-[#94A3B8] mb-1">
                     Public WhatsApp Bot / Citizen Helpline
                   </label>
                   <input
@@ -499,12 +499,12 @@ export function EditCandidateModal({
                     value={whatsappHelpline}
                     onChange={(e) => setWhatsappHelpline(e.target.value)}
                     placeholder="e.g. +91 98220 11221"
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-hidden focus:ring-2 focus:ring-[#2087fe] font-mono"
+                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-[#29364A] bg-white dark:bg-[#0B101A] text-slate-900 dark:text-[#F8FAFC] focus:outline-hidden focus:ring-2 focus:ring-[#2087fe] font-mono"
                   />
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  <label className="block font-semibold text-slate-700 dark:text-[#94A3B8] mb-1">
                     Central Office Landline / Reception
                   </label>
                   <input
@@ -512,7 +512,7 @@ export function EditCandidateModal({
                     value={officePhone}
                     onChange={(e) => setOfficePhone(e.target.value)}
                     placeholder="e.g. 020-25448899"
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-hidden focus:ring-2 focus:ring-[#2087fe] font-mono"
+                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-[#29364A] bg-white dark:bg-[#0B101A] text-slate-900 dark:text-[#F8FAFC] focus:outline-hidden focus:ring-2 focus:ring-[#2087fe] font-mono"
                   />
                 </div>
               </div>
@@ -522,14 +522,14 @@ export function EditCandidateModal({
           {/* TAB 3: PARTY */}
           {activeTab === "party" && (
             <div className="space-y-4">
-              <h3 className="font-bold text-sm text-slate-800 dark:text-white border-b border-slate-100 dark:border-slate-800 pb-2 flex items-center gap-2">
+              <h3 className="font-bold text-sm text-slate-800 dark:text-[#F8FAFC] border-b border-slate-100 dark:border-[#29364A] pb-2 flex items-center gap-2">
                 <Building className="w-4 h-4 text-purple-600" />
                 <span>Political Party &amp; Alliance Configuration</span>
               </h3>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  <label className="block font-semibold text-slate-700 dark:text-[#94A3B8] mb-1">
                     Party Full Name <span className="text-rose-500">*</span>
                   </label>
                   <input
@@ -540,12 +540,12 @@ export function EditCandidateModal({
                       setPartyName(e.target.value);
                     }}
                     placeholder="e.g. Rashtriya Vikas Congress"
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-hidden focus:ring-2 focus:ring-[#2087fe]"
+                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-[#29364A] bg-white dark:bg-[#0B101A] text-slate-900 dark:text-[#F8FAFC] focus:outline-hidden focus:ring-2 focus:ring-[#2087fe]"
                   />
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  <label className="block font-semibold text-slate-700 dark:text-[#94A3B8] mb-1">
                     Party Acronym / Short Code
                   </label>
                   <input
@@ -553,18 +553,18 @@ export function EditCandidateModal({
                     value={partyAcronym}
                     onChange={(e) => setPartyAcronym(e.target.value.toUpperCase())}
                     placeholder="e.g. RVC, MJA, IND, SVM"
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-hidden focus:ring-2 focus:ring-[#2087fe] font-mono uppercase"
+                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-[#29364A] bg-white dark:bg-[#0B101A] text-slate-900 dark:text-[#F8FAFC] focus:outline-hidden focus:ring-2 focus:ring-[#2087fe] font-mono uppercase"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Candidate Role Type</label>
+                  <label className="block font-semibold text-slate-700 dark:text-[#94A3B8] mb-1">Candidate Role Type</label>
                   <select
                     value={candidateType}
                     onChange={(e) => setCandidateType(e.target.value as any)}
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-hidden focus:ring-2 focus:ring-[#2087fe]"
+                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-[#29364A] bg-white dark:bg-[#0B101A] text-slate-900 dark:text-[#F8FAFC] focus:outline-hidden focus:ring-2 focus:ring-[#2087fe]"
                   >
                     <option value="MAIN">Main Principal Candidate</option>
                     <option value="ALLIANCE">Alliance Partner Candidate</option>
@@ -574,7 +574,7 @@ export function EditCandidateModal({
                 </div>
 
                 <div className="sm:col-span-2">
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  <label className="block font-semibold text-slate-700 dark:text-[#94A3B8] mb-1">
                     Grand Alliance / Mahayuti / Front Name
                   </label>
                   <input
@@ -582,7 +582,7 @@ export function EditCandidateModal({
                     value={allianceName}
                     onChange={(e) => setAllianceName(e.target.value)}
                     placeholder="e.g. Maha Vikas Mahayuti"
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-hidden focus:ring-2 focus:ring-[#2087fe]"
+                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-[#29364A] bg-white dark:bg-[#0B101A] text-slate-900 dark:text-[#F8FAFC] focus:outline-hidden focus:ring-2 focus:ring-[#2087fe]"
                   />
                 </div>
               </div>
@@ -592,18 +592,18 @@ export function EditCandidateModal({
           {/* TAB 4: ELECTION */}
           {activeTab === "election" && (
             <div className="space-y-4">
-              <h3 className="font-bold text-sm text-slate-800 dark:text-white border-b border-slate-100 dark:border-slate-800 pb-2 flex items-center gap-2">
+              <h3 className="font-bold text-sm text-slate-800 dark:text-[#F8FAFC] border-b border-slate-100 dark:border-[#29364A] pb-2 flex items-center gap-2">
                 <Vote className="w-4 h-4 text-blue-600" />
                 <span>Election Details &amp; Polling Schedule</span>
               </h3>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Election Type</label>
+                  <label className="block font-semibold text-slate-700 dark:text-[#94A3B8] mb-1">Election Type</label>
                   <select
                     value={electionType}
                     onChange={(e) => setElectionType(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-hidden focus:ring-2 focus:ring-[#2087fe]"
+                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-[#29364A] bg-white dark:bg-[#0B101A] text-slate-900 dark:text-[#F8FAFC] focus:outline-hidden focus:ring-2 focus:ring-[#2087fe]"
                   >
                     <option value="Vidhan Sabha">Vidhan Sabha (State Assembly)</option>
                     <option value="Lok Sabha">Lok Sabha (Parliamentary)</option>
@@ -613,11 +613,11 @@ export function EditCandidateModal({
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Seat Category</label>
+                  <label className="block font-semibold text-slate-700 dark:text-[#94A3B8] mb-1">Seat Category</label>
                   <select
                     value={seatCategory}
                     onChange={(e) => setSeatCategory(e.target.value as any)}
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-hidden focus:ring-2 focus:ring-[#2087fe]"
+                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-[#29364A] bg-white dark:bg-[#0B101A] text-slate-900 dark:text-[#F8FAFC] focus:outline-hidden focus:ring-2 focus:ring-[#2087fe]"
                   >
                     <option value="GENERAL">General (खुला प्रवर्ग)</option>
                     <option value="OBC">OBC (इतर मागास प्रवर्ग)</option>
@@ -629,24 +629,24 @@ export function EditCandidateModal({
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="sm:col-span-2">
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Official Election Title</label>
+                  <label className="block font-semibold text-slate-700 dark:text-[#94A3B8] mb-1">Official Election Title</label>
                   <input
                     type="text"
                     value={electionName}
                     onChange={(e) => setElectionName(e.target.value)}
                     placeholder="e.g. Maharashtra Legislative Assembly General Election 2026"
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-hidden focus:ring-2 focus:ring-[#2087fe]"
+                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-[#29364A] bg-white dark:bg-[#0B101A] text-slate-900 dark:text-[#F8FAFC] focus:outline-hidden focus:ring-2 focus:ring-[#2087fe]"
                   />
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Polling Date</label>
+                  <label className="block font-semibold text-slate-700 dark:text-[#94A3B8] mb-1">Polling Date</label>
                   <input
                     type="text"
                     value={pollingDate}
                     onChange={(e) => setPollingDate(e.target.value)}
                     placeholder="e.g. 20 Nov 2026"
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-hidden focus:ring-2 focus:ring-[#2087fe]"
+                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-[#29364A] bg-white dark:bg-[#0B101A] text-slate-900 dark:text-[#F8FAFC] focus:outline-hidden focus:ring-2 focus:ring-[#2087fe]"
                   />
                 </div>
               </div>
@@ -656,34 +656,34 @@ export function EditCandidateModal({
           {/* TAB 5: GEOGRAPHY */}
           {activeTab === "geography" && (
             <div className="space-y-4">
-              <h3 className="font-bold text-sm text-slate-800 dark:text-white border-b border-slate-100 dark:border-slate-800 pb-2 flex items-center gap-2">
+              <h3 className="font-bold text-sm text-slate-800 dark:text-[#F8FAFC] border-b border-slate-100 dark:border-[#29364A] pb-2 flex items-center gap-2">
                 <MapPin className="w-4 h-4 text-rose-600" />
                 <span>Constituency Geography &amp; Electorate Locus</span>
               </h3>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">State</label>
+                  <label className="block font-semibold text-slate-700 dark:text-[#94A3B8] mb-1">State</label>
                   <input
                     type="text"
                     value={state}
                     onChange={(e) => setState(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-hidden focus:ring-2 focus:ring-[#2087fe]"
+                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-[#29364A] bg-white dark:bg-[#0B101A] text-slate-900 dark:text-[#F8FAFC] focus:outline-hidden focus:ring-2 focus:ring-[#2087fe]"
                   />
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">District</label>
+                  <label className="block font-semibold text-slate-700 dark:text-[#94A3B8] mb-1">District</label>
                   <input
                     type="text"
                     value={district}
                     onChange={(e) => setDistrict(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-hidden focus:ring-2 focus:ring-[#2087fe]"
+                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-[#29364A] bg-white dark:bg-[#0B101A] text-slate-900 dark:text-[#F8FAFC] focus:outline-hidden focus:ring-2 focus:ring-[#2087fe]"
                   />
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  <label className="block font-semibold text-slate-700 dark:text-[#94A3B8] mb-1">
                     Constituency Name <span className="text-rose-500">*</span>
                   </label>
                   <input
@@ -691,53 +691,53 @@ export function EditCandidateModal({
                     value={constituency}
                     onChange={(e) => setConstituency(e.target.value)}
                     placeholder="e.g. 214 - Kothrud Assembly"
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-hidden focus:ring-2 focus:ring-[#2087fe]"
+                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-[#29364A] bg-white dark:bg-[#0B101A] text-slate-900 dark:text-[#F8FAFC] focus:outline-hidden focus:ring-2 focus:ring-[#2087fe]"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">AC Number</label>
+                  <label className="block font-semibold text-slate-700 dark:text-[#94A3B8] mb-1">AC Number</label>
                   <input
                     type="text"
                     value={acNumber}
                     onChange={(e) => setAcNumber(e.target.value)}
                     placeholder="e.g. 214"
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-hidden focus:ring-2 focus:ring-[#2087fe]"
+                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-[#29364A] bg-white dark:bg-[#0B101A] text-slate-900 dark:text-[#F8FAFC] focus:outline-hidden focus:ring-2 focus:ring-[#2087fe]"
                   />
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Parent PC</label>
+                  <label className="block font-semibold text-slate-700 dark:text-[#94A3B8] mb-1">Parent PC</label>
                   <input
                     type="text"
                     value={pcName}
                     onChange={(e) => setPcName(e.target.value)}
                     placeholder="e.g. 34 - Pune"
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-hidden focus:ring-2 focus:ring-[#2087fe]"
+                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-[#29364A] bg-white dark:bg-[#0B101A] text-slate-900 dark:text-[#F8FAFC] focus:outline-hidden focus:ring-2 focus:ring-[#2087fe]"
                   />
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Total Electors</label>
+                  <label className="block font-semibold text-slate-700 dark:text-[#94A3B8] mb-1">Total Electors</label>
                   <input
                     type="number"
                     value={totalVoters}
                     onChange={(e) => setTotalVoters(e.target.value)}
                     placeholder="e.g. 342150"
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-hidden focus:ring-2 focus:ring-[#2087fe]"
+                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-[#29364A] bg-white dark:bg-[#0B101A] text-slate-900 dark:text-[#F8FAFC] focus:outline-hidden focus:ring-2 focus:ring-[#2087fe]"
                   />
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Mapped Booths</label>
+                  <label className="block font-semibold text-slate-700 dark:text-[#94A3B8] mb-1">Mapped Booths</label>
                   <input
                     type="number"
                     value={totalBooths}
                     onChange={(e) => setTotalBooths(e.target.value)}
                     placeholder="e.g. 284"
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-hidden focus:ring-2 focus:ring-[#2087fe]"
+                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-[#29364A] bg-white dark:bg-[#0B101A] text-slate-900 dark:text-[#F8FAFC] focus:outline-hidden focus:ring-2 focus:ring-[#2087fe]"
                   />
                 </div>
               </div>
@@ -747,13 +747,13 @@ export function EditCandidateModal({
           {/* TAB 6: ADDRESS */}
           {activeTab === "address" && (
             <div className="space-y-4">
-              <h3 className="font-bold text-sm text-slate-800 dark:text-white border-b border-slate-100 dark:border-slate-800 pb-2 flex items-center gap-2">
+              <h3 className="font-bold text-sm text-slate-800 dark:text-[#F8FAFC] border-b border-slate-100 dark:border-[#29364A] pb-2 flex items-center gap-2">
                 <MapPin className="w-4 h-4 text-emerald-600" />
                 <span>Campaign Central Office &amp; Secretariat Address</span>
               </h3>
 
               <div>
-                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                <label className="block font-semibold text-slate-700 dark:text-[#94A3B8] mb-1">
                   Full Office / Postal Address
                 </label>
                 <textarea
@@ -761,29 +761,29 @@ export function EditCandidateModal({
                   value={officeAddress}
                   onChange={(e) => setOfficeAddress(e.target.value)}
                   placeholder="Street name, landmark, building name..."
-                  className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-hidden focus:ring-2 focus:ring-[#2087fe]"
+                  className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-[#29364A] bg-white dark:bg-[#0B101A] text-slate-900 dark:text-[#F8FAFC] focus:outline-hidden focus:ring-2 focus:ring-[#2087fe]"
                 />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">City / Taluka</label>
+                  <label className="block font-semibold text-slate-700 dark:text-[#94A3B8] mb-1">City / Taluka</label>
                   <input
                     type="text"
                     value={city}
                     onChange={(e) => setCity(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-hidden focus:ring-2 focus:ring-[#2087fe]"
+                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-[#29364A] bg-white dark:bg-[#0B101A] text-slate-900 dark:text-[#F8FAFC] focus:outline-hidden focus:ring-2 focus:ring-[#2087fe]"
                   />
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Postal Pincode</label>
+                  <label className="block font-semibold text-slate-700 dark:text-[#94A3B8] mb-1">Postal Pincode</label>
                   <input
                     type="text"
                     value={pincode}
                     onChange={(e) => setPincode(e.target.value)}
                     placeholder="e.g. 411038"
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-hidden focus:ring-2 focus:ring-[#2087fe] font-mono"
+                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-[#29364A] bg-white dark:bg-[#0B101A] text-slate-900 dark:text-[#F8FAFC] focus:outline-hidden focus:ring-2 focus:ring-[#2087fe] font-mono"
                   />
                 </div>
               </div>
@@ -793,13 +793,13 @@ export function EditCandidateModal({
           {/* TAB 7: CAMPAIGN & SLOGAN */}
           {activeTab === "campaign" && (
             <div className="space-y-4">
-              <h3 className="font-bold text-sm text-slate-800 dark:text-white border-b border-slate-100 dark:border-slate-800 pb-2 flex items-center gap-2">
+              <h3 className="font-bold text-sm text-slate-800 dark:text-[#F8FAFC] border-b border-slate-100 dark:border-[#29364A] pb-2 flex items-center gap-2">
                 <Sparkles className="w-4 h-4 text-amber-500" />
                 <span>Campaign Slogan &amp; Social Outreach Channels</span>
               </h3>
 
               <div>
-                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                <label className="block font-semibold text-slate-700 dark:text-[#94A3B8] mb-1">
                   Official Campaign Slogan (Marathi / Regional / English)
                 </label>
                 <input
@@ -807,12 +807,12 @@ export function EditCandidateModal({
                   value={slogan}
                   onChange={(e) => setSlogan(e.target.value)}
                   placeholder="उदा. विकास, विश्वास आणि प्रगती - आपल्या हक्काचा आमदार!"
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-hidden focus:ring-2 focus:ring-[#2087fe] font-marathi"
+                  className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-[#29364A] bg-white dark:bg-[#0B101A] text-slate-900 dark:text-[#F8FAFC] focus:outline-hidden focus:ring-2 focus:ring-[#2087fe] font-marathi"
                 />
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                <label className="block font-semibold text-slate-700 dark:text-[#94A3B8] mb-1">
                   Public Voter Slip Download Portal URL
                 </label>
                 <input
@@ -820,30 +820,30 @@ export function EditCandidateModal({
                   value={publicSlipUrl}
                   onChange={(e) => setPublicSlipUrl(e.target.value)}
                   placeholder="https://rajtantra.in/slips/CAND-XXX"
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-hidden focus:ring-2 focus:ring-[#2087fe] font-mono"
+                  className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-[#29364A] bg-white dark:bg-[#0B101A] text-slate-900 dark:text-[#F8FAFC] focus:outline-hidden focus:ring-2 focus:ring-[#2087fe] font-mono"
                 />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Facebook Profile / Page</label>
+                  <label className="block font-semibold text-slate-700 dark:text-[#94A3B8] mb-1">Facebook Profile / Page</label>
                   <input
                     type="url"
                     value={facebookUrl}
                     onChange={(e) => setFacebookUrl(e.target.value)}
                     placeholder="https://facebook.com/candidate"
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-hidden focus:ring-2 focus:ring-[#2087fe]"
+                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-[#29364A] bg-white dark:bg-[#0B101A] text-slate-900 dark:text-[#F8FAFC] focus:outline-hidden focus:ring-2 focus:ring-[#2087fe]"
                   />
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Instagram Handle</label>
+                  <label className="block font-semibold text-slate-700 dark:text-[#94A3B8] mb-1">Instagram Handle</label>
                   <input
                     type="url"
                     value={instagramUrl}
                     onChange={(e) => setInstagramUrl(e.target.value)}
                     placeholder="https://instagram.com/candidate"
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-hidden focus:ring-2 focus:ring-[#2087fe]"
+                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-[#29364A] bg-white dark:bg-[#0B101A] text-slate-900 dark:text-[#F8FAFC] focus:outline-hidden focus:ring-2 focus:ring-[#2087fe]"
                   />
                 </div>
               </div>
@@ -851,9 +851,9 @@ export function EditCandidateModal({
           )}
 
           {/* Modal Actions Footer */}
-          <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-3">
+          <div className="pt-4 border-t border-slate-100 dark:border-[#29364A] flex items-center justify-between gap-3">
             <span className="text-[11px] text-slate-400">
-              Franchise ID: <strong className="text-slate-600 dark:text-slate-300">{candidate.distributorId}</strong> • Candidate ID: <strong className="text-slate-600 dark:text-slate-300">{candidate.id}</strong>
+              Franchise ID: <strong className="text-slate-600 dark:text-[#94A3B8]">{candidate.distributorId}</strong> • Candidate ID: <strong className="text-slate-600 dark:text-[#94A3B8]">{candidate.id}</strong>
             </span>
 
             <div className="flex items-center gap-2.5">
@@ -861,7 +861,7 @@ export function EditCandidateModal({
                 type="button"
                 onClick={onClose}
                 disabled={isSubmitting}
-                className="px-4 py-2 text-xs font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors cursor-pointer disabled:opacity-50"
+                className="px-4 py-2 text-xs font-semibold text-slate-600 dark:text-[#94A3B8] hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors cursor-pointer disabled:opacity-50"
               >
                 Cancel
               </button>

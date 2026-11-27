@@ -255,10 +255,10 @@ export default function PricingManualPage() {
                 key={cat.id}
                 type="button"
                 onClick={() => setSelectedCategory(cat.id as PlanCategory)}
-                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition ${
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition cursor-pointer ${
                   isSelected
-                    ? "bg-[#2087FE] text-white shadow-premium-xs"
-                    : "bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700"
+                    ? "bg-blue-600 dark:bg-[#1D61E0] text-white shadow-premium-xs"
+                    : "bg-white dark:bg-[#151E2D] text-slate-700 dark:text-[#94A3B8] border border-slate-200 dark:border-[#29364A] hover:border-slate-300 dark:hover:border-[#3E4F68]"
                 }`}
               >
                 <Icon className="w-3.5 h-3.5" />
@@ -267,7 +267,7 @@ export default function PricingManualPage() {
                   className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold ${
                     isSelected
                       ? "bg-white/20 text-white"
-                      : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400"
+                      : "bg-slate-100 dark:bg-[#0B101A] text-slate-600 dark:text-[#94A3B8]"
                   }`}
                 >
                   {cat.count}
@@ -282,15 +282,15 @@ export default function PricingManualPage() {
           {filteredPackages.map((pkg, idx) => (
             <div
               key={idx}
-              className={`bg-white dark:bg-slate-900 rounded-3xl p-6 border transition flex flex-col justify-between ${
+              className={`bg-white dark:bg-[#151E2D] rounded-3xl p-6 border transition flex flex-col justify-between ${
                 pkg.popular
-                  ? "border-[#2087FE] shadow-premium ring-2 ring-[#2087FE]/20"
-                  : "border-slate-200 dark:border-slate-800 shadow-premium-xs"
+                  ? "border-blue-500/60 dark:border-[#1D61E0] shadow-premium ring-2 ring-blue-500/20"
+                  : "border-slate-200 dark:border-[#29364A] shadow-premium-xs"
               }`}
             >
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <span className="font-mono text-[10px] font-bold text-slate-500 dark:text-slate-400">
+                  <span className="font-mono text-[10px] font-bold text-slate-500 dark:text-[#94A3B8]">
                     {pkg.code}
                   </span>
                   <div className="flex items-center gap-1.5">
@@ -301,33 +301,33 @@ export default function PricingManualPage() {
                       </span>
                     )}
                     {pkg.popular && (
-                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#2087FE] text-white">
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-600 dark:bg-[#1D61E0] text-white">
                         Most Selected
                       </span>
                     )}
                   </div>
                 </div>
 
-                <h3 className="text-base font-extrabold text-slate-900 dark:text-white">
+                <h3 className="text-base font-extrabold text-slate-900 dark:text-[#F8FAFC]">
                   {pkg.tier}
                 </h3>
-                <p className="text-xs text-slate-600 dark:text-slate-300 mt-0.5 line-clamp-1">
+                <p className="text-xs text-slate-500 dark:text-[#94A3B8] mt-0.5 line-clamp-1">
                   Scope: {pkg.electionScope}
                 </p>
 
                 {/* Validity Pill */}
-                <div className="mt-2.5 flex items-center gap-1.5 text-[11px] font-medium text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-800/80 px-2.5 py-1 rounded-lg border border-slate-100 dark:border-slate-800">
-                  <Calendar className="w-3 h-3 text-[#2087FE] shrink-0" />
+                <div className="mt-2.5 flex items-center gap-1.5 text-[11px] font-medium text-slate-600 dark:text-[#94A3B8] bg-slate-50 dark:bg-[#0B101A] px-2.5 py-1 rounded-lg border border-slate-100 dark:border-[#29364A]">
+                  <Calendar className="w-3 h-3 text-blue-600 dark:text-[#38BDF8] shrink-0" />
                   <span className="truncate">Validity: {pkg.validity}</span>
                 </div>
 
-                <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800">
-                  <div className="text-2xl font-black text-[#2087FE]">
+                <div className="mt-4 pt-4 border-t border-slate-100 dark:border-[#29364A]">
+                  <div className="text-2xl font-black text-blue-600 dark:text-[#38BDF8]">
                     {pkg.basePrice}
                   </div>
-                  <div className="text-[11px] text-slate-600 dark:text-slate-300 mt-0.5">
+                  <div className="text-[11px] text-slate-500 dark:text-[#94A3B8] mt-0.5">
                     Suggested Retail:{" "}
-                    <span className="font-semibold text-slate-700 dark:text-slate-300">
+                    <span className="font-semibold text-slate-700 dark:text-[#F8FAFC]">
                       {pkg.suggestedRetail}
                     </span>
                   </div>
@@ -337,11 +337,11 @@ export default function PricingManualPage() {
                 </div>
 
                 <div className="mt-5 space-y-2 text-xs">
-                  <div className="font-bold text-slate-800 dark:text-slate-200 text-[11px] uppercase tracking-wider">
+                  <div className="font-bold text-slate-800 dark:text-[#F8FAFC] text-[11px] uppercase tracking-wider">
                     Included Features:
                   </div>
                   {pkg.features.map((feat, fIdx) => (
-                    <div key={fIdx} className="flex items-start gap-2 text-slate-600 dark:text-slate-300">
+                    <div key={fIdx} className="flex items-start gap-2 text-slate-600 dark:text-[#94A3B8]">
                       <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0 mt-0.5" />
                       <span>{feat}</span>
                     </div>
@@ -349,10 +349,10 @@ export default function PricingManualPage() {
                 </div>
               </div>
 
-              <div className="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800">
+              <div className="mt-6 pt-4 border-t border-slate-100 dark:border-[#29364A]">
                 <Link
                   href="/distributor/candidates/new"
-                  className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-bold bg-slate-100 dark:bg-slate-800 hover:bg-[#2087FE] hover:text-white transition text-slate-700 dark:text-slate-200"
+                  className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-bold border border-transparent dark:border-[#3E4F68] bg-slate-100 dark:bg-[#243247] hover:bg-blue-600 dark:hover:bg-[#1D61E0] hover:text-white transition text-slate-700 dark:text-[#F8FAFC]"
                 >
                   <span>Select for Onboarding</span>
                 </Link>
@@ -362,16 +362,16 @@ export default function PricingManualPage() {
         </div>
 
         {/* Interactive Franchise Margin Calculator */}
-        <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-premium-xs space-y-4">
+        <div className="bg-white dark:bg-[#151E2D] rounded-3xl p-6 border border-slate-200 dark:border-[#29364A] shadow-premium-xs space-y-4">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-blue-100 dark:bg-blue-950/60 text-[#2087FE] flex items-center justify-center font-bold">
+            <div className="w-8 h-8 rounded-xl bg-blue-100 dark:bg-blue-950/60 text-blue-600 dark:text-[#38BDF8] flex items-center justify-center font-bold">
               <Calculator className="w-4 h-4" />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+              <h3 className="text-sm font-bold text-slate-900 dark:text-[#F8FAFC]">
                 Franchise Turnover & Commission Simulator
               </h3>
-              <p className="text-xs text-slate-600 dark:text-slate-300">
+              <p className="text-xs text-slate-500 dark:text-[#94A3B8]">
                 Simulate potential candidate pipeline returns based on standard 20% franchise commission
               </p>
             </div>
@@ -379,7 +379,7 @@ export default function PricingManualPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-5 gap-4 pt-2">
             <div>
-              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+              <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
                 Election AI (₹ 1.5L)
               </label>
               <input
@@ -387,12 +387,12 @@ export default function PricingManualPage() {
                 min={0}
                 value={electionAiCount}
                 onChange={(e) => setElectionAiCount(Math.max(0, parseInt(e.target.value) || 0))}
-                className="w-full px-3 py-2 text-xs font-bold rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800"
+                className="w-full px-3 py-2 text-xs font-bold rounded-xl border border-slate-200 dark:border-[#29364A] bg-slate-50 dark:bg-[#0B101A] text-slate-900 dark:text-[#F8FAFC]"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+              <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
                 Election Std (₹ 95k)
               </label>
               <input
@@ -400,12 +400,12 @@ export default function PricingManualPage() {
                 min={0}
                 value={electionStdCount}
                 onChange={(e) => setElectionStdCount(Math.max(0, parseInt(e.target.value) || 0))}
-                className="w-full px-3 py-2 text-xs font-bold rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800"
+                className="w-full px-3 py-2 text-xs font-bold rounded-xl border border-slate-200 dark:border-[#29364A] bg-slate-50 dark:bg-[#0B101A] text-slate-900 dark:text-[#F8FAFC]"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+              <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
                 Office 12M AI (₹ 1.2L)
               </label>
               <input
@@ -413,12 +413,12 @@ export default function PricingManualPage() {
                 min={0}
                 value={office12mCount}
                 onChange={(e) => setOffice12mCount(Math.max(0, parseInt(e.target.value) || 0))}
-                className="w-full px-3 py-2 text-xs font-bold rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800"
+                className="w-full px-3 py-2 text-xs font-bold rounded-xl border border-slate-200 dark:border-[#29364A] bg-slate-50 dark:bg-[#0B101A] text-slate-900 dark:text-[#F8FAFC]"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+              <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
                 Office 6M (₹ 40k)
               </label>
               <input
@@ -426,11 +426,11 @@ export default function PricingManualPage() {
                 min={0}
                 value={office6mCount}
                 onChange={(e) => setOffice6mCount(Math.max(0, parseInt(e.target.value) || 0))}
-                className="w-full px-3 py-2 text-xs font-bold rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800"
+                className="w-full px-3 py-2 text-xs font-bold rounded-xl border border-slate-200 dark:border-[#29364A] bg-slate-50 dark:bg-[#0B101A] text-slate-900 dark:text-[#F8FAFC]"
               />
             </div>
 
-            <div className="p-3 rounded-2xl bg-gradient-to-tr from-[#010627] to-[#0A1950] text-white flex flex-col justify-center">
+            <div className="p-3 rounded-2xl bg-[#0B101A] border border-[#29364A] text-white flex flex-col justify-center">
               <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
                 Est. Franchise Return (20%)
               </span>

@@ -182,7 +182,7 @@ export default function NewCandidateWizardPage() {
     enableFamilyMapping: true,
     aiSeats: 5,
 
-    primaryColor: "#2087FE",
+    primaryColor: "#1D61E0",
     secondaryColor: "#010627",
     appIconUrl: "",
     splashBannerUrl: "",
@@ -237,17 +237,17 @@ export default function NewCandidateWizardPage() {
   if (isSuccess) {
     return (
       <DistributorLayout title="Candidate Onboarding Complete">
-        <div className="max-w-xl mx-auto py-12 text-center bg-white dark:bg-slate-900 rounded-3xl p-8 border border-slate-200 dark:border-slate-800 shadow-premium">
+        <div className="max-w-xl mx-auto py-12 text-center bg-white dark:bg-[#151E2D] rounded-3xl p-8 border border-slate-200 dark:border-[#29364A] shadow-premium">
           <div className="w-16 h-16 rounded-2xl bg-emerald-100 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400 flex items-center justify-center mx-auto mb-4">
             <CheckCircle2 className="w-8 h-8" />
           </div>
-          <h2 className="text-xl font-bold text-slate-900 dark:text-white">
+          <h2 className="text-xl font-bold text-slate-900 dark:text-[#F8FAFC]">
             Onboarding Request Generated!
           </h2>
-          <p className="text-xs text-slate-600 dark:text-slate-300 mt-2">
+          <p className="text-xs text-slate-600 dark:text-[#94A3B8] mt-2">
             Candidate <span className="font-bold text-slate-800 dark:text-slate-200">{formData.candidateName}</span> has been provisioned under your franchise ({distributor?.distributorCode || "DIS-101"}).
           </p>
-          <div className="mt-4 p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 text-xs text-left text-slate-700 dark:text-slate-300 space-y-1">
+          <div className="mt-4 p-4 rounded-xl bg-slate-50 dark:bg-[#0B101A] text-xs text-left text-slate-700 dark:text-[#94A3B8] space-y-1">
             <div className="flex justify-between">
               <span>Candidate ID:</span>
               <span className="font-mono font-bold">CAND-2026-NEW</span>
@@ -258,19 +258,19 @@ export default function NewCandidateWizardPage() {
             </div>
             <div className="flex justify-between">
               <span>Franchise Binding:</span>
-              <span className="text-[#2087FE] font-bold">{distributor?.name}</span>
+              <span className="text-[#1D61E0] font-bold">{distributor?.name}</span>
             </div>
           </div>
           <div className="mt-6 flex items-center justify-center gap-3">
             <Link
               href="/distributor/candidates"
-              className="px-4 py-2 text-xs font-bold bg-[#2087FE] hover:bg-blue-600 text-white rounded-xl shadow-premium-xs transition"
+              className="px-4 py-2 text-xs font-bold bg-[#1D61E0] hover:bg-blue-600 text-white rounded-xl shadow-premium-xs transition"
             >
               Return to Candidates
             </Link>
             <Link
               href="/distributor/dashboard"
-              className="px-4 py-2 text-xs font-bold bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-200 rounded-xl transition"
+              className="px-4 py-2 text-xs font-bold bg-slate-100 hover:bg-slate-200 dark:bg-[#0B101A] dark:text-slate-200 rounded-xl transition"
             >
               Dashboard
             </Link>
@@ -287,7 +287,7 @@ export default function NewCandidateWizardPage() {
     >
       <div className="space-y-6 max-w-5xl mx-auto">
         {/* Step Progress Stepper */}
-        <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 border border-slate-200 dark:border-slate-800 shadow-premium-xs overflow-x-auto">
+        <div className="bg-white dark:bg-[#151E2D] rounded-2xl p-4 border border-slate-200 dark:border-[#29364A] shadow-premium-xs overflow-x-auto">
           <div className="flex items-center min-w-max gap-2">
             {steps.map((st) => {
               const isPast = currentStep > st.id;
@@ -299,19 +299,19 @@ export default function NewCandidateWizardPage() {
                   onClick={() => setCurrentStep(st.id)}
                   className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-semibold transition ${
                     isCurr
-                      ? "bg-[#2087FE] text-white shadow-premium-xs"
+                      ? "bg-[#1D61E0] text-white shadow-premium-xs"
                       : isPast
                       ? "bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800"
-                      : "text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
+                      : "text-slate-600 dark:text-[#94A3B8] hover:bg-slate-100 dark:hover:bg-slate-800"
                   }`}
                 >
                   <span
                     className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold ${
                       isCurr
-                        ? "bg-white text-[#2087FE]"
+                        ? "bg-white text-[#1D61E0]"
                         : isPast
                         ? "bg-emerald-500 text-white"
-                        : "bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300"
+                        : "bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-[#94A3B8]"
                     }`}
                   >
                     {isPast ? <Check className="w-3 h-3" /> : st.id}
@@ -324,23 +324,23 @@ export default function NewCandidateWizardPage() {
         </div>
 
         {/* Current Step Form Body */}
-        <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-slate-800 shadow-premium-sm min-h-[420px] flex flex-col justify-between">
+        <div className="bg-white dark:bg-[#151E2D] rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-[#29364A] shadow-premium-sm min-h-[420px] flex flex-col justify-between">
           <div>
             {/* Step 1: Account Details */}
             {currentStep === 1 && (
               <div className="space-y-4">
-                <div className="border-b border-slate-100 dark:border-slate-800 pb-3">
-                  <h3 className="text-base font-bold text-slate-900 dark:text-white">
+                <div className="border-b border-slate-100 dark:border-[#29364A] pb-3">
+                  <h3 className="text-base font-bold text-slate-900 dark:text-[#F8FAFC]">
                     Step 1: Account Login & Initial Provisioning
                   </h3>
-                  <p className="text-xs text-slate-600 dark:text-slate-300">
+                  <p className="text-xs text-slate-600 dark:text-[#94A3B8]">
                     Establish credential baseline and trial/sale designation for the candidate war room.
                   </p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
                       Account Username / User ID *
                     </label>
                     <input
@@ -348,12 +348,12 @@ export default function NewCandidateWizardPage() {
                       value={formData.username}
                       onChange={(e) => updateField("username", e.target.value)}
                       placeholder="e.g. rajesh.patil"
-                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#2087FE]"
+                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-[#29364A] bg-slate-50 dark:bg-[#0B101A] text-slate-900 dark:text-[#F8FAFC] focus:outline-none focus:ring-2 focus:ring-[#1D61E0]"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
                       Temporary Access Password *
                     </label>
                     <input
@@ -361,12 +361,12 @@ export default function NewCandidateWizardPage() {
                       value={formData.password}
                       onChange={(e) => updateField("password", e.target.value)}
                       placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
-                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#2087FE]"
+                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-[#29364A] bg-slate-50 dark:bg-[#0B101A] text-slate-900 dark:text-[#F8FAFC] focus:outline-none focus:ring-2 focus:ring-[#1D61E0]"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
                       Primary Candidate Mobile *
                     </label>
                     <input
@@ -374,12 +374,12 @@ export default function NewCandidateWizardPage() {
                       value={formData.mobile}
                       onChange={(e) => updateField("mobile", e.target.value)}
                       placeholder="+91 98765 43210"
-                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#2087FE]"
+                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-[#29364A] bg-slate-50 dark:bg-[#0B101A] text-slate-900 dark:text-[#F8FAFC] focus:outline-none focus:ring-2 focus:ring-[#1D61E0]"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
                       Official Contact Email
                     </label>
                     <input
@@ -387,12 +387,12 @@ export default function NewCandidateWizardPage() {
                       value={formData.email}
                       onChange={(e) => updateField("email", e.target.value)}
                       placeholder="candidate@elections.in"
-                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#2087FE]"
+                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-[#29364A] bg-slate-50 dark:bg-[#0B101A] text-slate-900 dark:text-[#F8FAFC] focus:outline-none focus:ring-2 focus:ring-[#1D61E0]"
                     />
                   </div>
 
                   <div className="md:col-span-2">
-                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1.5">
                       Provisioning Account Type *
                     </label>
                     <div className="grid grid-cols-2 gap-3">
@@ -401,12 +401,12 @@ export default function NewCandidateWizardPage() {
                         onClick={() => updateField("accountType", "SALE")}
                         className={`p-3 rounded-xl border text-left text-xs font-semibold transition ${
                           formData.accountType === "SALE"
-                            ? "border-[#2087FE] bg-blue-50/60 dark:bg-blue-950/40 text-[#2087FE]"
-                            : "border-slate-200 dark:border-slate-800 hover:border-slate-300"
+                            ? "border-[#1D61E0] bg-blue-50/60 dark:bg-blue-950/40 text-[#1D61E0]"
+                            : "border-slate-200 dark:border-[#29364A] hover:border-slate-300"
                         }`}
                       >
                         <div className="font-bold">Commercial Sale</div>
-                        <div className="text-[11px] text-slate-600 dark:text-slate-300">
+                        <div className="text-[11px] text-slate-600 dark:text-[#94A3B8]">
                           Full campaign license requiring commercial payment verification
                         </div>
                       </button>
@@ -417,11 +417,11 @@ export default function NewCandidateWizardPage() {
                         className={`p-3 rounded-xl border text-left text-xs font-semibold transition ${
                           formData.accountType === "DEMO"
                             ? "border-amber-500 bg-amber-50/60 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300"
-                            : "border-slate-200 dark:border-slate-800 hover:border-slate-300"
+                            : "border-slate-200 dark:border-[#29364A] hover:border-slate-300"
                         }`}
                       >
                         <div className="font-bold">Trial / Demo</div>
-                        <div className="text-[11px] text-slate-600 dark:text-slate-300">
+                        <div className="text-[11px] text-slate-600 dark:text-[#94A3B8]">
                           Time-restricted trial account for preliminary candidate presentation
                         </div>
                       </button>
@@ -434,18 +434,18 @@ export default function NewCandidateWizardPage() {
             {/* Step 2: Candidate Details */}
             {currentStep === 2 && (
               <div className="space-y-4">
-                <div className="border-b border-slate-100 dark:border-slate-800 pb-3">
-                  <h3 className="text-base font-bold text-slate-900 dark:text-white">
+                <div className="border-b border-slate-100 dark:border-[#29364A] pb-3">
+                  <h3 className="text-base font-bold text-slate-900 dark:text-[#F8FAFC]">
                     Step 2: Candidate Name & Designation
                   </h3>
-                  <p className="text-xs text-slate-600 dark:text-slate-300">
+                  <p className="text-xs text-slate-600 dark:text-[#94A3B8]">
                     Bilingual name records required for voter slips, EVM ballots, and reports.
                   </p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
                       Candidate Name (English) *
                     </label>
                     <input
@@ -453,12 +453,12 @@ export default function NewCandidateWizardPage() {
                       value={formData.candidateName}
                       onChange={(e) => updateField("candidateName", e.target.value)}
                       placeholder="e.g. Adv. Rajesh Mohan Patil"
-                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#2087FE]"
+                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-[#29364A] bg-slate-50 dark:bg-[#0B101A] text-slate-900 dark:text-[#F8FAFC] focus:outline-none focus:ring-2 focus:ring-[#1D61E0]"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
                       Candidate Name (Marathi / Devnagari) *
                     </label>
                     <input
@@ -466,18 +466,18 @@ export default function NewCandidateWizardPage() {
                       value={formData.candidateMarathiName}
                       onChange={(e) => updateField("candidateMarathiName", e.target.value)}
                       placeholder="à¤‰à¤¦à¤¾. à¤…à¥…à¤¡. à¤°à¤¾à¤œà¥‡à¤¶ à¤®à¥‹à¤¹à¤¨ à¤ªà¤¾à¤Ÿà¥€à¤²"
-                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#2087FE]"
+                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-[#29364A] bg-slate-50 dark:bg-[#0B101A] text-slate-900 dark:text-[#F8FAFC] focus:outline-none focus:ring-2 focus:ring-[#1D61E0]"
                     />
                   </div>
 
                   <div className="md:col-span-2">
-                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
                       Candidate Role Classification *
                     </label>
                     <select
                       value={formData.candidateType}
                       onChange={(e) => updateField("candidateType", e.target.value)}
-                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#2087FE]"
+                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-[#29364A] bg-slate-50 dark:bg-[#0B101A] text-slate-900 dark:text-[#F8FAFC] focus:outline-none focus:ring-2 focus:ring-[#1D61E0]"
                     >
                       <option value="MAIN">Lead Principal Candidate</option>
                       <option value="ALLIANCE">Alliance Supported Candidate</option>
@@ -492,18 +492,18 @@ export default function NewCandidateWizardPage() {
             {/* Step 3: Party Details */}
             {currentStep === 3 && (
               <div className="space-y-4">
-                <div className="border-b border-slate-100 dark:border-slate-800 pb-3">
-                  <h3 className="text-base font-bold text-slate-900 dark:text-white">
+                <div className="border-b border-slate-100 dark:border-[#29364A] pb-3">
+                  <h3 className="text-base font-bold text-slate-900 dark:text-[#F8FAFC]">
                     Step 3: Political Party Affiliation & Symbols
                   </h3>
-                  <p className="text-xs text-slate-600 dark:text-slate-300">
+                  <p className="text-xs text-slate-600 dark:text-[#94A3B8]">
                     Party branding for voter slips, posters, and booth worker mobile views.
                   </p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
                       Party Full Name (English) *
                     </label>
                     <input
@@ -511,12 +511,12 @@ export default function NewCandidateWizardPage() {
                       value={formData.partyName}
                       onChange={(e) => updateField("partyName", e.target.value)}
                       placeholder="e.g. Rashtriya Janata Party"
-                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#2087FE]"
+                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-[#29364A] bg-slate-50 dark:bg-[#0B101A] text-slate-900 dark:text-[#F8FAFC] focus:outline-none focus:ring-2 focus:ring-[#1D61E0]"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
                       Party Name (Marathi) *
                     </label>
                     <input
@@ -524,12 +524,12 @@ export default function NewCandidateWizardPage() {
                       value={formData.partyMarathiName}
                       onChange={(e) => updateField("partyMarathiName", e.target.value)}
                       placeholder="à¤‰à¤¦à¤¾. à¤°à¤¾à¤·à¥à¤Ÿà¥à¤°à¥€à¤¯ à¤œà¤¨à¤¤à¤¾ à¤ªà¤¾à¤°à¥à¤Ÿà¥€"
-                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#2087FE]"
+                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-[#29364A] bg-slate-50 dark:bg-[#0B101A] text-slate-900 dark:text-[#F8FAFC] focus:outline-none focus:ring-2 focus:ring-[#1D61E0]"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
                       Party Acronym (e.g. RJP, INC, BJP)
                     </label>
                     <input
@@ -537,12 +537,12 @@ export default function NewCandidateWizardPage() {
                       value={formData.partyAcronym}
                       onChange={(e) => updateField("partyAcronym", e.target.value)}
                       placeholder="RJP"
-                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#2087FE]"
+                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-[#29364A] bg-slate-50 dark:bg-[#0B101A] text-slate-900 dark:text-[#F8FAFC] focus:outline-none focus:ring-2 focus:ring-[#1D61E0]"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
                       Election Symbol Name / URL
                     </label>
                     <input
@@ -550,7 +550,7 @@ export default function NewCandidateWizardPage() {
                       value={formData.partySymbolUrl}
                       onChange={(e) => updateField("partySymbolUrl", e.target.value)}
                       placeholder="e.g. Lotus / Clock / Bow & Arrow"
-                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#2087FE]"
+                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-[#29364A] bg-slate-50 dark:bg-[#0B101A] text-slate-900 dark:text-[#F8FAFC] focus:outline-none focus:ring-2 focus:ring-[#1D61E0]"
                     />
                   </div>
                 </div>
@@ -560,24 +560,24 @@ export default function NewCandidateWizardPage() {
             {/* Step 4: Election Details */}
             {currentStep === 4 && (
               <div className="space-y-4">
-                <div className="border-b border-slate-100 dark:border-slate-800 pb-3">
-                  <h3 className="text-base font-bold text-slate-900 dark:text-white">
+                <div className="border-b border-slate-100 dark:border-[#29364A] pb-3">
+                  <h3 className="text-base font-bold text-slate-900 dark:text-[#F8FAFC]">
                     Step 4: Election Type & Schedule
                   </h3>
-                  <p className="text-xs text-slate-600 dark:text-slate-300">
+                  <p className="text-xs text-slate-600 dark:text-[#94A3B8]">
                     Determines the dynamic electoral geography inputs in Step 5.
                   </p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="md:col-span-2">
-                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
                       Election Category *
                     </label>
                     <select
                       value={formData.electionType}
                       onChange={(e) => updateField("electionType", e.target.value)}
-                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#2087FE]"
+                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-[#29364A] bg-slate-50 dark:bg-[#0B101A] text-slate-900 dark:text-[#F8FAFC] focus:outline-none focus:ring-2 focus:ring-[#1D61E0]"
                     >
                       <option value="VIDHAN_SABHA">Vidhan Sabha (Assembly)</option>
                       <option value="LOK_SABHA">Lok Sabha (Parliament)</option>
@@ -587,7 +587,7 @@ export default function NewCandidateWizardPage() {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
                       Official Election Name *
                     </label>
                     <input
@@ -595,12 +595,12 @@ export default function NewCandidateWizardPage() {
                       value={formData.electionName}
                       onChange={(e) => updateField("electionName", e.target.value)}
                       placeholder="Maharashtra Assembly General 2026"
-                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#2087FE]"
+                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-[#29364A] bg-slate-50 dark:bg-[#0B101A] text-slate-900 dark:text-[#F8FAFC] focus:outline-none focus:ring-2 focus:ring-[#1D61E0]"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
                       Election Year *
                     </label>
                     <input
@@ -608,7 +608,7 @@ export default function NewCandidateWizardPage() {
                       value={formData.electionYear}
                       onChange={(e) => updateField("electionYear", e.target.value)}
                       placeholder="2026"
-                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#2087FE]"
+                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-[#29364A] bg-slate-50 dark:bg-[#0B101A] text-slate-900 dark:text-[#F8FAFC] focus:outline-none focus:ring-2 focus:ring-[#1D61E0]"
                     />
                   </div>
                 </div>
@@ -618,42 +618,42 @@ export default function NewCandidateWizardPage() {
             {/* Step 5: Dynamic Geography */}
             {currentStep === 5 && (
               <div className="space-y-4">
-                <div className="border-b border-slate-100 dark:border-slate-800 pb-3">
+                <div className="border-b border-slate-100 dark:border-[#29364A] pb-3">
                   <div className="flex items-center gap-2">
-                    <h3 className="text-base font-bold text-slate-900 dark:text-white">
+                    <h3 className="text-base font-bold text-slate-900 dark:text-[#F8FAFC]">
                       Step 5: Dynamic Electoral Locus & Geography
                     </h3>
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-blue-100 text-[#2087FE]">
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-blue-100 text-[#1D61E0]">
                       {formData.electionType.replace("_", " ")}
                     </span>
                   </div>
-                  <p className="text-xs text-slate-600 dark:text-slate-300">
+                  <p className="text-xs text-slate-600 dark:text-[#94A3B8]">
                     Fields dynamically adapt to the selected election level.
                   </p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
                       State / Union Territory *
                     </label>
                     <input
                       type="text"
                       value={formData.state}
                       onChange={(e) => updateField("state", e.target.value)}
-                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white"
+                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-[#29364A] bg-slate-50 dark:bg-[#0B101A] text-slate-900 dark:text-[#F8FAFC]"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
                       Administrative District *
                     </label>
                     <input
                       type="text"
                       value={formData.district}
                       onChange={(e) => updateField("district", e.target.value)}
-                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white"
+                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-[#29364A] bg-slate-50 dark:bg-[#0B101A] text-slate-900 dark:text-[#F8FAFC]"
                     />
                   </div>
 
@@ -661,7 +661,7 @@ export default function NewCandidateWizardPage() {
                   {formData.electionType === "VIDHAN_SABHA" && (
                     <>
                       <div>
-                        <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                        <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
                           AC Number (Assembly Constituency) *
                         </label>
                         <input
@@ -669,11 +669,11 @@ export default function NewCandidateWizardPage() {
                           value={formData.acNumber}
                           onChange={(e) => updateField("acNumber", e.target.value)}
                           placeholder="e.g. 214"
-                          className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white"
+                          className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-[#29364A] bg-slate-50 dark:bg-[#0B101A] text-slate-900 dark:text-[#F8FAFC]"
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                        <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
                           AC Name (English & Marathi) *
                         </label>
                         <input
@@ -681,7 +681,7 @@ export default function NewCandidateWizardPage() {
                           value={formData.acName}
                           onChange={(e) => updateField("acName", e.target.value)}
                           placeholder="Pune Cantonment (à¤ªà¥à¤£à¥‡ à¤›à¤¾à¤µà¤£à¥€)"
-                          className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white"
+                          className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-[#29364A] bg-slate-50 dark:bg-[#0B101A] text-slate-900 dark:text-[#F8FAFC]"
                         />
                       </div>
                     </>
@@ -690,7 +690,7 @@ export default function NewCandidateWizardPage() {
                   {formData.electionType === "LOK_SABHA" && (
                     <>
                       <div>
-                        <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                        <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
                           PC Number (Parliamentary Constituency) *
                         </label>
                         <input
@@ -698,11 +698,11 @@ export default function NewCandidateWizardPage() {
                           value={formData.pcNumber}
                           onChange={(e) => updateField("pcNumber", e.target.value)}
                           placeholder="e.g. 34"
-                          className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white"
+                          className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-[#29364A] bg-slate-50 dark:bg-[#0B101A] text-slate-900 dark:text-[#F8FAFC]"
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                        <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
                           PC Name *
                         </label>
                         <input
@@ -710,7 +710,7 @@ export default function NewCandidateWizardPage() {
                           value={formData.pcName}
                           onChange={(e) => updateField("pcName", e.target.value)}
                           placeholder="Pune"
-                          className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white"
+                          className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-[#29364A] bg-slate-50 dark:bg-[#0B101A] text-slate-900 dark:text-[#F8FAFC]"
                         />
                       </div>
                     </>
@@ -719,7 +719,7 @@ export default function NewCandidateWizardPage() {
                   {formData.electionType === "MUNICIPAL_CORP" && (
                     <>
                       <div>
-                        <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                        <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
                           Municipal Corporation Name *
                         </label>
                         <input
@@ -727,11 +727,11 @@ export default function NewCandidateWizardPage() {
                           value={formData.corporationName}
                           onChange={(e) => updateField("corporationName", e.target.value)}
                           placeholder="Pune Municipal Corporation (PMC)"
-                          className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white"
+                          className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-[#29364A] bg-slate-50 dark:bg-[#0B101A] text-slate-900 dark:text-[#F8FAFC]"
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                        <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
                           Ward / Prabhag Number & Name *
                         </label>
                         <input
@@ -739,7 +739,7 @@ export default function NewCandidateWizardPage() {
                           value={formData.wardNumber}
                           onChange={(e) => updateField("wardNumber", e.target.value)}
                           placeholder="Ward No. 12 (Kothrud Depot)"
-                          className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white"
+                          className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-[#29364A] bg-slate-50 dark:bg-[#0B101A] text-slate-900 dark:text-[#F8FAFC]"
                         />
                       </div>
                     </>
@@ -748,7 +748,7 @@ export default function NewCandidateWizardPage() {
                   {formData.electionType === "ZILLA_PARISHAD" && (
                     <>
                       <div>
-                        <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                        <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
                           Zilla Parishad Body *
                         </label>
                         <input
@@ -756,11 +756,11 @@ export default function NewCandidateWizardPage() {
                           value={formData.zpName}
                           onChange={(e) => updateField("zpName", e.target.value)}
                           placeholder="Pune ZP"
-                          className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white"
+                          className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-[#29364A] bg-slate-50 dark:bg-[#0B101A] text-slate-900 dark:text-[#F8FAFC]"
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                        <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
                           Gat / Gan Electoral Circle *
                         </label>
                         <input
@@ -768,7 +768,7 @@ export default function NewCandidateWizardPage() {
                           value={formData.gatName}
                           onChange={(e) => updateField("gatName", e.target.value)}
                           placeholder="Haveli Gan"
-                          className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white"
+                          className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-[#29364A] bg-slate-50 dark:bg-[#0B101A] text-slate-900 dark:text-[#F8FAFC]"
                         />
                       </div>
                     </>
@@ -776,17 +776,17 @@ export default function NewCandidateWizardPage() {
                 </div>
 
                 {/* Structured Election Data Segregation & Partitioning Boundary */}
-                <div className="mt-6 pt-5 border-t border-slate-200 dark:border-slate-800 space-y-4">
+                <div className="mt-6 pt-5 border-t border-slate-200 dark:border-[#29364A] space-y-4">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3.5 rounded-2xl bg-blue-50/70 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800">
                     <div className="flex items-center gap-2.5">
-                      <div className="w-8 h-8 rounded-xl bg-[#2087FE] text-white flex items-center justify-center shrink-0">
+                      <div className="w-8 h-8 rounded-xl bg-[#1D61E0] text-white flex items-center justify-center shrink-0">
                         <Database className="w-4 h-4" />
                       </div>
                       <div>
-                        <h4 className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                        <h4 className="text-xs font-bold text-slate-900 dark:text-[#F8FAFC] flex items-center gap-2">
                           Structured Election Data Segregation
                         </h4>
-                        <p className="text-[11px] text-slate-600 dark:text-slate-300">
+                        <p className="text-[11px] text-slate-600 dark:text-[#94A3B8]">
                           Enforce strict data isolation boundaries to partition voter rolls by booth number, constituency, and campaign roles.
                         </p>
                       </div>
@@ -799,7 +799,7 @@ export default function NewCandidateWizardPage() {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                      <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
                         Constituency Data Partition Key *
                       </label>
                       <input
@@ -807,7 +807,7 @@ export default function NewCandidateWizardPage() {
                         value={formData.constituencyPartitionKey}
                         onChange={(e) => updateField("constituencyPartitionKey", e.target.value)}
                         placeholder="e.g. MH-AC214-KOTHRUD"
-                        className="w-full px-3.5 py-2 text-xs font-mono font-bold rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-[#2087FE] dark:text-blue-400 uppercase"
+                        className="w-full px-3.5 py-2 text-xs font-mono font-bold rounded-xl border border-slate-200 dark:border-[#29364A] bg-slate-50 dark:bg-[#0B101A] text-[#1D61E0] dark:text-blue-400 uppercase"
                       />
                       <span className="text-[10px] text-slate-500 mt-1 block">
                         Unique database partition key mapping this candidate's voter records.
@@ -815,13 +815,13 @@ export default function NewCandidateWizardPage() {
                     </div>
 
                     <div>
-                      <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                      <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
                         Data Partitioning Strategy *
                       </label>
                       <select
                         value={formData.partitionStrategy}
                         onChange={(e) => updateField("partitionStrategy", e.target.value)}
-                        className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white"
+                        className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-[#29364A] bg-slate-50 dark:bg-[#0B101A] text-slate-900 dark:text-[#F8FAFC]"
                       >
                         <option value="FULL_CONSTITUENCY">Full Assembly / Constituency Electoral Roll</option>
                         <option value="CLUSTERED_BY_WARD">Clustered by Ward / Prabhag Boundaries</option>
@@ -833,18 +833,18 @@ export default function NewCandidateWizardPage() {
                     </div>
 
                     {/* Booth Number Partitioning Range */}
-                    <div className="md:col-span-2 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/40 space-y-3">
+                    <div className="md:col-span-2 p-3.5 rounded-xl border border-slate-200 dark:border-[#29364A] bg-slate-50/50 dark:bg-[#0B101A] space-y-3">
                       <div className="flex items-center justify-between">
                         <label className="text-xs font-bold text-slate-800 dark:text-slate-200">
                           Polling Booth Number Partitioning Range
                         </label>
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900/60 text-[#2087FE]">
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900/60 text-[#1D61E0]">
                           {Math.max(1, formData.boothEnd - formData.boothStart + 1)} Booths Assigned
                         </span>
                       </div>
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                         <div>
-                          <span className="text-[11px] text-slate-600 dark:text-slate-400 block mb-1">
+                          <span className="text-[11px] text-slate-600 dark:text-[#94A3B8] block mb-1">
                             Start Booth #
                           </span>
                           <input
@@ -852,11 +852,11 @@ export default function NewCandidateWizardPage() {
                             min={1}
                             value={formData.boothStart}
                             onChange={(e) => updateField("boothStart", Math.max(1, parseInt(e.target.value) || 1))}
-                            className="w-full px-3 py-1.5 text-xs font-bold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900"
+                            className="w-full px-3 py-1.5 text-xs font-bold rounded-lg border border-slate-200 dark:border-[#29364A] bg-white dark:bg-[#151E2D]"
                           />
                         </div>
                         <div>
-                          <span className="text-[11px] text-slate-600 dark:text-slate-400 block mb-1">
+                          <span className="text-[11px] text-slate-600 dark:text-[#94A3B8] block mb-1">
                             End Booth #
                           </span>
                           <input
@@ -864,11 +864,11 @@ export default function NewCandidateWizardPage() {
                             min={formData.boothStart}
                             value={formData.boothEnd}
                             onChange={(e) => updateField("boothEnd", Math.max(formData.boothStart, parseInt(e.target.value) || formData.boothStart))}
-                            className="w-full px-3 py-1.5 text-xs font-bold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900"
+                            className="w-full px-3 py-1.5 text-xs font-bold rounded-lg border border-slate-200 dark:border-[#29364A] bg-white dark:bg-[#151E2D]"
                           />
                         </div>
                         <div>
-                          <span className="text-[11px] text-slate-600 dark:text-slate-400 block mb-1">
+                          <span className="text-[11px] text-slate-600 dark:text-[#94A3B8] block mb-1">
                             Maximum Voter Roll Cap
                           </span>
                           <input
@@ -876,7 +876,7 @@ export default function NewCandidateWizardPage() {
                             step={1000}
                             value={formData.electoralRollCap}
                             onChange={(e) => updateField("electoralRollCap", Math.max(1000, parseInt(e.target.value) || 1000))}
-                            className="w-full px-3 py-1.5 text-xs font-bold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900"
+                            className="w-full px-3 py-1.5 text-xs font-bold rounded-lg border border-slate-200 dark:border-[#29364A] bg-white dark:bg-[#151E2D]"
                           />
                         </div>
                       </div>
@@ -884,7 +884,7 @@ export default function NewCandidateWizardPage() {
 
                     {/* Specific Campaign Data Criteria Tags */}
                     <div className="md:col-span-2 space-y-2">
-                      <label className="block text-xs font-bold text-slate-700 dark:text-slate-300">
+                      <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8]">
                         Campaign Data Partitioning Criteria (Select Applied Segments)
                       </label>
                       <div className="flex flex-wrap gap-2">
@@ -914,8 +914,8 @@ export default function NewCandidateWizardPage() {
                               }}
                               className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${
                                 isSelected
-                                  ? "bg-[#2087FE] text-white shadow-premium-xs"
-                                  : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700"
+                                  ? "bg-[#1D61E0] text-white shadow-premium-xs"
+                                  : "bg-slate-100 dark:bg-[#0B101A] text-slate-600 dark:text-[#94A3B8] hover:bg-slate-200 dark:hover:bg-slate-700"
                               }`}
                             >
                               {isSelected ? <Check className="w-3.5 h-3.5" /> : null}
@@ -936,61 +936,61 @@ export default function NewCandidateWizardPage() {
             {/* Step 6: Application & Public Details */}
             {currentStep === 6 && (
               <div className="space-y-4">
-                <div className="border-b border-slate-100 dark:border-slate-800 pb-3">
-                  <h3 className="text-base font-bold text-slate-900 dark:text-white">
+                <div className="border-b border-slate-100 dark:border-[#29364A] pb-3">
+                  <h3 className="text-base font-bold text-slate-900 dark:text-[#F8FAFC]">
                     Step 6: Mobile Application & Public Links
                   </h3>
-                  <p className="text-xs text-slate-600 dark:text-slate-300">
+                  <p className="text-xs text-slate-600 dark:text-[#94A3B8]">
                     Candidate-branded portals, voter slip search URLs, and support helplines.
                   </p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
                       App Title / War Room Label
                     </label>
                     <input
                       type="text"
                       value={formData.appName}
                       onChange={(e) => updateField("appName", e.target.value)}
-                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white"
+                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-[#29364A] bg-slate-50 dark:bg-[#0B101A] text-slate-900 dark:text-[#F8FAFC]"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
                       Voter Helpline Number
                     </label>
                     <input
                       type="text"
                       value={formData.helplineNumber}
                       onChange={(e) => updateField("helplineNumber", e.target.value)}
-                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white"
+                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-[#29364A] bg-slate-50 dark:bg-[#0B101A] text-slate-900 dark:text-[#F8FAFC]"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
                       WhatsApp Support Number
                     </label>
                     <input
                       type="text"
                       value={formData.whatsappSupportNumber}
                       onChange={(e) => updateField("whatsappSupportNumber", e.target.value)}
-                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white"
+                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-[#29364A] bg-slate-50 dark:bg-[#0B101A] text-slate-900 dark:text-[#F8FAFC]"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
                       Voter Slip Web Link
                     </label>
                     <input
                       type="text"
                       value={formData.slipDownloadUrl}
                       onChange={(e) => updateField("slipDownloadUrl", e.target.value)}
-                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white"
+                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-[#29364A] bg-slate-50 dark:bg-[#0B101A] text-slate-900 dark:text-[#F8FAFC]"
                     />
                   </div>
                 </div>
@@ -1000,30 +1000,30 @@ export default function NewCandidateWizardPage() {
             {/* Step 7: Communication */}
             {currentStep === 7 && (
               <div className="space-y-4">
-                <div className="border-b border-slate-100 dark:border-slate-800 pb-3">
-                  <h3 className="text-base font-bold text-slate-900 dark:text-white">
+                <div className="border-b border-slate-100 dark:border-[#29364A] pb-3">
+                  <h3 className="text-base font-bold text-slate-900 dark:text-[#F8FAFC]">
                     Step 7: Automated Communication Channels
                   </h3>
-                  <p className="text-xs text-slate-600 dark:text-slate-300">
+                  <p className="text-xs text-slate-600 dark:text-[#94A3B8]">
                     Configuration for outbound messaging, DLT sender IDs, and AI voice calls.
                   </p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
                       Official WhatsApp Bot Number
                     </label>
                     <input
                       type="text"
                       value={formData.whatsappBotNumber}
                       onChange={(e) => updateField("whatsappBotNumber", e.target.value)}
-                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white"
+                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-[#29364A] bg-slate-50 dark:bg-[#0B101A] text-slate-900 dark:text-[#F8FAFC]"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
                       6-Character DLT SMS Sender Header
                     </label>
                     <input
@@ -1031,19 +1031,19 @@ export default function NewCandidateWizardPage() {
                       maxLength={6}
                       value={formData.smsSenderId}
                       onChange={(e) => updateField("smsSenderId", e.target.value.toUpperCase())}
-                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white uppercase font-mono"
+                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-[#29364A] bg-slate-50 dark:bg-[#0B101A] text-slate-900 dark:text-[#F8FAFC] uppercase font-mono"
                     />
                   </div>
 
                   <div className="md:col-span-2">
-                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
                       AI Outbound Voice Caller DID
                     </label>
                     <input
                       type="text"
                       value={formData.aiCallerId}
                       onChange={(e) => updateField("aiCallerId", e.target.value)}
-                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white"
+                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-[#29364A] bg-slate-50 dark:bg-[#0B101A] text-slate-900 dark:text-[#F8FAFC]"
                     />
                   </div>
                 </div>
@@ -1053,16 +1053,16 @@ export default function NewCandidateWizardPage() {
             {/* Step 8: Subscription Request (Official Catalog from Super Admin) */}
             {currentStep === 8 && (
               <div className="space-y-4">
-                <div className="border-b border-slate-100 dark:border-slate-800 pb-3">
+                <div className="border-b border-slate-100 dark:border-[#29364A] pb-3">
                   <div className="flex items-center gap-2">
-                    <h3 className="text-base font-bold text-slate-900 dark:text-white">
+                    <h3 className="text-base font-bold text-slate-900 dark:text-[#F8FAFC]">
                       Step 8: Subscription Package Request
                     </h3>
                     <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300">
                       Request Mode Only
                     </span>
                   </div>
-                  <p className="text-xs text-slate-600 dark:text-slate-300">
+                  <p className="text-xs text-slate-600 dark:text-[#94A3B8]">
                     Select official subscription tier according to central price book. Super Admin verifies and activates.
                   </p>
                 </div>
@@ -1070,7 +1070,7 @@ export default function NewCandidateWizardPage() {
                 {/* Module Group 1: Election Module */}
                 <div className="space-y-2">
                   <div className="flex items-center gap-2">
-                    <Vote className="w-4 h-4 text-[#2087FE]" />
+                    <Vote className="w-4 h-4 text-[#1D61E0]" />
                     <span className="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider">
                       1. Election Module Plans (Validity: Election End Date + 15 Days Grace Period)
                     </span>
@@ -1107,22 +1107,22 @@ export default function NewCandidateWizardPage() {
                         }}
                         className={`p-4 rounded-2xl border text-left transition ${
                           formData.requestedPlan === tier.id
-                            ? "border-[#2087FE] bg-blue-50/70 dark:bg-blue-950/40 text-slate-900 dark:text-white ring-2 ring-[#2087FE]/20"
-                            : "border-slate-200 dark:border-slate-800 hover:border-slate-300 bg-white dark:bg-slate-900"
+                            ? "border-[#1D61E0] bg-blue-50/70 dark:bg-blue-950/40 text-slate-900 dark:text-[#F8FAFC] ring-2 ring-[#1D61E0]/20"
+                            : "border-slate-200 dark:border-[#29364A] hover:border-slate-300 bg-white dark:bg-[#151E2D]"
                         }`}
                       >
                         <div className="flex justify-between items-center mb-1">
                           <span className="text-xs font-bold">{tier.name}</span>
-                          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-100 text-[#2087FE]">
+                          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-100 text-[#1D61E0]">
                             {tier.tag}
                           </span>
                         </div>
-                        <div className="text-lg font-black text-[#2087FE]">{tier.price}</div>
+                        <div className="text-lg font-black text-[#1D61E0]">{tier.price}</div>
                         <div className="text-[10px] text-slate-500 mt-0.5 flex items-center gap-1">
-                          <Calendar className="w-3 h-3 text-[#2087FE]" />
+                          <Calendar className="w-3 h-3 text-[#1D61E0]" />
                           <span>{tier.validity}</span>
                         </div>
-                        <p className="text-[11px] text-slate-600 dark:text-slate-300 mt-2">
+                        <p className="text-[11px] text-slate-600 dark:text-[#94A3B8] mt-2">
                           {tier.desc}
                         </p>
                       </button>
@@ -1184,8 +1184,8 @@ export default function NewCandidateWizardPage() {
                         }}
                         className={`p-3.5 rounded-2xl border text-left transition ${
                           formData.requestedPlan === tier.id
-                            ? "border-purple-500 bg-purple-50/70 dark:bg-purple-950/40 text-slate-900 dark:text-white ring-2 ring-purple-500/20"
-                            : "border-slate-200 dark:border-slate-800 hover:border-slate-300 bg-white dark:bg-slate-900"
+                            ? "border-purple-500 bg-purple-50/70 dark:bg-purple-950/40 text-slate-900 dark:text-[#F8FAFC] ring-2 ring-purple-500/20"
+                            : "border-slate-200 dark:border-[#29364A] hover:border-slate-300 bg-white dark:bg-[#151E2D]"
                         }`}
                       >
                         <div className="flex justify-between items-center mb-1">
@@ -1224,8 +1224,8 @@ export default function NewCandidateWizardPage() {
                       }}
                       className={`w-full p-3.5 rounded-2xl border text-left transition flex items-center justify-between ${
                         formData.requestedPlan === "TRIAL_5D"
-                          ? "border-amber-500 bg-amber-50/70 dark:bg-amber-950/40 text-slate-900 dark:text-white ring-2 ring-amber-500/20"
-                          : "border-slate-200 dark:border-slate-800 hover:border-slate-300 bg-white dark:bg-slate-900"
+                          ? "border-amber-500 bg-amber-50/70 dark:bg-amber-950/40 text-slate-900 dark:text-[#F8FAFC] ring-2 ring-amber-500/20"
+                          : "border-slate-200 dark:border-[#29364A] hover:border-slate-300 bg-white dark:bg-[#151E2D]"
                       }`}
                     >
                       <div>
@@ -1235,7 +1235,7 @@ export default function NewCandidateWizardPage() {
                             Pitch Sandbox
                           </span>
                         </div>
-                        <p className="text-[11px] text-slate-600 dark:text-slate-300 mt-0.5">
+                        <p className="text-[11px] text-slate-600 dark:text-[#94A3B8] mt-0.5">
                           5-day evaluation sandbox with sample 1,000 verified voter records and watermarked slips.
                         </p>
                       </div>
@@ -1259,22 +1259,22 @@ export default function NewCandidateWizardPage() {
             {/* Step 9: Access & Permissions */}
             {currentStep === 9 && (
               <div className="space-y-4">
-                <div className="border-b border-slate-100 dark:border-slate-800 pb-3">
-                  <h3 className="text-base font-bold text-slate-900 dark:text-white">
+                <div className="border-b border-slate-100 dark:border-[#29364A] pb-3">
+                  <h3 className="text-base font-bold text-slate-900 dark:text-[#F8FAFC]">
                     Step 9: Feature Entitlements & Permissions
                   </h3>
-                  <p className="text-xs text-slate-600 dark:text-slate-300">
+                  <p className="text-xs text-slate-600 dark:text-[#94A3B8]">
                     Configure granular tool permissions for the candidate campaign staff.
                   </p>
                 </div>
 
                 <div className="space-y-3">
-                  <label className="flex items-center justify-between p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/40">
+                  <label className="flex items-center justify-between p-3.5 rounded-xl border border-slate-200 dark:border-[#29364A] cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/40">
                     <div>
-                      <div className="text-xs font-bold text-slate-900 dark:text-white">
+                      <div className="text-xs font-bold text-slate-900 dark:text-[#F8FAFC]">
                         Voter Roll PDF Generation & Export
                       </div>
-                      <div className="text-[11px] text-slate-600 dark:text-slate-300">
+                      <div className="text-[11px] text-slate-600 dark:text-[#94A3B8]">
                         Allow printing polling-booth voter lists and family chits
                       </div>
                     </div>
@@ -1282,16 +1282,16 @@ export default function NewCandidateWizardPage() {
                       type="checkbox"
                       checked={formData.enablePdfExport}
                       onChange={(e) => updateField("enablePdfExport", e.target.checked)}
-                      className="w-4 h-4 rounded text-[#2087FE] focus:ring-[#2087FE]"
+                      className="w-4 h-4 rounded text-[#1D61E0] focus:ring-[#1D61E0]"
                     />
                   </label>
 
-                  <label className="flex items-center justify-between p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/40">
+                  <label className="flex items-center justify-between p-3.5 rounded-xl border border-slate-200 dark:border-[#29364A] cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/40">
                     <div>
-                      <div className="text-xs font-bold text-slate-900 dark:text-white">
+                      <div className="text-xs font-bold text-slate-900 dark:text-[#F8FAFC]">
                         Raw Excel Data Export
                       </div>
-                      <div className="text-[11px] text-slate-600 dark:text-slate-300">
+                      <div className="text-[11px] text-slate-600 dark:text-[#94A3B8]">
                         Allow exporting filtered voter subsets to Excel spreadsheet
                       </div>
                     </div>
@@ -1299,16 +1299,16 @@ export default function NewCandidateWizardPage() {
                       type="checkbox"
                       checked={formData.enableExcelExport}
                       onChange={(e) => updateField("enableExcelExport", e.target.checked)}
-                      className="w-4 h-4 rounded text-[#2087FE] focus:ring-[#2087FE]"
+                      className="w-4 h-4 rounded text-[#1D61E0] focus:ring-[#1D61E0]"
                     />
                   </label>
 
-                  <label className="flex items-center justify-between p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/40">
+                  <label className="flex items-center justify-between p-3.5 rounded-xl border border-slate-200 dark:border-[#29364A] cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/40">
                     <div>
-                      <div className="text-xs font-bold text-slate-900 dark:text-white">
+                      <div className="text-xs font-bold text-slate-900 dark:text-[#F8FAFC]">
                         AI Family Tree Hierarchy Mapping
                       </div>
-                      <div className="text-[11px] text-slate-600 dark:text-slate-300">
+                      <div className="text-[11px] text-slate-600 dark:text-[#94A3B8]">
                         Enable automatic family grouping based on surname, house no., and locality
                       </div>
                     </div>
@@ -1316,7 +1316,7 @@ export default function NewCandidateWizardPage() {
                       type="checkbox"
                       checked={formData.enableFamilyMapping}
                       onChange={(e) => updateField("enableFamilyMapping", e.target.checked)}
-                      className="w-4 h-4 rounded text-[#2087FE] focus:ring-[#2087FE]"
+                      className="w-4 h-4 rounded text-[#1D61E0] focus:ring-[#1D61E0]"
                     />
                   </label>
                 </div>
@@ -1326,18 +1326,18 @@ export default function NewCandidateWizardPage() {
             {/* Step 10: Theme & Assets */}
             {currentStep === 10 && (
               <div className="space-y-4">
-                <div className="border-b border-slate-100 dark:border-slate-800 pb-3">
-                  <h3 className="text-base font-bold text-slate-900 dark:text-white">
+                <div className="border-b border-slate-100 dark:border-[#29364A] pb-3">
+                  <h3 className="text-base font-bold text-slate-900 dark:text-[#F8FAFC]">
                     Step 10: Campaign Visual Identity
                   </h3>
-                  <p className="text-xs text-slate-600 dark:text-slate-300">
+                  <p className="text-xs text-slate-600 dark:text-[#94A3B8]">
                     Colors and assets for candidate war room theme styling.
                   </p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
                       Primary Brand Color
                     </label>
                     <div className="flex items-center gap-2">
@@ -1351,13 +1351,13 @@ export default function NewCandidateWizardPage() {
                         type="text"
                         value={formData.primaryColor}
                         onChange={(e) => updateField("primaryColor", e.target.value)}
-                        className="flex-1 px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 font-mono"
+                        className="flex-1 px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-[#29364A] bg-slate-50 dark:bg-[#0B101A] font-mono"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-[#94A3B8] mb-1">
                       Secondary Brand Color
                     </label>
                     <div className="flex items-center gap-2">
@@ -1371,7 +1371,7 @@ export default function NewCandidateWizardPage() {
                         type="text"
                         value={formData.secondaryColor}
                         onChange={(e) => updateField("secondaryColor", e.target.value)}
-                        className="flex-1 px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 font-mono"
+                        className="flex-1 px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-[#29364A] bg-slate-50 dark:bg-[#0B101A] font-mono"
                       />
                     </div>
                   </div>
@@ -1382,50 +1382,50 @@ export default function NewCandidateWizardPage() {
             {/* Step 11: Distributor Ownership (System Bounded) */}
             {currentStep === 11 && (
               <div className="space-y-4">
-                <div className="border-b border-slate-100 dark:border-slate-800 pb-3">
+                <div className="border-b border-slate-100 dark:border-[#29364A] pb-3">
                   <div className="flex items-center gap-2">
-                    <h3 className="text-base font-bold text-slate-900 dark:text-white">
+                    <h3 className="text-base font-bold text-slate-900 dark:text-[#F8FAFC]">
                       Step 11: Tenant Ownership & Security Binding
                     </h3>
                     <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800">
                       Zero-Trust Enforced
                     </span>
                   </div>
-                  <p className="text-xs text-slate-600 dark:text-slate-300">
+                  <p className="text-xs text-slate-600 dark:text-[#94A3B8]">
                     System verifies that this candidate record is permanently locked to your authenticated franchise session.
                   </p>
                 </div>
 
                 <div className="p-5 rounded-2xl bg-blue-50/60 dark:bg-blue-950/30 border border-blue-200/80 dark:border-blue-900/60 space-y-3">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-[#2087FE] text-white flex items-center justify-center font-bold">
+                    <div className="w-10 h-10 rounded-xl bg-[#1D61E0] text-white flex items-center justify-center font-bold">
                       <ShieldCheck className="w-6 h-6" />
                     </div>
                     <div>
-                      <div className="text-xs font-bold text-slate-900 dark:text-white">
+                      <div className="text-xs font-bold text-slate-900 dark:text-[#F8FAFC]">
                         Authenticated Distributor ID: {distributor?.distributorCode || "DIS-101"}
                       </div>
-                      <div className="text-[11px] text-slate-600 dark:text-slate-300">
+                      <div className="text-[11px] text-slate-600 dark:text-[#94A3B8]">
                         Franchise Partner: {distributor?.name || "Maharashtra Western Agency"}
                       </div>
                     </div>
                   </div>
 
                   <div className="grid grid-cols-2 gap-3 pt-2 text-xs">
-                    <div className="p-2.5 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
-                      <span className="text-slate-600 dark:text-slate-300">Franchise Territory:</span>
+                    <div className="p-2.5 rounded-lg bg-white dark:bg-[#151E2D] border border-slate-200 dark:border-[#29364A]">
+                      <span className="text-slate-600 dark:text-[#94A3B8]">Franchise Territory:</span>
                       <div className="font-bold text-slate-800 dark:text-slate-200">
                         {distributor?.territory || "Pune Metro"}
                       </div>
                     </div>
-                    <div className="p-2.5 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
-                      <span className="text-slate-600 dark:text-slate-300">Tenant Isolation:</span>
+                    <div className="p-2.5 rounded-lg bg-white dark:bg-[#151E2D] border border-slate-200 dark:border-[#29364A]">
+                      <span className="text-slate-600 dark:text-[#94A3B8]">Tenant Isolation:</span>
                       <div className="font-bold text-emerald-600">STRICTLY ISOLATED</div>
                     </div>
                   </div>
                 </div>
 
-                <p className="text-xs text-slate-600 dark:text-slate-300">
+                <p className="text-xs text-slate-600 dark:text-[#94A3B8]">
                   Per the platform security specification, distributors cannot change or reassign ownership to other partners or access non-assigned records.
                 </p>
               </div>
@@ -1434,136 +1434,136 @@ export default function NewCandidateWizardPage() {
             {/* Step 12: Review & Submit */}
             {currentStep === 12 && (
               <div className="space-y-4">
-                <div className="border-b border-slate-100 dark:border-slate-800 pb-3">
-                  <h3 className="text-base font-bold text-slate-900 dark:text-white">
+                <div className="border-b border-slate-100 dark:border-[#29364A] pb-3">
+                  <h3 className="text-base font-bold text-slate-900 dark:text-[#F8FAFC]">
                     Step 12: Comprehensive Review & Confirmation
                   </h3>
-                  <p className="text-xs text-slate-600 dark:text-slate-300">
+                  <p className="text-xs text-slate-600 dark:text-[#94A3B8]">
                     Verify all candidate parameters before generating the official onboarding record.
                   </p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-                  <div className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 space-y-2">
-                    <div className="flex justify-between items-center font-bold text-slate-900 dark:text-white pb-1 border-b border-slate-100 dark:border-slate-800">
+                  <div className="p-3.5 rounded-xl border border-slate-200 dark:border-[#29364A] space-y-2">
+                    <div className="flex justify-between items-center font-bold text-slate-900 dark:text-[#F8FAFC] pb-1 border-b border-slate-100 dark:border-[#29364A]">
                       <span>Candidate Identity</span>
                       <button
                         onClick={() => setCurrentStep(2)}
-                        className="text-[10px] text-[#2087FE] hover:underline"
+                        className="text-[10px] text-[#1D61E0] hover:underline"
                       >
                         Edit
                       </button>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-slate-600 dark:text-slate-300">Name:</span>
+                      <span className="text-slate-600 dark:text-[#94A3B8]">Name:</span>
                       <span className="font-bold">{formData.candidateName || "Not specified"}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-slate-600 dark:text-slate-300">Marathi:</span>
+                      <span className="text-slate-600 dark:text-[#94A3B8]">Marathi:</span>
                       <span>{formData.candidateMarathiName || "Not specified"}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-slate-600 dark:text-slate-300">Mobile:</span>
+                      <span className="text-slate-600 dark:text-[#94A3B8]">Mobile:</span>
                       <span className="font-mono">{formData.mobile || "Not specified"}</span>
                     </div>
                   </div>
 
-                  <div className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 space-y-2">
-                    <div className="flex justify-between items-center font-bold text-slate-900 dark:text-white pb-1 border-b border-slate-100 dark:border-slate-800">
+                  <div className="p-3.5 rounded-xl border border-slate-200 dark:border-[#29364A] space-y-2">
+                    <div className="flex justify-between items-center font-bold text-slate-900 dark:text-[#F8FAFC] pb-1 border-b border-slate-100 dark:border-[#29364A]">
                       <span>Electoral Geography</span>
                       <button
                         onClick={() => setCurrentStep(5)}
-                        className="text-[10px] text-[#2087FE] hover:underline"
+                        className="text-[10px] text-[#1D61E0] hover:underline"
                       >
                         Edit
                       </button>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-slate-600 dark:text-slate-300">Election:</span>
+                      <span className="text-slate-600 dark:text-[#94A3B8]">Election:</span>
                       <span className="font-bold">{formData.electionType}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-slate-600 dark:text-slate-300">Constituency:</span>
+                      <span className="text-slate-600 dark:text-[#94A3B8]">Constituency:</span>
                       <span>{formData.acName || formData.pcName || formData.wardNumber}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-slate-600 dark:text-slate-300">District:</span>
+                      <span className="text-slate-600 dark:text-[#94A3B8]">District:</span>
                       <span>{formData.district}</span>
                     </div>
                   </div>
 
-                  <div className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 space-y-2">
-                    <div className="flex justify-between items-center font-bold text-slate-900 dark:text-white pb-1 border-b border-slate-100 dark:border-slate-800">
+                  <div className="p-3.5 rounded-xl border border-slate-200 dark:border-[#29364A] space-y-2">
+                    <div className="flex justify-between items-center font-bold text-slate-900 dark:text-[#F8FAFC] pb-1 border-b border-slate-100 dark:border-[#29364A]">
                       <span>Subscription & Plan</span>
                       <button
                         onClick={() => setCurrentStep(8)}
-                        className="text-[10px] text-[#2087FE] hover:underline"
+                        className="text-[10px] text-[#1D61E0] hover:underline"
                       >
                         Edit
                       </button>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-slate-600 dark:text-slate-300">Package:</span>
-                      <span className="font-bold text-[#2087FE]">{formData.requestedPlanTier || formData.requestedPlan}</span>
+                      <span className="text-slate-600 dark:text-[#94A3B8]">Package:</span>
+                      <span className="font-bold text-[#1D61E0]">{formData.requestedPlanTier || formData.requestedPlan}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-slate-600 dark:text-slate-300">Validity:</span>
-                      <span className="font-medium text-slate-700 dark:text-slate-300">{formData.requestedDuration}</span>
+                      <span className="text-slate-600 dark:text-[#94A3B8]">Validity:</span>
+                      <span className="font-medium text-slate-700 dark:text-[#94A3B8]">{formData.requestedDuration}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-slate-600 dark:text-slate-300">Est. Super Admin Quote:</span>
+                      <span className="text-slate-600 dark:text-[#94A3B8]">Est. Super Admin Quote:</span>
                       <span className="font-bold">{formData.estimatedPrice}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-slate-600 dark:text-slate-300">Account Type:</span>
+                      <span className="text-slate-600 dark:text-[#94A3B8]">Account Type:</span>
                       <span className="font-bold">{formData.accountType}</span>
                     </div>
                   </div>
 
-                  <div className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 space-y-2">
-                    <div className="flex justify-between items-center font-bold text-slate-900 dark:text-white pb-1 border-b border-slate-100 dark:border-slate-800">
+                  <div className="p-3.5 rounded-xl border border-slate-200 dark:border-[#29364A] space-y-2">
+                    <div className="flex justify-between items-center font-bold text-slate-900 dark:text-[#F8FAFC] pb-1 border-b border-slate-100 dark:border-[#29364A]">
                       <span>Franchise Binding</span>
                       <span className="text-[10px] text-emerald-600 font-bold">Locked</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-slate-600 dark:text-slate-300">Distributor ID:</span>
-                      <span className="font-mono font-bold text-[#2087FE]">
+                      <span className="text-slate-600 dark:text-[#94A3B8]">Distributor ID:</span>
+                      <span className="font-mono font-bold text-[#1D61E0]">
                         {distributor?.distributorCode || "DIS-101"}
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-slate-600 dark:text-slate-300">Territory:</span>
+                      <span className="text-slate-600 dark:text-[#94A3B8]">Territory:</span>
                       <span>{distributor?.territory || "Pune Metro"}</span>
                     </div>
                   </div>
 
                   {/* Electoral Data Segregation Card */}
-                  <div className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 space-y-2 md:col-span-2 bg-blue-50/40 dark:bg-blue-950/20">
-                    <div className="flex justify-between items-center font-bold text-slate-900 dark:text-white pb-1 border-b border-slate-100 dark:border-slate-800">
+                  <div className="p-3.5 rounded-xl border border-slate-200 dark:border-[#29364A] space-y-2 md:col-span-2 bg-blue-50/40 dark:bg-blue-950/20">
+                    <div className="flex justify-between items-center font-bold text-slate-900 dark:text-[#F8FAFC] pb-1 border-b border-slate-100 dark:border-[#29364A]">
                       <span className="flex items-center gap-1.5">
-                        <Database className="w-3.5 h-3.5 text-[#2087FE]" />
+                        <Database className="w-3.5 h-3.5 text-[#1D61E0]" />
                         <span>Election Data Segregation & Boundaries</span>
                       </span>
                       <button
                         onClick={() => setCurrentStep(5)}
-                        className="text-[10px] text-[#2087FE] hover:underline"
+                        className="text-[10px] text-[#1D61E0] hover:underline"
                       >
                         Edit
                       </button>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
                       <div>
-                        <span className="text-slate-600 dark:text-slate-300 block">Partition Key:</span>
-                        <span className="font-mono font-bold text-[#2087FE]">{formData.constituencyPartitionKey}</span>
+                        <span className="text-slate-600 dark:text-[#94A3B8] block">Partition Key:</span>
+                        <span className="font-mono font-bold text-[#1D61E0]">{formData.constituencyPartitionKey}</span>
                       </div>
                       <div>
-                        <span className="text-slate-600 dark:text-slate-300 block">Assigned Booth Range:</span>
+                        <span className="text-slate-600 dark:text-[#94A3B8] block">Assigned Booth Range:</span>
                         <span className="font-bold">
                           Booth #{formData.boothStart} â€“ #{formData.boothEnd} ({formData.boothEnd - formData.boothStart + 1} Booths)
                         </span>
                       </div>
                       <div>
-                        <span className="text-slate-600 dark:text-slate-300 block">Isolation Status:</span>
+                        <span className="text-slate-600 dark:text-[#94A3B8] block">Isolation Status:</span>
                         <span className="font-bold text-emerald-600 inline-flex items-center gap-1">
                           <ShieldCheck className="w-3.5 h-3.5" />
                           ENFORCED
@@ -1573,7 +1573,7 @@ export default function NewCandidateWizardPage() {
                     <div className="pt-1 flex flex-wrap gap-1.5">
                       <span className="text-[10px] text-slate-500 font-medium">Applied Wings:</span>
                       {formData.campaignCriteria.map((c, i) => (
-                        <span key={i} className="text-[10px] px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900/60 text-[#2087FE] font-medium">
+                        <span key={i} className="text-[10px] px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900/60 text-[#1D61E0] font-medium">
                           {c}
                         </span>
                       ))}
@@ -1581,14 +1581,14 @@ export default function NewCandidateWizardPage() {
                   </div>
                 </div>
 
-                <label className="flex items-start gap-3 p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 cursor-pointer">
+                <label className="flex items-start gap-3 p-4 rounded-xl bg-slate-50 dark:bg-[#0B101A] border border-slate-200 dark:border-[#29364A] cursor-pointer">
                   <input
                     type="checkbox"
                     checked={formData.agreedToTerms}
                     onChange={(e) => updateField("agreedToTerms", e.target.checked)}
-                    className="w-4 h-4 rounded text-[#2087FE] focus:ring-[#2087FE] mt-0.5"
+                    className="w-4 h-4 rounded text-[#1D61E0] focus:ring-[#1D61E0] mt-0.5"
                   />
-                  <div className="text-xs text-slate-700 dark:text-slate-300">
+                  <div className="text-xs text-slate-700 dark:text-[#94A3B8]">
                     <span className="font-bold">Distributor Compliance Affirmation:</span> I certify that this candidate is within my assigned franchise geographical boundary and that all candidate data adheres to election commission regulations.
                   </div>
                 </label>
@@ -1597,22 +1597,22 @@ export default function NewCandidateWizardPage() {
           </div>
 
           {/* Stepper Navigation Footer Buttons */}
-          <div className="mt-8 pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+          <div className="mt-8 pt-4 border-t border-slate-100 dark:border-[#29364A] flex items-center justify-between">
             <button
               type="button"
               onClick={handlePrev}
               disabled={currentStep === 1}
               className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold border transition ${
                 currentStep === 1
-                  ? "opacity-40 cursor-not-allowed border-slate-200 dark:border-slate-800"
-                  : "border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200"
+                  ? "opacity-40 cursor-not-allowed border-slate-200 dark:border-[#29364A]"
+                  : "border-slate-200 dark:border-[#29364A] hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200"
               }`}
             >
               <ChevronLeft className="w-4 h-4" />
               <span>Previous</span>
             </button>
 
-            <div className="text-xs text-slate-600 dark:text-slate-300 font-medium">
+            <div className="text-xs text-slate-600 dark:text-[#94A3B8] font-medium">
               Step {currentStep} of 12
             </div>
 
@@ -1620,7 +1620,7 @@ export default function NewCandidateWizardPage() {
               <button
                 type="button"
                 onClick={handleNext}
-                className="flex items-center gap-1.5 px-5 py-2 rounded-xl text-xs font-bold bg-[#2087FE] hover:bg-blue-600 text-white shadow-premium-xs transition"
+                className="flex items-center gap-1.5 px-5 py-2 rounded-xl text-xs font-bold bg-[#1D61E0] hover:bg-blue-600 text-white shadow-premium-xs transition"
               >
                 <span>Continue</span>
                 <ChevronRight className="w-4 h-4" />
@@ -1632,7 +1632,7 @@ export default function NewCandidateWizardPage() {
                 onClick={handleSubmit}
                 className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-xs font-bold transition shadow-premium-sm ${
                   formData.agreedToTerms && !isSubmitting
-                    ? "bg-[#2087FE] hover:bg-blue-600 text-white"
+                    ? "bg-[#1D61E0] hover:bg-blue-600 text-white"
                     : "bg-slate-300 dark:bg-slate-700 text-slate-500 cursor-not-allowed"
                 }`}
               >

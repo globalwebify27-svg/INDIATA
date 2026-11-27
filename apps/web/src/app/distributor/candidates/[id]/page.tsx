@@ -76,7 +76,7 @@ export default function CandidateControlPanelPage() {
         <div className="flex items-center justify-between">
           <Link
             href="/distributor/candidates"
-            className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition"
+            className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-600 dark:text-[#94A3B8] hover:text-slate-900 dark:hover:text-white transition"
           >
             <ArrowLeft className="w-4 h-4" />
             <span>Back to Candidates Directory</span>
@@ -108,7 +108,7 @@ export default function CandidateControlPanelPage() {
         </div>
 
         {/* HERO PROFILE & BRANDING BANNER (Cover Banner Background + Profile Photo) */}
-        <div className="relative rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-premium-sm bg-white dark:bg-slate-900">
+        <div className="relative rounded-3xl overflow-hidden border border-slate-200 dark:border-[#29364A] shadow-premium-sm bg-white dark:bg-[#151E2D]">
           {/* Cover Banner Image with Gradient Overlay */}
           <div className="h-44 sm:h-52 w-full relative bg-slate-900 overflow-hidden">
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -135,7 +135,7 @@ export default function CandidateControlPanelPage() {
             {/* Left: Avatar & Candidate Names */}
             <div className="flex items-end gap-4.5">
               {/* Profile Photo */}
-              <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-3xl bg-white dark:bg-slate-900 p-1.5 shadow-2xl ring-4 ring-[#2087FE] shrink-0 overflow-hidden">
+              <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-3xl bg-white dark:bg-[#151E2D] p-1.5 shadow-2xl ring-4 ring-[#1D61E0] shrink-0 overflow-hidden">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={candidate.images.profilePhotoUrl}
@@ -147,10 +147,10 @@ export default function CandidateControlPanelPage() {
               {/* Names & Badges */}
               <div className="space-y-1 pb-1">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">
+                  <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-[#F8FAFC]">
                     {candidate.name}
                   </h2>
-                  <span className="text-xs font-bold px-2.5 py-0.5 rounded-lg bg-blue-50 dark:bg-blue-950 text-[#2087FE] border border-blue-200 dark:border-blue-900 flex items-center gap-1.5">
+                  <span className="text-xs font-bold px-2.5 py-0.5 rounded-lg bg-blue-50 dark:bg-blue-950 text-[#1D61E0] border border-blue-200 dark:border-blue-900 flex items-center gap-1.5">
                     <div className="w-4 h-4 rounded bg-white p-0.5 shrink-0">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
@@ -167,8 +167,8 @@ export default function CandidateControlPanelPage() {
                   {candidate.marathiName} • {candidate.constituency}
                 </p>
 
-                <div className="flex flex-wrap items-center gap-3 text-xs text-slate-500 dark:text-slate-400 pt-1">
-                  <span className="flex items-center gap-1 font-mono font-bold text-slate-700 dark:text-slate-300">
+                <div className="flex flex-wrap items-center gap-3 text-xs text-slate-500 dark:text-[#94A3B8] pt-1">
+                  <span className="flex items-center gap-1 font-mono font-bold text-slate-700 dark:text-[#94A3B8]">
                     <Phone className="w-3.5 h-3.5 text-slate-400" />
                     <span>{candidate.mobile}</span>
                   </span>
@@ -191,7 +191,7 @@ export default function CandidateControlPanelPage() {
               <button
                 type="button"
                 onClick={() => setIsEditModalOpen(true)}
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 shadow-sm transition cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-white dark:bg-[#1B2638] text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-[#29364A] shadow-sm transition cursor-pointer"
               >
                 <Edit className="w-3.5 h-3.5 text-blue-600" />
                 <span>Edit Profile</span>
@@ -218,7 +218,7 @@ export default function CandidateControlPanelPage() {
                 className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold transition shadow-premium-xs cursor-pointer ${
                   activeTab === "app_preview"
                     ? "bg-blue-600 text-white"
-                    : "bg-[#2087FE] hover:bg-blue-600 text-white"
+                    : "bg-[#1D61E0] hover:bg-blue-600 text-white"
                 }`}
               >
                 <Smartphone className="w-3.5 h-3.5" />
@@ -229,7 +229,7 @@ export default function CandidateControlPanelPage() {
         </div>
 
         {/* Tab Navigation Bar */}
-        <div className="flex items-center gap-1 border-b border-slate-200 dark:border-slate-800 text-xs font-bold overflow-x-auto">
+        <div className="flex items-center gap-1 border-b border-slate-200 dark:border-[#29364A] text-xs font-bold overflow-x-auto">
           {[
             { id: "profile", label: "Candidate 360° Profile", icon: Users },
             { id: "images", label: "Major Images & Assets (6)", icon: ImageIcon, badge: "Editable" },
@@ -252,7 +252,7 @@ export default function CandidateControlPanelPage() {
                 onClick={() => setActiveTab(tab.id as any)}
                 className={`flex items-center gap-2 px-4 py-3 border-b-2 transition -mb-px whitespace-nowrap cursor-pointer ${
                   isActive
-                    ? "border-[#2087FE] text-[#2087FE]"
+                    ? "border-[#1D61E0] text-[#1D61E0]"
                     : "border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200"
                 }`}
               >
@@ -263,7 +263,7 @@ export default function CandidateControlPanelPage() {
                     className={`text-[9.5px] px-1.5 py-0.2 rounded-full font-bold ${
                       isActive
                         ? "bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300"
-                        : "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400"
+                        : "bg-slate-100 text-slate-600 dark:bg-[#1B2638] dark:text-[#94A3B8]"
                     }`}
                   >
                     {tab.badge}
@@ -284,7 +284,7 @@ export default function CandidateControlPanelPage() {
             {/* Quick Action Bar inside Profile */}
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                <h3 className="text-sm font-bold text-slate-900 dark:text-[#F8FAFC]">
                   Central Candidate Profile Information
                 </h3>
                 <p className="text-xs text-slate-500 mt-0.5">
@@ -295,7 +295,7 @@ export default function CandidateControlPanelPage() {
               <button
                 type="button"
                 onClick={() => setIsEditModalOpen(true)}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-[#2087FE] hover:bg-blue-600 text-white shadow-premium-xs transition cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-[#1D61E0] hover:bg-blue-600 text-white shadow-premium-xs transition cursor-pointer"
               >
                 <Edit className="w-3.5 h-3.5" />
                 <span>Edit Information</span>
@@ -305,77 +305,77 @@ export default function CandidateControlPanelPage() {
             {/* Profile Information Cards Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5 text-xs">
               {/* 1. Personal Information */}
-              <div className="bg-white dark:bg-slate-900 rounded-3xl p-5 border border-slate-200 dark:border-slate-800 shadow-premium-xs space-y-3">
-                <h4 className="font-bold text-xs uppercase tracking-wider text-slate-500 flex items-center gap-2 border-b border-slate-100 dark:border-slate-800 pb-2">
+              <div className="bg-white dark:bg-[#151E2D] rounded-3xl p-5 border border-slate-200 dark:border-[#29364A] shadow-premium-xs space-y-3">
+                <h4 className="font-bold text-xs uppercase tracking-wider text-slate-500 flex items-center gap-2 border-b border-slate-100 dark:border-[#29364A] pb-2">
                   <Users className="w-4 h-4 text-blue-600" />
                   <span>1. Personal Information</span>
                 </h4>
                 <div className="space-y-2">
-                  <div className="flex justify-between py-1 border-b border-slate-100 dark:border-slate-800">
+                  <div className="flex justify-between py-1 border-b border-slate-100 dark:border-[#29364A]">
                     <span className="text-slate-500">Official English Name:</span>
-                    <strong className="text-slate-900 dark:text-white font-bold">{candidate.name}</strong>
+                    <strong className="text-slate-900 dark:text-[#F8FAFC] font-bold">{candidate.name}</strong>
                   </div>
-                  <div className="flex justify-between py-1 border-b border-slate-100 dark:border-slate-800">
+                  <div className="flex justify-between py-1 border-b border-slate-100 dark:border-[#29364A]">
                     <span className="text-slate-500">Marathi / Devnagari Name:</span>
-                    <strong className="text-slate-900 dark:text-white font-marathi font-bold">{candidate.marathiName}</strong>
+                    <strong className="text-slate-900 dark:text-[#F8FAFC] font-marathi font-bold">{candidate.marathiName}</strong>
                   </div>
-                  <div className="flex justify-between py-1 border-b border-slate-100 dark:border-slate-800">
+                  <div className="flex justify-between py-1 border-b border-slate-100 dark:border-[#29364A]">
                     <span className="text-slate-500">Gender / Age:</span>
-                    <span className="text-slate-700 dark:text-slate-300 font-semibold">{candidate.gender} • {candidate.age || 48} Years</span>
+                    <span className="text-slate-700 dark:text-[#94A3B8] font-semibold">{candidate.gender} • {candidate.age || 48} Years</span>
                   </div>
-                  <div className="flex justify-between py-1 border-b border-slate-100 dark:border-slate-800">
+                  <div className="flex justify-between py-1 border-b border-slate-100 dark:border-[#29364A]">
                     <span className="text-slate-500">Education:</span>
-                    <span className="text-slate-700 dark:text-slate-300">{candidate.education || "Post Graduate"}</span>
+                    <span className="text-slate-700 dark:text-[#94A3B8]">{candidate.education || "Post Graduate"}</span>
                   </div>
                   <div className="flex justify-between py-1">
                     <span className="text-slate-500">Profession / Occupation:</span>
-                    <span className="text-slate-700 dark:text-slate-300">{candidate.occupation || "Social Reformer"}</span>
+                    <span className="text-slate-700 dark:text-[#94A3B8]">{candidate.occupation || "Social Reformer"}</span>
                   </div>
                 </div>
               </div>
 
               {/* 2. Contact & Helpline Information */}
-              <div className="bg-white dark:bg-slate-900 rounded-3xl p-5 border border-slate-200 dark:border-slate-800 shadow-premium-xs space-y-3">
-                <h4 className="font-bold text-xs uppercase tracking-wider text-slate-500 flex items-center gap-2 border-b border-slate-100 dark:border-slate-800 pb-2">
+              <div className="bg-white dark:bg-[#151E2D] rounded-3xl p-5 border border-slate-200 dark:border-[#29364A] shadow-premium-xs space-y-3">
+                <h4 className="font-bold text-xs uppercase tracking-wider text-slate-500 flex items-center gap-2 border-b border-slate-100 dark:border-[#29364A] pb-2">
                   <Phone className="w-4 h-4 text-emerald-600" />
                   <span>2. Contact &amp; Helpline</span>
                 </h4>
                 <div className="space-y-2">
-                  <div className="flex justify-between py-1 border-b border-slate-100 dark:border-slate-800">
+                  <div className="flex justify-between py-1 border-b border-slate-100 dark:border-[#29364A]">
                     <span className="text-slate-500">Direct Contact Mobile:</span>
-                    <strong className="font-mono text-slate-900 dark:text-white font-bold">{candidate.mobile}</strong>
+                    <strong className="font-mono text-slate-900 dark:text-[#F8FAFC] font-bold">{candidate.mobile}</strong>
                   </div>
-                  <div className="flex justify-between py-1 border-b border-slate-100 dark:border-slate-800">
+                  <div className="flex justify-between py-1 border-b border-slate-100 dark:border-[#29364A]">
                     <span className="text-slate-500">Campaign Email:</span>
                     <span className="text-blue-600 font-mono">{candidate.email}</span>
                   </div>
-                  <div className="flex justify-between py-1 border-b border-slate-100 dark:border-slate-800">
+                  <div className="flex justify-between py-1 border-b border-slate-100 dark:border-[#29364A]">
                     <span className="text-slate-500">WhatsApp Citizen Helpline:</span>
                     <span className="font-mono text-emerald-600 font-bold">{candidate.whatsappHelpline}</span>
                   </div>
                   <div className="flex justify-between py-1">
                     <span className="text-slate-500">Office Phone:</span>
-                    <span className="font-mono text-slate-700 dark:text-slate-300">{candidate.officePhone || "020-25448899"}</span>
+                    <span className="font-mono text-slate-700 dark:text-[#94A3B8]">{candidate.officePhone || "020-25448899"}</span>
                   </div>
                 </div>
               </div>
 
               {/* 3. Political & Party Affiliation */}
-              <div className="bg-white dark:bg-slate-900 rounded-3xl p-5 border border-slate-200 dark:border-slate-800 shadow-premium-xs space-y-3">
-                <h4 className="font-bold text-xs uppercase tracking-wider text-slate-500 flex items-center gap-2 border-b border-slate-100 dark:border-slate-800 pb-2">
+              <div className="bg-white dark:bg-[#151E2D] rounded-3xl p-5 border border-slate-200 dark:border-[#29364A] shadow-premium-xs space-y-3">
+                <h4 className="font-bold text-xs uppercase tracking-wider text-slate-500 flex items-center gap-2 border-b border-slate-100 dark:border-[#29364A] pb-2">
                   <Building className="w-4 h-4 text-purple-600" />
                   <span>3. Political Party &amp; Symbol</span>
                 </h4>
                 <div className="space-y-2">
-                  <div className="flex justify-between py-1 border-b border-slate-100 dark:border-slate-800">
+                  <div className="flex justify-between py-1 border-b border-slate-100 dark:border-[#29364A]">
                     <span className="text-slate-500">Party Name:</span>
-                    <strong className="text-slate-900 dark:text-white font-bold">{candidate.party}</strong>
+                    <strong className="text-slate-900 dark:text-[#F8FAFC] font-bold">{candidate.party}</strong>
                   </div>
-                  <div className="flex justify-between py-1 border-b border-slate-100 dark:border-slate-800">
+                  <div className="flex justify-between py-1 border-b border-slate-100 dark:border-[#29364A]">
                     <span className="text-slate-500">Party Acronym:</span>
                     <span className="font-mono font-bold text-blue-600">{candidate.partyAcronym}</span>
                   </div>
-                  <div className="flex justify-between items-center py-1 border-b border-slate-100 dark:border-slate-800">
+                  <div className="flex justify-between items-center py-1 border-b border-slate-100 dark:border-[#29364A]">
                     <span className="text-slate-500">ECI Election Symbol:</span>
                     <div className="flex items-center gap-1.5">
                       <div className="w-6 h-6 rounded bg-white p-0.5 border border-slate-200">
@@ -391,7 +391,7 @@ export default function CandidateControlPanelPage() {
                   </div>
                   <div className="flex justify-between py-1">
                     <span className="text-slate-500">Candidate Role:</span>
-                    <span className="font-semibold text-slate-700 dark:text-slate-300">
+                    <span className="font-semibold text-slate-700 dark:text-[#94A3B8]">
                       {candidate.candidateType === "MAIN" ? "Lead Principal Candidate" : candidate.candidateType}
                     </span>
                   </div>
@@ -399,53 +399,53 @@ export default function CandidateControlPanelPage() {
               </div>
 
               {/* 4. Election Information */}
-              <div className="bg-white dark:bg-slate-900 rounded-3xl p-5 border border-slate-200 dark:border-slate-800 shadow-premium-xs space-y-3">
-                <h4 className="font-bold text-xs uppercase tracking-wider text-slate-500 flex items-center gap-2 border-b border-slate-100 dark:border-slate-800 pb-2">
+              <div className="bg-white dark:bg-[#151E2D] rounded-3xl p-5 border border-slate-200 dark:border-[#29364A] shadow-premium-xs space-y-3">
+                <h4 className="font-bold text-xs uppercase tracking-wider text-slate-500 flex items-center gap-2 border-b border-slate-100 dark:border-[#29364A] pb-2">
                   <Vote className="w-4 h-4 text-blue-600" />
                   <span>4. Election &amp; Schedule</span>
                 </h4>
                 <div className="space-y-2">
-                  <div className="flex justify-between py-1 border-b border-slate-100 dark:border-slate-800">
+                  <div className="flex justify-between py-1 border-b border-slate-100 dark:border-[#29364A]">
                     <span className="text-slate-500">Election Type:</span>
-                    <span className="font-bold text-slate-900 dark:text-white">{candidate.electionType}</span>
+                    <span className="font-bold text-slate-900 dark:text-[#F8FAFC]">{candidate.electionType}</span>
                   </div>
-                  <div className="flex justify-between py-1 border-b border-slate-100 dark:border-slate-800">
+                  <div className="flex justify-between py-1 border-b border-slate-100 dark:border-[#29364A]">
                     <span className="text-slate-500">Seat Category:</span>
-                    <span className="font-semibold text-slate-700 dark:text-slate-300">{candidate.seatCategory || "GENERAL"}</span>
+                    <span className="font-semibold text-slate-700 dark:text-[#94A3B8]">{candidate.seatCategory || "GENERAL"}</span>
                   </div>
-                  <div className="flex justify-between py-1 border-b border-slate-100 dark:border-slate-800">
+                  <div className="flex justify-between py-1 border-b border-slate-100 dark:border-[#29364A]">
                     <span className="text-slate-500">Polling Date:</span>
                     <strong className="text-emerald-600 dark:text-emerald-400 font-bold">{candidate.pollingDate || "20 Nov 2026"}</strong>
                   </div>
                   <div className="flex justify-between py-1">
                     <span className="text-slate-500">Election Year:</span>
-                    <span className="font-mono text-slate-700 dark:text-slate-300">{candidate.electionYear || "2026"}</span>
+                    <span className="font-mono text-slate-700 dark:text-[#94A3B8]">{candidate.electionYear || "2026"}</span>
                   </div>
                 </div>
               </div>
 
               {/* 5. Constituency Geography */}
-              <div className="bg-white dark:bg-slate-900 rounded-3xl p-5 border border-slate-200 dark:border-slate-800 shadow-premium-xs space-y-3">
-                <h4 className="font-bold text-xs uppercase tracking-wider text-slate-500 flex items-center gap-2 border-b border-slate-100 dark:border-slate-800 pb-2">
+              <div className="bg-white dark:bg-[#151E2D] rounded-3xl p-5 border border-slate-200 dark:border-[#29364A] shadow-premium-xs space-y-3">
+                <h4 className="font-bold text-xs uppercase tracking-wider text-slate-500 flex items-center gap-2 border-b border-slate-100 dark:border-[#29364A] pb-2">
                   <MapPin className="w-4 h-4 text-rose-600" />
                   <span>5. Constituency Geography</span>
                 </h4>
                 <div className="space-y-2">
-                  <div className="flex justify-between py-1 border-b border-slate-100 dark:border-slate-800">
+                  <div className="flex justify-between py-1 border-b border-slate-100 dark:border-[#29364A]">
                     <span className="text-slate-500">Constituency:</span>
-                    <strong className="text-slate-900 dark:text-white font-bold">{candidate.constituency}</strong>
+                    <strong className="text-slate-900 dark:text-[#F8FAFC] font-bold">{candidate.constituency}</strong>
                   </div>
-                  <div className="flex justify-between py-1 border-b border-slate-100 dark:border-slate-800">
+                  <div className="flex justify-between py-1 border-b border-slate-100 dark:border-[#29364A]">
                     <span className="text-slate-500">District &amp; State:</span>
-                    <span className="text-slate-700 dark:text-slate-300">{candidate.district}, {candidate.state}</span>
+                    <span className="text-slate-700 dark:text-[#94A3B8]">{candidate.district}, {candidate.state}</span>
                   </div>
-                  <div className="flex justify-between py-1 border-b border-slate-100 dark:border-slate-800">
+                  <div className="flex justify-between py-1 border-b border-slate-100 dark:border-[#29364A]">
                     <span className="text-slate-500">Mapped Polling Booths:</span>
-                    <span className="font-bold text-slate-900 dark:text-white">{candidate.totalBooths || 284} Polling Stations</span>
+                    <span className="font-bold text-slate-900 dark:text-[#F8FAFC]">{candidate.totalBooths || 284} Polling Stations</span>
                   </div>
                   <div className="flex justify-between py-1">
                     <span className="text-slate-500">Total Registered Electors:</span>
-                    <span className="font-mono font-bold text-slate-900 dark:text-white">
+                    <span className="font-mono font-bold text-slate-900 dark:text-[#F8FAFC]">
                       {candidate.totalVoters ? candidate.totalVoters.toLocaleString() : "342,150"}
                     </span>
                   </div>
@@ -453,19 +453,19 @@ export default function CandidateControlPanelPage() {
               </div>
 
               {/* 6. Office Address & Channels */}
-              <div className="bg-white dark:bg-slate-900 rounded-3xl p-5 border border-slate-200 dark:border-slate-800 shadow-premium-xs space-y-3">
-                <h4 className="font-bold text-xs uppercase tracking-wider text-slate-500 flex items-center gap-2 border-b border-slate-100 dark:border-slate-800 pb-2">
+              <div className="bg-white dark:bg-[#151E2D] rounded-3xl p-5 border border-slate-200 dark:border-[#29364A] shadow-premium-xs space-y-3">
+                <h4 className="font-bold text-xs uppercase tracking-wider text-slate-500 flex items-center gap-2 border-b border-slate-100 dark:border-[#29364A] pb-2">
                   <Sparkles className="w-4 h-4 text-amber-500" />
                   <span>6. Campaign Office &amp; Slogan</span>
                 </h4>
                 <div className="space-y-2">
-                  <div className="py-1 border-b border-slate-100 dark:border-slate-800">
+                  <div className="py-1 border-b border-slate-100 dark:border-[#29364A]">
                     <span className="text-slate-500 block mb-0.5">Campaign Head Office Address:</span>
                     <p className="text-slate-800 dark:text-slate-200 font-medium">
                       {candidate.officeAddress}, {candidate.city} - {candidate.pincode}
                     </p>
                   </div>
-                  <div className="py-1 border-b border-slate-100 dark:border-slate-800">
+                  <div className="py-1 border-b border-slate-100 dark:border-[#29364A]">
                     <span className="text-slate-500 block mb-0.5">Campaign Slogan:</span>
                     <p className="text-amber-600 dark:text-amber-400 font-marathi font-bold">
                       &ldquo;{candidate.slogan}&rdquo;
@@ -503,17 +503,17 @@ export default function CandidateControlPanelPage() {
 
         {/* TAB 4: USERS */}
         {activeTab === "users" && (
-          <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-premium-xs space-y-4">
+          <div className="bg-white dark:bg-[#151E2D] rounded-3xl p-6 border border-slate-200 dark:border-[#29364A] shadow-premium-xs space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                <h3 className="text-sm font-bold text-slate-900 dark:text-[#F8FAFC]">
                   Campaign Staff &amp; War Room Seats
                 </h3>
                 <p className="text-xs text-slate-500 mt-0.5">
                   Users authorized to access this candidate&apos;s mobile and desktop portal
                 </p>
               </div>
-              <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-blue-50 text-[#2087FE]">
+              <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-blue-50 text-[#1D61E0]">
                 4 of 10 Seats Used
               </span>
             </div>
@@ -527,7 +527,7 @@ export default function CandidateControlPanelPage() {
               ].map((user, idx) => (
                 <div key={idx} className="py-3 flex items-center justify-between">
                   <div>
-                    <div className="font-bold text-slate-900 dark:text-white">{user.name}</div>
+                    <div className="font-bold text-slate-900 dark:text-[#F8FAFC]">{user.name}</div>
                     <div className="text-[11px] text-slate-500">{user.role} • {user.mobile}</div>
                   </div>
                   <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-50 text-emerald-700">
@@ -541,9 +541,9 @@ export default function CandidateControlPanelPage() {
 
         {/* TAB 5: GEOGRAPHY & DATA SEGREGATION */}
         {activeTab === "geography" && (
-          <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-premium-xs space-y-6 text-xs">
+          <div className="bg-white dark:bg-[#151E2D] rounded-3xl p-6 border border-slate-200 dark:border-[#29364A] shadow-premium-xs space-y-6 text-xs">
             <div>
-              <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+              <h3 className="text-sm font-bold text-slate-900 dark:text-[#F8FAFC]">
                 Electoral Geography &amp; Territorial Mapping
               </h3>
               <p className="text-xs text-slate-500 mt-0.5">
@@ -552,29 +552,29 @@ export default function CandidateControlPanelPage() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-[#0B101A] border border-slate-200 dark:border-[#29364A]">
                 <span className="text-slate-400 block text-[10.5px]">Assembly Constituency</span>
-                <strong className="text-slate-900 dark:text-white text-sm block mt-0.5">{candidate.constituency}</strong>
+                <strong className="text-slate-900 dark:text-[#F8FAFC] text-sm block mt-0.5">{candidate.constituency}</strong>
               </div>
-              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-[#0B101A] border border-slate-200 dark:border-[#29364A]">
                 <span className="text-slate-400 block text-[10.5px]">Parent Parliamentary (PC)</span>
-                <strong className="text-slate-900 dark:text-white text-sm block mt-0.5">{candidate.pcName || "34 - Pune"}</strong>
+                <strong className="text-slate-900 dark:text-[#F8FAFC] text-sm block mt-0.5">{candidate.pcName || "34 - Pune"}</strong>
               </div>
-              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-[#0B101A] border border-slate-200 dark:border-[#29364A]">
                 <span className="text-slate-400 block text-[10.5px]">Mapped Booth Stations</span>
-                <strong className="text-slate-900 dark:text-white text-sm block mt-0.5">{candidate.totalBooths || 284} Polling Booths</strong>
+                <strong className="text-slate-900 dark:text-[#F8FAFC] text-sm block mt-0.5">{candidate.totalBooths || 284} Polling Booths</strong>
               </div>
             </div>
 
             {/* Electoral Data Partition & Segregation Boundary */}
-            <div className="p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 space-y-4">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 dark:border-slate-700 pb-3">
+            <div className="p-5 rounded-2xl bg-slate-50 dark:bg-[#0B101A] border border-slate-200 dark:border-[#29364A] space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 dark:border-[#29364A] pb-3">
                 <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-xl bg-[#2087FE] text-white flex items-center justify-center font-bold shrink-0">
+                  <div className="w-8 h-8 rounded-xl bg-[#1D61E0] text-white flex items-center justify-center font-bold shrink-0">
                     <Database className="w-4 h-4" />
                   </div>
                   <div>
-                    <h4 className="text-xs font-bold text-slate-900 dark:text-white">
+                    <h4 className="text-xs font-bold text-slate-900 dark:text-[#F8FAFC]">
                       Electoral Data Partition &amp; Segregation Boundary
                     </h4>
                     <p className="text-[11px] text-slate-500">
@@ -589,16 +589,16 @@ export default function CandidateControlPanelPage() {
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 text-xs">
-                <div className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                <div className="p-3 rounded-xl bg-white dark:bg-[#151E2D] border border-slate-200 dark:border-[#29364A]">
                   <span className="text-slate-500 text-[11px]">Constituency Partition Key</span>
-                  <div className="font-mono font-bold text-[#2087FE] text-sm mt-0.5">
+                  <div className="font-mono font-bold text-[#1D61E0] text-sm mt-0.5">
                     {candidate.dataPartitioning?.constituencyPartitionKey || "MH-AC214-KOTHRUD"}
                   </div>
                 </div>
 
-                <div className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                <div className="p-3 rounded-xl bg-white dark:bg-[#151E2D] border border-slate-200 dark:border-[#29364A]">
                   <span className="text-slate-500 text-[11px]">Assigned Booth Range</span>
-                  <div className="font-bold text-slate-900 dark:text-white text-sm mt-0.5">
+                  <div className="font-bold text-slate-900 dark:text-[#F8FAFC] text-sm mt-0.5">
                     Booth #{candidate.dataPartitioning?.boothStart || 1} – #{candidate.dataPartitioning?.boothEnd || 284}
                   </div>
                   <span className="text-[10px] text-emerald-600 font-bold">
@@ -606,9 +606,9 @@ export default function CandidateControlPanelPage() {
                   </span>
                 </div>
 
-                <div className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                <div className="p-3 rounded-xl bg-white dark:bg-[#151E2D] border border-slate-200 dark:border-[#29364A]">
                   <span className="text-slate-500 text-[11px]">Partitioning Strategy</span>
-                  <div className="font-bold text-slate-900 dark:text-white text-xs mt-0.5">
+                  <div className="font-bold text-slate-900 dark:text-[#F8FAFC] text-xs mt-0.5">
                     {candidate.dataPartitioning?.partitionStrategy === "FULL_CONSTITUENCY"
                       ? "Full Constituency Roll"
                       : candidate.dataPartitioning?.partitionStrategy === "CLUSTERED_BY_WARD"
@@ -617,9 +617,9 @@ export default function CandidateControlPanelPage() {
                   </div>
                 </div>
 
-                <div className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                <div className="p-3 rounded-xl bg-white dark:bg-[#151E2D] border border-slate-200 dark:border-[#29364A]">
                   <span className="text-slate-500 text-[11px]">Electoral Roll Cap</span>
-                  <div className="font-bold text-slate-900 dark:text-white text-sm mt-0.5">
+                  <div className="font-bold text-slate-900 dark:text-[#F8FAFC] text-sm mt-0.5">
                     {(candidate.dataPartitioning?.electoralRollCap || 342150).toLocaleString()}
                   </div>
                   <span className="text-[10px] text-slate-500">Max Voters Ingest</span>
@@ -627,7 +627,7 @@ export default function CandidateControlPanelPage() {
               </div>
 
               <div className="pt-1">
-                <span className="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-2">
+                <span className="text-xs font-bold text-slate-700 dark:text-[#94A3B8] block mb-2">
                   Designated Campaign Segments &amp; Access Wings:
                 </span>
                 <div className="flex flex-wrap gap-2">
@@ -640,7 +640,7 @@ export default function CandidateControlPanelPage() {
                   ).map((crit, cIdx) => (
                     <span
                       key={cIdx}
-                      className="px-2.5 py-1 rounded-xl text-xs font-medium bg-blue-100/70 dark:bg-blue-900/40 text-[#2087FE] border border-blue-200 dark:border-blue-800 flex items-center gap-1.5"
+                      className="px-2.5 py-1 rounded-xl text-xs font-medium bg-blue-100/70 dark:bg-blue-900/40 text-[#1D61E0] border border-blue-200 dark:border-blue-800 flex items-center gap-1.5"
                     >
                       <CheckCircle2 className="w-3.5 h-3.5 text-blue-500" />
                       <span>{crit}</span>
@@ -654,10 +654,10 @@ export default function CandidateControlPanelPage() {
 
         {/* TAB 6: SUBSCRIPTION */}
         {activeTab === "subscription" && (
-          <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-premium-xs space-y-4 text-xs">
+          <div className="bg-white dark:bg-[#151E2D] rounded-3xl p-6 border border-slate-200 dark:border-[#29364A] shadow-premium-xs space-y-4 text-xs">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                <h3 className="text-sm font-bold text-slate-900 dark:text-[#F8FAFC]">
                   Franchise Subscription &amp; Add-on Modules
                 </h3>
                 <p className="text-xs text-slate-500 mt-0.5">
@@ -678,18 +678,18 @@ export default function CandidateControlPanelPage() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 space-y-2">
+              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-[#0B101A] border border-slate-200 dark:border-[#29364A] space-y-2">
                 <span className="text-slate-400 block font-bold uppercase tracking-wider text-[10px]">
                   Subscription Status &amp; License
                 </span>
                 <div className="flex justify-between">
                   <span className="text-slate-500">Plan Code:</span>
-                  <span className="font-mono font-bold text-[#2087FE]">{candidate.subscriptionPlan}</span>
+                  <span className="font-mono font-bold text-[#1D61E0]">{candidate.subscriptionPlan}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-slate-500">Validity Period:</span>
                   <span className="font-medium text-slate-800 dark:text-slate-200 flex items-center gap-1">
-                    <Calendar className="w-3 h-3 text-[#2087FE]" />
+                    <Calendar className="w-3 h-3 text-[#1D61E0]" />
                     <span>
                       {candidate.subscriptionPlan.startsWith("ELECTION")
                         ? "Election End Date + 15 Days Grace Period"
@@ -711,11 +711,11 @@ export default function CandidateControlPanelPage() {
                 </div>
               </div>
 
-              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 space-y-2">
+              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-[#0B101A] border border-slate-200 dark:border-[#29364A] space-y-2">
                 <span className="text-slate-400 block font-bold uppercase tracking-wider text-[10px]">
                   Enabled Modules &amp; Entitlements
                 </span>
-                <div className="space-y-1.5 text-slate-700 dark:text-slate-300">
+                <div className="space-y-1.5 text-slate-700 dark:text-[#94A3B8]">
                   <div className="flex items-center gap-2">
                     <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
                     <span>Voter Roll PDF Generation &amp; Family Chits</span>
@@ -742,8 +742,8 @@ export default function CandidateControlPanelPage() {
 
         {/* TAB 7: ENQUIRIES */}
         {activeTab === "enquiries" && (
-          <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-premium-xs space-y-4 text-xs">
-            <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+          <div className="bg-white dark:bg-[#151E2D] rounded-3xl p-6 border border-slate-200 dark:border-[#29364A] shadow-premium-xs space-y-4 text-xs">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-[#F8FAFC]">
               Generated Service Enquiries ({candidateEnquiries.length})
             </h3>
             {candidateEnquiries.length === 0 ? (
@@ -753,11 +753,11 @@ export default function CandidateControlPanelPage() {
                 {candidateEnquiries.map((enq) => (
                   <div key={enq.id} className="py-3 flex items-center justify-between">
                     <div>
-                      <strong className="text-slate-900 dark:text-white block">{enq.serviceType}: {enq.requestedPackage}</strong>
+                      <strong className="text-slate-900 dark:text-[#F8FAFC] block">{enq.serviceType}: {enq.requestedPackage}</strong>
                       <span className="text-slate-400">{enq.enquiryNumber} • {enq.requestDate}</span>
                     </div>
                     <div className="text-right">
-                      <strong className="text-slate-900 dark:text-white block font-bold">{enq.amount}</strong>
+                      <strong className="text-slate-900 dark:text-[#F8FAFC] block font-bold">{enq.amount}</strong>
                       <span className="text-emerald-600 font-semibold">{enq.paymentStatus}</span>
                     </div>
                   </div>
