@@ -337,47 +337,47 @@ export function SubscriptionPlansView() {
   return (
     <div className="space-y-6 pb-16 animate-fade-in text-slate-800">
       {/* SECTION 1: HEADER & CONTEXT INFO CARD */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs">
+      <div className="bg-white dark:bg-[#151E2D] rounded-2xl border border-slate-200 dark:border-[#29364A] p-5 shadow-xs">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+              <span className="text-[10px] font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/60 px-2.5 py-0.5 rounded-full uppercase tracking-wider">
                 INDATA Portal
               </span>
-              <span className="text-slate-400 text-xs">/</span>
-              <span className="text-xs font-semibold text-slate-600">Subscription Plans</span>
+              <span className="text-slate-400 dark:text-slate-500 text-xs">/</span>
+              <span className="text-xs font-semibold text-slate-600 dark:text-[#94A3B8]">Subscription Plans</span>
             </div>
-            <h1 className="text-xl md:text-2xl font-black text-slate-900 tracking-tight">
+            <h1 className="text-xl md:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
               Subscription Plans
             </h1>
-            <p className="text-xs text-slate-500 mt-0.5">
+            <p className="text-xs text-slate-500 dark:text-[#94A3B8] mt-0.5">
               Choose the right INDATA module for your election and office management requirements.
             </p>
           </div>
 
           <div className="flex flex-wrap items-center gap-2.5">
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl border bg-slate-50 text-xs">
-              <span className="text-slate-500 font-medium">Status:</span>
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-[#29364A] bg-slate-50 dark:bg-[#1B2638] text-xs">
+              <span className="text-slate-500 dark:text-[#94A3B8] font-medium">Status:</span>
               {subscriptionStatus === "ACTIVE" && (
-                <span className="inline-flex items-center gap-1 font-bold text-blue-700 bg-blue-100/70 px-2 py-0.5 rounded-md">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-blue-600" />
+                <span className="inline-flex items-center gap-1 font-bold text-blue-700 dark:text-blue-300 bg-blue-100/70 dark:bg-blue-950/80 px-2 py-0.5 rounded-md dark:border dark:border-blue-800/60">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
                   Active Subscription
                 </span>
               )}
               {subscriptionStatus === "PENDING" && (
-                <span className="inline-flex items-center gap-1 font-bold text-amber-800 bg-amber-100/80 px-2 py-0.5 rounded-md">
-                  <Clock className="w-3.5 h-3.5 text-amber-600" />
+                <span className="inline-flex items-center gap-1 font-bold text-amber-800 dark:text-amber-300 bg-amber-100/80 dark:bg-amber-950/80 px-2 py-0.5 rounded-md dark:border dark:border-amber-800/60">
+                  <Clock className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
                   Subscription Pending
                 </span>
               )}
               {subscriptionStatus === "EXPIRED" && (
-                <span className="inline-flex items-center gap-1 font-bold text-rose-800 bg-rose-100/80 px-2 py-0.5 rounded-md">
-                  <AlertCircle className="w-3.5 h-3.5 text-rose-600" />
+                <span className="inline-flex items-center gap-1 font-bold text-rose-800 dark:text-rose-300 bg-rose-100/80 dark:bg-rose-950/80 px-2 py-0.5 rounded-md dark:border dark:border-rose-800/60">
+                  <AlertCircle className="w-3.5 h-3.5 text-rose-600 dark:text-rose-400" />
                   Subscription Expired
                 </span>
               )}
               {subscriptionStatus === "NO_REQUEST" && (
-                <span className="inline-flex items-center gap-1 font-bold text-slate-700 bg-slate-200 px-2 py-0.5 rounded-md">
+                <span className="inline-flex items-center gap-1 font-bold text-slate-700 dark:text-slate-300 bg-slate-200 dark:bg-slate-800 px-2 py-0.5 rounded-md dark:border dark:border-slate-700">
                   No Active Plan
                 </span>
               )}
@@ -385,45 +385,45 @@ export function SubscriptionPlansView() {
 
             <button
               onClick={handleCallSupport}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 rounded-xl text-xs font-bold transition-colors shadow-xs cursor-pointer"
+              className="flex items-center gap-1.5 px-3.5 py-1.5 bg-blue-50 hover:bg-blue-100 dark:bg-blue-600 dark:hover:bg-blue-500 text-blue-700 dark:text-white border border-blue-200 dark:border-blue-500 rounded-xl text-xs font-bold transition-colors shadow-xs cursor-pointer"
             >
-              <Phone className="w-3.5 h-3.5 text-blue-600" />
+              <Phone className="w-3.5 h-3.5 text-blue-600 dark:text-white" />
               <span>Call INDATA: {supportPhone}</span>
             </button>
           </div>
         </div>
 
         {/* 4-Column Context Grid */}
-        <div className="mt-4 pt-4 border-t border-slate-100 grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
-          <div className="p-2.5 bg-slate-50/80 rounded-xl border border-slate-100">
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
+        <div className="mt-4 pt-4 border-t border-slate-100 dark:border-[#29364A] grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+          <div className="p-2.5 bg-slate-50/80 dark:bg-[#1B2638] rounded-xl border border-slate-100 dark:border-[#29364A]">
+            <span className="text-[10px] font-bold text-slate-400 dark:text-[#94A3B8] uppercase tracking-wider block">
               Candidate Name
             </span>
-            <span className="font-bold text-slate-900 mt-0.5 block truncate">
+            <span className="font-bold text-slate-900 dark:text-white mt-0.5 block truncate">
               {candidateInfo.candidateName}
             </span>
           </div>
-          <div className="p-2.5 bg-slate-50/80 rounded-xl border border-slate-100">
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
+          <div className="p-2.5 bg-slate-50/80 dark:bg-[#1B2638] rounded-xl border border-slate-100 dark:border-[#29364A]">
+            <span className="text-[10px] font-bold text-slate-400 dark:text-[#94A3B8] uppercase tracking-wider block">
               Party / Organization
             </span>
-            <span className="font-bold text-slate-900 mt-0.5 block truncate">
+            <span className="font-bold text-slate-900 dark:text-white mt-0.5 block truncate">
               {candidateInfo.partyName}
             </span>
           </div>
-          <div className="p-2.5 bg-slate-50/80 rounded-xl border border-slate-100">
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
+          <div className="p-2.5 bg-slate-50/80 dark:bg-[#1B2638] rounded-xl border border-slate-100 dark:border-[#29364A]">
+            <span className="text-[10px] font-bold text-slate-400 dark:text-[#94A3B8] uppercase tracking-wider block">
               Selected Election
             </span>
-            <span className="font-bold text-slate-900 mt-0.5 block truncate">
+            <span className="font-bold text-slate-900 dark:text-white mt-0.5 block truncate">
               {candidateInfo.electionName}
             </span>
           </div>
-          <div className="p-2.5 bg-slate-50/80 rounded-xl border border-slate-100">
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
+          <div className="p-2.5 bg-slate-50/80 dark:bg-[#1B2638] rounded-xl border border-slate-100 dark:border-[#29364A]">
+            <span className="text-[10px] font-bold text-slate-400 dark:text-[#94A3B8] uppercase tracking-wider block">
               Constituency Geography
             </span>
-            <span className="font-bold text-slate-900 mt-0.5 block truncate">
+            <span className="font-bold text-slate-900 dark:text-white mt-0.5 block truncate">
               {candidateInfo.constituency}
             </span>
           </div>
@@ -432,39 +432,39 @@ export function SubscriptionPlansView() {
 
       {/* SECTION 2: STATUS ALERT BANNERS */}
       {subscriptionStatus === "PENDING" && (
-        <div className="bg-amber-50/90 border border-amber-200 rounded-2xl p-5 shadow-xs">
+        <div className="bg-amber-50/90 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 rounded-2xl p-5 shadow-xs">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div className="flex items-start gap-3">
-              <div className="w-9 h-9 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center shrink-0 mt-0.5">
-                <Clock className="w-5 h-5 text-amber-600" />
+              <div className="w-9 h-9 rounded-xl bg-amber-100 dark:bg-amber-900/60 text-amber-700 dark:text-amber-300 flex items-center justify-center shrink-0 mt-0.5">
+                <Clock className="w-5 h-5 text-amber-600 dark:text-amber-400" />
               </div>
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
-                  <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-200 text-amber-900">
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-200 dark:bg-amber-900/80 text-amber-900 dark:text-amber-200">
                     Subscription Pending
                   </span>
-                  <span className="text-xs font-mono font-bold text-amber-900">
+                  <span className="text-xs font-mono font-bold text-amber-900 dark:text-amber-300">
                     Ref: {currentRequest.requestId}
                   </span>
                 </div>
-                <p className="text-xs text-amber-950 font-medium leading-relaxed max-w-3xl">
+                <p className="text-xs text-amber-950 dark:text-amber-100 font-medium leading-relaxed max-w-3xl">
                   Your purchase request for <strong>{currentRequest.planName}</strong> is pending
                   confirmation. Please contact the INDATA team or submit your request to complete the
                   purchase process. Your selected module will become available after the purchase is
                   confirmed and your subscription is activated.
                 </p>
-                <div className="text-[11px] text-amber-800 flex flex-wrap gap-x-4 gap-y-1 pt-1">
+                <div className="text-[11px] text-amber-800 dark:text-amber-300/80 flex flex-wrap gap-x-4 gap-y-1 pt-1">
                   <span>
-                    Module: <strong>{currentRequest.module}</strong>
+                    Module: <strong className="text-amber-950 dark:text-amber-200">{currentRequest.module}</strong>
                   </span>
                   <span>
-                    AI Mode: <strong>{currentRequest.hasAiMode ? "Included" : "Not Included"}</strong>
+                    AI Mode: <strong className="text-amber-950 dark:text-amber-200">{currentRequest.hasAiMode ? "Included" : "Not Included"}</strong>
                   </span>
                   <span>
-                    Submitted: <strong>{currentRequest.submittedAt}</strong>
+                    Submitted: <strong className="text-amber-950 dark:text-amber-200">{currentRequest.submittedAt}</strong>
                   </span>
                   <span>
-                    Validity: <strong>{currentRequest.duration}</strong>
+                    Validity: <strong className="text-amber-950 dark:text-amber-200">{currentRequest.duration}</strong>
                   </span>
                 </div>
               </div>
@@ -473,9 +473,9 @@ export function SubscriptionPlansView() {
             <div className="flex flex-wrap items-center gap-2 shrink-0">
               <button
                 onClick={() => setShowDemoModal(true)}
-                className="flex items-center gap-1.5 px-3 py-2 bg-white hover:bg-amber-100 text-amber-900 border border-amber-300 rounded-xl text-xs font-bold transition-colors shadow-xs cursor-pointer"
+                className="flex items-center gap-1.5 px-3 py-2 bg-white dark:bg-[#1E293B] hover:bg-amber-100 dark:hover:bg-[#2A374A] text-amber-900 dark:text-white border border-amber-300 dark:border-[#29364A] rounded-xl text-xs font-bold transition-colors shadow-xs cursor-pointer"
               >
-                <Play className="w-3.5 h-3.5 text-amber-700 fill-amber-700" />
+                <Play className="w-3.5 h-3.5 text-amber-700 dark:text-amber-400 fill-amber-700 dark:fill-amber-400" />
                 <span>Watch Demo</span>
               </button>
               <button
@@ -491,7 +491,7 @@ export function SubscriptionPlansView() {
                   showToast("success", "Subscription Activated", "Administrator approved request: Subscription Activated successfully.");
                 }}
                 title="Simulate authorized back-office activation"
-                className="px-2.5 py-2 bg-amber-200/60 hover:bg-amber-200 text-amber-900 rounded-xl text-[10px] font-semibold transition-colors cursor-pointer"
+                className="px-2.5 py-2 bg-amber-200/60 dark:bg-amber-900/40 hover:bg-amber-200 dark:hover:bg-amber-900/60 text-amber-900 dark:text-amber-200 rounded-xl text-[10px] font-semibold transition-colors cursor-pointer"
               >
                 Simulate Activation
               </button>
@@ -501,35 +501,35 @@ export function SubscriptionPlansView() {
       )}
 
       {subscriptionStatus === "ACTIVE" && (
-        <div className="bg-blue-50/90 border border-blue-200 rounded-2xl p-5 shadow-xs">
+        <div className="bg-blue-50/90 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800/60 rounded-2xl p-5 shadow-xs">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div className="flex items-start gap-3">
-              <div className="w-9 h-9 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center shrink-0 mt-0.5">
-                <CheckCircle2 className="w-5 h-5 text-blue-600" />
+              <div className="w-9 h-9 rounded-xl bg-blue-100 dark:bg-blue-900/60 text-blue-700 dark:text-blue-300 flex items-center justify-center shrink-0 mt-0.5">
+                <CheckCircle2 className="w-5 h-5 text-blue-600 dark:text-blue-400" />
               </div>
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
-                  <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-blue-200 text-blue-900">
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-blue-200 dark:bg-blue-900/80 text-blue-900 dark:text-blue-200">
                     Active Subscription
                   </span>
-                  <span className="text-xs font-mono font-bold text-blue-950">
+                  <span className="text-xs font-mono font-bold text-blue-950 dark:text-blue-200">
                     {currentRequest.planName}
                   </span>
                 </div>
-                <p className="text-xs text-blue-950 leading-relaxed">
+                <p className="text-xs text-blue-950 dark:text-blue-100 leading-relaxed">
                   Your module features are fully unlocked. Activated on <strong>Nov 04, 2024</strong>.
                   Subscription valid until <strong>June 19, 2024</strong> (Election End Date + 15
                   Days Grace Period).
                 </p>
-                <div className="text-[11px] text-blue-800 flex flex-wrap gap-x-4 pt-1">
+                <div className="text-[11px] text-blue-800 dark:text-blue-300/80 flex flex-wrap gap-x-4 pt-1">
                   <span>
-                    AI Mode: <strong>{currentRequest.hasAiMode ? "Active" : "Disabled"}</strong>
+                    AI Mode: <strong className="text-blue-950 dark:text-blue-200">{currentRequest.hasAiMode ? "Active" : "Disabled"}</strong>
                   </span>
                   <span>
-                    Days Remaining: <strong>224 Days</strong>
+                    Days Remaining: <strong className="text-blue-950 dark:text-blue-200">224 Days</strong>
                   </span>
                   <span>
-                    Feature Tier: <strong>Enterprise Command Suite</strong>
+                    Feature Tier: <strong className="text-blue-950 dark:text-blue-200">Enterprise Command Suite</strong>
                   </span>
                 </div>
               </div>
@@ -551,7 +551,7 @@ export function SubscriptionPlansView() {
                   showToast("info", "Subscription Expired", "Subscription period has concluded. Dependent features restricted.");
                 }}
                 title="Simulate expiration"
-                className="px-2 py-2 bg-blue-100 hover:bg-blue-200 text-blue-900 rounded-xl text-[10px] font-semibold transition-colors cursor-pointer"
+                className="px-2 py-2 bg-blue-100 dark:bg-blue-900/40 hover:bg-blue-200 dark:hover:bg-blue-900/60 text-blue-900 dark:text-blue-200 rounded-xl text-[10px] font-semibold transition-colors cursor-pointer"
               >
                 Simulate Expiry
               </button>
