@@ -197,20 +197,180 @@ body {
   }
 
   /* Hardcoded white card containers become dark surfaces */
-  & main .bg-white {
+  & main .bg-white:not(button):not(a[role="button"]):not(a.cursor-pointer) {
     background-color: #151E2D;
   }
 
   /* Secondary surfaces (inputs, table headers, drawer sections) */
-  & main .bg-slate-50,
-  & main .bg-slate-50\/50,
-  & main .bg-slate-50\/80 {
+  & main .bg-slate-50:not(button):not(a[role="button"]):not(a.cursor-pointer),
+  & main .bg-slate-50\/50:not(button):not(a[role="button"]):not(a.cursor-pointer),
+  & main .bg-slate-50\/80:not(button):not(a[role="button"]):not(a.cursor-pointer) {
     background-color: #1B2638;
   }
 
-  /* Tertiary surfaces (segmented buttons, table alternating rows) */
-  & main .bg-slate-100 {
+  /* Tertiary surfaces (drawers, table alternating rows) */
+  & main .bg-slate-100:not(button):not(a[role="button"]):not(a.cursor-pointer) {
     background-color: #1F2C40;
+  }
+
+  /* ======================================================================== */
+  /* BUTTON VISIBILITY, BRIGHTNESS & TEXT CONTRAST ENGINE (DARK THEME)        */
+  /* ======================================================================== */
+
+  /* 1. Universal Dark Button Baseline: Pure White Text & Crisp Contrast */
+  & button,
+  & a[role="button"],
+  & input[type="button"],
+  & input[type="submit"] {
+    color: #FFFFFF !important;
+  }
+
+  /* Ensure text spans, icons, and labels inside buttons are pure white */
+  & button span:not([class*="bg-"]):not([class*="text-amber"]):not([class*="text-emerald"]):not([class*="text-rose"]):not([class*="text-cyan"]),
+  & a[role="button"] span:not([class*="bg-"]):not([class*="text-amber"]):not([class*="text-emerald"]):not([class*="text-rose"]):not([class*="text-cyan"]),
+  & a.cursor-pointer.rounded-xl span:not([class*="bg-"]):not([class*="text-amber"]):not([class*="text-emerald"]):not([class*="text-rose"]):not([class*="text-cyan"]) {
+    color: #FFFFFF !important;
+  }
+
+  /* 2. Secondary & Light-Surfaced Buttons: Lighter blue-grey background */
+  /* Prevents buttons from blending into surrounding #151E2D cards */
+  & button.bg-white,
+  & button.bg-slate-50,
+  & button.bg-slate-100,
+  & button.bg-slate-200,
+  & a[role="button"].bg-white,
+  & a[role="button"].bg-slate-50,
+  & a[role="button"].bg-slate-100,
+  & a.cursor-pointer.bg-white,
+  & a.cursor-pointer.bg-slate-50,
+  & a.cursor-pointer.bg-slate-100 {
+    background-color: #243247 !important;
+    color: #FFFFFF !important;
+    border: 1px solid #3E4F68 !important;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.25) !important;
+  }
+
+  & button.bg-white:hover,
+  & button.bg-slate-50:hover,
+  & button.bg-slate-100:hover,
+  & button.bg-slate-200:hover,
+  & a[role="button"].bg-white:hover,
+  & a[role="button"].bg-slate-50:hover,
+  & a[role="button"].bg-slate-100:hover,
+  & a.cursor-pointer.bg-white:hover,
+  & a.cursor-pointer.bg-slate-50:hover,
+  & a.cursor-pointer.bg-slate-100:hover {
+    background-color: #2E3E58 !important;
+    color: #FFFFFF !important;
+    border-color: #4D617D !important;
+  }
+
+  /* 3. Primary Buttons: Brighter brand blue with pure white text & subtle glow */
+  & button.bg-blue-600,
+  & a.bg-blue-600,
+  & button.bg-brand-600,
+  & a.bg-brand-600,
+  & button.bg-indigo-600,
+  & a.bg-indigo-600 {
+    background-color: #1D61E0 !important;
+    color: #FFFFFF !important;
+    border-color: rgba(59, 130, 246, 0.4) !important;
+    box-shadow: 0 2px 10px -1px rgba(29, 97, 224, 0.45) !important;
+  }
+
+  & button.bg-blue-600:hover,
+  & a.bg-blue-600:hover,
+  & button.bg-brand-600:hover,
+  & a.bg-brand-600:hover,
+  & button.bg-indigo-600:hover,
+  & a.bg-indigo-600:hover {
+    background-color: #2563EB !important;
+    color: #FFFFFF !important;
+    box-shadow: 0 4px 14px -1px rgba(37, 99, 235, 0.55) !important;
+  }
+
+  /* 4. Outline / Bordered Buttons: Visible border & pure white text */
+  & button.border-slate-200,
+  & button.border-slate-300,
+  & a.border-slate-200,
+  & a.border-slate-300 {
+    border-color: #3E4F68 !important;
+    color: #FFFFFF !important;
+  }
+
+  /* 5. Ghost Buttons & Hover states */
+  & button.bg-transparent:hover,
+  & a.bg-transparent:hover {
+    background-color: rgba(255, 255, 255, 0.08) !important;
+    color: #FFFFFF !important;
+  }
+
+  /* 6. Success, Amber & Danger action buttons */
+  & button.bg-emerald-600,
+  & a.bg-emerald-600,
+  & button.bg-emerald-500,
+  & a.bg-emerald-500 {
+    background-color: #059669 !important;
+    color: #FFFFFF !important;
+  }
+  & button.bg-emerald-600:hover,
+  & a.bg-emerald-600:hover {
+    background-color: #10B981 !important;
+  }
+
+  & button.bg-amber-600,
+  & a.bg-amber-600,
+  & button.bg-amber-500,
+  & a.bg-amber-500 {
+    background-color: #D97706 !important;
+    color: #FFFFFF !important;
+  }
+  & button.bg-amber-600:hover,
+  & a.bg-amber-600:hover {
+    background-color: #F59E0B !important;
+  }
+
+  & button.bg-rose-600,
+  & a.bg-rose-600,
+  & button.bg-rose-500,
+  & a.bg-rose-500 {
+    background-color: #E11D48 !important;
+    color: #FFFFFF !important;
+  }
+  & button.bg-rose-600:hover,
+  & a.bg-rose-600:hover {
+    background-color: #F43F5E !important;
+  }
+
+  /* 7. Icon Buttons & Icons inside buttons */
+  & button svg:not([class*="text-rose"]):not([class*="text-amber"]):not([class*="text-emerald"]):not([class*="text-cyan"]):not([class*="text-teal"]):not([class*="text-purple"]):not([class*="text-blue"]):not([class*="animate-pulse"]) {
+    color: #FFFFFF !important;
+  }
+
+  /* 8. Active & Pressed states */
+  & button:active,
+  & a[role="button"]:active {
+    transform: scale(0.985);
+  }
+
+  /* 9. Focus states */
+  & button:focus-visible,
+  & a[role="button"]:focus-visible {
+    outline: 2px solid #3B82F6 !important;
+    outline-offset: 2px !important;
+  }
+
+  /* 10. Disabled buttons */
+  & button:disabled,
+  & button[disabled],
+  & button.disabled,
+  & a[aria-disabled="true"] {
+    opacity: 0.45 !important;
+    cursor: not-allowed !important;
+    background-color: #1E2B3E !important;
+    border-color: #29364A !important;
+    color: #94A3B8 !important;
+    box-shadow: none !important;
   }
 
   /* Borders across dashboard cards, tables, and metric widgets */

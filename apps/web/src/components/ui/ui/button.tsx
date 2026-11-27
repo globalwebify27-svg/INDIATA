@@ -15,21 +15,21 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
     const variants = {
       primary:
-        "bg-brand-600 hover:bg-brand-700 text-white focus:ring-brand-500 shadow-xs active:scale-[0.98]",
+        "bg-brand-600 hover:bg-brand-700 dark:bg-[#1D61E0] dark:hover:bg-[#2563EB] text-white focus:ring-brand-500 shadow-xs active:scale-[0.98]",
       secondary:
-        "bg-indigo-600 hover:bg-indigo-700 text-white focus:ring-indigo-500 shadow-xs active:scale-[0.98]",
+        "bg-indigo-600 hover:bg-indigo-700 dark:bg-[#243247] dark:hover:bg-[#2E3E58] text-white focus:ring-indigo-500 shadow-xs active:scale-[0.98] dark:border dark:border-[#3E4F68]",
       navy:
-        "bg-slate-900 hover:bg-slate-950 text-white focus:ring-slate-800 shadow-xs active:scale-[0.98]",
+        "bg-slate-900 hover:bg-slate-950 dark:bg-[#243247] dark:hover:bg-[#2E3E58] text-white focus:ring-slate-800 shadow-xs active:scale-[0.98] dark:border dark:border-[#3E4F68]",
       teal:
-        "bg-emerald-600 hover:bg-emerald-700 text-white focus:ring-emerald-500 shadow-xs active:scale-[0.98]",
+        "bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600 text-white focus:ring-emerald-500 shadow-xs active:scale-[0.98]",
       amber:
-        "bg-amber-600 hover:bg-amber-700 text-white focus:ring-amber-500 shadow-xs active:scale-[0.98]",
+        "bg-amber-600 hover:bg-amber-700 dark:bg-amber-500 dark:hover:bg-amber-600 text-white focus:ring-amber-500 shadow-xs active:scale-[0.98]",
       outline:
-        "border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 focus:ring-brand-500 shadow-premium-xs",
+        "border border-slate-200 dark:border-[#3E4F68] bg-white dark:bg-[#1E2B3E] hover:bg-slate-50 dark:hover:bg-[#283850] text-slate-800 dark:text-white focus:ring-brand-500 shadow-premium-xs",
       danger:
-        "bg-rose-600 hover:bg-rose-700 text-white focus:ring-rose-500 shadow-xs active:scale-[0.98]",
+        "bg-rose-600 hover:bg-rose-700 dark:bg-rose-500 dark:hover:bg-rose-600 text-white focus:ring-rose-500 shadow-xs active:scale-[0.98]",
       ghost:
-        "bg-transparent hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white",
+        "bg-transparent hover:bg-slate-100 dark:hover:bg-white/10 text-slate-600 hover:text-slate-900 dark:text-white dark:hover:text-white",
     };
 
     const sizes = {

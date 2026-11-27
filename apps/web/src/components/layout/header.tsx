@@ -312,26 +312,26 @@ export function Header({
           </Link>
 
           {/* Translucent Divider */}
-          <div className="h-6 w-px bg-slate-200 dark:bg-slate-800 hidden sm:block" />
+          <div className="h-6 w-px bg-slate-200 dark:bg-[#29364A] hidden sm:block" />
 
           {/* Notifications Dropdown (Section 11 Custom Push Messaging) */}
           <div className="relative" ref={notificationsRef}>
             <button
               type="button"
               onClick={() => setNotificationsOpen(!notificationsOpen)}
-              className="p-2 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors relative"
+              className="p-2 text-slate-600 dark:text-white hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-[#243247] rounded-xl transition-colors relative cursor-pointer"
               title="System Notifications & Field Directives"
             >
               <Bell className="w-5 h-5" />
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-rose-500 ring-2 ring-white dark:ring-slate-900" />
+              <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-rose-500 ring-2 ring-white dark:ring-[#0B101A]" />
             </button>
 
             {notificationsOpen && (
-              <div className="absolute right-0 mt-2 w-88 sm:w-96 bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800 overflow-hidden z-50">
+              <div className="absolute right-0 mt-2 w-88 sm:w-96 bg-white dark:bg-[#151E2D] rounded-2xl shadow-xl border border-slate-200 dark:border-[#29364A] overflow-hidden z-50">
                 {/* Header with Compose Directive Button */}
-                <div className="px-4 py-3 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50 dark:bg-slate-800/50">
+                <div className="px-4 py-3 border-b border-slate-100 dark:border-[#29364A] flex items-center justify-between bg-slate-50 dark:bg-[#1B2638]">
                   <div className="flex items-center gap-2">
-                    <span className="font-bold text-xs text-slate-800 dark:text-slate-100">
+                    <span className="font-bold text-xs text-slate-800 dark:text-[#F8FAFC]">
                       Notifications &amp; Directives
                     </span>
                   </div>
@@ -341,7 +341,7 @@ export function Header({
                       setNotificationsOpen(false);
                       setShowDirectiveModal(true);
                     }}
-                    className="text-[11px] font-bold text-white bg-[#6256D9] hover:bg-[#5044BF] px-2.5 py-1 rounded-lg transition-colors cursor-pointer shadow-xs"
+                    className="text-[11px] font-bold text-white bg-[#6256D9] hover:bg-[#5044BF] dark:bg-[#5848E5] dark:hover:bg-[#6D5DF0] px-2.5 py-1 rounded-lg transition-colors cursor-pointer shadow-xs"
                   >
                     + Compose Directive
                   </button>
@@ -427,7 +427,7 @@ export function Header({
         <button
           type="button"
           onClick={toggleTheme}
-          className="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+          className="p-2 rounded-xl text-slate-600 dark:text-white hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-[#243247] transition-colors cursor-pointer"
           title={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
           aria-label="Toggle theme"
         >

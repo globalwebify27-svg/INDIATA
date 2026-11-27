@@ -24,17 +24,17 @@ export interface ButtonProps
 
 const variantStyles: Record<ButtonVariant, string> = {
   primary:
-    "bg-[#2087FE] hover:bg-[#2087FE]/90 dark:bg-[#0D79FD] dark:hover:bg-[#0D79FD]/90 text-white shadow-xs border border-transparent focus-visible:ring-2 focus-visible:ring-[#2087FE] dark:focus-visible:ring-[#0D79FD]",
+    "bg-[#2087FE] hover:bg-[#2087FE]/90 dark:bg-[#1D61E0] dark:hover:bg-[#2563EB] text-white shadow-xs border border-transparent focus-visible:ring-2 focus-visible:ring-[#2087FE] dark:focus-visible:ring-[#1D61E0]",
   secondary:
-    "bg-[#010627] hover:bg-[#010627]/90 text-white shadow-xs border border-transparent focus-visible:ring-2 focus-visible:ring-[#010627] dark:bg-[#072439] dark:hover:bg-[#072439]/80 dark:text-[#F5F6F6] dark:border-[#0e3554]",
+    "bg-[#010627] hover:bg-[#010627]/90 text-white shadow-xs border border-transparent focus-visible:ring-2 focus-visible:ring-[#010627] dark:bg-[#243247] dark:hover:bg-[#2E3E58] dark:text-white dark:border-[#3E4F68]",
   outline:
-    "bg-[#FDFEFE] dark:bg-[#062237] hover:bg-[#E0EDFE] dark:hover:bg-[#072439] text-[#010627] dark:text-[#F5F6F6] border border-[#ACB9D1] dark:border-[#0e3554] shadow-xs focus-visible:ring-2 focus-visible:ring-[#2087FE] dark:focus-visible:ring-[#0D79FD]",
+    "bg-[#FDFEFE] dark:bg-[#1E2B3E] hover:bg-[#E0EDFE] dark:hover:bg-[#283850] text-[#010627] dark:text-white border border-[#ACB9D1] dark:border-[#3E4F68] shadow-xs focus-visible:ring-2 focus-visible:ring-[#2087FE] dark:focus-visible:ring-[#1D61E0]",
   ghost:
-    "bg-transparent hover:bg-[#E0EDFE] dark:hover:bg-[#072439] text-[#010627] dark:text-[#F5F6F6] focus-visible:ring-2 focus-visible:ring-[#2087FE] dark:focus-visible:ring-[#0D79FD]",
+    "bg-transparent hover:bg-[#E0EDFE] dark:hover:bg-white/10 text-[#010627] dark:text-white focus-visible:ring-2 focus-visible:ring-[#2087FE] dark:focus-visible:ring-[#1D61E0]",
   danger:
-    "bg-[#FC7C36] hover:bg-[#FC7C36]/90 dark:bg-[#F48637] dark:hover:bg-[#F48637]/90 text-white shadow-xs border border-transparent focus-visible:ring-2 focus-visible:ring-[#FC7C36] dark:focus-visible:ring-[#F48637]",
+    "bg-[#FC7C36] hover:bg-[#FC7C36]/90 dark:bg-[#EF4444] dark:hover:bg-[#DC2626] text-white shadow-xs border border-transparent focus-visible:ring-2 focus-visible:ring-[#FC7C36] dark:focus-visible:ring-[#EF4444]",
   success:
-    "bg-[#12CF94] hover:bg-[#12CF94]/90 dark:bg-[#01C588] dark:hover:bg-[#01C588]/90 text-[#010627] dark:text-[#011A2D] font-bold shadow-xs border border-transparent focus-visible:ring-2 focus-visible:ring-[#12CF94] dark:focus-visible:ring-[#01C588]",
+    "bg-[#12CF94] hover:bg-[#12CF94]/90 dark:bg-[#10B981] dark:hover:bg-[#059669] text-[#010627] dark:text-white font-bold shadow-xs border border-transparent focus-visible:ring-2 focus-visible:ring-[#12CF94] dark:focus-visible:ring-[#10B981]",
 };
 
 const sizeStyles: Record<ButtonSize, string> = {

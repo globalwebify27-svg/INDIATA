@@ -536,7 +536,7 @@ export default function CandidateWarRoomDashboard() {
               className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold border transition-all shadow-xs cursor-pointer ${
                 showFilterDrawer
                   ? "bg-blue-600 text-white border-blue-600 hover:bg-blue-700"
-                  : "bg-white dark:bg-[#1B2638] text-slate-700 dark:text-[#F8FAFC] border-slate-200 dark:border-[#29364A] hover:bg-slate-50 dark:hover:bg-[#1B2638]/80"
+                  : "bg-white dark:bg-[#243247] text-slate-700 dark:text-white border-slate-200 dark:border-[#3E4F68] hover:bg-slate-50 dark:hover:bg-[#2E3E58]"
               }`}
             >
               <SlidersHorizontal className="w-3.5 h-3.5" />
@@ -549,7 +549,9 @@ export default function CandidateWarRoomDashboard() {
                 type="button"
                 onClick={() => setTimeframe("today")}
                 className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
-                  timeframe === "today" ? "bg-white dark:bg-[#1B2638] text-slate-900 dark:text-white shadow-xs font-bold" : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+                  timeframe === "today"
+                    ? "bg-white dark:bg-[#243247] text-slate-900 dark:text-white shadow-xs font-bold dark:border dark:border-[#3E4F68]"
+                    : "text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white"
                 }`}
               >
                 Today
@@ -558,7 +560,9 @@ export default function CandidateWarRoomDashboard() {
                 type="button"
                 onClick={() => setTimeframe("week")}
                 className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
-                  timeframe === "week" ? "bg-white dark:bg-[#1B2638] text-slate-900 dark:text-white shadow-xs font-bold" : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+                  timeframe === "week"
+                    ? "bg-white dark:bg-[#243247] text-slate-900 dark:text-white shadow-xs font-bold dark:border dark:border-[#3E4F68]"
+                    : "text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white"
                 }`}
               >
                 This Week
@@ -567,7 +571,9 @@ export default function CandidateWarRoomDashboard() {
                 type="button"
                 onClick={() => setTimeframe("campaign")}
                 className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
-                  timeframe === "campaign" ? "bg-white dark:bg-[#1B2638] text-slate-900 dark:text-white shadow-xs font-bold" : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+                  timeframe === "campaign"
+                    ? "bg-white dark:bg-[#243247] text-slate-900 dark:text-white shadow-xs font-bold dark:border dark:border-[#3E4F68]"
+                    : "text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white"
                 }`}
               >
                 Full Campaign
@@ -578,7 +584,7 @@ export default function CandidateWarRoomDashboard() {
             <button
               type="button"
               onClick={handleRefresh}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-slate-200 dark:border-[#29364A] bg-white dark:bg-[#1B2638] hover:bg-slate-50 dark:hover:bg-[#1B2638]/80 text-slate-700 dark:text-[#F8FAFC] text-xs font-bold shadow-xs cursor-pointer transition-all active:scale-95"
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-slate-200 dark:border-[#3E4F68] bg-white dark:bg-[#243247] hover:bg-slate-50 dark:hover:bg-[#2E3E58] text-slate-700 dark:text-white text-xs font-bold shadow-xs cursor-pointer transition-all active:scale-95"
               title="Refresh ECI Telemetry"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? "animate-spin text-blue-600" : ""}`} />
@@ -588,7 +594,7 @@ export default function CandidateWarRoomDashboard() {
             {/* Register Elector CTA */}
             <Link
               href="/voters"
-              className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-md shadow-blue-600/20 cursor-pointer transition-all"
+              className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 dark:bg-[#1D61E0] dark:hover:bg-[#2563EB] text-white rounded-xl text-xs font-bold shadow-md shadow-blue-600/30 cursor-pointer transition-all"
             >
               <UserPlus className="w-4 h-4" />
               <span>+ Register Elector</span>
@@ -679,14 +685,14 @@ export default function CandidateWarRoomDashboard() {
               <button
                 type="button"
                 onClick={handleApplyFilters}
-                className="flex-1 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold shadow-xs cursor-pointer"
+                className="flex-1 py-1.5 bg-blue-600 hover:bg-blue-700 dark:bg-[#1D61E0] dark:hover:bg-[#2563EB] text-white rounded-lg text-xs font-bold shadow-xs cursor-pointer"
               >
                 Apply Filters
               </button>
               <button
                 type="button"
                 onClick={handleResetFilters}
-                className="py-1.5 px-3 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-lg text-xs font-semibold cursor-pointer"
+                className="py-1.5 px-3 bg-slate-100 hover:bg-slate-200 dark:bg-[#243247] dark:hover:bg-[#2E3E58] text-slate-600 dark:text-white dark:border dark:border-[#3E4F68] rounded-lg text-xs font-semibold cursor-pointer"
               >
                 Reset
               </button>
