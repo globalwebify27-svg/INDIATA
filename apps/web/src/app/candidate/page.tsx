@@ -2588,98 +2588,100 @@ export default function CandidateWarRoomDashboard() {
       {/* ========================================================================= */}
       <section className="space-y-5">
         {/* Top: Live War Room Monitoring */}
-        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-4">
+        <div className="bg-white dark:bg-[#151E2D] p-5 rounded-2xl border border-slate-200 dark:border-[#29364A] shadow-xs space-y-4">
           <div className="flex items-center justify-between">
             <div>
               <div className="flex items-center gap-2">
-                <Radio className="w-4 h-4 text-blue-600" />
-                <h3 className="font-bold text-slate-900 text-sm">Live War Room Monitoring</h3>
+                <Radio className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                <h3 className="font-bold text-slate-900 dark:text-white text-sm">Live War Room Monitoring</h3>
               </div>
-              <p className="text-xs text-slate-500 mt-0.5">
+              <p className="text-xs text-slate-500 dark:text-slate-300 mt-0.5">
                 Live telemetry aggregated from active Android terminals, web kiosks, and field dispatchers.
               </p>
             </div>
-            <span className="px-2.5 py-1 rounded-md text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200">
+            <span className="px-2.5 py-1 rounded-md text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200 dark:bg-blue-950/60 dark:text-blue-300 dark:border-blue-800/60">
               Real-Time Sync
             </span>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
-            <div className="p-3.5 bg-blue-50/50 rounded-xl border border-blue-100 flex items-center justify-between">
+            <div className="p-3.5 bg-blue-50/50 dark:bg-[#1B2638] rounded-xl border border-blue-100 dark:border-[#29364A] flex items-center justify-between">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center font-bold">
+                <div className="w-8 h-8 rounded-lg bg-blue-100 text-blue-700 dark:bg-blue-950/70 dark:text-blue-400 flex items-center justify-center font-bold">
                   <MapPin className="w-4 h-4" />
                 </div>
                 <div>
-                  <h4 className="font-bold text-slate-900 text-xs">Active Polling Stations</h4>
-                  <p className="text-[11px] text-slate-500">2,038 of 2,045 operational</p>
+                  <h4 className="font-bold text-slate-900 dark:text-white text-xs">Active Polling Stations</h4>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-300 font-medium">2,038 of 2,045 operational</p>
                 </div>
               </div>
-              <span className="font-black text-sm text-blue-700">99.6%</span>
+              <span className="font-black text-sm text-blue-700 dark:text-blue-400">99.6%</span>
             </div>
 
-            <div className="p-3.5 bg-emerald-50/50 rounded-xl border border-emerald-100 flex items-center justify-between">
+            <div className="p-3.5 bg-emerald-50/50 dark:bg-[#1B2638] rounded-xl border border-emerald-100 dark:border-[#29364A] flex items-center justify-between">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold">
+                <div className="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-700 dark:bg-emerald-950/70 dark:text-emerald-400 flex items-center justify-center font-bold">
                   <Users className="w-4 h-4" />
                 </div>
                 <div>
-                  <h4 className="font-bold text-slate-900 text-xs">Active Field Mobilizers</h4>
-                  <p className="text-[11px] text-slate-500">GPS pinging within 15 mins</p>
+                  <h4 className="font-bold text-slate-900 dark:text-white text-xs">Active Field Mobilizers</h4>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-300 font-medium">GPS pinging within 15 mins</p>
                 </div>
               </div>
-              <span className="font-black text-sm text-emerald-700">3,120</span>
+              <span className="font-black text-sm text-emerald-700 dark:text-emerald-400">3,120</span>
             </div>
 
-            <div className="p-3.5 bg-amber-50/50 rounded-xl border border-amber-100 flex items-center justify-between">
+            <div className="p-3.5 bg-amber-50/50 dark:bg-[#1B2638] rounded-xl border border-amber-100 dark:border-[#29364A] flex items-center justify-between">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center font-bold">
+                <div className="w-8 h-8 rounded-lg bg-amber-100 text-amber-700 dark:bg-amber-950/70 dark:text-amber-400 flex items-center justify-center font-bold">
                   <AlertCircle className="w-4 h-4" />
                 </div>
                 <div>
-                  <h4 className="font-bold text-slate-900 text-xs">Critical Flagged Issues</h4>
-                  <p className="text-[11px] text-slate-500">Action required by coordinators</p>
+                  <h4 className="font-bold text-slate-900 dark:text-white text-xs">Critical Flagged Issues</h4>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-300 font-medium">Action required by coordinators</p>
                 </div>
               </div>
-              <span className="font-black text-sm text-amber-700">4</span>
+              <span className="font-black text-sm text-amber-700 dark:text-amber-400">4</span>
             </div>
 
-            <div className="p-3.5 bg-purple-50/50 rounded-xl border border-purple-100 flex items-center justify-between">
+            <div className="p-3.5 bg-purple-50/50 dark:bg-[#1B2638] rounded-xl border border-purple-100 dark:border-[#29364A] flex items-center justify-between">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-purple-100 text-purple-700 flex items-center justify-center font-bold">
+                <div className="w-8 h-8 rounded-lg bg-purple-100 text-purple-700 dark:bg-purple-950/70 dark:text-purple-400 flex items-center justify-center font-bold">
                   <Clock className="w-4 h-4" />
                 </div>
                 <div>
-                  <h4 className="font-bold text-slate-900 text-xs">Last Global Telemetry Sync</h4>
-                  <p className="text-[11px] text-slate-500">ECI server connection verified</p>
+                  <h4 className="font-bold text-slate-900 dark:text-white text-xs">Last Global Telemetry Sync</h4>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-300 font-medium">ECI server connection verified</p>
                 </div>
               </div>
-              <span className="font-black text-sm text-purple-700">Just now</span>
+              <span className="font-black text-sm text-purple-700 dark:text-purple-400">Just now</span>
             </div>
           </div>
         </div>
 
         {/* Bottom: Alerts & Attention Required (Screenshot 11) */}
-        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-4">
+        <div className="bg-white dark:bg-[#151E2D] p-5 rounded-2xl border border-slate-200 dark:border-[#29364A] shadow-xs space-y-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
               <div className="flex items-center gap-2">
-                <AlertCircle className="w-4 h-4 text-rose-600" />
-                <h3 className="font-bold text-slate-900 text-sm">Alerts &amp; Attention Required</h3>
+                <AlertCircle className="w-4 h-4 text-rose-600 dark:text-rose-400" />
+                <h3 className="font-bold text-slate-900 dark:text-white text-sm">Alerts &amp; Attention Required</h3>
               </div>
-              <p className="text-xs text-slate-500 mt-0.5">
+              <p className="text-xs text-slate-500 dark:text-slate-300 mt-0.5">
                 Actionable operational bottlenecks, lagging booth coverage, and overdue assignments requiring intervention.
               </p>
             </div>
 
-            <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl text-xs font-semibold">
+            <div className="flex items-center gap-1 bg-slate-100 dark:bg-[#101827] p-1 rounded-xl text-xs font-semibold border border-slate-200/80 dark:border-[#29364A]">
               {(["ALL", "CRITICAL", "HIGH", "WARNING"] as const).map((tab) => (
                 <button
                   key={tab}
                   type="button"
                   onClick={() => setAlertFilter(tab)}
                   className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
-                    alertFilter === tab ? "bg-white text-slate-900 shadow-xs font-bold" : "text-slate-600 hover:text-slate-900"
+                    alertFilter === tab
+                      ? "bg-white dark:bg-[#243247] text-slate-900 dark:text-white shadow-xs font-bold dark:border dark:border-[#3E4F68]"
+                      : "text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white"
                   }`}
                 >
                   {tab === "ALL" ? "All Alerts" : tab}
@@ -2695,10 +2697,10 @@ export default function CandidateWarRoomDashboard() {
                 key={alt.id}
                 className={`p-4 rounded-xl border flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-all ${
                   alt.severity === "CRITICAL"
-                    ? "bg-rose-50/50 border-rose-200"
+                    ? "bg-rose-50/50 border-rose-200 dark:bg-[#221318] dark:border-[#881337]/60"
                     : alt.severity === "HIGH"
-                    ? "bg-amber-50/50 border-amber-200"
-                    : "bg-slate-50 border-slate-200"
+                    ? "bg-amber-50/50 border-amber-200 dark:bg-[#22170D] dark:border-[#78350F]/60"
+                    : "bg-slate-50 border-slate-200 dark:bg-[#1B2638] dark:border-[#29364A]"
                 }`}
               >
                 <div className="space-y-1">
@@ -2706,24 +2708,26 @@ export default function CandidateWarRoomDashboard() {
                     <span
                       className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${
                         alt.severity === "CRITICAL"
-                          ? "bg-rose-100 text-rose-800"
+                          ? "bg-rose-100 text-rose-800 dark:bg-rose-950/80 dark:text-rose-300 dark:border dark:border-rose-800/50"
                           : alt.severity === "HIGH"
-                          ? "bg-amber-100 text-amber-800"
-                          : "bg-slate-200 text-slate-700"
+                          ? "bg-amber-100 text-amber-800 dark:bg-amber-950/80 dark:text-amber-300 dark:border dark:border-amber-800/50"
+                          : "bg-slate-200 text-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:border dark:border-slate-700"
                       }`}
                     >
                       {alt.severity}
                     </span>
-                    <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                    <span className="text-[11px] font-bold text-slate-500 dark:text-slate-300 uppercase tracking-wider">
                       {alt.category}
                     </span>
-                    <span className="text-slate-300">•</span>
-                    <span className="text-[11px] text-slate-400 font-mono">{alt.timestamp}</span>
+                    <span className="text-slate-300 dark:text-slate-600">•</span>
+                    <span className="text-[11px] text-slate-400 dark:text-slate-300 font-mono">{alt.timestamp}</span>
                   </div>
 
-                  <h4 className="font-bold text-slate-900 text-xs sm:text-sm">{alt.title}</h4>
-                  <p className="text-xs text-slate-600 leading-relaxed">{alt.description}</p>
-                  <p className="text-[11px] text-slate-400 font-medium">Affected Area: {alt.affectedArea}</p>
+                  <h4 className="font-bold text-slate-900 dark:text-white text-xs sm:text-sm">{alt.title}</h4>
+                  <p className="text-xs text-slate-600 dark:text-slate-200 leading-relaxed font-normal">{alt.description}</p>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-300 font-medium">
+                    <span className="text-slate-400 dark:text-slate-400">Affected Area:</span> {alt.affectedArea}
+                  </p>
                 </div>
 
                 <Link
@@ -2901,55 +2905,55 @@ export default function CandidateWarRoomDashboard() {
         </div>
 
         {/* Live Feedback & Voter Sentiment Card */}
-        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-4">
+        <div className="bg-white dark:bg-[#151E2D] p-5 rounded-2xl border border-slate-200 dark:border-[#29364A] shadow-xs space-y-4">
           <div className="flex items-center justify-between">
             <div>
               <div className="flex items-center gap-2">
-                <MessageSquare className="w-4 h-4 text-emerald-600" />
-                <h3 className="font-bold text-slate-900 text-sm">Live Feedback &amp; Citizen Reactions</h3>
-                <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                <MessageSquare className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                <h3 className="font-bold text-slate-900 dark:!text-white text-sm">Live Feedback &amp; Citizen Reactions</h3>
+                <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-800/60">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping" />
                   Live Stream
                 </span>
               </div>
-              <p className="text-xs text-slate-500 mt-0.5">
+              <p className="text-xs text-slate-500 dark:!text-slate-300 mt-0.5">
                 Real-time feedback collected by booth karyakartas, WhatsApp citizen lines, and outbound IVR calls.
               </p>
             </div>
-            <Link href="/feedback" className="text-xs font-bold text-blue-600 hover:text-blue-700">
+            <Link href="/feedback" className="text-xs font-bold text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300">
               Open Live Feedback Hub &rarr;
             </Link>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-xs">
-            <div className="p-3 bg-emerald-50/50 rounded-xl border border-emerald-100 space-y-1">
+            <div className="p-3 bg-emerald-50/50 dark:bg-[#13231D] rounded-xl border border-emerald-100 dark:border-emerald-800/50 space-y-1">
               <div className="flex items-center justify-between">
-                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800">POSITIVE</span>
-                <span className="text-slate-400 text-[10px]">4m ago</span>
+                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800 dark:bg-emerald-950/80 dark:text-emerald-300 dark:border dark:border-emerald-800/50">POSITIVE</span>
+                <span className="text-slate-400 dark:!text-slate-300 text-[10px] font-medium">4m ago</span>
               </div>
-              <h5 className="font-bold text-slate-900 mt-1">Ramesh N. Joshi (Booth #101)</h5>
-              <p className="text-slate-600">Voter slip delivered at home. Entire 5-member family confirmed support for our candidate.</p>
-              <p className="text-slate-400 text-[11px]">Reported by: Pooja Jadhav (Karyakarta)</p>
+              <h5 className="font-bold text-slate-900 dark:!text-white mt-1">Ramesh N. Joshi (Booth #101)</h5>
+              <p className="text-slate-600 dark:!text-slate-200 text-xs leading-relaxed font-normal">Voter slip delivered at home. Entire 5-member family confirmed support for our candidate.</p>
+              <p className="text-slate-400 dark:!text-slate-400 text-[11px] font-medium">Reported by: <span className="text-slate-500 dark:!text-slate-200 font-semibold">Pooja Jadhav (Karyakarta)</span></p>
             </div>
 
-            <div className="p-3 bg-rose-50/50 rounded-xl border border-rose-100 space-y-1">
+            <div className="p-3 bg-rose-50/50 dark:bg-[#221318] rounded-xl border border-rose-100 dark:border-rose-900/50 space-y-1">
               <div className="flex items-center justify-between">
-                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-rose-100 text-rose-800">URGENT</span>
-                <span className="text-slate-400 text-[10px]">12m ago</span>
+                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-rose-100 text-rose-800 dark:bg-rose-950/80 dark:text-rose-300 dark:border dark:border-rose-800/50">URGENT</span>
+                <span className="text-slate-400 dark:!text-slate-300 text-[10px] font-medium">12m ago</span>
               </div>
-              <h5 className="font-bold text-slate-900 mt-1">Sunita A. Deshmukh (Booth #102)</h5>
-              <p className="text-slate-600">Drinking water low pressure in Dahanukar Colony Lane 3. Tanker requested urgently.</p>
-              <p className="text-slate-400 text-[11px]">Via: Citizen WhatsApp Line</p>
+              <h5 className="font-bold text-slate-900 dark:!text-white mt-1">Sunita A. Deshmukh (Booth #102)</h5>
+              <p className="text-slate-600 dark:!text-slate-200 text-xs leading-relaxed font-normal">Drinking water low pressure in Dahanukar Colony Lane 3. Tanker requested urgently.</p>
+              <p className="text-slate-400 dark:!text-slate-400 text-[11px] font-medium">Via: <span className="text-slate-500 dark:!text-slate-200 font-semibold">Citizen WhatsApp Line</span></p>
             </div>
 
-            <div className="p-3 bg-amber-50/50 rounded-xl border border-amber-100 space-y-1">
+            <div className="p-3 bg-amber-50/50 dark:bg-[#22170D] rounded-xl border border-amber-100 dark:border-amber-900/50 space-y-1">
               <div className="flex items-center justify-between">
-                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-100 text-amber-800">SWING</span>
-                <span className="text-slate-400 text-[10px]">28m ago</span>
+                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 dark:bg-amber-950/80 dark:text-amber-300 dark:border dark:border-amber-800/50">SWING</span>
+                <span className="text-slate-400 dark:!text-slate-300 text-[10px] font-medium">28m ago</span>
               </div>
-              <h5 className="font-bold text-slate-900 mt-1">Amit S. Kulkarni (Booth #103)</h5>
-              <p className="text-slate-600">Answered AI voice call. Expressed satisfaction with candidate, asked for Paud Phata traffic solution.</p>
-              <p className="text-slate-400 text-[11px]">Via: AI Outbound Call Survey</p>
+              <h5 className="font-bold text-slate-900 dark:!text-white mt-1">Amit S. Kulkarni (Booth #103)</h5>
+              <p className="text-slate-600 dark:!text-slate-200 text-xs leading-relaxed font-normal">Answered AI voice call. Expressed satisfaction with candidate, asked for Paud Phata traffic solution.</p>
+              <p className="text-slate-400 dark:!text-slate-400 text-[11px] font-medium">Via: <span className="text-slate-500 dark:!text-slate-200 font-semibold">AI Outbound Call Survey</span></p>
             </div>
           </div>
         </div>
@@ -3065,242 +3069,254 @@ export default function CandidateWarRoomDashboard() {
           </div>
         </div>
 
-        {/* Bottom: Side-by-Side Workforce Assignments & Live War Room Activity Stream (Screenshot 14) */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-          {/* Left: Workforce Assignments & Field Cadre Performance */}
-          <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="flex items-center gap-2">
-                  <Users className="w-4 h-4 text-blue-600" />
-                  <h3 className="font-bold text-slate-900 text-sm">Workforce Assignments &amp; Field Cadre Performance</h3>
+        {/* Bottom: Side-by-Side Workforce Assignments (Large ~67%) & Live War Room Activity Stream (Small Rectangle ~33%) (Screenshot 14) */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
+          {/* Left: Workforce Assignments & Field Cadre Performance (Large 2/3) */}
+          <div className="lg:col-span-2 min-w-0 bg-white dark:bg-[#151E2D] p-5 rounded-2xl border border-slate-200 dark:border-[#29364A] shadow-xs flex flex-col justify-between space-y-4">
+            <div className="space-y-4">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <Users className="w-4 h-4 text-blue-600 dark:text-blue-400 shrink-0" />
+                    <h3 className="font-bold text-slate-900 dark:text-white text-sm">Workforce Assignments &amp; Field Cadre Performance</h3>
+                  </div>
+                  <p className="text-xs text-slate-500 dark:text-slate-300 mt-0.5">
+                    Top karyakarta mobilizers ranked by door-to-door surveys and voter slips handed over.
+                  </p>
                 </div>
-                <p className="text-xs text-slate-500 mt-0.5">
-                  Top karyakarta mobilizers ranked by door-to-door surveys and voter slips handed over.
-                </p>
+                <Link href="/users" className="text-xs font-bold text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 whitespace-nowrap shrink-0">
+                  All 4,850 Cadre &rarr;
+                </Link>
               </div>
-              <Link href="/users" className="text-xs font-bold text-blue-600 hover:text-blue-700">
-                All 4,850 Cadre &rarr;
-              </Link>
-            </div>
 
-            <div className="overflow-x-auto rounded-xl border border-slate-200">
-              <table className="w-full text-left text-xs">
-                <thead className="bg-slate-50 border-b border-slate-200 text-slate-500 font-bold uppercase text-[10px] tracking-wider">
-                  <tr>
-                    <th className="py-2.5 px-3">KARYAKARTA</th>
-                    <th className="py-2.5 px-3">PRABHAAG &amp; BOOTH</th>
-                    <th className="py-2.5 px-3">SURVEYS</th>
-                    <th className="py-2.5 px-3">SLIPS HANDED</th>
-                    <th className="py-2.5 px-3">FIELD STATUS</th>
-                    <th className="py-2.5 px-3 text-right">ACTION</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100 font-medium">
-                  <tr className="hover:bg-slate-50/80">
-                    <td className="py-2.5 px-3 flex items-center gap-2">
-                      <div className="w-6 h-6 rounded-full bg-slate-200 text-slate-700 font-bold text-[10px] flex items-center justify-center">
-                        Po
-                      </div>
-                      <span className="font-bold text-slate-900">Pooja Jadhav</span>
-                    </td>
-                    <td className="py-2.5 px-3">
-                      <strong className="text-slate-900 block">Booth #101</strong>
-                      <span className="text-[11px] text-slate-400">Prabhaag 12 - Kothrud West</span>
-                    </td>
-                    <td className="py-2.5 px-3 font-bold text-blue-600">184</td>
-                    <td className="py-2.5 px-3 font-bold text-slate-900">420</td>
-                    <td className="py-2.5 px-3">
-                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                        Active on Field
-                      </span>
-                    </td>
-                    <td className="py-2.5 px-3 text-right">
-                      <button
-                        type="button"
-                        onClick={() => showToast("info", "GPS Locator", "Pinging Pooja Jadhav: Navbharat School corridor")}
-                        className="px-2 py-1 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold text-[11px]"
-                      >
-                        Locate GPS
-                      </button>
-                    </td>
-                  </tr>
+              <div className="overflow-x-auto rounded-xl border border-slate-200 dark:border-[#29364A] custom-scroll">
+                <table className="w-full text-left text-xs">
+                  <thead className="bg-slate-50 dark:bg-[#1B2638] border-b border-slate-200 dark:border-[#29364A] text-slate-500 dark:text-slate-300 font-bold uppercase text-[10px] tracking-wider">
+                    <tr>
+                      <th className="py-2.5 px-3 whitespace-nowrap">KARYAKARTA</th>
+                      <th className="py-2.5 px-3 whitespace-nowrap">PRABHAAG &amp; BOOTH</th>
+                      <th className="py-2.5 px-3 text-center whitespace-nowrap">SURVEYS</th>
+                      <th className="py-2.5 px-3 text-center whitespace-nowrap">SLIPS HANDED</th>
+                      <th className="py-2.5 px-3 text-center whitespace-nowrap">FIELD STATUS</th>
+                      <th className="py-2.5 px-3 text-right whitespace-nowrap">ACTION</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100 dark:divide-[#29364A] font-medium">
+                    <tr className="hover:bg-slate-50/80 dark:hover:bg-[#1B2638]/60 transition-colors">
+                      <td className="py-2.5 px-3 whitespace-nowrap">
+                        <div className="flex items-center gap-2">
+                          <div className="w-6 h-6 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold text-[10px] flex items-center justify-center shrink-0">
+                            Po
+                          </div>
+                          <span className="font-bold text-slate-900 dark:text-white">Pooja Jadhav</span>
+                        </div>
+                      </td>
+                      <td className="py-2.5 px-3 whitespace-nowrap">
+                        <strong className="text-slate-900 dark:text-white block font-bold leading-tight">Booth #101</strong>
+                        <span className="text-[11px] text-slate-500 dark:text-slate-400 block leading-tight mt-0.5">Prabhaag 12 • Kothrud West</span>
+                      </td>
+                      <td className="py-2.5 px-3 text-center font-bold text-blue-600 dark:text-blue-400 whitespace-nowrap">184</td>
+                      <td className="py-2.5 px-3 text-center font-bold text-slate-900 dark:text-white whitespace-nowrap">420</td>
+                      <td className="py-2.5 px-3 text-center whitespace-nowrap">
+                        <span className="inline-block px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/70 dark:text-emerald-300 dark:border-emerald-800/60 whitespace-nowrap">
+                          Active on Field
+                        </span>
+                      </td>
+                      <td className="py-2.5 px-3 text-right whitespace-nowrap">
+                        <button
+                          type="button"
+                          onClick={() => showToast("info", "GPS Locator", "Pinging Pooja Jadhav: Navbharat School corridor")}
+                          className="px-2.5 py-1 rounded-lg border border-slate-200 dark:border-[#3E4F68] bg-white dark:bg-[#243247] hover:bg-slate-50 dark:hover:bg-[#2E3E58] text-slate-700 dark:text-white font-bold text-[11px] whitespace-nowrap cursor-pointer transition-all shadow-xs active:scale-95"
+                        >
+                          Locate GPS
+                        </button>
+                      </td>
+                    </tr>
 
-                  <tr className="hover:bg-slate-50/80">
-                    <td className="py-2.5 px-3 flex items-center gap-2">
-                      <div className="w-6 h-6 rounded-full bg-slate-200 text-slate-700 font-bold text-[10px] flex items-center justify-center">
-                        Ga
-                      </div>
-                      <span className="font-bold text-slate-900">Ganesh Patil</span>
-                    </td>
-                    <td className="py-2.5 px-3">
-                      <strong className="text-slate-900 block">Booth #102</strong>
-                      <span className="text-[11px] text-slate-400">Prabhaag 12 - Kothrud West</span>
-                    </td>
-                    <td className="py-2.5 px-3 font-bold text-blue-600">210</td>
-                    <td className="py-2.5 px-3 font-bold text-slate-900">512</td>
-                    <td className="py-2.5 px-3">
-                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                        Active on Field
-                      </span>
-                    </td>
-                    <td className="py-2.5 px-3 text-right">
-                      <button
-                        type="button"
-                        onClick={() => showToast("info", "GPS Locator", "Pinging Ganesh Patil: Saraswati Vidyalaya Gate")}
-                        className="px-2 py-1 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold text-[11px]"
-                      >
-                        Locate GPS
-                      </button>
-                    </td>
-                  </tr>
+                    <tr className="hover:bg-slate-50/80 dark:hover:bg-[#1B2638]/60 transition-colors">
+                      <td className="py-2.5 px-3 whitespace-nowrap">
+                        <div className="flex items-center gap-2">
+                          <div className="w-6 h-6 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold text-[10px] flex items-center justify-center shrink-0">
+                            Ga
+                          </div>
+                          <span className="font-bold text-slate-900 dark:text-white">Ganesh Patil</span>
+                        </div>
+                      </td>
+                      <td className="py-2.5 px-3 whitespace-nowrap">
+                        <strong className="text-slate-900 dark:text-white block font-bold leading-tight">Booth #102</strong>
+                        <span className="text-[11px] text-slate-500 dark:text-slate-400 block leading-tight mt-0.5">Prabhaag 12 • Kothrud West</span>
+                      </td>
+                      <td className="py-2.5 px-3 text-center font-bold text-blue-600 dark:text-blue-400 whitespace-nowrap">210</td>
+                      <td className="py-2.5 px-3 text-center font-bold text-slate-900 dark:text-white whitespace-nowrap">512</td>
+                      <td className="py-2.5 px-3 text-center whitespace-nowrap">
+                        <span className="inline-block px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/70 dark:text-emerald-300 dark:border-emerald-800/60 whitespace-nowrap">
+                          Active on Field
+                        </span>
+                      </td>
+                      <td className="py-2.5 px-3 text-right whitespace-nowrap">
+                        <button
+                          type="button"
+                          onClick={() => showToast("info", "GPS Locator", "Pinging Ganesh Patil: Saraswati Vidyalaya Gate")}
+                          className="px-2.5 py-1 rounded-lg border border-slate-200 dark:border-[#3E4F68] bg-white dark:bg-[#243247] hover:bg-slate-50 dark:hover:bg-[#2E3E58] text-slate-700 dark:text-white font-bold text-[11px] whitespace-nowrap cursor-pointer transition-all shadow-xs active:scale-95"
+                        >
+                          Locate GPS
+                        </button>
+                      </td>
+                    </tr>
 
-                  <tr className="hover:bg-slate-50/80">
-                    <td className="py-2.5 px-3 flex items-center gap-2">
-                      <div className="w-6 h-6 rounded-full bg-slate-200 text-slate-700 font-bold text-[10px] flex items-center justify-center">
-                        Vi
-                      </div>
-                      <span className="font-bold text-slate-900">Vikas More</span>
-                    </td>
-                    <td className="py-2.5 px-3">
-                      <strong className="text-slate-900 block">Booth #104</strong>
-                      <span className="text-[11px] text-slate-400">Prabhaag 13 - Erandwane</span>
-                    </td>
-                    <td className="py-2.5 px-3 font-bold text-blue-600">95</td>
-                    <td className="py-2.5 px-3 font-bold text-slate-900">230</td>
-                    <td className="py-2.5 px-3">
-                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-600">
-                        Offline
-                      </span>
-                    </td>
-                    <td className="py-2.5 px-3 text-right">
-                      <button
-                        type="button"
-                        onClick={() => showToast("warning", "GPS Offline", "Vikas More terminal last reported 2 hours ago")}
-                        className="px-2 py-1 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold text-[11px]"
-                      >
-                        Locate GPS
-                      </button>
-                    </td>
-                  </tr>
+                    <tr className="hover:bg-slate-50/80 dark:hover:bg-[#1B2638]/60 transition-colors">
+                      <td className="py-2.5 px-3 whitespace-nowrap">
+                        <div className="flex items-center gap-2">
+                          <div className="w-6 h-6 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold text-[10px] flex items-center justify-center shrink-0">
+                            Vi
+                          </div>
+                          <span className="font-bold text-slate-900 dark:text-white">Vikas More</span>
+                        </div>
+                      </td>
+                      <td className="py-2.5 px-3 whitespace-nowrap">
+                        <strong className="text-slate-900 dark:text-white block font-bold leading-tight">Booth #104</strong>
+                        <span className="text-[11px] text-slate-500 dark:text-slate-400 block leading-tight mt-0.5">Prabhaag 13 • Erandwane</span>
+                      </td>
+                      <td className="py-2.5 px-3 text-center font-bold text-blue-600 dark:text-blue-400 whitespace-nowrap">95</td>
+                      <td className="py-2.5 px-3 text-center font-bold text-slate-900 dark:text-white whitespace-nowrap">230</td>
+                      <td className="py-2.5 px-3 text-center whitespace-nowrap">
+                        <span className="inline-block px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300 dark:border dark:border-slate-700 whitespace-nowrap">
+                          Offline
+                        </span>
+                      </td>
+                      <td className="py-2.5 px-3 text-right whitespace-nowrap">
+                        <button
+                          type="button"
+                          onClick={() => showToast("warning", "GPS Offline", "Vikas More terminal last reported 2 hours ago")}
+                          className="px-2.5 py-1 rounded-lg border border-slate-200 dark:border-[#3E4F68] bg-white dark:bg-[#243247] hover:bg-slate-50 dark:hover:bg-[#2E3E58] text-slate-700 dark:text-white font-bold text-[11px] whitespace-nowrap cursor-pointer transition-all shadow-xs active:scale-95"
+                        >
+                          Locate GPS
+                        </button>
+                      </td>
+                    </tr>
 
-                  <tr className="hover:bg-slate-50/80">
-                    <td className="py-2.5 px-3 flex items-center gap-2">
-                      <div className="w-6 h-6 rounded-full bg-slate-200 text-slate-700 font-bold text-[10px] flex items-center justify-center">
-                        Su
-                      </div>
-                      <span className="font-bold text-slate-900">Supriya Salve</span>
-                    </td>
-                    <td className="py-2.5 px-3">
-                      <strong className="text-slate-900 block">Booth #106</strong>
-                      <span className="text-[11px] text-slate-400">Prabhaag 14 - Shivajinagar</span>
-                    </td>
-                    <td className="py-2.5 px-3 font-bold text-blue-600">142</td>
-                    <td className="py-2.5 px-3 font-bold text-slate-900">310</td>
-                    <td className="py-2.5 px-3">
-                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                        Active on Field
-                      </span>
-                    </td>
-                    <td className="py-2.5 px-3 text-right">
-                      <button
-                        type="button"
-                        onClick={() => showToast("info", "GPS Locator", "Pinging Supriya Salve: Modern High School Desk")}
-                        className="px-2 py-1 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold text-[11px]"
-                      >
-                        Locate GPS
-                      </button>
-                    </td>
-                  </tr>
+                    <tr className="hover:bg-slate-50/80 dark:hover:bg-[#1B2638]/60 transition-colors">
+                      <td className="py-2.5 px-3 whitespace-nowrap">
+                        <div className="flex items-center gap-2">
+                          <div className="w-6 h-6 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold text-[10px] flex items-center justify-center shrink-0">
+                            Su
+                          </div>
+                          <span className="font-bold text-slate-900 dark:text-white">Supriya Salve</span>
+                        </div>
+                      </td>
+                      <td className="py-2.5 px-3 whitespace-nowrap">
+                        <strong className="text-slate-900 dark:text-white block font-bold leading-tight">Booth #106</strong>
+                        <span className="text-[11px] text-slate-500 dark:text-slate-400 block leading-tight mt-0.5">Prabhaag 14 • Shivajinagar</span>
+                      </td>
+                      <td className="py-2.5 px-3 text-center font-bold text-blue-600 dark:text-blue-400 whitespace-nowrap">142</td>
+                      <td className="py-2.5 px-3 text-center font-bold text-slate-900 dark:text-white whitespace-nowrap">310</td>
+                      <td className="py-2.5 px-3 text-center whitespace-nowrap">
+                        <span className="inline-block px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/70 dark:text-emerald-300 dark:border-emerald-800/60 whitespace-nowrap">
+                          Active on Field
+                        </span>
+                      </td>
+                      <td className="py-2.5 px-3 text-right whitespace-nowrap">
+                        <button
+                          type="button"
+                          onClick={() => showToast("info", "GPS Locator", "Pinging Supriya Salve: Modern High School Desk")}
+                          className="px-2.5 py-1 rounded-lg border border-slate-200 dark:border-[#3E4F68] bg-white dark:bg-[#243247] hover:bg-slate-50 dark:hover:bg-[#2E3E58] text-slate-700 dark:text-white font-bold text-[11px] whitespace-nowrap cursor-pointer transition-all shadow-xs active:scale-95"
+                        >
+                          Locate GPS
+                        </button>
+                      </td>
+                    </tr>
 
-                  <tr className="hover:bg-slate-50/80">
-                    <td className="py-2.5 px-3 flex items-center gap-2">
-                      <div className="w-6 h-6 rounded-full bg-slate-200 text-slate-700 font-bold text-[10px] flex items-center justify-center">
-                        Am
-                      </div>
-                      <span className="font-bold text-slate-900">Amol Chordia</span>
-                    </td>
-                    <td className="py-2.5 px-3">
-                      <strong className="text-slate-900 block">Booth #103</strong>
-                      <span className="text-[11px] text-slate-400">Prabhaag 12 - Kothrud West</span>
-                    </td>
-                    <td className="py-2.5 px-3 font-bold text-slate-400">0</td>
-                    <td className="py-2.5 px-3 font-bold text-slate-400">0</td>
-                    <td className="py-2.5 px-3">
-                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-600">
-                        Offline
-                      </span>
-                    </td>
-                    <td className="py-2.5 px-3 text-right">
-                      <button
-                        type="button"
-                        onClick={() => showToast("warning", "GPS Offline", "Amol Chordia terminal currently offline")}
-                        className="px-2 py-1 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold text-[11px]"
-                      >
-                        Locate GPS
-                      </button>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+                    <tr className="hover:bg-slate-50/80 dark:hover:bg-[#1B2638]/60 transition-colors">
+                      <td className="py-2.5 px-3 whitespace-nowrap">
+                        <div className="flex items-center gap-2">
+                          <div className="w-6 h-6 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold text-[10px] flex items-center justify-center shrink-0">
+                            Am
+                          </div>
+                          <span className="font-bold text-slate-900 dark:text-white">Amol Chordia</span>
+                        </div>
+                      </td>
+                      <td className="py-2.5 px-3 whitespace-nowrap">
+                        <strong className="text-slate-900 dark:text-white block font-bold leading-tight">Booth #103</strong>
+                        <span className="text-[11px] text-slate-500 dark:text-slate-400 block leading-tight mt-0.5">Prabhaag 12 • Kothrud West</span>
+                      </td>
+                      <td className="py-2.5 px-3 text-center font-bold text-slate-400 whitespace-nowrap">0</td>
+                      <td className="py-2.5 px-3 text-center font-bold text-slate-400 whitespace-nowrap">0</td>
+                      <td className="py-2.5 px-3 text-center whitespace-nowrap">
+                        <span className="inline-block px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300 dark:border dark:border-slate-700 whitespace-nowrap">
+                          Offline
+                        </span>
+                      </td>
+                      <td className="py-2.5 px-3 text-right whitespace-nowrap">
+                        <button
+                          type="button"
+                          onClick={() => showToast("warning", "GPS Offline", "Amol Chordia terminal currently offline")}
+                          className="px-2.5 py-1 rounded-lg border border-slate-200 dark:border-[#3E4F68] bg-white dark:bg-[#243247] hover:bg-slate-50 dark:hover:bg-[#2E3E58] text-slate-700 dark:text-white font-bold text-[11px] whitespace-nowrap cursor-pointer transition-all shadow-xs active:scale-95"
+                        >
+                          Locate GPS
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
 
-          {/* Right: Live War Room Activity Stream (Screenshot 14) */}
-          <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs flex flex-col justify-between space-y-4">
+          {/* Right: Live War Room Activity Stream (Small Rectangle 1/3) (Screenshot 14) */}
+          <div className="lg:col-span-1 min-w-0 bg-white dark:bg-[#151E2D] p-5 rounded-2xl border border-slate-200 dark:border-[#29364A] shadow-xs flex flex-col justify-between space-y-4">
             <div>
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
-                  <Radio className="w-4 h-4 text-blue-600" />
-                  <h3 className="font-bold text-slate-900 text-sm">Live War Room Activity Stream</h3>
+                  <Radio className="w-4 h-4 text-blue-600 dark:text-blue-400 shrink-0" />
+                  <h3 className="font-bold text-slate-900 dark:text-white text-sm">Live War Room Activity Stream</h3>
                 </div>
-                <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200">
+                <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200 dark:bg-blue-950/60 dark:text-blue-300 dark:border-blue-800/60 shrink-0">
                   Live Feed
                 </span>
               </div>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-slate-500 dark:text-slate-300">
                 Real-time audit log of surveys, slip distributions, and field grievance escalations.
               </p>
 
               {/* Feed Items Stack */}
               <div className="space-y-2.5 mt-3 text-xs">
-                <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/80">
+                <div className="p-3 bg-slate-50 dark:bg-[#1B2638] rounded-xl border border-slate-200/80 dark:border-[#29364A] transition-all">
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-100 text-blue-800">SLIP</span>
-                    <span className="text-slate-400 text-[10px]">2m ago</span>
+                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-100 text-blue-800 dark:bg-blue-950/80 dark:text-blue-300 dark:border dark:border-blue-800/50">SLIP</span>
+                    <span className="text-slate-400 dark:text-slate-300 text-[10px] font-medium">2m ago</span>
                   </div>
-                  <h5 className="font-bold text-slate-900 mt-1">Pooja Jadhav</h5>
-                  <p className="text-slate-600">Delivered 8 voter information slips</p>
-                  <p className="text-slate-400 text-[11px]">Booth 101</p>
+                  <h5 className="font-bold text-slate-900 dark:text-white mt-1">Pooja Jadhav</h5>
+                  <p className="text-slate-600 dark:text-slate-200 text-xs leading-relaxed font-normal">Delivered 8 voter information slips</p>
+                  <p className="text-slate-400 dark:text-slate-400 text-[11px] font-medium">Booth 101</p>
                 </div>
 
-                <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/80">
+                <div className="p-3 bg-slate-50 dark:bg-[#1B2638] rounded-xl border border-slate-200/80 dark:border-[#29364A] transition-all">
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-100 text-amber-800">OFFICE</span>
-                    <span className="text-slate-400 text-[10px]">7m ago</span>
+                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 dark:bg-amber-950/80 dark:text-amber-300 dark:border dark:border-amber-800/50">OFFICE</span>
+                    <span className="text-slate-400 dark:text-slate-300 text-[10px] font-medium">7m ago</span>
                   </div>
-                  <h5 className="font-bold text-slate-900 mt-1">Office Reception</h5>
-                  <p className="text-slate-600">Registered grievance #TKT-9210 (Water Supply)</p>
-                  <p className="text-slate-400 text-[11px]">Kothrud</p>
+                  <h5 className="font-bold text-slate-900 dark:text-white mt-1">Office Reception</h5>
+                  <p className="text-slate-600 dark:text-slate-200 text-xs leading-relaxed font-normal">Registered grievance #TKT-9210 (Water Supply)</p>
+                  <p className="text-slate-400 dark:text-slate-400 text-[11px] font-medium">Kothrud</p>
                 </div>
 
-                <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/80">
+                <div className="p-3 bg-slate-50 dark:bg-[#1B2638] rounded-xl border border-slate-200/80 dark:border-[#29364A] transition-all">
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-purple-100 text-purple-800">SURVEY</span>
-                    <span className="text-slate-400 text-[10px]">14m ago</span>
+                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-purple-100 text-purple-800 dark:bg-purple-950/80 dark:text-purple-300 dark:border dark:border-purple-800/50">SURVEY</span>
+                    <span className="text-slate-400 dark:text-slate-300 text-[10px] font-medium">14m ago</span>
                   </div>
-                  <h5 className="font-bold text-slate-900 mt-1">Ganesh Patil</h5>
-                  <p className="text-slate-600">Logged new household survey (Supporter classified)</p>
-                  <p className="text-slate-400 text-[11px]">Booth 102</p>
+                  <h5 className="font-bold text-slate-900 dark:text-white mt-1">Ganesh Patil</h5>
+                  <p className="text-slate-600 dark:text-slate-200 text-xs leading-relaxed font-normal">Logged new household survey (Supporter classified)</p>
+                  <p className="text-slate-400 dark:text-slate-400 text-[11px] font-medium">Booth 102</p>
                 </div>
 
-                <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/80">
+                <div className="p-3 bg-slate-50 dark:bg-[#1B2638] rounded-xl border border-slate-200/80 dark:border-[#29364A] transition-all">
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-cyan-100 text-cyan-800">CAMPAIGN</span>
-                    <span className="text-slate-400 text-[10px]">28m ago</span>
+                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-cyan-100 text-cyan-800 dark:bg-cyan-950/80 dark:text-cyan-300 dark:border dark:border-cyan-800/50">CAMPAIGN</span>
+                    <span className="text-slate-400 dark:text-slate-300 text-[10px] font-medium">28m ago</span>
                   </div>
-                  <h5 className="font-bold text-slate-900 mt-1">Broadcast Server</h5>
-                  <p className="text-slate-600">WhatsApp Campaign CMP-01 reached 96% delivery threshold</p>
+                  <h5 className="font-bold text-slate-900 dark:text-white mt-1">Broadcast Server</h5>
+                  <p className="text-slate-600 dark:text-slate-200 text-xs leading-relaxed font-normal">WhatsApp Campaign CMP-01 reached 96% delivery threshold</p>
                 </div>
               </div>
             </div>
@@ -3308,7 +3324,7 @@ export default function CandidateWarRoomDashboard() {
             {/* Bottom Button */}
             <Link
               href="/activities"
-              className="w-full py-2.5 px-4 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold text-center block transition-all"
+              className="w-full py-2.5 px-4 bg-slate-100 hover:bg-slate-200 dark:bg-[#243247] dark:hover:bg-[#2E3E58] dark:border dark:border-[#3E4F68] text-slate-700 dark:text-white rounded-xl text-xs font-bold text-center block transition-all shadow-xs cursor-pointer"
             >
               View Complete Activity Audit Log
             </Link>
